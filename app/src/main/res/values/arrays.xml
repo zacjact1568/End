@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="pref_language_titles">
+        <item>Follow System</item>
+        <item>English</item>
+        <item>中文（简体）</item>
+    </string-array>
+    <string-array name="pref_language_values">
+        <item>def</item>
+        <item>en</item>
+        <item>zh</item>
+    </string-array>
+    <string-array name="descriptions_priority_level">
+        <item>Unsettled</item>
+        <item>Level 1: !</item>
+        <item>Level 2: !!</item>
+        <item>Level 3: !!!</item>
+    </string-array>
+
+    <array name="priority_level_marks">
+        <item>@drawable/ic_star_outline_grey600_24dp</item>
+        <item>@drawable/ic_star_half_grey600_24dp</item>
+        <item>@drawable/ic_star_grey600_24dp</item>
+        <item>@drawable/ic_close_black_24dp</item>
+    </array>
+
+</resources>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.zack.enderplan.activity.PlanDetailActivity"
+    tools:showIn="@layout/activity_plan_detail">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/other_info"
+        android:textColor="?attr/colorPrimary"
+        android:textSize="16sp"
+        android:layout_margin="16dp"/>
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="16dp"/>
+
+    <include layout="@layout/divider"/>
+
+    <include layout="@layout/plan_optional_item_deadline"/>
+
+    <include layout="@layout/divider"/>
+
+    <include layout="@layout/plan_optional_item_reminder"/>
+
+    <include layout="@layout/divider"/>
+
+    <!--<android.support.v7.widget.CardView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="@dimen/card_view_outer_margin">-->
+
+        <!--<ScrollView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+
+            <!--<FrameLayout-->
+                <!--android:id="@+id/frame_layout"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"/>-->
+
+        <!--</ScrollView>-->
+
+    <!--</android.support.v7.widget.CardView>-->
+
+</LinearLayout>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ViewSwitcher
+        android:id="@+id/view_switcher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inAnimation="@android:anim/slide_in_left"
+        android:outAnimation="@android:anim/slide_out_right">
+
+        <DatePicker
+            android:id="@+id/date_picker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:headerBackground="?attr/colorPrimary"/>
+
+        <TimePicker
+            android:id="@+id/time_picker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:headerBackground="?attr/colorPrimary"/>
+
+    </ViewSwitcher>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dialog_button_margin">
+
+        <TextView
+            android:id="@+id/text_picker_switcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_time_picker_switcher"
+            android:textStyle="bold"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="@dimen/dialog_button_margin"
+            style="@style/FlatButtonStyle"/>
+
+        <include layout="@layout/dialog_buttons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/dialog_button_margin"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="FlatButtonStyle">
+
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:background">@drawable/bg_ripple_flat_button</item>
+        <item name="android:clickable">true</item>
+        <item name="android:paddingTop">@dimen/button_vertical_inner_margin</item>
+        <item name="android:paddingBottom">@dimen/button_vertical_inner_margin</item>
+        <item name="android:paddingStart">@dimen/button_horizontal_inner_margin</item>
+        <item name="android:paddingEnd">@dimen/button_horizontal_inner_margin</item>
+
+    </style>
+
+</resources>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Light Blue & Light Green-->
+    <color name="colorPrimary">#03A9F4</color>
+    <color name="colorPrimaryDark">#0288D1</color>
+    <color name="colorAccent">#8BC34A</color>
+    <color name="colorPrimaryLight">#B3E5FC</color>
+
+    <!--Type mark colors-->
+    <color name="indigo">#3F51B5</color>
+    <color name="red">#E51C23</color>
+    <color name="blue">#5677FC</color>
+    <color name="green">#259B24</color>
+    <color name="yellow">#FFEB3B</color>
+    <color name="grey">#9E9E9E</color>
+    
+    <color name="translucence">#33000000</color>
+</resources>

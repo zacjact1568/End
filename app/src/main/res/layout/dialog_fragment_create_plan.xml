@@ -1,0 +1,72 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="15dp"
+    android:paddingStart="22dp"
+    android:paddingEnd="22dp"
+    android:orientation="vertical"
+    tools:context="com.zack.enderplan.activity.CreatePlanFragment">
+
+    <EditText
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/content_hint"
+        android:textSize="15sp"/>
+
+    <TextView
+        android:id="@+id/content_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Empty content"
+        android:textSize="12sp"
+        android:textColor="@android:color/holo_red_light"
+        android:layout_marginStart="5dp"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"/>
+
+        <CheckBox
+            android:id="@+id/check_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|end"
+            android:text="@string/more_settings"
+            android:textColor="@color/grey"
+            android:layout_marginEnd="3dp"/>
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/relative_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <com.zack.enderplan.widget.DateTimePicker
+            android:id="@+id/date_time_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"/>
+
+        <Switch
+            android:id="@+id/reminder_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reminder"
+            android:textColor="@color/grey"
+            android:layout_below="@id/date_time_picker"
+            android:layout_alignStart="@id/date_time_picker"/>
+
+    </RelativeLayout>
+
+</LinearLayout>
