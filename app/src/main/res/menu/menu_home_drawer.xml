@@ -6,18 +6,18 @@
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home_grey600_24dp"
             android:title="@string/action_home" />
+        <!--<item-->
+            <!--android:id="@+id/nav_starred_plans"-->
+            <!--android:icon="@drawable/ic_star_grey600_24dp"-->
+            <!--android:title="@string/action_starred_plans" />-->
         <item
-            android:id="@+id/nav_starred_plans"
-            android:icon="@drawable/ic_star_grey600_24dp"
-            android:title="@string/action_starred_plans" />
-        <item
-            android:id="@+id/nav_type_view"
+            android:id="@+id/nav_all_types"
             android:icon="@drawable/ic_subject_grey600_24dp"
-            android:title="@string/action_type_view" />
-        <item
-            android:id="@+id/nav_recycle_bin"
-            android:icon="@drawable/ic_delete_grey600_24dp"
-            android:title="@string/action_recycle_bin" />
+            android:title="@string/action_all_types" />
+        <!--<item-->
+            <!--android:id="@+id/nav_recycle_bin"-->
+            <!--android:icon="@drawable/ic_delete_grey600_24dp"-->
+            <!--android:title="@string/action_recycle_bin" />-->
     </group>
 
     <item android:title="@string/nav_subheader">

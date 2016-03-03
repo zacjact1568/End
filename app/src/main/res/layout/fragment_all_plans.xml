@@ -4,6 +4,19 @@
     android:layout_height="match_parent"
     tools:context="com.zack.enderplan.activity.AllPlansFragment">
 
+    <com.zack.enderplan.widget.EnhancedRecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
+    <TextView
+        android:id="@+id/text_empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/text_margin"
+        android:gravity="center"
+        android:text="@string/empty_view_prompt"
+        android:textColor="@android:color/darker_gray"
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
 
 </FrameLayout>

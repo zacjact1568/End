@@ -6,7 +6,7 @@
 
     <string name="action_home">Home</string>
     <string name="action_starred_plans">Starred Plans</string>
-    <string name="action_type_view">All Types</string>
+    <string name="action_all_types">All Types</string>
     <string name="action_recycle_bin">Recycle Bin</string>
     <string name="action_search">Search</string>
     <string name="action_settings">Settings</string>

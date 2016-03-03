@@ -42,7 +42,6 @@
     <string name="unsettled">未设置</string>
     <string name="action_home">主页</string>
     <string name="action_recycle_bin">回收站</string>
-    <string name="action_type_view">所有类型</string>
     <string name="title_activity_settings">设置</string>
     <string name="pref_title_language">语言</string>
     <string name="version">版本</string>
@@ -72,4 +71,5 @@
     <string name="msg_dialog_delete_plan_pt1">计划“</string>
     <string name="msg_dialog_delete_plan_pt2">”将会被立即删除。</string>
     <string name="title_activity_reminder">EnderPlan提醒</string>
+    <string name="action_all_types">所有类型</string>
 </resources>
