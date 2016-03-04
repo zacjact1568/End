@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -31,6 +32,7 @@ public class HomeActivity extends BaseActivity
         DateTimePickerDialogFragment.OnDateTimeChangedListener {
 
     private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
     private TextView uncompletedPlan;
     private TextView uncompletedPlanDescription;
     private FrameLayout frameLayout;
@@ -48,7 +50,7 @@ public class HomeActivity extends BaseActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         frameLayout = (FrameLayout) findViewById(R.id.frame_layout);
 
         View navigationHeaderView = navigationView.getHeaderView(0);
@@ -181,13 +183,22 @@ public class HomeActivity extends BaseActivity
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         switch (item.getItemId()) {
             case R.id.nav_home:
+                getSupportFragmentManager().popBackStack();
                 break;
             case R.id.nav_all_types:
                 AllTypesFragment allTypesFragment = new AllTypesFragment();
-                transaction.replace(R.id.frame_layout, allTypesFragment).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, allTypesFragment, "all_types").addToBackStack(null).commit();
+                getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+                    @Override
+                    public void onBackStackChanged() {
+                        if (getSupportFragmentManager().findFragmentByTag("all_types") == null) {
+                            navigationView.setCheckedItem(R.id.nav_home);
+                            getSupportFragmentManager().removeOnBackStackChangedListener(this);
+                        }
+                    }
+                });
                 break;
             case R.id.nav_settings:
                 Intent intentSettings = new Intent(this, SettingsActivity.class);

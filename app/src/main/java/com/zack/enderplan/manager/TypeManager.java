@@ -19,6 +19,10 @@ public class TypeManager {
         typeList = EnderPlanDB.getInstance(context).loadType();
     }
 
+    public List<Type> getTypeList() {
+        return typeList;
+    }
+
     /**
      * Find the color resource id by type mark.
      * @param typeMark The type mark from database.

@@ -12,7 +12,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,7 +27,7 @@ import com.zack.enderplan.bean.Plan;
 import com.zack.enderplan.bean.Type;
 import com.zack.enderplan.database.EnderPlanDB;
 import com.zack.enderplan.manager.ReminderManager;
-import com.zack.enderplan.widget.TypeAdapter;
+import com.zack.enderplan.widget.TypeSpinnerAdapter;
 
 import java.util.List;
 
@@ -149,7 +148,7 @@ public class PlanDetailActivity extends BaseActivity
         }
 
         typeList = enderplanDB.loadType();
-        spinner.setAdapter(new TypeAdapter(this, typeList));
+        spinner.setAdapter(new TypeSpinnerAdapter(this, typeList));
         for (int i = 0; i < typeList.size(); i++) {
             if (typeList.get(i).getTypeCode().equals(plan.getTypeCode())) {
                 spinner.setSelection(i);

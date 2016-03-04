@@ -22,7 +22,7 @@ import com.zack.enderplan.database.EnderPlanDB;
 import com.zack.enderplan.bean.Plan;
 import com.zack.enderplan.bean.Type;
 import com.zack.enderplan.util.Util;
-import com.zack.enderplan.widget.TypeAdapter;
+import com.zack.enderplan.widget.TypeSpinnerAdapter;
 
 import java.util.List;
 
@@ -121,7 +121,7 @@ public class CreatePlanActivity extends BaseActivity
         });
 
         typeList = enderplanDB.loadType();
-        spinner.setAdapter(new TypeAdapter(this, typeList));
+        spinner.setAdapter(new TypeSpinnerAdapter(this, typeList));
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

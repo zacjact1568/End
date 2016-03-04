@@ -15,7 +15,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.widget.TypeAdapter;
+import com.zack.enderplan.widget.TypeSpinnerAdapter;
 import com.zack.enderplan.database.EnderPlanDB;
 import com.zack.enderplan.bean.Plan;
 import com.zack.enderplan.bean.Type;
@@ -80,9 +80,9 @@ public class PlanDetailFragment extends DialogFragment {
         contentError.setVisibility(View.GONE);
 
         typeList = enderplanDB.loadType();
-        TypeAdapter typeAdapter = new TypeAdapter(getActivity(), typeList);
+        TypeSpinnerAdapter typeSpinnerAdapter = new TypeSpinnerAdapter(getActivity(), typeList);
 
-        spinner.setAdapter(typeAdapter);
+        spinner.setAdapter(typeSpinnerAdapter);
 
         for (int i = 0; i < typeList.size(); i++) {
             if (typeList.get(i).getTypeCode().equals(plan.getTypeCode())) {
