@@ -64,6 +64,7 @@ public class AllPlansFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(CLASS_NAME, "onCreate");
 
         enderplanDB = EnderPlanDB.getInstance(getActivity());
         planList = new ArrayList<>();
@@ -115,6 +116,7 @@ public class AllPlansFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d(CLASS_NAME, "onViewCreated");
 
         recyclerView = (EnhancedRecyclerView) view.findViewById(R.id.recycler_view);
 
@@ -129,6 +131,7 @@ public class AllPlansFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        Log.d(CLASS_NAME, "onDetach");
         onUncompletedPlanCountChangedListener = null;
     }
 

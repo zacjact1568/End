@@ -39,6 +39,11 @@
     <string name="plan_uncompleted_exist">Pick one plan?</string>
     <string name="empty_view_prompt">No any plans here.\nClick the Floating Action Button in the right bottom corner to create one.</string>
 
+    <!--AllTypesFragment-->
+    <string name="plan_count_of_each_type_none">No plan</string>
+    <string name="plan_count_of_each_type_one">1 plan</string>
+    <string name="plan_count_of_each_type_multi">plans</string>
+
     <!--CreatePlanActivity-->
     <string name="title_activity_create_plan">Create a new plan</string>
 

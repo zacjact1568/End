@@ -148,7 +148,7 @@ public class PlanDetailActivity extends BaseActivity
         }
 
         typeList = enderplanDB.loadType();
-        spinner.setAdapter(new TypeSpinnerAdapter(this, typeList));
+        spinner.setAdapter(new TypeSpinnerAdapter(this));
         for (int i = 0; i < typeList.size(); i++) {
             if (typeList.get(i).getTypeCode().equals(plan.getTypeCode())) {
                 spinner.setSelection(i);

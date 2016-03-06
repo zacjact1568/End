@@ -14,7 +14,6 @@ public class EnderPlanOpenHelper extends SQLiteOpenHelper {
             "deadline integer, " +
             "completion_time integer, " +
             "star_status integer, " +
-            "deletion_status integer, " +
             "reminder_time integer)";
 
     private static final String CREATE_TABLE_TYPE = "create table type (" +

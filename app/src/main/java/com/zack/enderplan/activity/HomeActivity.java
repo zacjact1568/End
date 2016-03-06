@@ -1,5 +1,6 @@
 package com.zack.enderplan.activity;
 
+import android.animation.Animator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewAnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -31,6 +33,7 @@ public class HomeActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         DateTimePickerDialogFragment.OnDateTimeChangedListener {
 
+    private FloatingActionButton fab;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private TextView uncompletedPlan;
@@ -41,6 +44,7 @@ public class HomeActivity extends BaseActivity
 
     private static final String CLASS_NAME = "HomeActivity";
     private static final int REQ_CODE_CREATE_PLAN = 0;
+    private static final int CR_ANIM_DURATION = 300;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +52,7 @@ public class HomeActivity extends BaseActivity
         setContentView(R.layout.activity_home);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         frameLayout = (FrameLayout) findViewById(R.id.frame_layout);
@@ -62,6 +66,11 @@ public class HomeActivity extends BaseActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (getSupportFragmentManager().findFragmentByTag("all_types") != null) {
+                    CreateTypeDialogFragment dialog = new CreateTypeDialogFragment();
+                    dialog.show(getFragmentManager(), "create_type");
+                    return;
+                }
                 Intent intent = new Intent(HomeActivity.this, CreatePlanActivity.class);
                 startActivityForResult(intent, REQ_CODE_CREATE_PLAN);
             }
@@ -188,12 +197,14 @@ public class HomeActivity extends BaseActivity
                 getSupportFragmentManager().popBackStack();
                 break;
             case R.id.nav_all_types:
-                AllTypesFragment allTypesFragment = new AllTypesFragment();
+                makeCircularRevealAnimationOnFab(R.drawable.ic_playlist_add_white_24dp);
+                AllTypesFragment allTypesFragment = AllTypesFragment.newInstance(getPlanCountOfEachType());
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, allTypesFragment, "all_types").addToBackStack(null).commit();
                 getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
                     @Override
                     public void onBackStackChanged() {
                         if (getSupportFragmentManager().findFragmentByTag("all_types") == null) {
+                            makeCircularRevealAnimationOnFab(R.drawable.ic_add_white_24dp);
                             navigationView.setCheckedItem(R.id.nav_home);
                             getSupportFragmentManager().removeOnBackStackChangedListener(this);
                         }
@@ -232,10 +243,31 @@ public class HomeActivity extends BaseActivity
         //TODO 取消提醒，存储数据
     }
 
+    private Bundle getPlanCountOfEachType() {
+        Bundle bundle = new Bundle();
+        for (Plan plan : allPlansFragment.getPlanList()) {
+            String typeCode = plan.getTypeCode();
+            int count = bundle.getInt(typeCode, 0);
+            bundle.putInt(typeCode, ++count);
+        }
+        return bundle;
+    }
+
     private void updateDrawerHeaderContent(int uncompletedPlanCount) {
         uncompletedPlan.setText(String.valueOf(uncompletedPlanCount));
         uncompletedPlanDescription.setText(getResources().getString(uncompletedPlanCount == 0 ?
                 R.string.plan_uncompleted_none : R.string.plan_uncompleted_exist));
+    }
+
+    private void makeCircularRevealAnimationOnFab(int imageRes) {
+        Animator disappearanceAnim = ViewAnimationUtils.createCircularReveal(fab, fab.getWidth() / 2, fab.getHeight() / 2, fab.getWidth() / 2, 0);
+        disappearanceAnim.setDuration(CR_ANIM_DURATION);
+        disappearanceAnim.start();
+        fab.setImageResource(imageRes);
+        Animator appearanceAnim = ViewAnimationUtils.createCircularReveal(fab, fab.getWidth() / 2, fab.getHeight() / 2, 0, fab.getWidth() / 2);
+        appearanceAnim.setDuration(CR_ANIM_DURATION);
+        appearanceAnim.start();
+        //TODO 改变FAB点击事件
     }
 
     class RemindedReceiver extends BroadcastReceiver {

@@ -32,10 +32,10 @@ public class EnderPlanApp extends Application {
 
     private void initType() {
         EnderPlanDB enderplanDB = EnderPlanDB.getInstance(this);
-        enderplanDB.saveType(new Type(Util.makeCode(), getResources().getString(R.string.to_do), Type.TYPE_MARK_INDIGO));
-        enderplanDB.saveType(new Type(Util.makeCode(), getResources().getString(R.string.family), Type.TYPE_MARK_RED));
-        enderplanDB.saveType(new Type(Util.makeCode(), getResources().getString(R.string.work), Type.TYPE_MARK_BLUE));
-        enderplanDB.saveType(new Type(Util.makeCode(), getResources().getString(R.string.study), Type.TYPE_MARK_GREEN));
+        enderplanDB.saveType(new Type(Util.makeCode(), getResources().getString(R.string.to_do), "#FF3F51B5"));
+        enderplanDB.saveType(new Type(Util.makeCode(), getResources().getString(R.string.family), "#FFE51C23"));
+        enderplanDB.saveType(new Type(Util.makeCode(), getResources().getString(R.string.work), "#FFFF9800"));
+        enderplanDB.saveType(new Type(Util.makeCode(), getResources().getString(R.string.study), "#FF259B24"));
     }
 
     private void initLocale(String value) {

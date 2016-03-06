@@ -7,12 +7,10 @@ public class Plan implements Parcelable {
 
     public static final int PLAN_STAR_STATUS_NOT_STARRED = 0;
     public static final int PLAN_STAR_STATUS_STARRED = 1;
-    public static final int PLAN_DELETION_STATUS_NOT_DELETED = 0;
-    public static final int PLAN_DELETION_STATUS_DELETED = 1;
 
     private String planCode, content, typeCode;
     private long creationTime, deadline, completionTime, reminderTime;
-    private int starStatus, deletionStatus;
+    private int starStatus;
 
     public Plan(String planCode) {
         this.planCode = planCode;
@@ -22,12 +20,11 @@ public class Plan implements Parcelable {
         this.deadline = 0;
         this.completionTime = 0;
         this.starStatus = PLAN_STAR_STATUS_NOT_STARRED;
-        this.deletionStatus = PLAN_DELETION_STATUS_NOT_DELETED;
         this.reminderTime = 0;
     }
 
     public Plan(String planCode, String content, String typeCode, long creationTime, long deadline,
-                long completionTime, int starStatus, int deletionStatus, long reminderTime) {
+                long completionTime, int starStatus, long reminderTime) {
         this.planCode = planCode;
         this.content = content;
         this.typeCode = typeCode;
@@ -35,7 +32,6 @@ public class Plan implements Parcelable {
         this.deadline = deadline;
         this.completionTime = completionTime;
         this.starStatus = starStatus;
-        this.deletionStatus = deletionStatus;
         this.reminderTime = reminderTime;
     }
 
@@ -47,7 +43,6 @@ public class Plan implements Parcelable {
         deadline = in.readLong();
         completionTime = in.readLong();
         starStatus = in.readInt();
-        deletionStatus = in.readInt();
         reminderTime = in.readLong();
     }
 
@@ -119,14 +114,6 @@ public class Plan implements Parcelable {
         this.starStatus = starStatus;
     }
 
-    public int getDeletionStatus() {
-        return deletionStatus;
-    }
-
-    public void setDeletionStatus(int deletionStatus) {
-        this.deletionStatus = deletionStatus;
-    }
-
     public long getReminderTime() {
         return reminderTime;
     }
@@ -149,7 +136,6 @@ public class Plan implements Parcelable {
         dest.writeLong(deadline);
         dest.writeLong(completionTime);
         dest.writeInt(starStatus);
-        dest.writeInt(deletionStatus);
         dest.writeLong(reminderTime);
     }
 }

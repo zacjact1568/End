@@ -45,11 +45,11 @@ public class DatabaseInfoActivity extends BaseActivity {
         boolean isCompleted = plan.getCompletionTime() != 0;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd EEE HH:mm", Locale.getDefault());
 
-        typeMark.setImageResource(typeManager.findColorIdByTypeMark(isCompleted ?
+        /*typeMark.setImageResource(typeManager.findColorIdByTypeMark(isCompleted ?
                 Type.TYPE_MARK_GREY : typeManager.convertTypeCode(plan.getTypeCode(),
                 TypeManager.TYPE_MARK_CODE)));
         content.setText(isCompleted ? Util.addStrikethroughSpan(plan.getContent()) : plan.getContent());
-        typeName.setText(typeManager.convertTypeCode(plan.getTypeCode(), TypeManager.TYPE_NAME_CODE));
+        typeName.setText(typeManager.convertTypeCode(plan.getTypeCode(), TypeManager.TYPE_NAME_CODE));*/
         creationTime.setText(simpleDateFormat.format(plan.getCreationTime()));
         deadline.setText(plan.getDeadline() == 0 ? getResources().getString(R.string.unsettled) :
                 simpleDateFormat.format(plan.getDeadline()));

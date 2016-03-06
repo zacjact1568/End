@@ -80,7 +80,7 @@ public class CreatePlanFragment extends DialogFragment {
         contentError.setVisibility(View.GONE);
 
         typeList = enderplanDB.loadType();
-        TypeSpinnerAdapter typeSpinnerAdapter = new TypeSpinnerAdapter(getActivity(), typeList);
+        TypeSpinnerAdapter typeSpinnerAdapter = new TypeSpinnerAdapter(getActivity());
 
         spinner.setAdapter(typeSpinnerAdapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -148,7 +148,7 @@ public class CreatePlanFragment extends DialogFragment {
                 }
 
                 Plan plan = new Plan(Util.makeCode(), contentStr, typeCodeStr, currentTimeMillis,
-                        deadlineInMillis, 0, 0, 0, 0);
+                        deadlineInMillis, 0, 0, 0);
                 enderplanDB.savePlan(plan);
 
                 if (enabledReminder) {

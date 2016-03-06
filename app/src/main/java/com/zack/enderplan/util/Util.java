@@ -1,18 +1,11 @@
 package com.zack.enderplan.util;
 
-import android.content.Context;
-import android.content.res.TypedArray;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.StrikethroughSpan;
 
-import com.zack.enderplan.R;
-
 import java.util.UUID;
 
-/**
- * The collection of some tools
- */
 public class Util {
 
     public static String makeCode() {
@@ -31,7 +24,7 @@ public class Util {
         return spannableString;
     }
 
-    public static int[] getPriorityLevelMarkResIds(Context context) {
+    /*public static int[] getPriorityLevelMarkResIds(Context context) {
         TypedArray typedArray = context.getResources().obtainTypedArray(R.array.priority_level_marks);
         int length = typedArray.length();
         int[] resIds = new int[length];
@@ -40,5 +33,5 @@ public class Util {
         }
         typedArray.recycle();
         return resIds;
-    }
+    }*/
 }

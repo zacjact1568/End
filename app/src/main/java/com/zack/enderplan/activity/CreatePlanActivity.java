@@ -121,7 +121,7 @@ public class CreatePlanActivity extends BaseActivity
         });
 
         typeList = enderplanDB.loadType();
-        spinner.setAdapter(new TypeSpinnerAdapter(this, typeList));
+        spinner.setAdapter(new TypeSpinnerAdapter(this));
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

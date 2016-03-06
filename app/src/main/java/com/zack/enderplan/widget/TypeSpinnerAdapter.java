@@ -8,27 +8,21 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.manager.TypeManager;
 import com.zack.enderplan.bean.Type;
+import com.zack.enderplan.manager.TypeManager;
 
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-/**
- * Custom adapter for type list.
- */
 public class TypeSpinnerAdapter extends BaseAdapter {
-    private Context context;
-    private List<Type> typeList;
 
+    private List<Type> typeList;
     private TypeManager typeManager;
 
-    public TypeSpinnerAdapter(Context context, List<Type> typeList) {
-        this.context = context;
-        this.typeList = typeList;
-
+    public TypeSpinnerAdapter(Context context) {
         typeManager = new TypeManager(context);
+        typeList = typeManager.getTypeList();
     }
 
     @Override
@@ -52,7 +46,7 @@ public class TypeSpinnerAdapter extends BaseAdapter {
         View view;
         ViewHolder viewHolder;
         if (convertView == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.item_type_spinner, null);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_type_spinner, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.typeMark = (CircleImageView) view.findViewById(R.id.type_mark);
             viewHolder.typeName = (TextView) view.findViewById(R.id.type_name);
@@ -61,7 +55,7 @@ public class TypeSpinnerAdapter extends BaseAdapter {
             view = convertView;
             viewHolder = (ViewHolder) view.getTag();
         }
-        viewHolder.typeMark.setImageResource(typeManager.findColorIdByTypeMark(type.getTypeMark()));
+        viewHolder.typeMark.setImageResource(typeManager.findColorResByTypeMark(type.getTypeMark()));
         viewHolder.typeName.setText(type.getTypeName());
         return view;
     }

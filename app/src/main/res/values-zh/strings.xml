@@ -72,4 +72,7 @@
     <string name="msg_dialog_delete_plan_pt2">”将会被立即删除。</string>
     <string name="title_activity_reminder">EnderPlan提醒</string>
     <string name="action_all_types">所有类型</string>
+    <string name="plan_count_of_each_type_multi">个计划</string>
+    <string name="plan_count_of_each_type_none">没有计划</string>
+    <string name="plan_count_of_each_type_one">1 个计划</string>
 </resources>

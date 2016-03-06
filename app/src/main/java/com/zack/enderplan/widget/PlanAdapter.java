@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.zack.enderplan.R;
 import com.zack.enderplan.manager.TypeManager;
 import com.zack.enderplan.bean.Plan;
-import com.zack.enderplan.bean.Type;
 import com.zack.enderplan.util.Util;
 
 import java.util.List;
@@ -24,7 +23,6 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
 
     private List<Plan> planList;
     private TypeManager typeManager;
-    //private int[] priorityLevelMarkResIds;
 
     private OnItemClickListener onItemClickListener;
     private OnItemLongClickListener onItemLongClickListener;
@@ -33,7 +31,6 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
     public PlanAdapter(Context context, List<Plan> planList) {
         this.planList = planList;
         typeManager = new TypeManager(context);
-        //priorityLevelMarkResIds = Util.getPriorityLevelMarkResIds(context);
     }
 
     @Override
@@ -47,8 +44,8 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
         final Plan plan = planList.get(position);
         boolean isCompleted = plan.getCompletionTime() != 0;
 
-        holder.typeMark.setImageResource(typeManager.findColorIdByTypeMark(isCompleted ? Type.TYPE_MARK_GREY :
-                typeManager.convertTypeCode(plan.getTypeCode(), TypeManager.TYPE_MARK_CODE)));
+        holder.typeMark.setImageResource(isCompleted ? R.color.grey :
+                typeManager.findColorResByTypeMark(typeManager.findTypeMarkByTypeCode(plan.getTypeCode())));
         holder.contentText.setText(isCompleted ? Util.addStrikethroughSpan(plan.getContent()) :
                 plan.getContent());
         holder.reminderMark.setVisibility(plan.getReminderTime() == 0 ? View.INVISIBLE : View.VISIBLE);

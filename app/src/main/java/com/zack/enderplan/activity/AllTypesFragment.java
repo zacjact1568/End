@@ -9,49 +9,51 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.bean.Plan;
 import com.zack.enderplan.bean.Type;
 import com.zack.enderplan.database.EnderPlanDB;
 import com.zack.enderplan.widget.TypeAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AllTypesFragment extends Fragment {
 
+    private EnderPlanDB enderplanDB;
+    private List<Type> typeList;
     private TypeAdapter typeAdapter;
     //private List<Type> typeList;
     //private EnderPlanDB enderplanDB;
 
-    /*private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_PLAN_COUNT_OF_EACH_TYPE = "plan_count_of_each_type";
 
-    private String mParam1;
-    private String mParam2;
+    private Bundle planCountOfEachType;
 
-    private OnFragmentInteractionListener mListener;
+    //private OnFragmentInteractionListener mListener;
 
     public AllTypesFragment() {
         // Required empty public constructor
     }
 
-    public static AllTypesFragment newInstance(String param1, String param2) {
+    public static AllTypesFragment newInstance(Bundle planCountOfEachType) {
         AllTypesFragment fragment = new AllTypesFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putBundle(ARG_PLAN_COUNT_OF_EACH_TYPE, planCountOfEachType);
         fragment.setArguments(args);
         return fragment;
-    }*/
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }*/
+        if (getArguments() != null) {
+            planCountOfEachType = getArguments().getBundle(ARG_PLAN_COUNT_OF_EACH_TYPE);
+        }
         //enderplanDB = EnderPlanDB.getInstance(getActivity());
         //typeList = enderplanDB.loadType();
-        typeAdapter = new TypeAdapter(getActivity());
+        enderplanDB = EnderPlanDB.getInstance(getActivity());
+        typeList = enderplanDB.loadType();
+        typeAdapter = new TypeAdapter(getActivity(), typeList, planCountOfEachType);
     }
 
     @Override

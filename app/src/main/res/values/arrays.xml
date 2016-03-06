@@ -18,11 +18,20 @@
         <item>Level 3: !!!</item>
     </string-array>
 
-    <array name="priority_level_marks">
-        <item>@drawable/ic_star_outline_grey600_24dp</item>
-        <item>@drawable/ic_star_half_grey600_24dp</item>
-        <item>@drawable/ic_star_grey600_24dp</item>
-        <item>@drawable/ic_close_black_24dp</item>
+    <array name="type_marks">
+        <item>@color/red</item>
+        <item>@color/pink</item>
+        <item>@color/purple</item>
+        <item>@color/indigo</item>
+        <item>@color/blue</item>
+        <item>@color/cyan</item>
+        <item>@color/teal</item>
+        <item>@color/green</item>
+        <item>@color/lime</item>
+        <item>@color/yellow</item>
+        <item>@color/orange</item>
+        <item>@color/brown</item>
+        <item>@color/grey</item>
     </array>
 
 </resources>

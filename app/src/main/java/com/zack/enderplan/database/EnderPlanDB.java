@@ -30,7 +30,6 @@ public class EnderPlanDB {
     public static final String DB_STR_DEADLINE = "deadline";
     public static final String DB_STR_COMPLETION_TIME = "completion_time";
     public static final String DB_STR_STAR_STATUS = "star_status";
-    public static final String DB_STR_DELETION_STATUS = "deletion_status";
     public static final String DB_STR_REMINDER_TIME = "reminder_time";
 
     private static EnderPlanDB enderplanDB;
@@ -61,10 +60,6 @@ public class EnderPlanDB {
         }
     }
 
-    /**
-     * Load all types in the database.
-     * @return The type list.
-     */
     public List<Type> loadType() {
         String typeCode, typeName, typeMark;
         List<Type> typeList = new ArrayList<>();
@@ -93,24 +88,18 @@ public class EnderPlanDB {
             values.put(DB_STR_DEADLINE, plan.getDeadline());
             values.put(DB_STR_COMPLETION_TIME, plan.getCompletionTime());
             values.put(DB_STR_STAR_STATUS, plan.getStarStatus());
-            values.put(DB_STR_DELETION_STATUS, plan.getDeletionStatus());
             values.put(DB_STR_REMINDER_TIME, plan.getReminderTime());
             database.insert(DB_STR_PLAN, null, values);
         }
     }
 
-    /**
-     * Load all plans in the database.
-     * @return The plan list.
-     */
     public List<Plan> loadPlan() {
         String planCode, content, typeCode;
         long creationTime, deadline, completionTime, reminderTime;
-        int starStatus, deletionStatus;
+        int starStatus;
         List<Plan> planList = new ArrayList<>();
         String orderBy = DB_STR_CREATION_TIME + " desc, " + DB_STR_COMPLETION_TIME + " desc";
-        Cursor cursor = database.query(DB_STR_PLAN, null, DB_STR_DELETION_STATUS + " = ?",
-                new String[]{String.valueOf(Plan.PLAN_DELETION_STATUS_NOT_DELETED)}, null, null, orderBy);
+        Cursor cursor = database.query(DB_STR_PLAN, null, null, null, null, null, orderBy);
         if (cursor.moveToFirst()) {
             do {
                 planCode = cursor.getString(cursor.getColumnIndex(DB_STR_PLAN_CODE));
@@ -120,29 +109,19 @@ public class EnderPlanDB {
                 deadline = cursor.getLong(cursor.getColumnIndex(DB_STR_DEADLINE));
                 completionTime = cursor.getLong(cursor.getColumnIndex(DB_STR_COMPLETION_TIME));
                 starStatus = cursor.getInt(cursor.getColumnIndex(DB_STR_STAR_STATUS));
-                deletionStatus = cursor.getInt(cursor.getColumnIndex(DB_STR_DELETION_STATUS));
                 reminderTime = cursor.getLong(cursor.getColumnIndex(DB_STR_REMINDER_TIME));
                 planList.add(new Plan(planCode, content, typeCode, creationTime, deadline,
-                        completionTime, starStatus, deletionStatus, reminderTime));
+                        completionTime, starStatus, reminderTime));
             } while (cursor.moveToNext());
         }
         cursor.close();
         return planList;
     }
 
-    /**
-     * Save the edited plan.
-     * @param planCode The code of the plan that will be edited.
-     * @param values A ContentValues object that collects the new data.
-     */
     public void editPlan(String planCode, ContentValues values) {
         database.update(DB_STR_PLAN, values, DB_STR_PLAN_CODE + " = ?", new String[]{planCode});
     }
 
-    /**
-     * Delete a plan in the database.
-     * @param planCode The code of the plan that need to be deleted.
-     */
     public void deletePlan(String planCode) {
         database.delete(DB_STR_PLAN, DB_STR_PLAN_CODE + " = ?", new String[]{planCode});
     }

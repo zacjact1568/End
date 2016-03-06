@@ -80,7 +80,7 @@ public class PlanDetailFragment extends DialogFragment {
         contentError.setVisibility(View.GONE);
 
         typeList = enderplanDB.loadType();
-        TypeSpinnerAdapter typeSpinnerAdapter = new TypeSpinnerAdapter(getActivity(), typeList);
+        TypeSpinnerAdapter typeSpinnerAdapter = new TypeSpinnerAdapter(getActivity());
 
         spinner.setAdapter(typeSpinnerAdapter);
 
