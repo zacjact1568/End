@@ -49,7 +49,7 @@ public class PlanDetailFragment extends DialogFragment {
             plan = getArguments().getParcelable(ARG_PLAN_DETAIL);
         }
 
-        enderplanDB = EnderPlanDB.getInstance(getActivity());
+        enderplanDB = EnderPlanDB.getInstance();
 
         view = getActivity().getLayoutInflater().inflate(R.layout.dialog_fragment_plan_detail, null);
 
@@ -80,7 +80,7 @@ public class PlanDetailFragment extends DialogFragment {
         contentError.setVisibility(View.GONE);
 
         typeList = enderplanDB.loadType();
-        TypeSpinnerAdapter typeSpinnerAdapter = new TypeSpinnerAdapter(getActivity());
+        TypeSpinnerAdapter typeSpinnerAdapter = new TypeSpinnerAdapter();
 
         spinner.setAdapter(typeSpinnerAdapter);
 

@@ -23,7 +23,9 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.bean.Type;
 import com.zack.enderplan.manager.ReminderManager;
+import com.zack.enderplan.manager.TypeManager;
 import com.zack.enderplan.widget.PlanAdapter;
 import com.zack.enderplan.bean.Plan;
 
@@ -31,7 +33,8 @@ import java.util.List;
 
 public class HomeActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        DateTimePickerDialogFragment.OnDateTimeChangedListener {
+        DateTimePickerDialogFragment.OnDateTimeChangedListener,
+        CreateTypeDialogFragment.OnTypeCreatedListener {
 
     private FloatingActionButton fab;
     private DrawerLayout drawerLayout;
@@ -39,10 +42,11 @@ public class HomeActivity extends BaseActivity
     private TextView uncompletedPlan;
     private TextView uncompletedPlanDescription;
     private FrameLayout frameLayout;
-    private AllPlansFragment allPlansFragment;
     private RemindedReceiver remindedReceiver;
 
     private static final String CLASS_NAME = "HomeActivity";
+    private static final String TAG_ALL_TYPES = "all_types";
+    private static final String TAG_ALL_PLANS = "all_plans";
     private static final int REQ_CODE_CREATE_PLAN = 0;
     private static final int CR_ANIM_DURATION = 300;
 
@@ -63,10 +67,17 @@ public class HomeActivity extends BaseActivity
 
         setSupportActionBar(toolbar);
 
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView.setNavigationItemSelectedListener(this);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (getSupportFragmentManager().findFragmentByTag("all_types") != null) {
+                if (getSupportFragmentManager().findFragmentByTag(TAG_ALL_TYPES) != null) {
                     CreateTypeDialogFragment dialog = new CreateTypeDialogFragment();
                     dialog.show(getFragmentManager(), "create_type");
                     return;
@@ -76,15 +87,8 @@ public class HomeActivity extends BaseActivity
             }
         });
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-
-        navigationView.setNavigationItemSelectedListener(this);
-
-        allPlansFragment = new AllPlansFragment();
-        getFragmentManager().beginTransaction().replace(R.id.frame_layout, allPlansFragment).commit();
+        AllPlansFragment allPlansFragment = new AllPlansFragment();
+        getFragmentManager().beginTransaction().replace(R.id.frame_layout, allPlansFragment, TAG_ALL_PLANS).commit();
         allPlansFragment.setOnUncompletedPlanCountChangedListener(new AllPlansFragment.OnUncompletedPlanCountChangedListener() {
             @Override
             public void onUncompletedPlanCountChanged(int newUncompletedPlanCount) {
@@ -124,6 +128,7 @@ public class HomeActivity extends BaseActivity
         }
         switch (requestCode) {
             case REQ_CODE_CREATE_PLAN:
+                AllPlansFragment allPlansFragment = (AllPlansFragment) getFragmentManager().findFragmentByTag(TAG_ALL_PLANS);
                 int newUncompletedPlanCount = allPlansFragment.getUncompletedPlanCount() + 1;
                 updateDrawerHeaderContent(newUncompletedPlanCount);
                 allPlansFragment.setUncompletedPlanCount(newUncompletedPlanCount);
@@ -199,11 +204,11 @@ public class HomeActivity extends BaseActivity
             case R.id.nav_all_types:
                 makeCircularRevealAnimationOnFab(R.drawable.ic_playlist_add_white_24dp);
                 AllTypesFragment allTypesFragment = AllTypesFragment.newInstance(getPlanCountOfEachType());
-                getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, allTypesFragment, "all_types").addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, allTypesFragment, TAG_ALL_TYPES).addToBackStack(null).commit();
                 getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
                     @Override
                     public void onBackStackChanged() {
-                        if (getSupportFragmentManager().findFragmentByTag("all_types") == null) {
+                        if (getSupportFragmentManager().findFragmentByTag(TAG_ALL_TYPES) == null) {
                             makeCircularRevealAnimationOnFab(R.drawable.ic_add_white_24dp);
                             navigationView.setCheckedItem(R.id.nav_home);
                             getSupportFragmentManager().removeOnBackStackChangedListener(this);
@@ -229,6 +234,7 @@ public class HomeActivity extends BaseActivity
 
     @Override
     public void onDateTimeSelected(long newTimeInMillis) {
+        AllPlansFragment allPlansFragment = (AllPlansFragment) getFragmentManager().findFragmentByTag(TAG_ALL_PLANS);
         int planItemClickPosition = allPlansFragment.getPlanItemClickPosition();
         allPlansFragment.getPlanList().get(planItemClickPosition).setReminderTime(newTimeInMillis);
         allPlansFragment.getPlanAdapter().notifyItemChanged(planItemClickPosition);
@@ -237,15 +243,18 @@ public class HomeActivity extends BaseActivity
 
     @Override
     public void onDateTimeRemoved() {
+        AllPlansFragment allPlansFragment = (AllPlansFragment) getFragmentManager().findFragmentByTag(TAG_ALL_PLANS);
         int planItemClickPosition = allPlansFragment.getPlanItemClickPosition();
         allPlansFragment.getPlanList().get(planItemClickPosition).setReminderTime(0);
         allPlansFragment.getPlanAdapter().notifyItemChanged(planItemClickPosition);
         //TODO 取消提醒，存储数据
     }
 
+    //TODO 存储结果
     private Bundle getPlanCountOfEachType() {
         Bundle bundle = new Bundle();
-        for (Plan plan : allPlansFragment.getPlanList()) {
+        List<Plan> planList = ((AllPlansFragment) getFragmentManager().findFragmentByTag(TAG_ALL_PLANS)).getPlanList();
+        for (Plan plan : planList) {
             String typeCode = plan.getTypeCode();
             int count = bundle.getInt(typeCode, 0);
             bundle.putInt(typeCode, ++count);
@@ -267,7 +276,14 @@ public class HomeActivity extends BaseActivity
         Animator appearanceAnim = ViewAnimationUtils.createCircularReveal(fab, fab.getWidth() / 2, fab.getHeight() / 2, 0, fab.getWidth() / 2);
         appearanceAnim.setDuration(CR_ANIM_DURATION);
         appearanceAnim.start();
-        //TODO 改变FAB点击事件
+    }
+
+    @Override
+    public void onTypeCreated(Type type) {
+        AllTypesFragment fragment = (AllTypesFragment) getSupportFragmentManager().findFragmentByTag(TAG_ALL_TYPES);
+        List<Type> typeList = fragment.getTypeList();
+        typeList.add(type);
+        fragment.getTypeAdapter().notifyItemInserted(typeList.size() - 1);
     }
 
     class RemindedReceiver extends BroadcastReceiver {
@@ -275,6 +291,7 @@ public class HomeActivity extends BaseActivity
         @Override
         public void onReceive(Context context, Intent intent) {
             String planCode = intent.getStringExtra("plan_code");
+            AllPlansFragment allPlansFragment = (AllPlansFragment) getFragmentManager().findFragmentByTag(TAG_ALL_PLANS);
             List<Plan> planList = allPlansFragment.getPlanList();
             for (int i = 0; i < planList.size(); i++) {
                 Plan plan = planList.get(i);

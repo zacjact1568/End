@@ -1,6 +1,7 @@
 package com.zack.enderplan.application;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.preference.PreferenceManager;
@@ -14,9 +15,13 @@ import java.util.Locale;
 
 public class EnderPlanApp extends Application {
 
+    private static Context globalContext;
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        globalContext = getApplicationContext();
 
         //设定language默认值
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
@@ -30,8 +35,12 @@ public class EnderPlanApp extends Application {
         initLocale(sharedPreferences.getString("language", ""));
     }
 
+    public static Context getGlobalContext() {
+        return globalContext;
+    }
+
     private void initType() {
-        EnderPlanDB enderplanDB = EnderPlanDB.getInstance(this);
+        EnderPlanDB enderplanDB = EnderPlanDB.getInstance();
         enderplanDB.saveType(new Type(Util.makeCode(), getResources().getString(R.string.to_do), "#FF3F51B5"));
         enderplanDB.saveType(new Type(Util.makeCode(), getResources().getString(R.string.family), "#FFE51C23"));
         enderplanDB.saveType(new Type(Util.makeCode(), getResources().getString(R.string.work), "#FFFF9800"));

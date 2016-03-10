@@ -12,6 +12,7 @@ import com.zack.enderplan.R;
 import com.zack.enderplan.bean.Plan;
 import com.zack.enderplan.bean.Type;
 import com.zack.enderplan.database.EnderPlanDB;
+import com.zack.enderplan.manager.TypeManager;
 import com.zack.enderplan.widget.TypeAdapter;
 
 import java.util.ArrayList;
@@ -19,7 +20,6 @@ import java.util.List;
 
 public class AllTypesFragment extends Fragment {
 
-    private EnderPlanDB enderplanDB;
     private List<Type> typeList;
     private TypeAdapter typeAdapter;
     //private List<Type> typeList;
@@ -49,10 +49,8 @@ public class AllTypesFragment extends Fragment {
         if (getArguments() != null) {
             planCountOfEachType = getArguments().getBundle(ARG_PLAN_COUNT_OF_EACH_TYPE);
         }
-        //enderplanDB = EnderPlanDB.getInstance(getActivity());
-        //typeList = enderplanDB.loadType();
-        enderplanDB = EnderPlanDB.getInstance(getActivity());
-        typeList = enderplanDB.loadType();
+        TypeManager typeManager = TypeManager.getInstance();
+        typeList = typeManager.getTypeList();
         typeAdapter = new TypeAdapter(getActivity(), typeList, planCountOfEachType);
     }
 
@@ -72,6 +70,14 @@ public class AllTypesFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(typeAdapter);
+    }
+
+    public List<Type> getTypeList() {
+        return typeList;
+    }
+
+    public TypeAdapter getTypeAdapter() {
+        return typeAdapter;
     }
 
     /*public void onButtonPressed(Uri uri) {

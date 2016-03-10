@@ -34,4 +34,8 @@ public class Util {
         typedArray.recycle();
         return resIds;
     }*/
+
+    public static String parseColor(int colorInt) {
+        return String.format("#%s", Long.toHexString(0x100000000l + colorInt)).toUpperCase();
+    }
 }

@@ -31,7 +31,6 @@
         <item>@color/yellow</item>
         <item>@color/orange</item>
         <item>@color/brown</item>
-        <item>@color/grey</item>
     </array>
 
 </resources>

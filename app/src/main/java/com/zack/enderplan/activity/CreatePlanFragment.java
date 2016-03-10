@@ -46,7 +46,7 @@ public class CreatePlanFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        enderplanDB = EnderPlanDB.getInstance(getActivity());
+        enderplanDB = EnderPlanDB.getInstance();
 
         view = getActivity().getLayoutInflater().inflate(R.layout.dialog_fragment_create_plan, null);
 
@@ -80,7 +80,7 @@ public class CreatePlanFragment extends DialogFragment {
         contentError.setVisibility(View.GONE);
 
         typeList = enderplanDB.loadType();
-        TypeSpinnerAdapter typeSpinnerAdapter = new TypeSpinnerAdapter(getActivity());
+        TypeSpinnerAdapter typeSpinnerAdapter = new TypeSpinnerAdapter();
 
         spinner.setAdapter(typeSpinnerAdapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

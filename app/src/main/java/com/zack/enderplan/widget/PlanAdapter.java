@@ -30,7 +30,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
 
     public PlanAdapter(Context context, List<Plan> planList) {
         this.planList = planList;
-        typeManager = new TypeManager(context);
+        typeManager = TypeManager.getInstance();
     }
 
     @Override

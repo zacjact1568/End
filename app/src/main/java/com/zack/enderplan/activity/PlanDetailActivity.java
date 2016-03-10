@@ -27,6 +27,7 @@ import com.zack.enderplan.bean.Plan;
 import com.zack.enderplan.bean.Type;
 import com.zack.enderplan.database.EnderPlanDB;
 import com.zack.enderplan.manager.ReminderManager;
+import com.zack.enderplan.manager.TypeManager;
 import com.zack.enderplan.widget.TypeSpinnerAdapter;
 
 import java.util.List;
@@ -106,7 +107,8 @@ public class PlanDetailActivity extends BaseActivity
         RelativeLayout deadlineItemView = (RelativeLayout) findViewById(R.id.item_view_deadline);
         RelativeLayout reminderItemView = (RelativeLayout) findViewById(R.id.item_view_reminder);*/
 
-        enderplanDB = EnderPlanDB.getInstance(this);
+        enderplanDB = EnderPlanDB.getInstance();
+        typeList = TypeManager.getInstance().getTypeList();
 
         setSupportActionBar(toolbar);
         setupActionBar();
@@ -147,8 +149,7 @@ public class PlanDetailActivity extends BaseActivity
             reminderMark.setVisibility(View.GONE);
         }
 
-        typeList = enderplanDB.loadType();
-        spinner.setAdapter(new TypeSpinnerAdapter(this));
+        spinner.setAdapter(new TypeSpinnerAdapter());
         for (int i = 0; i < typeList.size(); i++) {
             if (typeList.get(i).getTypeCode().equals(plan.getTypeCode())) {
                 spinner.setSelection(i);

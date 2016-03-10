@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.zack.enderplan.application.EnderPlanApp;
 import com.zack.enderplan.bean.Plan;
 import com.zack.enderplan.bean.Type;
 
@@ -36,14 +37,15 @@ public class EnderPlanDB {
 
     private SQLiteDatabase database;
 
-    private EnderPlanDB(Context context) {
+    private EnderPlanDB() {
+        Context context = EnderPlanApp.getGlobalContext();
         EnderPlanOpenHelper dbHelper = new EnderPlanOpenHelper(context, DB_NAME, null, DB_VERSION);
         database = dbHelper.getWritableDatabase();
     }
 
-    public synchronized static EnderPlanDB getInstance(Context context) {
+    public synchronized static EnderPlanDB getInstance() {
         if (enderplanDB == null) {
-            enderplanDB = new EnderPlanDB(context);
+            enderplanDB = new EnderPlanDB();
         }
         return enderplanDB;
     }

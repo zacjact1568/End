@@ -18,7 +18,7 @@ public class ReminderReceiver extends BroadcastReceiver {
 
         String planCode = intent.getStringExtra("plan_code");
 
-        EnderPlanDB enderplanDB = EnderPlanDB.getInstance(context);
+        EnderPlanDB enderplanDB = EnderPlanDB.getInstance();
 
         Intent contentIntent = new Intent("com.zack.enderplan.ACTION_REMINDER");
         contentIntent.putExtra("plan_code", planCode);

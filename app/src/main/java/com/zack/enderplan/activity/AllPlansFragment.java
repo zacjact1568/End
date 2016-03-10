@@ -66,7 +66,7 @@ public class AllPlansFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Log.d(CLASS_NAME, "onCreate");
 
-        enderplanDB = EnderPlanDB.getInstance(getActivity());
+        enderplanDB = EnderPlanDB.getInstance();
         planList = new ArrayList<>();
         planAdapter = new PlanAdapter(getActivity(), planList);
 

@@ -17,7 +17,7 @@ public class BootCompleteReceiver extends BroadcastReceiver {
         Log.d("BootCompleteReceiver", "Boot Finished");
         ReminderManager manager = new ReminderManager(context);
 
-        EnderPlanDB enderplanDB = EnderPlanDB.getInstance(context);
+        EnderPlanDB enderplanDB = EnderPlanDB.getInstance();
 
         Map<String, Long> reminderTimeMap = enderplanDB.queryReminderTimeWithEnabledReminder();
 

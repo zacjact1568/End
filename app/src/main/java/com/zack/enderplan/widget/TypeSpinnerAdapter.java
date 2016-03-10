@@ -20,8 +20,8 @@ public class TypeSpinnerAdapter extends BaseAdapter {
     private List<Type> typeList;
     private TypeManager typeManager;
 
-    public TypeSpinnerAdapter(Context context) {
-        typeManager = new TypeManager(context);
+    public TypeSpinnerAdapter() {
+        typeManager = TypeManager.getInstance();
         typeList = typeManager.getTypeList();
     }
 

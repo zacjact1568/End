@@ -77,7 +77,7 @@ public class CreatePlanActivity extends BaseActivity
         deadlineMark = (ImageView) findViewById(R.id.deadline_mark);
         reminderMark = (ImageView) findViewById(R.id.reminder_mark);
 
-        enderplanDB = EnderPlanDB.getInstance(this);
+        enderplanDB = EnderPlanDB.getInstance();
         plan = new Plan(Util.makeCode());
 
         //setResult(RESULT_CANCELED);
@@ -121,7 +121,7 @@ public class CreatePlanActivity extends BaseActivity
         });
 
         typeList = enderplanDB.loadType();
-        spinner.setAdapter(new TypeSpinnerAdapter(this));
+        spinner.setAdapter(new TypeSpinnerAdapter());
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

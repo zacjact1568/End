@@ -40,7 +40,7 @@ public class DatabaseInfoActivity extends BaseActivity {
         Intent intent = getIntent();
         Plan plan = intent.getParcelableExtra("plan_detail");
 
-        TypeManager typeManager = new TypeManager(this);
+        //TypeManager typeManager = new TypeManager(this);
 
         boolean isCompleted = plan.getCompletionTime() != 0;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd EEE HH:mm", Locale.getDefault());
