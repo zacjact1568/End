@@ -67,9 +67,6 @@
     <!--ReminderActivity-->
     <string name="title_activity_reminder">EnderPlan Reminder</string>
 
-    <!--DatabaseInfoActivity-->
-    <string name="title_activity_database_info">Database Information</string>
-
     <!--SettingsActivity-->
     <string name="title_activity_settings">Settings</string>
     <string name="pref_title_language">Language</string>

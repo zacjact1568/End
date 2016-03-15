@@ -108,7 +108,6 @@ public class PlanDetailActivity extends BaseActivity
         RelativeLayout reminderItemView = (RelativeLayout) findViewById(R.id.item_view_reminder);*/
 
         enderplanDB = EnderPlanDB.getInstance();
-        typeList = TypeManager.getInstance().getTypeList();
 
         setSupportActionBar(toolbar);
         setupActionBar();
@@ -149,7 +148,9 @@ public class PlanDetailActivity extends BaseActivity
             reminderMark.setVisibility(View.GONE);
         }
 
-        spinner.setAdapter(new TypeSpinnerAdapter());
+        TypeManager typeManager = TypeManager.getInstance();
+        typeList = typeManager.getTypeList();
+        spinner.setAdapter(new TypeSpinnerAdapter(typeManager));
         for (int i = 0; i < typeList.size(); i++) {
             if (typeList.get(i).getTypeCode().equals(plan.getTypeCode())) {
                 spinner.setSelection(i);
@@ -261,11 +262,6 @@ public class PlanDetailActivity extends BaseActivity
                     }
                 }).setNegativeButton(R.string.cancel, null).show();
                 break;
-            /*case R.id.action_database_info:
-                Intent intent = new Intent(this, DatabaseInfoActivity.class);
-                intent.putExtra("plan_detail", plan);
-                startActivity(intent);
-                break;*/
             default:
                 break;
         }

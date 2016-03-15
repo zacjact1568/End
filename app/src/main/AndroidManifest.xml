@@ -60,11 +60,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.DatabaseInfoActivity"
-            android:label="@string/title_activity_database_info"
-            android:launchMode="singleTask"
-            android:theme="@style/AppTheme"/>
 
         <receiver
             android:name=".receiver.ReminderReceiver"

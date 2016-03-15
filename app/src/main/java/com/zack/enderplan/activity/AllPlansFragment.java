@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,11 +21,15 @@ import com.zack.enderplan.R;
 import com.zack.enderplan.bean.Plan;
 import com.zack.enderplan.database.EnderPlanDB;
 import com.zack.enderplan.manager.ReminderManager;
+import com.zack.enderplan.manager.TypeManager;
+import com.zack.enderplan.util.Util;
 import com.zack.enderplan.widget.EnhancedRecyclerView;
 import com.zack.enderplan.widget.PlanAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AllPlansFragment extends Fragment {
 
@@ -36,6 +39,7 @@ public class AllPlansFragment extends Fragment {
     private List<Plan> planList;
     private PlanAdapter planAdapter;
     private ReminderManager reminderManager;
+    private TypeManager typeManager;
     private EnhancedRecyclerView recyclerView;
     private int uncompletedPlanCount;
     private int planItemClickPosition;
@@ -64,9 +68,9 @@ public class AllPlansFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(CLASS_NAME, "onCreate");
 
         enderplanDB = EnderPlanDB.getInstance();
+        typeManager = TypeManager.getInstance();
         planList = new ArrayList<>();
         planAdapter = new PlanAdapter(getActivity(), planList);
 
@@ -116,7 +120,6 @@ public class AllPlansFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d(CLASS_NAME, "onViewCreated");
 
         recyclerView = (EnhancedRecyclerView) view.findViewById(R.id.recycler_view);
 
@@ -131,7 +134,6 @@ public class AllPlansFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.d(CLASS_NAME, "onDetach");
         onUncompletedPlanCountChangedListener = null;
     }
 
@@ -147,15 +149,18 @@ public class AllPlansFragment extends Fragment {
                 if (plan.getCompletionTime() == 0) {
                     onUncompletedPlanCountChanged(--uncompletedPlanCount);
                 }
+                typeManager.updatePlanCountOfEachType(plan.getTypeCode(), -1);
                 String text = plan.getContent() + " " + getResources().getString(R.string.deleted_prompt);
                 Snackbar.make(recyclerView, text, Snackbar.LENGTH_SHORT).show();
                 break;
             case Activity.RESULT_OK:
                 switch (requestCode) {
                     case REQ_CODE_PLAN_DETAIL:
+                        String fromTypeCode = planList.get(planItemClickPosition).getTypeCode();
                         Plan editedPlan = data.getParcelableExtra("plan_detail");
                         planList.set(planItemClickPosition, editedPlan);
                         planAdapter.notifyItemChanged(planItemClickPosition);
+                        typeManager.updatePlanCountOfEachType(fromTypeCode, editedPlan.getTypeCode());
                     default:
                         break;
                 }
@@ -189,12 +194,6 @@ public class AllPlansFragment extends Fragment {
         this.planItemClickPosition = planItemClickPosition;
     }
 
-    private void vibrate() {
-        Vibrator vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-        long[] pattern = {0, 100};
-        vibrator.vibrate(pattern, -1);
-    }
-
     private ReminderManager getReminderManager() {
         if (reminderManager == null) {
             reminderManager = new ReminderManager(getActivity());
@@ -213,6 +212,8 @@ public class AllPlansFragment extends Fragment {
         @Override
         protected void onPostExecute(Void result) {
             planAdapter.notifyDataSetChanged();
+
+            //计算未完成的Plan的数量
             uncompletedPlanCount = 0;
             for (Plan plan : planList) {
                 if (plan.getCreationTime() == 0) {
@@ -221,6 +222,9 @@ public class AllPlansFragment extends Fragment {
                 uncompletedPlanCount++;
             }
             onUncompletedPlanCountChanged(uncompletedPlanCount);
+
+            //计算具有各个Type的Plan数量
+            typeManager.initPlanCountOfEachTypeMap(planList);
         }
     }
 
@@ -228,7 +232,6 @@ public class AllPlansFragment extends Fragment {
 
         @Override
         public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-            //int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
             int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
             return makeMovementFlags(0, swipeFlags);
         }
@@ -255,7 +258,7 @@ public class AllPlansFragment extends Fragment {
             switch (direction) {
                 case ItemTouchHelper.START:
                     //Delete
-                    vibrate();
+                    Util.makeShortVibrate();
 
                     if (!isCompleted) {
                         onUncompletedPlanCountChanged(--uncompletedPlanCount);
@@ -281,6 +284,7 @@ public class AllPlansFragment extends Fragment {
                         public void onDismissed(Snackbar snackbar, int event) {
                             if (event != DISMISS_EVENT_ACTION) {
                                 enderplanDB.deletePlan(plan.getPlanCode());
+                                typeManager.updatePlanCountOfEachType(plan.getTypeCode(), -1);
                             }
                         }
                     });

@@ -1,8 +1,12 @@
 package com.zack.enderplan.util;
 
+import android.content.Context;
+import android.os.Vibrator;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.StrikethroughSpan;
+
+import com.zack.enderplan.application.EnderPlanApp;
 
 import java.util.UUID;
 
@@ -14,9 +18,9 @@ public class Util {
     }
 
     /**
-     * Add a strikethrough over the given string.
-     * @param str The string that need to handle
-     * @return The string with a strikethrough
+     * 为给定字符串添加删除线
+     * @param str 要添加删除线的字符串
+     * @return 已添加删除线的字符串
      */
     public static SpannableString addStrikethroughSpan(String str) {
         SpannableString spannableString = new SpannableString(str);
@@ -37,5 +41,11 @@ public class Util {
 
     public static String parseColor(int colorInt) {
         return String.format("#%s", Long.toHexString(0x100000000l + colorInt)).toUpperCase();
+    }
+
+    public static void makeShortVibrate() {
+        Vibrator vibrator = (Vibrator) EnderPlanApp.getGlobalContext().getSystemService(Context.VIBRATOR_SERVICE);
+        long[] pattern = {0, 100};
+        vibrator.vibrate(pattern, -1);
     }
 }

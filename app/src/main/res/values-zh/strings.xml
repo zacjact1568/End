@@ -64,7 +64,6 @@
     <string name="date_time_format_short">yyyy/MM/dd E kk:mm</string>
     <string name="dialog_button_remove">移除</string>
     <string name="dialog_button_ok">确定</string>
-    <string name="title_activity_database_info">数据库信息</string>
     <string name="other_info">类型、截止时间和提醒</string>
     <string name="prompt_empty_content">看起来你想保存空内容？</string>
     <string name="title_dialog_delete_plan">你确定吗？</string>

@@ -21,6 +21,7 @@ import com.zack.enderplan.R;
 import com.zack.enderplan.database.EnderPlanDB;
 import com.zack.enderplan.bean.Plan;
 import com.zack.enderplan.bean.Type;
+import com.zack.enderplan.manager.TypeManager;
 import com.zack.enderplan.util.Util;
 import com.zack.enderplan.widget.TypeSpinnerAdapter;
 
@@ -40,7 +41,6 @@ public class CreatePlanActivity extends BaseActivity
     private EditText contentEditor;
     private ImageView deadlineMark, reminderMark;
     private ImageView saveButton;
-    //private PlanOptionalItemsFragment planOptionalItemsFragment;
 
     private static final int FAB_COORDINATE_IN_DP = 44;
     private static final int CR_ANIM_DURATION = 400;
@@ -80,8 +80,6 @@ public class CreatePlanActivity extends BaseActivity
         enderplanDB = EnderPlanDB.getInstance();
         plan = new Plan(Util.makeCode());
 
-        //setResult(RESULT_CANCELED);
-
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,8 +118,9 @@ public class CreatePlanActivity extends BaseActivity
             }
         });
 
-        typeList = enderplanDB.loadType();
-        spinner.setAdapter(new TypeSpinnerAdapter());
+        TypeManager typeManager = TypeManager.getInstance();
+        typeList = typeManager.getTypeList();
+        spinner.setAdapter(new TypeSpinnerAdapter(typeManager));
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -160,51 +159,12 @@ public class CreatePlanActivity extends BaseActivity
                 dialog.show(getFragmentManager(), TAG_REMINDER);
             }
         });
-
-        /*planOptionalItemsFragment = PlanOptionalItemsFragment.newInstance(plan.getPriorityLevel(),
-                plan.getDeadline(), plan.getReminderTime());
-        getFragmentManager().beginTransaction().replace(R.id.frame_layout, planOptionalItemsFragment).commit();*/
     }
-
-    /*@Override
-    public void onItemViewClick(View itemView) {
-        hideInputMethodForContentEditor();
-        switch (itemView.getId()) {
-            case R.id.item_view_priority_level:
-                RatingBarDialogFragment priorityLevelDialog = RatingBarDialogFragment.newInstance(
-                        plan.getStarStatus(), getResources().getString(R.string.dialog_title_priority_level));
-                priorityLevelDialog.show(getFragmentManager(), TAG_PRIORITY_LEVEL);
-                break;
-            case R.id.item_view_deadline:
-
-                break;
-            case R.id.item_view_reminder:
-
-                break;
-            default:
-                break;
-        }
-    }*/
-
-    /*@Override
-    public void onRatingChanged(int newRating) {
-        plan.setStarStatus(newRating);
-
-        String[] priorityLevelDescriptions = getResources().getStringArray(R.array.descriptions_priority_level);
-
-        RelativeLayout view = planOptionalItemsFragment.getPriorityLevelItemView();
-        ((TextView) view.findViewById(R.id.text_priority_level_description))
-                .setText(priorityLevelDescriptions[newRating]);
-    }*/
 
     @Override
     public void onDateSelected(long newDateInMillis) {
         plan.setDeadline(newDateInMillis);
         deadlineMark.setImageResource(R.drawable.ic_schedule_color_accent_24dp);
-        //RelativeLayout view = planOptionalItemsFragment.getDeadlineItemView();
-        /*String dateFormatStr = getResources().getString(R.string.date_format);
-        ((TextView) view.findViewById(R.id.text_deadline_description))
-                .setText(DateFormat.format(dateFormatStr, newDateInMillis));*/
     }
 
     @Override
@@ -217,10 +177,6 @@ public class CreatePlanActivity extends BaseActivity
     public void onDateTimeSelected(long newTimeInMillis) {
         plan.setReminderTime(newTimeInMillis);
         reminderMark.setImageResource(R.drawable.ic_notifications_color_accent_24dp);
-        /*RelativeLayout view = planOptionalItemsFragment.getReminderItemView();
-        String dateTimeFormatStr = getResources().getString(R.string.date_time_format);
-        ((TextView) view.findViewById(R.id.text_reminder_description))
-                .setText(DateFormat.format(dateTimeFormatStr, newTimeInMillis));*/
     }
 
     @Override

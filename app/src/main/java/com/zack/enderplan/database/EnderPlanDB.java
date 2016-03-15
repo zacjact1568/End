@@ -78,6 +78,14 @@ public class EnderPlanDB {
         return typeList;
     }
 
+    public void editType(String typeCode, ContentValues values) {
+        database.update(DB_STR_TYPE, values, DB_STR_TYPE_CODE + " = ?", new String[]{typeCode});
+    }
+
+    public void deleteType(String typeCode) {
+        database.delete(DB_STR_TYPE, DB_STR_TYPE_CODE + " = ?", new String[]{typeCode});
+    }
+
     //*****************Plan********************
 
     public void savePlan(Plan plan) {
