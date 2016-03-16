@@ -1,5 +1,8 @@
 package com.zack.enderplan.activity;
 
+import android.app.AlertDialog;
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -7,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,12 +24,15 @@ import com.zack.enderplan.widget.TypeAdapter;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class AllTypesFragment extends Fragment {
 
     private List<Type> typeList;
     private TypeAdapter typeAdapter;
     private EnderPlanDB enderplanDB;
+    private Map<String, Integer> planCountOfEachTypeMap;
+    //private int[] updatedTypeSequenceArray;
     private RecyclerView recyclerView;
 
     //private static final String ARG_PLAN_COUNT_OF_EACH_TYPE = "plan_count_of_each_type";
@@ -53,7 +60,14 @@ public class AllTypesFragment extends Fragment {
         enderplanDB = EnderPlanDB.getInstance();
         TypeManager typeManager = TypeManager.getInstance();
         typeList = typeManager.getTypeList();
-        typeAdapter = new TypeAdapter(getActivity(), typeList, typeManager.getPlanCountOfEachTypeMap());
+        planCountOfEachTypeMap = typeManager.getPlanCountOfEachTypeMap();
+        typeAdapter = new TypeAdapter(getActivity(), typeList, planCountOfEachTypeMap);
+
+        /*updatedTypeSequenceArray = new int[typeManager.getTypeCount()];
+        //初始化数组元素为升序（与下标相同）
+        for (int i = 0; i < updatedTypeSequenceArray.length; i++) {
+            updatedTypeSequenceArray[i] = i;
+        }*/
     }
 
     @Override
@@ -73,6 +87,23 @@ public class AllTypesFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(typeAdapter);
         new ItemTouchHelper(new TypeListItemTouchCallback()).attachToRecyclerView(recyclerView);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        for (int i = 0; i < typeList.size(); i++) {
+            Type type = typeList.get(i);
+            if (type.getTypeSequence() != i) {
+                //更新typeList
+                type.setTypeSequence(i);
+                //更新数据库
+                ContentValues values = new ContentValues();
+                values.put("type_sequence", i);
+                enderplanDB.editType(type.getTypeCode(), values);
+            }
+        }
     }
 
     public List<Type> getTypeList() {
@@ -99,6 +130,10 @@ public class AllTypesFragment extends Fragment {
             if (fromPosition < toPosition) {
                 for (int i = fromPosition; i < toPosition; i++) {
                     Collections.swap(typeList, i, i + 1);
+                    //相邻的两个元素交换
+                    /*int temp = updatedTypeSequenceArray[i + 1];
+                    updatedTypeSequenceArray[i + 1] = updatedTypeSequenceArray[i];
+                    updatedTypeSequenceArray[i] = temp;*/
                 }
             } else {
                 for (int i = fromPosition; i > toPosition; i--) {
@@ -111,7 +146,6 @@ public class AllTypesFragment extends Fragment {
 
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-            //TODO 如果有存在的plan是这个type的话，会出错（判断count？=0）
             final int position = viewHolder.getLayoutPosition();
             final Type type = typeList.get(position);
 
@@ -119,6 +153,24 @@ public class AllTypesFragment extends Fragment {
 
             typeList.remove(position);
             typeAdapter.notifyItemRemoved(position);
+
+            if (planCountOfEachTypeMap.get(type.getTypeCode()) != null) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                String message = getResources().getString(R.string.msg_dialog_type_not_empty_pt1) +
+                        type.getTypeName() + getResources().getString(R.string.msg_dialog_type_not_empty_pt2);
+                builder.setTitle(R.string.title_dialog_type_not_empty).setMessage(message);
+                builder.setPositiveButton(R.string.dialog_button_ok, null);
+                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        typeList.add(position, type);
+                        typeAdapter.notifyItemInserted(position);
+                    }
+                });
+                builder.show();
+                return;
+            }
+
             String text = type.getTypeName() + " " + getResources().getString(R.string.deleted_prompt);
             Snackbar snackbar = Snackbar.make(recyclerView, text, Snackbar.LENGTH_LONG);
             snackbar.setAction(R.string.cancel, new View.OnClickListener() {
@@ -145,10 +197,6 @@ public class AllTypesFragment extends Fragment {
         }
 
         @Override
-        public float getMoveThreshold(RecyclerView.ViewHolder viewHolder) {
-            return .5f;
-        }
-
         public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
                                 float dX, float dY, int actionState, boolean isCurrentlyActive) {
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);

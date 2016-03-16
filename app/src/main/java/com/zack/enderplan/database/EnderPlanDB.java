@@ -25,6 +25,7 @@ public class EnderPlanDB {
     public static final String DB_STR_TYPE_CODE = "type_code";
     public static final String DB_STR_TYPE_NAME = "type_name";
     public static final String DB_STR_TYPE_MARK = "type_mark";
+    public static final String DB_STR_TYPE_SEQUENCE = "type_sequence";
     public static final String DB_STR_PLAN_CODE = "plan_code";
     public static final String DB_STR_CONTENT = "content";
     public static final String DB_STR_CREATION_TIME = "creation_time";
@@ -58,20 +59,23 @@ public class EnderPlanDB {
             values.put(DB_STR_TYPE_CODE, type.getTypeCode());
             values.put(DB_STR_TYPE_NAME, type.getTypeName());
             values.put(DB_STR_TYPE_MARK, type.getTypeMark());
+            values.put(DB_STR_TYPE_SEQUENCE, type.getTypeSequence());
             database.insert(DB_STR_TYPE, null, values);
         }
     }
 
     public List<Type> loadType() {
         String typeCode, typeName, typeMark;
+        int typeSequence;
         List<Type> typeList = new ArrayList<>();
-        Cursor cursor = database.query(DB_STR_TYPE, null, null, null, null, null, null);
+        Cursor cursor = database.query(DB_STR_TYPE, null, null, null, null, null, DB_STR_TYPE_SEQUENCE);
         if (cursor.moveToFirst()) {
             do {
                 typeCode = cursor.getString(cursor.getColumnIndex(DB_STR_TYPE_CODE));
                 typeName = cursor.getString(cursor.getColumnIndex(DB_STR_TYPE_NAME));
                 typeMark = cursor.getString(cursor.getColumnIndex(DB_STR_TYPE_MARK));
-                typeList.add(new Type(typeCode, typeName, typeMark));
+                typeSequence = cursor.getInt(cursor.getColumnIndex(DB_STR_TYPE_SEQUENCE));
+                typeList.add(new Type(typeCode, typeName, typeMark, typeSequence));
             } while (cursor.moveToNext());
         }
         cursor.close();

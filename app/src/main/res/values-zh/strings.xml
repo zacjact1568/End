@@ -75,4 +75,7 @@
     <string name="plan_count_of_each_type_none">没有计划</string>
     <string name="plan_count_of_each_type_one">1 个计划</string>
     <string name="type_name_hint">你的新类型的名称</string>
+    <string name="msg_dialog_type_not_empty_pt1">我们发现有一些计划属于类型“</string>
+    <string name="msg_dialog_type_not_empty_pt2">”，如果你仍然想删除它，请先改变那些计划所属的类型。</string>
+    <string name="title_dialog_type_not_empty">无法删除</string>
 </resources>

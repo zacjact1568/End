@@ -81,9 +81,8 @@ public class CreateTypeDialogFragment extends DialogFragment {
                     + " must implement OnTypeCreatedListener");
         }
 
-        type = new Type(Util.makeCode());
-
         TypeManager typeManager = TypeManager.getInstance();
+        type = new Type(Util.makeCode(), typeManager.getTypeCount());
         typeMarkList = typeManager.getTypeMarkList();
         //自动预选一个typeMark
         /*for (int i = 0; i < typeMarkList.size(); i++) {

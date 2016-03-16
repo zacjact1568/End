@@ -41,10 +41,10 @@ public class EnderPlanApp extends Application {
 
     private void initType() {
         EnderPlanDB enderplanDB = EnderPlanDB.getInstance();
-        enderplanDB.saveType(new Type(Util.makeCode(), getResources().getString(R.string.to_do), "#FF3F51B5"));
-        enderplanDB.saveType(new Type(Util.makeCode(), getResources().getString(R.string.family), "#FFE51C23"));
-        enderplanDB.saveType(new Type(Util.makeCode(), getResources().getString(R.string.work), "#FFFF9800"));
-        enderplanDB.saveType(new Type(Util.makeCode(), getResources().getString(R.string.study), "#FF259B24"));
+        enderplanDB.saveType(new Type(Util.makeCode(), getResources().getString(R.string.to_do), "#FF3F51B5", 0));
+        enderplanDB.saveType(new Type(Util.makeCode(), getResources().getString(R.string.family), "#FFE51C23", 1));
+        enderplanDB.saveType(new Type(Util.makeCode(), getResources().getString(R.string.work), "#FFFF9800", 2));
+        enderplanDB.saveType(new Type(Util.makeCode(), getResources().getString(R.string.study), "#FF259B24", 3));
     }
 
     private void initLocale(String value) {

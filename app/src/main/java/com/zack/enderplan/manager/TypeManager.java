@@ -42,6 +42,10 @@ public class TypeManager {
         return typeList;
     }
 
+    public int getTypeCount() {
+        return typeList.size();
+    }
+
     public int findColorResByTypeMark(String typeMark) {
         for (int i = 0; i < typeMarks.length(); i++) {
             if (typeMarks.getColor(i, 0) == Color.parseColor(typeMark)) {

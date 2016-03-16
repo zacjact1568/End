@@ -19,7 +19,8 @@ public class EnderPlanOpenHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_TYPE = "create table type (" +
             "type_code text primary key, " +
             "type_name text, " +
-            "type_mark text)";
+            "type_mark text, " +
+            "type_sequence integer)";
 
     public EnderPlanOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);

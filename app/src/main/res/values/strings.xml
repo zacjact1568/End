@@ -44,6 +44,9 @@
     <string name="plan_count_of_each_type_one">1 plan</string>
     <string name="plan_count_of_each_type_multi">plans</string>
     <string name="type_name_hint">The name of your new type</string>
+    <string name="title_dialog_type_not_empty">Cannot delete</string>
+    <string name="msg_dialog_type_not_empty_pt1">Some plans are found added to type \"</string>
+    <string name="msg_dialog_type_not_empty_pt2">\", if you still want to delete it, please change the type of those plan firstly.</string>
 
     <!--CreatePlanActivity-->
     <string name="title_activity_create_plan">Create a new plan</string>
