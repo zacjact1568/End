@@ -86,8 +86,8 @@ public class PlanOptionalItemsFragment extends Fragment {
         TextView reminderDescription = (TextView) view.findViewById(R.id.text_reminder_description);
 
         //ratingBar.setRating(plan.getPriorityLevel());
-        String[] priorityLevelDescriptions = getResources().getStringArray(R.array.descriptions_priority_level);
-        priorityLevelDescription.setText(priorityLevelDescriptions[priorityLevel]);
+        //String[] priorityLevelDescriptions = getResources().getStringArray(R.array.descriptions_priority_level);
+        //priorityLevelDescription.setText(priorityLevelDescriptions[priorityLevel]);
 
         if (deadline != 0) {
             String dateFormatStr = getResources().getString(R.string.date_format);

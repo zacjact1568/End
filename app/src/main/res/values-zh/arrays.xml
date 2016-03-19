@@ -6,11 +6,11 @@
         <item>English</item>
         <item>中文（简体）</item>
     </string-array>
-    <string-array name="descriptions_priority_level">
-        <item>未设置</item>
-        <item>1级：！</item>
-        <item>2级：！！</item>
-        <item>3级：！！！</item>
+    <string-array name="pref_night_mode_titles">
+        <item>关</item>
+        <item>开</item>
+        <item>自动</item>
+        <item>跟随系统</item>
     </string-array>
 
 </resources>

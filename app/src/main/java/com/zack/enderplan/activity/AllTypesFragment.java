@@ -61,8 +61,15 @@ public class AllTypesFragment extends Fragment {
         TypeManager typeManager = TypeManager.getInstance();
         typeList = typeManager.getTypeList();
         planCountOfEachTypeMap = typeManager.getPlanCountOfEachTypeMap();
-        typeAdapter = new TypeAdapter(getActivity(), typeList, planCountOfEachTypeMap);
+        typeAdapter = new TypeAdapter(getActivity());
 
+        typeAdapter.setOnTypeItemClickListener(new TypeAdapter.OnTypeItemClickListener() {
+            @Override
+            public void onTypeItemClick(View itemView, int position) {
+                TypeDetailDialogFragment bottomSheet = TypeDetailDialogFragment.newInstance(position);
+                bottomSheet.show(getFragmentManager(), "type_detail");
+            }
+        });
         /*updatedTypeSequenceArray = new int[typeManager.getTypeCount()];
         //初始化数组元素为升序（与下标相同）
         for (int i = 0; i < updatedTypeSequenceArray.length; i++) {
@@ -156,9 +163,7 @@ public class AllTypesFragment extends Fragment {
 
             if (planCountOfEachTypeMap.get(type.getTypeCode()) != null) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                String message = getResources().getString(R.string.msg_dialog_type_not_empty_pt1) +
-                        type.getTypeName() + getResources().getString(R.string.msg_dialog_type_not_empty_pt2);
-                builder.setTitle(R.string.title_dialog_type_not_empty).setMessage(message);
+                builder.setTitle(R.string.title_dialog_type_not_empty).setMessage(getResources().getString(R.string.msg_dialog_type_not_empty));
                 builder.setPositiveButton(R.string.dialog_button_ok, null);
                 builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override

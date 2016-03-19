@@ -30,26 +30,15 @@
         <activity
             android:name=".activity.PlanDetailActivity"
             android:label="@string/title_activity_plan_detail"
-            android:launchMode="singleTask"
             android:theme="@style/AppTheme"/>
         <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".activity.HomeActivity"
-            android:theme="@style/AppTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.zack.enderplan.activity.HomeActivity" />
-        </activity>
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".activity.AboutActivity"
             android:label="@string/title_activity_about"
-            android:parentActivityName=".activity.HomeActivity"
-            android:theme="@style/AppTheme.TransparentStatusBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.zack.enderplan.activity.HomeActivity" />
-        </activity>
+            android:theme="@style/AppTheme.TransparentStatusBar"/>
         <activity
             android:name=".activity.ReminderActivity"
             android:label="@string/title_activity_reminder"

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.database.EnderPlanDB;
@@ -23,16 +24,18 @@ public class EnderPlanApp extends Application {
 
         globalContext = getApplicationContext();
 
-        //设定language默认值
+        //设定preferences默认值
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         //设定预置的Types
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (sharedPreferences.getBoolean("init_type", true)) {
             initType();
             sharedPreferences.edit().putBoolean("init_type", false).apply();
         }
-        //设定默认语言
+        //设定运行时的默认语言
         initLocale(sharedPreferences.getString("language", ""));
+        //设定白天夜间模式
+        initNightMode(sharedPreferences.getString("night_mode", ""));
     }
 
     public static Context getGlobalContext() {
@@ -63,5 +66,26 @@ public class EnderPlanApp extends Application {
                 break;
         }
         getResources().updateConfiguration(config, null);
+    }
+
+    private void initNightMode(String value) {
+        int mode = AppCompatDelegate.MODE_NIGHT_NO;
+        switch (value) {
+            case "off":
+                mode = AppCompatDelegate.MODE_NIGHT_NO;
+                break;
+            case "on":
+                mode = AppCompatDelegate.MODE_NIGHT_YES;
+                break;
+            case "auto":
+                mode = AppCompatDelegate.MODE_NIGHT_AUTO;
+                break;
+            case "def":
+                mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
+                break;
+            default:
+                break;
+        }
+        AppCompatDelegate.setDefaultNightMode(mode);
     }
 }

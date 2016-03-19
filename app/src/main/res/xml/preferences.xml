@@ -2,6 +2,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ListPreference
+        android:key="night_mode"
+        android:title="@string/pref_title_night_mode"
+        android:entries="@array/pref_night_mode_titles"
+        android:entryValues="@array/pref_night_mode_values"
+        android:defaultValue="off"/>
+
+    <ListPreference
         android:key="language"
         android:title="@string/pref_title_language"
         android:entries="@array/pref_language_titles"

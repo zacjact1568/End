@@ -1,6 +1,5 @@
 package com.zack.enderplan.widget;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,11 +23,11 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
     private List<Plan> planList;
     private TypeManager typeManager;
 
-    private OnItemClickListener onItemClickListener;
-    private OnItemLongClickListener onItemLongClickListener;
+    private OnPlanItemClickListener onPlanItemClickListener;
+    private OnPlanItemLongClickListener onPlanItemLongClickListener;
     private OnStarMarkClickListener onStarMarkClickListener;
 
-    public PlanAdapter(Context context, List<Plan> planList) {
+    public PlanAdapter(List<Plan> planList) {
         this.planList = planList;
         typeManager = TypeManager.getInstance();
     }
@@ -62,20 +61,20 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
             });
         }
 
-        if (onItemClickListener != null) {
+        if (onPlanItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onItemClickListener.onItemClick(holder.itemView, holder.getLayoutPosition());
+                    onPlanItemClickListener.onPlanItemClick(holder.itemView, holder.getLayoutPosition());
                 }
             });
         }
 
-        if (onItemLongClickListener != null) {
+        if (onPlanItemLongClickListener != null) {
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    onItemLongClickListener.onItemLongClick(holder.itemView, holder.getLayoutPosition());
+                    onPlanItemLongClickListener.onPlanItemLongClick(holder.itemView, holder.getLayoutPosition());
                     return true;
                 }
             });
@@ -101,20 +100,20 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
         }
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(View itemView, int position);
+    public interface OnPlanItemClickListener {
+        void onPlanItemClick(View itemView, int position);
     }
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
+    public void setOnPlanItemClickListener(OnPlanItemClickListener listener) {
+        this.onPlanItemClickListener = listener;
     }
 
-    public interface OnItemLongClickListener {
-        void onItemLongClick(View itemView, int position);
+    public interface OnPlanItemLongClickListener {
+        void onPlanItemLongClick(View itemView, int position);
     }
 
-    public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
-        this.onItemLongClickListener = onItemLongClickListener;
+    public void setOnPlanItemLongClickListener(OnPlanItemLongClickListener listener) {
+        this.onPlanItemLongClickListener = listener;
     }
 
     public interface OnStarMarkClickListener {

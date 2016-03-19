@@ -72,11 +72,11 @@ public class AllPlansFragment extends Fragment {
         enderplanDB = EnderPlanDB.getInstance();
         typeManager = TypeManager.getInstance();
         planList = new ArrayList<>();
-        planAdapter = new PlanAdapter(getActivity(), planList);
+        planAdapter = new PlanAdapter(planList);
 
-        planAdapter.setOnItemClickListener(new PlanAdapter.OnItemClickListener() {
+        planAdapter.setOnPlanItemClickListener(new PlanAdapter.OnPlanItemClickListener() {
             @Override
-            public void onItemClick(View itemView, int position) {
+            public void onPlanItemClick(View itemView, int position) {
                 planItemClickPosition = position;
                 Intent intent = new Intent(getActivity(), PlanDetailActivity.class);
                 intent.putExtra("plan_detail", planList.get(position));
@@ -84,9 +84,9 @@ public class AllPlansFragment extends Fragment {
             }
         });
 
-        planAdapter.setOnItemLongClickListener(new PlanAdapter.OnItemLongClickListener() {
+        planAdapter.setOnPlanItemLongClickListener(new PlanAdapter.OnPlanItemLongClickListener() {
             @Override
-            public void onItemLongClick(View itemView, int position) {
+            public void onPlanItemLongClick(View itemView, int position) {
                 planItemClickPosition = position;
                 DateTimePickerDialogFragment dialog = DateTimePickerDialogFragment.newInstance(planList.get(position).getReminderTime());
                 dialog.show(getFragmentManager(), "reminder");

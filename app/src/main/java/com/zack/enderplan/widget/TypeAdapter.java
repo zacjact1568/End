@@ -11,21 +11,27 @@ import android.widget.TextView;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.bean.Type;
+import com.zack.enderplan.manager.TypeManager;
 
 import java.util.List;
 import java.util.Map;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
 
     private static final String CLASS_NAME = "TypeAdapter";
 
+    private TypeManager typeManager;
     private List<Type> typeList;
     private Map<String, Integer> planCountOfEachTypeMap;
     private String nonePlan, onePlan, multiPlan;
+    private OnTypeItemClickListener onTypeItemClickListener;
 
-    public TypeAdapter(Context context, List<Type> typeList, Map<String, Integer> planCountOfEachTypeMap) {
-        this.typeList = typeList;
-        this.planCountOfEachTypeMap = planCountOfEachTypeMap;
+    public TypeAdapter(Context context) {
+        typeManager = TypeManager.getInstance();
+        typeList = typeManager.getTypeList();
+        planCountOfEachTypeMap = typeManager.getPlanCountOfEachTypeMap();
 
         nonePlan = context.getResources().getString(R.string.plan_count_of_each_type_none);
         onePlan = context.getResources().getString(R.string.plan_count_of_each_type_one);
@@ -39,12 +45,22 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         Type type = typeList.get(position);
 
-        holder.cardViewInnerLayout.setBackgroundColor(Color.parseColor(type.getTypeMark()));
+        holder.typeMarkIcon.setImageResource(typeManager.findColorResByTypeMark(type.getTypeMark()));
+        holder.firstCharText.setText(type.getTypeName().substring(0, 1));
         holder.typeNameText.setText(type.getTypeName());
         holder.planCountOfEachTypeText.setText(getPlanCountOfEachTypeStr(type.getTypeCode()));
+
+        if (onTypeItemClickListener != null) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onTypeItemClickListener.onTypeItemClick(holder.itemView, holder.getLayoutPosition());
+                }
+            });
+        }
     }
 
     @Override
@@ -68,14 +84,23 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        RelativeLayout cardViewInnerLayout;
-        TextView typeNameText, planCountOfEachTypeText;
+        CircleImageView typeMarkIcon;
+        TextView firstCharText, typeNameText, planCountOfEachTypeText;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            cardViewInnerLayout = (RelativeLayout) itemView.findViewById(R.id.card_view_inner_layout);
+            typeMarkIcon = (CircleImageView) itemView.findViewById(R.id.ic_type_mark);
+            firstCharText = (TextView) itemView.findViewById(R.id.text_first_char);
             typeNameText = (TextView) itemView.findViewById(R.id.text_type_name);
             planCountOfEachTypeText = (TextView) itemView.findViewById(R.id.text_plan_count_of_each_type);
         }
+    }
+
+    public interface OnTypeItemClickListener {
+        void onTypeItemClick(View itemView, int position);
+    }
+
+    public void setOnTypeItemClickListener(OnTypeItemClickListener listener) {
+        this.onTypeItemClickListener = listener;
     }
 }

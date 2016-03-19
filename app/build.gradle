@@ -8,8 +8,8 @@ android {
         applicationId "com.zack.enderplan"
         minSdkVersion 21
         targetSdkVersion 23
-        versionCode 109
-        versionName "20160316"
+        versionCode 112
+        versionName "20160319"
     }
     buildTypes {
         release {
@@ -22,10 +22,10 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.2.0'
-    compile 'com.android.support:design:23.2.0'
-    compile 'com.android.support:support-v4:23.2.0'
+    compile 'com.android.support:appcompat-v7:23.2.1'
+    compile 'com.android.support:design:23.2.1'
+    compile 'com.android.support:support-v4:23.2.1'
     compile 'de.hdodenhof:circleimageview:2.0.0'
-    compile 'com.android.support:cardview-v7:23.2.0'
+    compile 'com.android.support:cardview-v7:23.2.1'
     compile 'com.jakewharton:butterknife:7.0.1'
 }

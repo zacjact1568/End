@@ -11,11 +11,17 @@
         <item>en</item>
         <item>zh</item>
     </string-array>
-    <string-array name="descriptions_priority_level">
-        <item>Unsettled</item>
-        <item>Level 1: !</item>
-        <item>Level 2: !!</item>
-        <item>Level 3: !!!</item>
+    <string-array name="pref_night_mode_titles">
+        <item>Off</item>
+        <item>On</item>
+        <item>Auto</item>
+        <item>Follow System</item>
+    </string-array>
+    <string-array name="pref_night_mode_values">
+        <item>off</item>
+        <item>on</item>
+        <item>auto</item>
+        <item>def</item>
     </string-array>
 
     <array name="type_marks">

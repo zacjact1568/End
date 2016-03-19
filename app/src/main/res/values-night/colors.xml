@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Light Blue & Light Green-->
+    <color name="colorPrimary">#FF607D8B</color>
+    <color name="colorPrimaryDark">#FF455A64</color>
+    <color name="colorAccent">#FF9E9E9E</color>
+    <color name="colorPrimaryLight">#FFCFD8DC</color>
+
+</resources>
