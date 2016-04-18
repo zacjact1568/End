@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_header_height"
     android:background="@drawable/side_nav_bar"
@@ -19,13 +20,13 @@
         <!--android:src="@mipmap/enderplan_icon" />-->
 
     <TextView
-        android:id="@+id/uncompleted_plan"
+        android:id="@+id/text_uc_plan_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0"
         android:textSize="60sp"
         android:textStyle="bold"
-        android:textColor="@android:color/white"/>
+        android:textColor="@android:color/white"
+        tools:text="0"/>
 
     <!--<TextView-->
         <!--android:layout_width="match_parent"-->
@@ -35,9 +36,9 @@
         <!--android:textAppearance="@style/TextAppearance.AppCompat.Body1" />-->
 
     <TextView
-        android:id="@+id/uncompleted_plan_description"
+        android:id="@+id/text_uc_plan_dscpt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Well done!" />
+        tools:text="Well done!"/>
 
 </LinearLayout>

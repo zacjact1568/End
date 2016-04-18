@@ -15,6 +15,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class TypeMarkAdapter extends BaseAdapter {
 
+    private static final String LOG_TAG = "TypeMarkAdapter";
+
     private List<TypeMark> typeMarkList;
 
     public TypeMarkAdapter(List<TypeMark> typeMarkList) {
@@ -54,7 +56,7 @@ public class TypeMarkAdapter extends BaseAdapter {
 
         viewHolder.typeMark.setImageResource(typeMark.getResId());
         if (!typeMark.isValid()) {
-            viewHolder.typeMark.setAlpha(0.1f);
+            viewHolder.typeMark.setAlpha(0.05f);
         }
         viewHolder.selectionMark.setVisibility(typeMark.isSelected() ? View.VISIBLE : View.INVISIBLE);
 

@@ -30,8 +30,10 @@
             android:src="@drawable/ic_check_white_24dp"
             android:clickable="true"
             android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:visibility="invisible"
             android:padding="16dp"
-            android:layout_gravity="center|end"/>
+            android:layout_gravity="center|end"
+            tools:visibility="visible"/>
 
     </FrameLayout>
 

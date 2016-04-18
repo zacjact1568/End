@@ -5,36 +5,132 @@
     android:orientation="vertical"
     tools:context="com.zack.enderplan.activity.TypeDetailDialogFragment">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/bottom_sheet_margin">
+        android:padding="@dimen/bottom_sheet_margin">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/ic_type_mark"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@color/indigo"
-            android:layout_gravity="center"/>
-
-        <TextView
-            android:id="@+id/text_type_name"
+        <FrameLayout
+            android:id="@+id/layout_type_mark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="家庭"
-            android:textSize="16sp"
-            android:layout_gravity="center"
-            android:layout_marginStart="16dp"/>
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true">
 
-    </LinearLayout>
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/ic_type_mark"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                tools:src="@color/indigo"/>
 
-    <include layout="@layout/divider"/>
+            <TextView
+                android:id="@+id/text_first_char"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="28sp"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center"
+                tools:text="学"/>
 
-    <TextView
-        android:layout_width="wrap_content"
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/layout_type_mark"
+            android:layout_marginStart="16dp">
+
+            <TextView
+                android:id="@+id/text_type_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="学习"/>
+
+            <TextView
+                android:id="@+id/text_plan_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"
+                tools:text="5 Plans"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/ic_edit_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_edit_grey600_24dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:padding="8dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"/>
+
+        <!--<ImageView-->
+            <!--android:id="@+id/ic_create_plan"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:src="@drawable/ic_add_grey600_24dp"-->
+            <!--android:background="?android:attr/selectableItemBackgroundBorderless"-->
+            <!--android:clickable="true"-->
+            <!--android:padding="8dp"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_toStartOf="@id/ic_edit_type"-->
+            <!--android:layout_marginEnd="4dp"/>-->
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sample"
-        android:layout_gravity="center"
-        android:layout_margin="20dp"/>
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp">
+
+        <EditText
+            android:id="@+id/editor_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:hint="@string/hint_content_fast"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
+            android:background="@drawable/bg_editor"
+            android:paddingStart="8dp"
+            android:paddingEnd="28dp"/>
+
+        <ImageView
+            android:id="@+id/ic_clear_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_close_grey600_24dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:layout_gravity="center|end"
+            android:layout_marginEnd="8dp"/>
+
+    </FrameLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list_uc_plan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"/>
+
+    <!--<TextView-->
+        <!--android:id="@+id/text_show_c_plans"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/show_c_plans"-->
+        <!--android:clickable="true"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:layout_marginTop="12dp"-->
+        <!--android:layout_marginBottom="@dimen/bottom_sheet_margin"/>-->
 
 </LinearLayout>

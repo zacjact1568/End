@@ -8,11 +8,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.manager.TypeManager;
 import com.zack.enderplan.bean.Plan;
 import com.zack.enderplan.util.Util;
 
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -21,15 +21,15 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
     private static final String CLASS_NAME = "PlanAdapter";
 
     private List<Plan> planList;
-    private TypeManager typeManager;
+    private Map<String, Integer> typeCodeAndColorResMap;
 
     private OnPlanItemClickListener onPlanItemClickListener;
     private OnPlanItemLongClickListener onPlanItemLongClickListener;
     private OnStarMarkClickListener onStarMarkClickListener;
 
-    public PlanAdapter(List<Plan> planList) {
+    public PlanAdapter(List<Plan> planList, Map<String, Integer> typeCodeAndColorResMap) {
         this.planList = planList;
-        typeManager = TypeManager.getInstance();
+        this.typeCodeAndColorResMap = typeCodeAndColorResMap;
     }
 
     @Override
@@ -43,20 +43,19 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
         final Plan plan = planList.get(position);
         boolean isCompleted = plan.getCompletionTime() != 0;
 
-        holder.typeMark.setImageResource(isCompleted ? R.color.grey :
-                typeManager.findColorResByTypeMark(typeManager.findTypeMarkByTypeCode(plan.getTypeCode())));
+        holder.typeMark.setImageResource(isCompleted ? R.color.grey : typeCodeAndColorResMap.get(plan.getTypeCode()));
         holder.contentText.setText(isCompleted ? Util.addStrikethroughSpan(plan.getContent()) :
                 plan.getContent());
         holder.reminderMark.setVisibility(plan.getReminderTime() == 0 ? View.INVISIBLE : View.VISIBLE);
         holder.starMark.setImageResource(plan.getStarStatus() == Plan.PLAN_STAR_STATUS_NOT_STARRED ?
-                R.drawable.ic_star_outline_grey600_24dp : R.drawable.ic_star_color_accent_24dp);
+                R.drawable.ic_star_outline_grey600_24dp :
+                R.drawable.ic_star_color_accent_24dp);
 
         if (onStarMarkClickListener != null) {
             holder.starMark.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onStarMarkClickListener.onStarMarkClick(
-                            holder.starMark, holder.getLayoutPosition());
+                    onStarMarkClickListener.onStarMarkClick(holder.starMark, holder.getLayoutPosition());
                 }
             });
         }

@@ -34,21 +34,18 @@ public class EnderPlanDB {
     public static final String DB_STR_STAR_STATUS = "star_status";
     public static final String DB_STR_REMINDER_TIME = "reminder_time";
 
-    private static EnderPlanDB enderplanDB;
-
     private SQLiteDatabase database;
+
+    private static EnderPlanDB ourInstance = new EnderPlanDB();
 
     private EnderPlanDB() {
         Context context = EnderPlanApp.getGlobalContext();
-        EnderPlanOpenHelper dbHelper = new EnderPlanOpenHelper(context, DB_NAME, null, DB_VERSION);
+        DatabaseOpenHelper dbHelper = new DatabaseOpenHelper(context, DB_NAME, null, DB_VERSION);
         database = dbHelper.getWritableDatabase();
     }
 
-    public synchronized static EnderPlanDB getInstance() {
-        if (enderplanDB == null) {
-            enderplanDB = new EnderPlanDB();
-        }
-        return enderplanDB;
+    public static EnderPlanDB getInstance() {
+        return ourInstance;
     }
 
     //*****************Type********************

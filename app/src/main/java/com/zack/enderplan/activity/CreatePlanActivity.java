@@ -18,34 +18,47 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.database.EnderPlanDB;
 import com.zack.enderplan.bean.Plan;
 import com.zack.enderplan.bean.Type;
-import com.zack.enderplan.manager.TypeManager;
+import com.zack.enderplan.database.EnderPlanDB;
+import com.zack.enderplan.presenter.CreatePlanPresenter;
 import com.zack.enderplan.util.Util;
+import com.zack.enderplan.view.CreatePlanView;
 import com.zack.enderplan.widget.TypeSpinnerAdapter;
 
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class CreatePlanActivity extends BaseActivity
-        implements CalendarDialogFragment.OnDateChangedListener,
+        implements CreatePlanView, CalendarDialogFragment.OnDateChangedListener,
         DateTimePickerDialogFragment.OnDateTimeChangedListener {
 
-    private static final String CLASS_NAME = "CreatePlanActivity";
+    @Bind(R.id.button_save)
+    ImageView saveButton;
+    @Bind(R.id.editor_content)
+    EditText contentEditor;
+    @Bind(R.id.spinner)
+    Spinner spinner;
+    @Bind(R.id.star_mark)
+    ImageView starMark;
+    @Bind(R.id.deadline_mark)
+    ImageView deadlineMark;
+    @Bind(R.id.reminder_mark)
+    ImageView reminderMark;
+    @Bind(R.id.card_view)
+    CardView cardView;
+    @Bind(R.id.circular_reveal_layout)
+    LinearLayout circularRevealLayout;
 
-    private EnderPlanDB enderplanDB;
-    private Plan plan;
-    private List<Type> typeList;
-    private LinearLayout circularRevealLayout;
-    private CardView cardView;
-    private EditText contentEditor;
-    private ImageView deadlineMark, reminderMark;
-    private ImageView saveButton;
+    private CreatePlanPresenter createPlanPresenter;
 
     private static final int FAB_COORDINATE_IN_DP = 44;
     private static final int CR_ANIM_DURATION = 400;
 
-    private static final String TAG_PRIORITY_LEVEL = "priority_level";
+    private static final String CLASS_NAME = "CreatePlanActivity";
     private static final String TAG_DEADLINE = "deadline";
     private static final String TAG_REMINDER = "reminder";
 
@@ -54,9 +67,8 @@ public class CreatePlanActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         overridePendingTransition(0, 0);
         setContentView(R.layout.activity_create_plan);
+        ButterKnife.bind(this);
 
-        circularRevealLayout = (LinearLayout) findViewById(R.id.circular_reveal_layout);
-        cardView = (CardView) findViewById(R.id.card_view);
         if (savedInstanceState == null) {
             cardView.setVisibility(View.INVISIBLE);
             circularRevealLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
@@ -69,36 +81,7 @@ public class CreatePlanActivity extends BaseActivity
             });
         }
 
-        ImageView cancelButton = (ImageView) findViewById(R.id.button_cancel);
-        saveButton = (ImageView) findViewById(R.id.button_save);
-        contentEditor = (EditText) findViewById(R.id.editor_content);
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
-        ImageView starMark = (ImageView) findViewById(R.id.star_mark);
-        deadlineMark = (ImageView) findViewById(R.id.deadline_mark);
-        reminderMark = (ImageView) findViewById(R.id.reminder_mark);
-
-        enderplanDB = EnderPlanDB.getInstance();
-        plan = new Plan(Util.makeCode());
-
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                makeCircularRevealAnimation(false);
-            }
-        });
-
-        saveButton.setVisibility(View.INVISIBLE);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                plan.setCreationTime(System.currentTimeMillis());
-                enderplanDB.savePlan(plan);
-                Intent intent = new Intent();
-                intent.putExtra("plan_detail", plan);
-                setResult(RESULT_OK, intent);
-                makeCircularRevealAnimation(false);
-            }
-        });
+        createPlanPresenter = new CreatePlanPresenter(this);
 
         contentEditor.addTextChangedListener(new TextWatcher() {
             @Override
@@ -113,19 +96,17 @@ public class CreatePlanActivity extends BaseActivity
 
             @Override
             public void afterTextChanged(Editable s) {
-                plan.setContent(s.toString());
+                createPlanPresenter.notifyContentChanged(s.toString());
                 saveButton.setVisibility(TextUtils.isEmpty(s.toString()) ? View.INVISIBLE : View.VISIBLE);
             }
         });
 
-        TypeManager typeManager = TypeManager.getInstance();
-        typeList = typeManager.getTypeList();
-        spinner.setAdapter(new TypeSpinnerAdapter(typeManager));
+        spinner.setAdapter(createPlanPresenter.createTypeSpinnerAdapter());
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 hideInputMethodForContentEditor();
-                plan.setTypeCode(typeList.get(position).getTypeCode());
+                createPlanPresenter.notifyTypeCodeChanged(position);
             }
 
             @Override
@@ -133,58 +114,39 @@ public class CreatePlanActivity extends BaseActivity
 
             }
         });
+    }
 
-        starMark.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean isStarred = plan.getStarStatus() == Plan.PLAN_STAR_STATUS_STARRED;
-                plan.setStarStatus(isStarred ? Plan.PLAN_STAR_STATUS_NOT_STARRED : Plan.PLAN_STAR_STATUS_STARRED);
-                ((ImageView) v).setImageResource(isStarred ? R.drawable.ic_star_outline_grey600_24dp :
-                        R.drawable.ic_star_color_accent_24dp);
-            }
-        });
-
-        deadlineMark.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CalendarDialogFragment dialog = CalendarDialogFragment.newInstance(plan.getDeadline());
-                dialog.show(getFragmentManager(), TAG_DEADLINE);
-            }
-        });
-
-        reminderMark.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DateTimePickerDialogFragment dialog = DateTimePickerDialogFragment.newInstance(plan.getReminderTime());
-                dialog.show(getFragmentManager(), TAG_REMINDER);
-            }
-        });
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        createPlanPresenter.detachView();
     }
 
     @Override
     public void onDateSelected(long newDateInMillis) {
-        plan.setDeadline(newDateInMillis);
+        createPlanPresenter.notifyDeadlineChanged(newDateInMillis);
         deadlineMark.setImageResource(R.drawable.ic_schedule_color_accent_24dp);
     }
 
     @Override
     public void onDateRemoved() {
-        plan.setDeadline(0);
+        createPlanPresenter.notifyDeadlineChanged(0);
         deadlineMark.setImageResource(R.drawable.ic_schedule_grey600_24dp);
     }
 
     @Override
     public void onDateTimeSelected(long newTimeInMillis) {
-        plan.setReminderTime(newTimeInMillis);
+        createPlanPresenter.notifyReminderTimeChanged(newTimeInMillis);
         reminderMark.setImageResource(R.drawable.ic_notifications_color_accent_24dp);
     }
 
     @Override
     public void onDateTimeRemoved() {
-        plan.setReminderTime(0);
+        createPlanPresenter.notifyReminderTimeChanged(0);
         reminderMark.setImageResource(R.drawable.ic_notifications_none_grey600_24dp);
     }
 
+    //显示键盘
     private void showInputMethodForContentEditor() {
         InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         if (contentEditor.hasFocus()) {
@@ -192,6 +154,7 @@ public class CreatePlanActivity extends BaseActivity
         }
     }
 
+    //隐藏键盘
     private void hideInputMethodForContentEditor() {
         InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         if (manager.isActive(contentEditor)) {
@@ -199,6 +162,7 @@ public class CreatePlanActivity extends BaseActivity
         }
     }
 
+    //圆形Reveal动画
     private void makeCircularRevealAnimation(final boolean isEnterAnim) {
         float scale = getResources().getDisplayMetrics().density;
         int fabCoordinateInPx = (int) (FAB_COORDINATE_IN_DP * scale + 0.5f);
@@ -242,5 +206,47 @@ public class CreatePlanActivity extends BaseActivity
             }
         });
         circularRevealAnim.start();
+    }
+
+    @OnClick({R.id.button_cancel, R.id.button_save, R.id.star_mark, R.id.deadline_mark, R.id.reminder_mark})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.button_cancel:
+                makeCircularRevealAnimation(false);
+                break;
+            case R.id.button_save:
+                //enderplanDB.savePlan(plan);
+                createPlanPresenter.createNewPlan();
+                /*Intent intent = new Intent();
+                intent.putExtra("plan_detail", plan);*/
+                setResult(RESULT_OK);
+                makeCircularRevealAnimation(false);
+                break;
+            case R.id.star_mark:
+                createPlanPresenter.notifyStarStatusChanged();
+                break;
+            case R.id.deadline_mark:
+                createPlanPresenter.createDeadlineDialog();
+                break;
+            case R.id.reminder_mark:
+                createPlanPresenter.createReminderDialog();
+                break;
+        }
+    }
+
+    @Override
+    public void onStarStatusChanged(boolean isStarred) {
+        starMark.setImageResource(isStarred ? R.drawable.ic_star_color_accent_24dp :
+                R.drawable.ic_star_outline_grey600_24dp);
+    }
+
+    @Override
+    public void onCreateDeadlineDialog(CalendarDialogFragment deadlineDialog) {
+        deadlineDialog.show(getFragmentManager(), TAG_DEADLINE);
+    }
+
+    @Override
+    public void onCreateReminderDialog(DateTimePickerDialogFragment reminderDialog) {
+        reminderDialog.show(getFragmentManager(), TAG_REMINDER);
     }
 }

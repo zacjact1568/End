@@ -50,6 +50,12 @@
     <!--创建Type-->
     <string name="title_dialog_create_type">Create a new type</string>
 
+    <!--Type详情-->
+    <string name="hint_content_fast">Fast create a new plan</string>
+    <string name="show_c_plans">Show completed plans</string>
+    <string name="toast_create_plan_failed">Content can\'t be empty</string>
+    <string name="toast_create_plan_success">Create successfully</string>
+    
     <!--CreatePlanActivity-->
     <string name="title_activity_create_plan">Create a new plan</string>
 

@@ -15,7 +15,7 @@ public class BootCompleteReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d("BootCompleteReceiver", "Boot Finished");
-        ReminderManager manager = new ReminderManager(context);
+        ReminderManager manager = new ReminderManager();
 
         EnderPlanDB enderplanDB = EnderPlanDB.getInstance();
 

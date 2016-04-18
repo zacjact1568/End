@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class EnderPlanOpenHelper extends SQLiteOpenHelper {
+public class DatabaseOpenHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_PLAN = "create table plan (" +
             "plan_code text primary key, " +
@@ -22,7 +22,7 @@ public class EnderPlanOpenHelper extends SQLiteOpenHelper {
             "type_mark text, " +
             "type_sequence integer)";
 
-    public EnderPlanOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public DatabaseOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
     }
 

@@ -28,19 +28,8 @@ public class Util {
         return spannableString;
     }
 
-    /*public static int[] getPriorityLevelMarkResIds(Context context) {
-        TypedArray typedArray = context.getResources().obtainTypedArray(R.array.priority_level_marks);
-        int length = typedArray.length();
-        int[] resIds = new int[length];
-        for (int i = 0; i < length; i++) {
-            resIds[i] = typedArray.getResourceId(i, 0);
-        }
-        typedArray.recycle();
-        return resIds;
-    }*/
-
     public static String parseColor(int colorInt) {
-        return String.format("#%s", Long.toHexString(0x100000000l + colorInt)).toUpperCase();
+        return String.format("#%s", Long.toHexString(0x100000000L + colorInt)).toUpperCase();
     }
 
     public static void makeShortVibrate() {

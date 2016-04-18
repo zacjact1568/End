@@ -1,17 +1,15 @@
 package com.zack.enderplan.widget;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.application.EnderPlanApp;
 import com.zack.enderplan.bean.Type;
-import com.zack.enderplan.manager.TypeManager;
 
 import java.util.List;
 import java.util.Map;
@@ -22,17 +20,20 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
 
     private static final String CLASS_NAME = "TypeAdapter";
 
-    private TypeManager typeManager;
     private List<Type> typeList;
     private Map<String, Integer> planCountOfEachTypeMap;
-    private String nonePlan, onePlan, multiPlan;
+    private Map<String, Integer> typeMarkAndColorResMap;
     private OnTypeItemClickListener onTypeItemClickListener;
+    private String nonePlan;
+    private String onePlan;
+    private String multiPlan;
 
-    public TypeAdapter(Context context) {
-        typeManager = TypeManager.getInstance();
-        typeList = typeManager.getTypeList();
-        planCountOfEachTypeMap = typeManager.getPlanCountOfEachTypeMap();
+    public TypeAdapter(List<Type> typeList, Map<String, Integer> typeMarkAndColorResMap, Map<String, Integer> planCountOfEachTypeMap) {
+        this.typeList = typeList;
+        this.typeMarkAndColorResMap = typeMarkAndColorResMap;
+        this.planCountOfEachTypeMap = planCountOfEachTypeMap;
 
+        Context context = EnderPlanApp.getGlobalContext();
         nonePlan = context.getResources().getString(R.string.plan_count_of_each_type_none);
         onePlan = context.getResources().getString(R.string.plan_count_of_each_type_one);
         multiPlan = context.getResources().getString(R.string.plan_count_of_each_type_multi);
@@ -48,7 +49,7 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
     public void onBindViewHolder(final ViewHolder holder, int position) {
         Type type = typeList.get(position);
 
-        holder.typeMarkIcon.setImageResource(typeManager.findColorResByTypeMark(type.getTypeMark()));
+        holder.typeMarkIcon.setImageResource(typeMarkAndColorResMap.get(type.getTypeMark()));
         holder.firstCharText.setText(type.getTypeName().substring(0, 1));
         holder.typeNameText.setText(type.getTypeName());
         holder.planCountOfEachTypeText.setText(getPlanCountOfEachTypeStr(type.getTypeCode()));

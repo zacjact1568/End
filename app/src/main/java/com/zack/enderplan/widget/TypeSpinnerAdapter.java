@@ -1,6 +1,5 @@
 package com.zack.enderplan.widget;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,20 +8,20 @@ import android.widget.TextView;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.bean.Type;
-import com.zack.enderplan.manager.TypeManager;
 
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class TypeSpinnerAdapter extends BaseAdapter {
 
     private List<Type> typeList;
-    private TypeManager typeManager;
+    private Map<String, Integer> typeMarkAndColorResMap;
 
-    public TypeSpinnerAdapter(TypeManager typeManager) {
-        this.typeManager = typeManager;
-        typeList = typeManager.getTypeList();
+    public TypeSpinnerAdapter(List<Type> typeList, Map<String, Integer> typeMarkAndColorResMap) {
+        this.typeList = typeList;
+        this.typeMarkAndColorResMap = typeMarkAndColorResMap;
     }
 
     @Override
@@ -55,7 +54,7 @@ public class TypeSpinnerAdapter extends BaseAdapter {
             view = convertView;
             viewHolder = (ViewHolder) view.getTag();
         }
-        viewHolder.typeMark.setImageResource(typeManager.findColorResByTypeMark(type.getTypeMark()));
+        viewHolder.typeMark.setImageResource(typeMarkAndColorResMap.get(type.getTypeMark()));
         viewHolder.typeName.setText(type.getTypeName());
         return view;
     }

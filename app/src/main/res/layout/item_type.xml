@@ -28,8 +28,8 @@
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/ic_type_mark"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:src="@color/indigo"
                     android:layout_gravity="center"/>
 
@@ -38,7 +38,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="工"
-                    android:textSize="28sp"
+                    android:textSize="20sp"
                     android:textColor="@android:color/white"
                     android:layout_gravity="center"/>
 

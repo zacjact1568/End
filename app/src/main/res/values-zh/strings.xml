@@ -80,4 +80,8 @@
     <string name="msg_dialog_type_not_empty">我们发现有一些计划属于你刚才想要删除的那个类型，如果你仍然想删除它，请先改变那些计划所属的类型。</string>
     <string name="pref_title_theme">主题</string>
     <string name="pref_title_night_mode">夜间模式</string>
+    <string name="hint_content_fast">快速创建一个新计划</string>
+    <string name="show_c_plans">显示已完成的计划</string>
+    <string name="toast_create_plan_failed">内容不能为空</string>
+    <string name="toast_create_plan_success">创建成功</string>
 </resources>

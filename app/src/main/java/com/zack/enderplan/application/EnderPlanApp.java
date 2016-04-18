@@ -10,11 +10,14 @@ import android.support.v7.app.AppCompatDelegate;
 import com.zack.enderplan.R;
 import com.zack.enderplan.database.EnderPlanDB;
 import com.zack.enderplan.bean.Type;
+import com.zack.enderplan.util.LogUtil;
 import com.zack.enderplan.util.Util;
 
 import java.util.Locale;
 
 public class EnderPlanApp extends Application {
+
+    private static final String LOG_TAG = "EnderPlanApp";
 
     private static Context globalContext;
 

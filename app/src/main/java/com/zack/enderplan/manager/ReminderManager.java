@@ -6,14 +6,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.zack.enderplan.application.EnderPlanApp;
 import com.zack.enderplan.receiver.ReminderReceiver;
 
 public class ReminderManager {
 
     private Context context;
 
-    public ReminderManager(Context context) {
-        this.context = context;
+    public ReminderManager() {
+        context = EnderPlanApp.getGlobalContext();
+        //this.context = context;
     }
 
     private PendingIntent getPendingIntent(String planCode) {
