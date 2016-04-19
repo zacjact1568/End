@@ -18,6 +18,8 @@ public class PlanSingleTypeAdapter extends RecyclerView.Adapter<PlanSingleTypeAd
 
     private List<Plan> planList;
 
+    private OnPlanItemClickListener onPlanItemClickListener;
+
     public PlanSingleTypeAdapter(List<Plan> planList) {
         this.planList = planList;
     }
@@ -29,10 +31,20 @@ public class PlanSingleTypeAdapter extends RecyclerView.Adapter<PlanSingleTypeAd
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        Plan plan = planList.get(position);
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+        final Plan plan = planList.get(position);
+
         holder.contentText.setText(plan.getContent());
         holder.checkBox.setOnCheckedChangeListener(null);
+
+        if (onPlanItemClickListener != null) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onPlanItemClickListener.onPlanItemClick(holder.getLayoutPosition(), plan.getPlanCode());
+                }
+            });
+        }
     }
 
     @Override
@@ -49,5 +61,13 @@ public class PlanSingleTypeAdapter extends RecyclerView.Adapter<PlanSingleTypeAd
             contentText = (TextView) itemView.findViewById(R.id.text_content);
             checkBox = (CheckBox) itemView.findViewById(R.id.check_box);
         }
+    }
+
+    public interface OnPlanItemClickListener {
+        void onPlanItemClick(int position, String planCode);
+    }
+
+    public void setOnPlanItemClickListener(OnPlanItemClickListener listener) {
+        this.onPlanItemClickListener = listener;
     }
 }

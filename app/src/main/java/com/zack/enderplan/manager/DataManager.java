@@ -147,9 +147,24 @@ public class DataManager {
         }
     }
 
+    //获取当前计划的数量
+    public int getPlanCount() {
+        return planList.size();
+    }
+
     //获取当前类型的数量
     public int getTypeCount() {
         return typeList.size();
+    }
+
+    //获取计划在list中的序号
+    public int getPlanLocationInPlanList(String planCode) {
+        for (int i = 0; i < getPlanCount(); i++) {
+            if (getPlan(i).getPlanCode().equals(planCode)) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     //获取类型在list中的序号

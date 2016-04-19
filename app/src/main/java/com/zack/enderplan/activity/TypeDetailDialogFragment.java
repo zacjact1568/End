@@ -4,18 +4,13 @@ import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -128,6 +123,13 @@ public class TypeDetailDialogFragment extends BottomSheetDialogFragment implemen
                     typeDetailPresenter.notifyPlanCreation(contentEditor.getText().toString());
                 }
                 return false;
+            }
+        });
+
+        planSingleTypeAdapter.setOnPlanItemClickListener(new PlanSingleTypeAdapter.OnPlanItemClickListener() {
+            @Override
+            public void onPlanItemClick(int position, String planCode) {
+                typeDetailPresenter.notifyPlanItemClicked(position, planCode);
             }
         });
 

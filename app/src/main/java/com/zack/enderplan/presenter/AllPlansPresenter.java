@@ -10,6 +10,8 @@ import com.zack.enderplan.bean.Plan;
 import com.zack.enderplan.database.EnderPlanDB;
 import com.zack.enderplan.event.DataLoadedEvent;
 import com.zack.enderplan.event.PlanCreatedEvent;
+import com.zack.enderplan.event.PlanDetailChangedEvent;
+import com.zack.enderplan.event.PlanItemClickedEvent;
 import com.zack.enderplan.event.ReminderTimeChangedEvent;
 import com.zack.enderplan.event.UcPlanCountChangedEvent;
 import com.zack.enderplan.manager.DataManager;
@@ -138,7 +140,9 @@ public class AllPlansPresenter implements Presenter<AllPlansView> {
 
     public void notifyPlanEdited(int position) {
         planAdapter.notifyItemChanged(position);
-        //这里如果有需要，可以添加向view的回调
+
+        //通知TypeDetailDialogFragment中的list更新（如果有的话）
+        EventBus.getDefault().post(new PlanDetailChangedEvent());
     }
 
     public void notifyPlanStatusChanged(int position) {
@@ -202,5 +206,10 @@ public class AllPlansPresenter implements Presenter<AllPlansView> {
         planAdapter.notifyDataSetChanged();
         //有一定几率报错
         //planAdapter.notifyItemInserted(0);
+    }
+
+    @Subscribe
+    public void onPlanItemClicked(PlanItemClickedEvent event) {
+        allPlansView.onPlanItemClicked(event.position);
     }
 }

@@ -9,6 +9,8 @@ import com.zack.enderplan.bean.Plan;
 import com.zack.enderplan.bean.Type;
 import com.zack.enderplan.database.EnderPlanDB;
 import com.zack.enderplan.event.PlanCreatedEvent;
+import com.zack.enderplan.event.PlanDetailChangedEvent;
+import com.zack.enderplan.event.PlanItemClickedEvent;
 import com.zack.enderplan.event.TypeDetailChangedEvent;
 import com.zack.enderplan.event.UcPlanCountChangedEvent;
 import com.zack.enderplan.manager.DataManager;
@@ -17,6 +19,7 @@ import com.zack.enderplan.view.TypeDetailView;
 import com.zack.enderplan.widget.PlanSingleTypeAdapter;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
@@ -27,6 +30,7 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
     private PlanSingleTypeAdapter planSingleTypeAdapter;
     private List<Plan> singleTypeUcPlanList;
     private Type type;
+    private int planItemClickPosition;
     private String nonePlan;
     private String onePlan;
     private String multiPlan;
@@ -49,11 +53,13 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
     @Override
     public void attachView(TypeDetailView view) {
         typeDetailView = view;
+        EventBus.getDefault().register(this);
     }
 
     @Override
     public void detachView() {
         typeDetailView = null;
+        EventBus.getDefault().unregister(this);
     }
 
     public void setInitialView() {
@@ -98,6 +104,11 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
         }
     }
 
+    public void notifyPlanItemClicked(int position, String planCode) {
+        planItemClickPosition = position;
+        EventBus.getDefault().post(new PlanItemClickedEvent(dataManager.getPlanLocationInPlanList(planCode)));
+    }
+
     //TODO 与TypeAdapter中的另一个合并
     private String getPlanCountStr(String typeCode) {
         Integer count = dataManager.getPlanCountOfEachTypeMap().get(typeCode);
@@ -112,5 +123,10 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
             default:
                 return String.format("%d " + multiPlan, count);
         }
+    }
+
+    @Subscribe
+    public void onPlanDetailChanged(PlanDetailChangedEvent event) {
+        planSingleTypeAdapter.notifyItemChanged(planItemClickPosition);
     }
 }
