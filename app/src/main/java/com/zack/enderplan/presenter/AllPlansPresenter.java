@@ -13,6 +13,7 @@ import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.event.PlanItemClickedEvent;
 import com.zack.enderplan.event.ReminderTimeChangedEvent;
+import com.zack.enderplan.event.TypeDetailChangedEvent;
 import com.zack.enderplan.event.UcPlanCountChangedEvent;
 import com.zack.enderplan.manager.DataManager;
 import com.zack.enderplan.manager.ReminderManager;
@@ -22,6 +23,8 @@ import com.zack.enderplan.widget.PlanAdapter;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.List;
 
 public class AllPlansPresenter implements Presenter<AllPlansView> {
 
@@ -211,5 +214,13 @@ public class AllPlansPresenter implements Presenter<AllPlansView> {
     @Subscribe
     public void onPlanItemClicked(PlanItemClickedEvent event) {
         allPlansView.onPlanItemClicked(event.position);
+    }
+
+    @Subscribe
+    public void onTypeDetailChanged(TypeDetailChangedEvent event) {
+        List<Integer> singleTypeUcPlanPosList = dataManager.getSingleTypeUcPlanLocations(event.typeCode);
+        for (int position : singleTypeUcPlanPosList) {
+            planAdapter.notifyItemChanged(position);
+        }
     }
 }

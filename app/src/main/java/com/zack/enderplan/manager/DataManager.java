@@ -116,7 +116,10 @@ public class DataManager {
     public List<Plan> getSingleTypeUcPlanList(String typeCode) {
         List<Plan> singleTypeUcPlanList = new ArrayList<>();
         for (Plan plan : planList) {
-            if (plan.getTypeCode().equals(typeCode) && plan.getCompletionTime() == 0) {
+            if (plan.getCompletionTime() != 0) {
+                break;
+            }
+            if (plan.getTypeCode().equals(typeCode)) {
                 singleTypeUcPlanList.add(plan);
             }
         }
@@ -157,6 +160,11 @@ public class DataManager {
         return typeList.size();
     }
 
+    //获取类型颜色的数量
+    public int getTypeMarkCount() {
+        return typeMarkList.size();
+    }
+
     //获取计划在list中的序号
     public int getPlanLocationInPlanList(String planCode) {
         for (int i = 0; i < getPlanCount(); i++) {
@@ -175,6 +183,31 @@ public class DataManager {
             }
         }
         return 0;
+    }
+
+    //获取类型颜色在list中的序号
+    public int getTypeMarkLocationInTypeMarkList(String typeMark) {
+        for (int i = 0; i < getTypeMarkCount(); i++) {
+            if (getTypeMark(i).getColorInt() == Color.parseColor(typeMark)) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    //获取所有具有给定类型的未完成计划的序号
+    public List<Integer> getSingleTypeUcPlanLocations(String typeCode) {
+        List<Integer> singleTypeUcPlanLocations = new ArrayList<>();
+        for (int i = 0; i < getPlanCount(); i++) {
+            Plan plan = getPlan(i);
+            if (plan.getCompletionTime() != 0) {
+                break;
+            }
+            if (plan.getTypeCode().equals(typeCode)) {
+                singleTypeUcPlanLocations.add(i);
+            }
+        }
+        return singleTypeUcPlanLocations;
     }
 
     //根据类型颜色寻找颜色资源
@@ -233,19 +266,30 @@ public class DataManager {
         for (TypeMark typeMark : typeMarkList) {
             if (typeMark.getColorInt() == Color.parseColor(typeMarkStr)) {
                 typeMark.setIsValid(!typeMark.isValid());
-                return;
+                break;
             }
         }
     }
 
     //更新类型颜色list（修改）
-    public void updateTypeMarkList(String fromTypeMark, String toTypeMark) {
-        //
-    }
+    public void updateTypeMarkList(int fromLocation, int toLocation) {
+        if (fromLocation != toLocation) {
+            //若类型颜色有改变，将以前的改为可用
+            getTypeMark(fromLocation).setIsValid(true);
+        }
+        //现在（也可以是以前）的改为不可用
+        getTypeMark(toLocation).setIsValid(false);
 
-    //初始化类型颜色list中的选中指示变量
-    public void clearTypeMarkSelectionStatus(int location) {
-        getTypeMark(location).setIsSelected(false);
+        /*for (int i = 0; i < getTypeMarkCount(); i++) {
+            if (getTypeMark(i).getColorInt() == Color.parseColor(fromTypeMark) && i != toLocation) {
+                //说明类型颜色有改变
+                //以前的改为可用
+                getTypeMark(i).setIsValid(true);
+                //现在的改为不可用
+                getTypeMark(toLocation).setIsValid(false);
+                break;
+            }
+        }*/
     }
 
     //获取类型码与其颜色资源的映射表
@@ -258,12 +302,17 @@ public class DataManager {
         return typeMarkAndColorResMap;
     }
 
-    //更新类型码和类型颜色同其颜色资源的映射表
-    public void updateFindingColorResMap(String typeCode, String typeMark) {
-        //TODO ...
+    //更新类型码和类型颜色同其颜色资源的映射
+    public void updateFindingColorResMap(String typeCode, String fromTypeMark, String toTypeMark) {
+        if (!fromTypeMark.equals(toTypeMark)) {
+            int colorRes = findColorResByTypeMark(toTypeMark);
+            typeCodeAndColorResMap.put(typeCode, colorRes);
+            typeMarkAndColorResMap.remove(fromTypeMark);
+            typeMarkAndColorResMap.put(toTypeMark, colorRes);
+        }
     }
 
-    //添加类型码和类型颜色同其颜色资源的映射
+    //添加类型码和类型颜色同其颜色资源的映射 TODO 改成maps
     public void putMappingInFindingColorResMap(String typeCode, String typeMark) {
         int colorRes = findColorResByTypeMark(typeMark);
         typeCodeAndColorResMap.put(typeCode, colorRes);

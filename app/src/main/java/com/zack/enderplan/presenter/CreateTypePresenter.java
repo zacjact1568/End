@@ -34,7 +34,7 @@ public class CreateTypePresenter implements Presenter<CreateTypeView> {
     public void detachView() {
         createTypeView = null;
         if (selectedPosition != -1) {
-            dataManager.clearTypeMarkSelectionStatus(selectedPosition);
+            dataManager.getTypeMark(selectedPosition).setIsSelected(false);
         }
     }
 

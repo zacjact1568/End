@@ -6,6 +6,7 @@ import android.view.View;
 import com.zack.enderplan.bean.Type;
 import com.zack.enderplan.database.EnderPlanDB;
 import com.zack.enderplan.event.DataLoadedEvent;
+import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.TypeCreatedEvent;
 import com.zack.enderplan.event.TypeDetailChangedEvent;
 import com.zack.enderplan.manager.DataManager;
@@ -121,6 +122,11 @@ public class AllTypesPresenter implements Presenter<AllTypesView> {
     @Subscribe
     public void onTypeCreated(TypeCreatedEvent event) {
         typeAdapter.notifyItemInserted(dataManager.getTypeCount() - 1);
+    }
+
+    @Subscribe
+    public void onPlanCreated(PlanCreatedEvent event) {
+        typeAdapter.notifyItemChanged(typeItemClickPosition);
     }
 
     @Subscribe

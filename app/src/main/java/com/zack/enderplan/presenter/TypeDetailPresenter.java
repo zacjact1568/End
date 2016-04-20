@@ -95,9 +95,7 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
             typeDetailView.onPlanCreationSuccess(getPlanCountStr(type.getTypeCode()));
 
             //通知其他组件更新
-            //通知AllTypesPresenter（更新类型列表）
-            EventBus.getDefault().post(new TypeDetailChangedEvent());
-            //通知AllPlansPresenter（更新计划列表）
+            //通知AllPlansPresenter（更新计划列表）与AllTypesPresenter（更新类型列表）
             EventBus.getDefault().post(new PlanCreatedEvent());
             //通知HomePresenter（更新侧栏header）
             EventBus.getDefault().post(new UcPlanCountChangedEvent());

@@ -100,7 +100,9 @@ public class TypeDetailDialogFragment extends BottomSheetDialogFragment implemen
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ic_edit_type:
-                LogUtil.d("edit type");
+                getDialog().dismiss();
+                EditTypeDialogFragment dialog = EditTypeDialogFragment.newInstance(position);
+                dialog.show(getFragmentManager(), "edit_type");
                 break;
             case R.id.ic_clear_text:
                 contentEditor.setText("");
