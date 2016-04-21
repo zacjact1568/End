@@ -9,6 +9,7 @@ import com.zack.enderplan.R;
 import com.zack.enderplan.bean.Plan;
 import com.zack.enderplan.database.EnderPlanDB;
 import com.zack.enderplan.event.DataLoadedEvent;
+import com.zack.enderplan.event.PlanCompletedEvent;
 import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.event.PlanItemClickedEvent;
@@ -144,7 +145,7 @@ public class AllPlansPresenter implements Presenter<AllPlansView> {
     public void notifyPlanEdited(int position) {
         planAdapter.notifyItemChanged(position);
 
-        //通知TypeDetailDialogFragment中的list更新（如果有的话）
+        //通知TypeDetailDialogFragment中的list更新（如果有的话）TODO 这里总有点不爽
         EventBus.getDefault().post(new PlanDetailChangedEvent());
     }
 
@@ -222,5 +223,10 @@ public class AllPlansPresenter implements Presenter<AllPlansView> {
         for (int position : singleTypeUcPlanPosList) {
             planAdapter.notifyItemChanged(position);
         }
+    }
+
+    @Subscribe
+    public void onPlanCompleted(PlanCompletedEvent event) {
+        notifyPlanStatusChanged(event.position);
     }
 }

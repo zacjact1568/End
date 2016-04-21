@@ -128,10 +128,17 @@ public class TypeDetailDialogFragment extends BottomSheetDialogFragment implemen
             }
         });
 
+        planSingleTypeAdapter.setOnCheckBoxStateChangedListener(new PlanSingleTypeAdapter.OnCheckBoxStateChangedListener() {
+            @Override
+            public void onCheckBoxStateChanged(int position, boolean isChecked) {
+                typeDetailPresenter.notifyPlanCompleted(position);
+            }
+        });
+
         planSingleTypeAdapter.setOnPlanItemClickListener(new PlanSingleTypeAdapter.OnPlanItemClickListener() {
             @Override
-            public void onPlanItemClick(int position, String planCode) {
-                typeDetailPresenter.notifyPlanItemClicked(position, planCode);
+            public void onPlanItemClick(int position) {
+                typeDetailPresenter.notifyPlanItemClicked(position);
             }
         });
 

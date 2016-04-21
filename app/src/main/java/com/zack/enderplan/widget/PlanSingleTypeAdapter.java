@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.zack.enderplan.R;
@@ -18,6 +19,7 @@ public class PlanSingleTypeAdapter extends RecyclerView.Adapter<PlanSingleTypeAd
 
     private List<Plan> planList;
 
+    private OnCheckBoxStateChangedListener onCheckBoxStateChangedListener;
     private OnPlanItemClickListener onPlanItemClickListener;
 
     public PlanSingleTypeAdapter(List<Plan> planList) {
@@ -35,13 +37,21 @@ public class PlanSingleTypeAdapter extends RecyclerView.Adapter<PlanSingleTypeAd
         final Plan plan = planList.get(position);
 
         holder.contentText.setText(plan.getContent());
-        holder.checkBox.setOnCheckedChangeListener(null);
+
+        if (onCheckBoxStateChangedListener != null) {
+            holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    onCheckBoxStateChangedListener.onCheckBoxStateChanged(holder.getLayoutPosition(), isChecked);
+                }
+            });
+        }
 
         if (onPlanItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onPlanItemClickListener.onPlanItemClick(holder.getLayoutPosition(), plan.getPlanCode());
+                    onPlanItemClickListener.onPlanItemClick(holder.getLayoutPosition());
                 }
             });
         }
@@ -63,8 +73,16 @@ public class PlanSingleTypeAdapter extends RecyclerView.Adapter<PlanSingleTypeAd
         }
     }
 
+    public interface OnCheckBoxStateChangedListener {
+        void onCheckBoxStateChanged(int position, boolean isChecked);
+    }
+
+    public void setOnCheckBoxStateChangedListener(OnCheckBoxStateChangedListener listener) {
+        this.onCheckBoxStateChangedListener = listener;
+    }
+
     public interface OnPlanItemClickListener {
-        void onPlanItemClick(int position, String planCode);
+        void onPlanItemClick(int position);
     }
 
     public void setOnPlanItemClickListener(OnPlanItemClickListener listener) {

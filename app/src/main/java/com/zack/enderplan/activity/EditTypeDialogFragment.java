@@ -114,6 +114,7 @@ public class EditTypeDialogFragment extends DialogFragment implements EditTypeVi
         }
 
         typeNameEditor.setText(typeName);
+        typeNameEditor.setSelection(typeNameEditor.length());
         typeNameEditor.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

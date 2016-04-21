@@ -8,6 +8,7 @@ import com.zack.enderplan.application.EnderPlanApp;
 import com.zack.enderplan.bean.Plan;
 import com.zack.enderplan.bean.Type;
 import com.zack.enderplan.database.EnderPlanDB;
+import com.zack.enderplan.event.PlanCompletedEvent;
 import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.event.PlanItemClickedEvent;
@@ -102,9 +103,17 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
         }
     }
 
-    public void notifyPlanItemClicked(int position, String planCode) {
+    public void notifyPlanItemClicked(int position) {
         planItemClickPosition = position;
-        EventBus.getDefault().post(new PlanItemClickedEvent(dataManager.getPlanLocationInPlanList(planCode)));
+        int posInPlanList = dataManager.getPlanLocationInPlanList(singleTypeUcPlanList.get(position).getPlanCode());
+        EventBus.getDefault().post(new PlanItemClickedEvent(posInPlanList));
+    }
+
+    public void notifyPlanCompleted(int position) {
+        int posInPlanList = dataManager.getPlanLocationInPlanList(singleTypeUcPlanList.get(position).getPlanCode());
+        singleTypeUcPlanList.remove(position);
+        planSingleTypeAdapter.notifyItemRemoved(position);
+        EventBus.getDefault().post(new PlanCompletedEvent(posInPlanList));
     }
 
     //TODO 与TypeAdapter中的另一个合并
