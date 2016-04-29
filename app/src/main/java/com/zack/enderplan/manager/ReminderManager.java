@@ -13,9 +13,17 @@ public class ReminderManager {
 
     private Context context;
 
-    public ReminderManager() {
+    private static ReminderManager ourInstance;
+
+    private ReminderManager() {
         context = EnderPlanApp.getGlobalContext();
-        //this.context = context;
+    }
+
+    public static ReminderManager getInstance() {
+        if (ourInstance == null) {
+            ourInstance = new ReminderManager();
+        }
+        return ourInstance;
     }
 
     private PendingIntent getPendingIntent(String planCode) {
@@ -34,7 +42,7 @@ public class ReminderManager {
     public void setAlarm(String planCode, long reminderTimeInMillis) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, reminderTimeInMillis, getPendingIntent(planCode));
-        Log.d("ReminderManager", "Reminder已设置，Code为：" + planCode);
+        Log.d("ReminderManager", "Reminder已设置，PlanCode为：" + planCode);
     }
 
     public void cancelAlarm(String planCode) {

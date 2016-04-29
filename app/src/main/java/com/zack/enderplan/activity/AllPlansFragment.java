@@ -1,10 +1,9 @@
 package com.zack.enderplan.activity;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -25,9 +24,7 @@ public class AllPlansFragment extends Fragment implements AllPlansView {
 
     private AllPlansPresenter allPlansPresenter;
     private EnhancedRecyclerView recyclerView;
-    private int planItemClickPosition;
-
-    private static final int REQ_CODE_PLAN_DETAIL = 1;
+    //private int planItemClickPosition;
 
     public AllPlansFragment() {
         // Required empty public constructor
@@ -78,37 +75,11 @@ public class AllPlansFragment extends Fragment implements AllPlansView {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (resultCode) {
-            case Activity.RESULT_CANCELED:
-                break;
-            case Activity.RESULT_FIRST_USER:
-                //删除
-                allPlansPresenter.notifyPlanDeleted(planItemClickPosition, data.getStringExtra("content"));
-                break;
-            case Activity.RESULT_OK:
-                switch (requestCode) {
-                    case REQ_CODE_PLAN_DETAIL:
-                        //修改
-                        //Plan editedPlan = data.getParcelableExtra("plan_detail");
-                        allPlansPresenter.notifyPlanEdited(planItemClickPosition);
-                        break;
-                    default:
-                        break;
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Override
     public void onPlanItemClicked(int position) {
-        planItemClickPosition = position;
-
+        //planItemClickPosition = position;
         Intent intent = new Intent(getActivity(), PlanDetailActivity.class);
         intent.putExtra("position", position);
-        startActivityForResult(intent, REQ_CODE_PLAN_DETAIL);
+        getActivity().startActivityForResult(intent, HomeActivity.REQ_CODE_PLAN_DETAIL);
     }
 
     @Override
@@ -123,12 +94,6 @@ public class AllPlansFragment extends Fragment implements AllPlansView {
             }
         });
         snackbar.show();
-    }
-
-    @Override
-    public void onPlanDeleted(String content) {
-        String text = content + " " + getResources().getString(R.string.deleted_prompt);
-        Snackbar.make(recyclerView, text, Snackbar.LENGTH_SHORT).show();
     }
 
     private class PlanListItemTouchCallback extends ItemTouchHelper.Callback {

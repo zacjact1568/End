@@ -133,6 +133,36 @@ public class EnderPlanDB {
         database.update(DB_STR_PLAN, values, DB_STR_PLAN_CODE + " = ?", new String[]{planCode});
     }
 
+    public void editContent(String planCode, String content) {
+        ContentValues values = new ContentValues();
+        values.put(DB_STR_CONTENT, content);
+        editPlan(planCode, values);
+    }
+
+    public void editTypeOfPlan(String planCode, String typeCode) {
+        ContentValues values = new ContentValues();
+        values.put(DB_STR_TYPE_CODE, typeCode);
+        editPlan(planCode, values);
+    }
+
+    public void editDeadline(String planCode, long deadline) {
+        ContentValues values = new ContentValues();
+        values.put(DB_STR_DEADLINE, deadline);
+        editPlan(planCode, values);
+    }
+
+    public void editStarStatus(String planCode, int starStatus) {
+        ContentValues values = new ContentValues();
+        values.put(DB_STR_STAR_STATUS, starStatus);
+        editPlan(planCode, values);
+    }
+
+    public void editReminderTime(String planCode, long reminderTime) {
+        ContentValues values = new ContentValues();
+        values.put(DB_STR_REMINDER_TIME, reminderTime);
+        editPlan(planCode, values);
+    }
+
     public void deletePlan(String planCode) {
         database.delete(DB_STR_PLAN, DB_STR_PLAN_CODE + " = ?", new String[]{planCode});
     }

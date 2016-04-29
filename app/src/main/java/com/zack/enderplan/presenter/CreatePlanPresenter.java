@@ -77,17 +77,13 @@ public class CreatePlanPresenter implements Presenter<CreatePlanView> {
         //更新未完成计划的数量
         dataManager.updateUcPlanCount(1);
         //设置提醒
-        setReminder(plan.getPlanCode(), plan.getReminderTime());
+        if (plan.getReminderTime() != 0) {
+            //说明之前是设置了提醒的
+            ReminderManager.getInstance().setAlarm(plan.getPlanCode(), plan.getReminderTime());
+        }
         //更新每个类型具有的计划数量map
-        dataManager.updatePlanCountOfEachType(plan.getTypeCode(), 1);
+        dataManager.updateUcPlanCountOfEachTypeMap(plan.getTypeCode(), 1);
         //存储至数据库
         EnderPlanDB.getInstance().savePlan(plan);
-    }
-
-    private void setReminder(String planCode, long reminderTime) {
-        if (reminderTime != 0) {
-            ReminderManager manager = new ReminderManager();
-            manager.setAlarm(planCode, reminderTime);
-        }
     }
 }

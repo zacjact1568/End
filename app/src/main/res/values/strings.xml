@@ -40,12 +40,12 @@
     <string name="empty_view_prompt">No any plans here.\nClick the Floating Action Button in the right bottom corner to create one.</string>
 
     <!--AllTypesFragment-->
-    <string name="plan_count_of_each_type_none">No plan</string>
-    <string name="plan_count_of_each_type_one">1 plan</string>
-    <string name="plan_count_of_each_type_multi">plans</string>
+    <string name="uc_plan_count_of_each_type_none">No plan uncompleted</string>
+    <string name="uc_plan_count_of_each_type_one">1 plan uncompleted</string>
+    <string name="uc_plan_count_of_each_type_multi">plans uncompleted</string>
     <string name="type_name_hint">The name of your new type</string>
     <string name="title_dialog_type_not_empty">Cannot delete</string>
-    <string name="msg_dialog_type_not_empty">Some plans are found added to the type you want to delete just now, if you still want to delete it, please change the type of those plan firstly.</string>
+    <string name="msg_dialog_type_not_empty">Some uncompleted plans are found attached to the type you want to delete just now.\n\nNOTE: We will ignore those plans that has been completed.</string>
 
     <!--创建Type-->
     <string name="title_dialog_create_type">Create a new type</string>
@@ -65,6 +65,8 @@
     <!--PlanDetailActivity-->
     <string name="title_activity_plan_detail">Plan Detail</string>
     <string name="other_info">Type, deadline and reminder</string>
+    <string name="text_make_plan_c">Complete</string>
+    <string name="text_make_plan_uc">Make it uncompleted</string>
     <string name="edit_content_hint">Change your plan content here</string>
     <string name="prompt_empty_content">It seems that you want to save a empty content?</string>
     <string name="title_dialog_delete_plan">Are you sure?</string>
@@ -90,6 +92,8 @@
     <!--AboutActivity-->
     <string name="title_activity_about">About</string>
     <string name="version">Version</string>
+    <string name="developer">Developer</string>
+    <string name="me">Zack Zhang</string>
 
     <!--Default types-->
     <string name="to_do">To-Do</string>

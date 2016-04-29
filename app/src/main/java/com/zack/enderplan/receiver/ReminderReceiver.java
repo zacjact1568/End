@@ -10,6 +10,9 @@ import android.content.Intent;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.database.EnderPlanDB;
+import com.zack.enderplan.event.RemindedEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class ReminderReceiver extends BroadcastReceiver {
 
@@ -39,10 +42,14 @@ public class ReminderReceiver extends BroadcastReceiver {
         contentValues.put(EnderPlanDB.DB_STR_REMINDER_TIME, 0);
         enderplanDB.editPlan(planCode, contentValues);
 
-        Intent remindedIntent = new Intent("com.zack.enderplan.ACTION_REMINDED");
+        //通知界面更新（NOTE：如果app已退出，那么就相当于没有订阅者，不会执行任何操作）
+        EventBus.getDefault().post(new RemindedEvent(planCode));
+        //TODO 在退出程序但是又没有杀死进程的情况下收到提醒，DataManager中的数据将不会刷新！！
+
+        /*Intent remindedIntent = new Intent("com.zack.enderplan.ACTION_REMINDED");
         remindedIntent.putExtra("plan_code", planCode);
         remindedIntent.setPackage(context.getPackageName());
-        context.sendOrderedBroadcast(remindedIntent, null);
+        context.sendOrderedBroadcast(remindedIntent, null);*/
         /*LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
         localBroadcastManager.sendBroadcast(remindedIntent);*/
     }

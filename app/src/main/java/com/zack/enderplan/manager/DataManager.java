@@ -11,9 +11,7 @@ import com.zack.enderplan.bean.Type;
 import com.zack.enderplan.bean.TypeMark;
 import com.zack.enderplan.database.EnderPlanDB;
 import com.zack.enderplan.event.DataLoadedEvent;
-import com.zack.enderplan.event.ReminderTimeChangedEvent;
 import com.zack.enderplan.event.UcPlanCountChangedEvent;
-import com.zack.enderplan.util.LogUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -34,7 +32,7 @@ public class DataManager {
     private List<TypeMark> typeMarkList;
     private Map<String, Integer> typeCodeAndColorResMap;
     private Map<String, Integer> typeMarkAndColorResMap;
-    private Map<String, Integer> planCountOfEachTypeMap;
+    private Map<String, Integer> ucPlanCountOfEachTypeMap;
     private boolean isAlive = false;
 
     private static DataManager ourInstance = new DataManager();
@@ -46,7 +44,7 @@ public class DataManager {
         typeMarkList = new ArrayList<>();
         typeCodeAndColorResMap = new HashMap<>();
         typeMarkAndColorResMap = new HashMap<>();
-        planCountOfEachTypeMap = new HashMap<>();
+        ucPlanCountOfEachTypeMap = new HashMap<>();
     }
 
     public static DataManager getInstance() {
@@ -136,7 +134,7 @@ public class DataManager {
         uncompletedPlanCount += variation;
     }
 
-    //更新储存的提醒时间（位置未知时）
+    /*//更新储存的提醒时间（位置未知时）
     public void updateReminderTime(String planCode, long newReminderTime) {
         for (int i = 0; i < planList.size(); i++) {
             Plan plan = planList.get(i);
@@ -148,7 +146,7 @@ public class DataManager {
                 break;
             }
         }
-    }
+    }*/
 
     //获取当前计划的数量
     public int getPlanCount() {
@@ -325,52 +323,54 @@ public class DataManager {
         typeMarkAndColorResMap.remove(typeMark);
     }
 
-    //获取每个类型具有的计划数量map
-    public Map<String, Integer> getPlanCountOfEachTypeMap() {
-        return planCountOfEachTypeMap;
+    //获取每个类型具有的未完成计划数量map
+    public Map<String, Integer> getUcPlanCountOfEachTypeMap() {
+        return ucPlanCountOfEachTypeMap;
     }
 
-    //更新每个类型具有的计划数量map（添加或删除计划时）TODO 在方法名后面添加Map
-    public void updatePlanCountOfEachType(String typeCode, int variation) {
-        Integer count = planCountOfEachTypeMap.get(typeCode);
+    //更新每个类型具有的未完成计划数量map（添加或删除计划时）
+    public void updateUcPlanCountOfEachTypeMap(String typeCode, int variation) {
+        Integer count = ucPlanCountOfEachTypeMap.get(typeCode);
         if (count == null) {
             count = 0;
         } else if (count == 1 && variation == -1) {
             //结果为0，需要删除该键
-            clearPlanCountOfOneType(typeCode);
+            clearUcPlanCountOfOneType(typeCode);
             return;
         }
-        planCountOfEachTypeMap.put(typeCode, count + variation);
+        ucPlanCountOfEachTypeMap.put(typeCode, count + variation);
     }
 
-    //更新每个类型具有的计划数量map（修改计划时）
-    public void updatePlanCountOfEachType(String fromTypeCode, String toTypeCode) {
+    //更新每个类型具有的未完成计划数量map（修改计划时）
+    public void updateUcPlanCountOfEachTypeMap(String fromTypeCode, String toTypeCode) {
         if (!fromTypeCode.equals(toTypeCode)) {
-            updatePlanCountOfEachType(fromTypeCode, -1);
-            updatePlanCountOfEachType(toTypeCode, 1);
+            updateUcPlanCountOfEachTypeMap(fromTypeCode, -1);
+            updateUcPlanCountOfEachTypeMap(toTypeCode, 1);
         }
     }
 
-    //每个类型具有的计划数量map里是否有该类型
-    public boolean isPlanCountOfOneTypeExists(String typeCode) {
-        return planCountOfEachTypeMap.containsKey(typeCode);
+    //每个类型具有的未完成计划数量map里是否有该类型
+    public boolean isUcPlanCountOfOneTypeExists(String typeCode) {
+        return ucPlanCountOfEachTypeMap.containsKey(typeCode);
     }
 
-    //删除某类型具有的计划数量 TODO 方法名改成上面那样
-    public void clearPlanCountOfOneType(String typeCode) {
-        planCountOfEachTypeMap.remove(typeCode);
+    //删除某类型具有的未完成计划数量 TODO 方法名改成上面那样
+    public void clearUcPlanCountOfOneType(String typeCode) {
+        ucPlanCountOfEachTypeMap.remove(typeCode);
     }
 
     //用lists初始化一些数据对象
     private void initOtherDataUsingLists() {
         //Using planList
         for (Plan plan : planList) {
-            //初始化（计算）未完成计划的数量（仅一次）
-            if (plan.getCreationTime() != 0) {
-                uncompletedPlanCount++;
+            if (plan.getCompletionTime() != 0) {
+                //说明已经遍历到已完成的计划的部分了，可以不再遍历下去了
+                break;
             }
-            //初始化（计算）每个类型具有的计划数量map（仅一次）
-            updatePlanCountOfEachType(plan.getTypeCode(), 1);
+            //初始化（计算）未完成计划的数量（仅一次）
+            uncompletedPlanCount++;
+            //初始化（计算）每个类型具有的未完成计划数量map（仅一次）
+            updateUcPlanCountOfEachTypeMap(plan.getTypeCode(), 1);
         }
 
         //Using typeMarkResArray & typeList

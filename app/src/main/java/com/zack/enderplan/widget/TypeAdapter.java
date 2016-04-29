@@ -1,14 +1,13 @@
 package com.zack.enderplan.widget;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.application.EnderPlanApp;
 import com.zack.enderplan.bean.Type;
 
 import java.util.List;
@@ -21,22 +20,14 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
     private static final String CLASS_NAME = "TypeAdapter";
 
     private List<Type> typeList;
-    private Map<String, Integer> planCountOfEachTypeMap;
+    private Map<String, Integer> ucPlanCountOfEachTypeMap;
     private Map<String, Integer> typeMarkAndColorResMap;
     private OnTypeItemClickListener onTypeItemClickListener;
-    private String nonePlan;
-    private String onePlan;
-    private String multiPlan;
 
-    public TypeAdapter(List<Type> typeList, Map<String, Integer> typeMarkAndColorResMap, Map<String, Integer> planCountOfEachTypeMap) {
+    public TypeAdapter(List<Type> typeList, Map<String, Integer> typeMarkAndColorResMap, Map<String, Integer> ucPlanCountOfEachTypeMap) {
         this.typeList = typeList;
         this.typeMarkAndColorResMap = typeMarkAndColorResMap;
-        this.planCountOfEachTypeMap = planCountOfEachTypeMap;
-
-        Context context = EnderPlanApp.getGlobalContext();
-        nonePlan = context.getResources().getString(R.string.plan_count_of_each_type_none);
-        onePlan = context.getResources().getString(R.string.plan_count_of_each_type_one);
-        multiPlan = context.getResources().getString(R.string.plan_count_of_each_type_multi);
+        this.ucPlanCountOfEachTypeMap = ucPlanCountOfEachTypeMap;
     }
 
     @Override
@@ -52,7 +43,12 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
         holder.typeMarkIcon.setImageResource(typeMarkAndColorResMap.get(type.getTypeMark()));
         holder.firstCharText.setText(type.getTypeName().substring(0, 1));
         holder.typeNameText.setText(type.getTypeName());
-        holder.planCountOfEachTypeText.setText(getPlanCountOfEachTypeStr(type.getTypeCode()));
+
+        String ucPlanCountStr = getUcPlanCountStr(type.getTypeCode());
+        if (ucPlanCountStr != null) {
+            holder.ucPlanCountLayout.setVisibility(View.VISIBLE);
+            holder.ucPlanCountText.setText(ucPlanCountStr);
+        }
 
         if (onTypeItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -69,31 +65,29 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
         return typeList.size();
     }
 
-    private String getPlanCountOfEachTypeStr(String typeCode) {
-        Integer count = planCountOfEachTypeMap.get(typeCode);
+    private String getUcPlanCountStr(String typeCode) {
+        Integer count = ucPlanCountOfEachTypeMap.get(typeCode);
         if (count == null) {
-            count = 0;
-        }
-        switch (count) {
-            case 0:
-                return nonePlan;
-            case 1:
-                return onePlan;
-            default:
-                return String.format("%d " + multiPlan, count);
+            return null;
+        } else if (count < 10) {
+            return count.toString();
+        } else {
+            return "9+";
         }
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
         CircleImageView typeMarkIcon;
-        TextView firstCharText, typeNameText, planCountOfEachTypeText;
+        TextView firstCharText, typeNameText, ucPlanCountText;
+        FrameLayout ucPlanCountLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
             typeMarkIcon = (CircleImageView) itemView.findViewById(R.id.ic_type_mark);
             firstCharText = (TextView) itemView.findViewById(R.id.text_first_char);
             typeNameText = (TextView) itemView.findViewById(R.id.text_type_name);
-            planCountOfEachTypeText = (TextView) itemView.findViewById(R.id.text_plan_count_of_each_type);
+            ucPlanCountText = (TextView) itemView.findViewById(R.id.text_uc_plan_count);
+            ucPlanCountLayout = (FrameLayout) itemView.findViewById(R.id.layout_uc_plan_count);
         }
     }
 

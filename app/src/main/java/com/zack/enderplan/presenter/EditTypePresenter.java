@@ -82,7 +82,7 @@ public class EditTypePresenter implements Presenter<EditTypeView> {
     }
 
     //在保存编辑类型的时候调用
-    public void notifyTypeEdited(String newTypeName) {
+    public void notifyTypeEdited(String newTypeName, int position) {
         String newTypeMark = Util.parseColor(dataManager.getTypeMark(selectedPosition).getColorInt());
         //只会在类型颜色有选择时执行，所以就不必考虑selectedPosition为-1的情况
         //NOTE: 这里的typeMark还没更新
@@ -98,7 +98,7 @@ public class EditTypePresenter implements Presenter<EditTypeView> {
         values.put("type_mark", newTypeMark);
         EnderPlanDB.getInstance().editType(type.getTypeCode(), values);
         //通知AllTypesFragment和AllPlansFragment更新
-        EventBus.getDefault().post(new TypeDetailChangedEvent(type.getTypeCode()));
+        EventBus.getDefault().post(new TypeDetailChangedEvent(type.getTypeCode(), position));
     }
 
     //在取消编辑类型的时候调用

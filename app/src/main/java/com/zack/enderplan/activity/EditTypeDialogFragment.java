@@ -164,7 +164,7 @@ public class EditTypeDialogFragment extends DialogFragment implements EditTypeVi
                 getDialog().cancel();
                 break;
             case R.id.button_save:
-                editTypePresenter.notifyTypeEdited(typeNameEditor.getText().toString());
+                editTypePresenter.notifyTypeEdited(typeNameEditor.getText().toString(), position);
                 getDialog().dismiss();
                 break;
         }

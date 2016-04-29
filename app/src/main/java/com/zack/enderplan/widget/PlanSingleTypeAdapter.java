@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zack.enderplan.R;
@@ -19,7 +20,7 @@ public class PlanSingleTypeAdapter extends RecyclerView.Adapter<PlanSingleTypeAd
 
     private List<Plan> planList;
 
-    private OnCheckBoxStateChangedListener onCheckBoxStateChangedListener;
+    private OnStarMarkIconClickListener onStarMarkIconClickListener;
     private OnPlanItemClickListener onPlanItemClickListener;
 
     public PlanSingleTypeAdapter(List<Plan> planList) {
@@ -37,12 +38,15 @@ public class PlanSingleTypeAdapter extends RecyclerView.Adapter<PlanSingleTypeAd
         final Plan plan = planList.get(position);
 
         holder.contentText.setText(plan.getContent());
+        holder.starMarkIcon.setImageResource(plan.getStarStatus() == Plan.PLAN_STAR_STATUS_NOT_STARRED ?
+                R.drawable.ic_star_outline_grey600_24dp :
+                R.drawable.ic_star_color_accent_24dp);
 
-        if (onCheckBoxStateChangedListener != null) {
-            holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        if (onStarMarkIconClickListener != null) {
+            holder.starMarkIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    onCheckBoxStateChangedListener.onCheckBoxStateChanged(holder.getLayoutPosition(), isChecked);
+                public void onClick(View v) {
+                    onStarMarkIconClickListener.onStarMarkIconClick(holder.getLayoutPosition());
                 }
             });
         }
@@ -64,21 +68,13 @@ public class PlanSingleTypeAdapter extends RecyclerView.Adapter<PlanSingleTypeAd
 
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView contentText;
-        CheckBox checkBox;
+        ImageView starMarkIcon;
 
         public ViewHolder(View itemView) {
             super(itemView);
             contentText = (TextView) itemView.findViewById(R.id.text_content);
-            checkBox = (CheckBox) itemView.findViewById(R.id.check_box);
+            starMarkIcon = (ImageView) itemView.findViewById(R.id.ic_star_mark);
         }
-    }
-
-    public interface OnCheckBoxStateChangedListener {
-        void onCheckBoxStateChanged(int position, boolean isChecked);
-    }
-
-    public void setOnCheckBoxStateChangedListener(OnCheckBoxStateChangedListener listener) {
-        this.onCheckBoxStateChangedListener = listener;
     }
 
     public interface OnPlanItemClickListener {
@@ -87,5 +83,13 @@ public class PlanSingleTypeAdapter extends RecyclerView.Adapter<PlanSingleTypeAd
 
     public void setOnPlanItemClickListener(OnPlanItemClickListener listener) {
         this.onPlanItemClickListener = listener;
+    }
+
+    public interface OnStarMarkIconClickListener {
+        void onStarMarkIconClick(int itemPosition);
+    }
+
+    public void setOnStarMarkIconClickListener(OnStarMarkIconClickListener listener) {
+        this.onStarMarkIconClickListener = listener;
     }
 }

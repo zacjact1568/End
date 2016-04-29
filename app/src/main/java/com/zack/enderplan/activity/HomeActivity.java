@@ -52,12 +52,13 @@ public class HomeActivity extends BaseActivity implements HomeView,
     private TextView ucPlanCountText;
     private TextView ucPlanDscptText;
     private HomePresenter homePresenter;
-    private RemindedReceiver remindedReceiver;
+    //private RemindedReceiver remindedReceiver;
 
     private static final String LOG_TAG = "HomeActivity";
     private static final String TAG_ALL_TYPES = "all_types";
     private static final String TAG_ALL_PLANS = "all_plans";
     private static final int REQ_CODE_CREATE_PLAN = 0;
+    public static final int REQ_CODE_PLAN_DETAIL = 1;
     private static final int CR_ANIM_DURATION = 300;
 
     @Override
@@ -82,19 +83,19 @@ public class HomeActivity extends BaseActivity implements HomeView,
         navView.setNavigationItemSelectedListener(this);
 
         AllPlansFragment allPlansFragment = new AllPlansFragment();
-        getFragmentManager().beginTransaction().replace(R.id.frame_layout, allPlansFragment, TAG_ALL_PLANS).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, allPlansFragment, TAG_ALL_PLANS).commit();
 
-        IntentFilter intentFilter = new IntentFilter();
+        /*IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.zack.enderplan.ACTION_REMINDED");
         intentFilter.setPriority(0);
         remindedReceiver = new RemindedReceiver();
-        registerReceiver(remindedReceiver, intentFilter);
+        registerReceiver(remindedReceiver, intentFilter);*/
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(remindedReceiver);
+        //unregisterReceiver(remindedReceiver);
         homePresenter.detachView();
     }
 
@@ -105,8 +106,34 @@ public class HomeActivity extends BaseActivity implements HomeView,
         }
         switch (requestCode) {
             case REQ_CODE_CREATE_PLAN:
-                //Plan newPlan = data.getParcelableExtra("plan_detail");
                 homePresenter.notifyPlanCreated();
+                break;
+            case REQ_CODE_PLAN_DETAIL:
+                switch (resultCode) {
+                    case RESULT_PLAN_DETAIL_AND_STATUS_CHANGED:
+                        homePresenter.notifyPlanDetailAndStatusChanged(
+                                data.getIntExtra("position", 0),
+                                data.getStringExtra("plan_code")
+                        );
+                        break;
+                    case RESULT_PLAN_DETAIL_CHANGED:
+                        homePresenter.notifyPlanDetailChanged(data.getIntExtra("position", 0));
+                        break;
+                    case RESULT_PLAN_STATUS_CHANGED:
+                        homePresenter.notifyPlanStatusChanged(
+                                data.getIntExtra("position", 0),
+                                data.getStringExtra("plan_code")
+                        );
+                        break;
+                    case RESULT_PLAN_DELETED:
+                        homePresenter.notifyPlanDeleted(
+                                data.getIntExtra("position", 0),
+                                data.getStringExtra("plan_code"),
+                                data.getStringExtra("content"),
+                                data.getBooleanExtra("is_completed", false)
+                        );
+                        break;
+                }
                 break;
             default:
                 break;
@@ -240,6 +267,12 @@ public class HomeActivity extends BaseActivity implements HomeView,
         Snackbar.make(frameLayout, text, Snackbar.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void onPlanDeleted(String content) {
+        String text = content + " " + getResources().getString(R.string.deleted_prompt);
+        Snackbar.make(frameLayout, text, Snackbar.LENGTH_SHORT).show();
+    }
+
     @OnClick(R.id.fab)
     public void onClick() {
         if (getSupportFragmentManager().findFragmentByTag(TAG_ALL_TYPES) != null) {
@@ -251,12 +284,12 @@ public class HomeActivity extends BaseActivity implements HomeView,
         startActivityForResult(intent, REQ_CODE_CREATE_PLAN);
     }
 
-    class RemindedReceiver extends BroadcastReceiver {
+    /*class RemindedReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             String planCode = intent.getStringExtra("plan_code");
             homePresenter.notifyReminderOff(planCode);
         }
-    }
+    }*/
 }

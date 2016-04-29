@@ -7,6 +7,4 @@ public interface AllPlansView {
     void onPlanItemClicked(int position);
 
     void onPlanDeleted(String content, int position, Plan planUseForTakingBack);
-
-    void onPlanDeleted(String content);
 }

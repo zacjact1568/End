@@ -3,6 +3,8 @@ package com.zack.enderplan.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Locale;
+
 public class Plan implements Parcelable {
 
     public static final int PLAN_STAR_STATUS_NOT_STARRED = 0;
@@ -137,5 +139,12 @@ public class Plan implements Parcelable {
         dest.writeLong(completionTime);
         dest.writeInt(starStatus);
         dest.writeLong(reminderTime);
+    }
+
+    @Override
+    public String toString() {
+        String format = "Plan Code: %s%nContent: %s%nType Code: %s%nCreation Time: %d%nDeadline: %d%nCompletion Time: %d%nStar Status: %d%nReminder Time: %d";
+        return String.format(Locale.getDefault(), format,
+                planCode, content, typeCode, creationTime, deadline, completionTime, starStatus, reminderTime);
     }
 }

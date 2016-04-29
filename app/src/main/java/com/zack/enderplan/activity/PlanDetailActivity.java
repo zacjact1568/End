@@ -2,7 +2,6 @@ package com.zack.enderplan.activity;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,8 +9,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,19 +20,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.bean.Plan;
-import com.zack.enderplan.bean.Type;
-import com.zack.enderplan.database.EnderPlanDB;
-import com.zack.enderplan.manager.ReminderManager;
 import com.zack.enderplan.presenter.PlanDetailPresenter;
 import com.zack.enderplan.view.PlanDetailView;
 import com.zack.enderplan.widget.TypeSpinnerAdapter;
 
-import java.util.List;
-
 import butterknife.Bind;
 import butterknife.BindColor;
-import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -45,7 +35,7 @@ public class PlanDetailActivity extends BaseActivity
 
     private PlanDetailPresenter planDetailPresenter;
     private boolean flag = true;
-    private RemindedReceiver remindedReceiver;
+    //private RemindedReceiver remindedReceiver;
 
     private static final String TAG_DEADLINE = "deadline";
     private static final String TAG_REMINDER = "reminder";
@@ -70,6 +60,8 @@ public class PlanDetailActivity extends BaseActivity
     TextView reminderDescriptionText;
     @Bind(R.id.fab)
     FloatingActionButton fab;
+    @Bind(R.id.btn_switch_plan_status)
+    TextView switchPlanStatusButton;
 
     @BindColor(R.color.colorPrimary)
     int primaryColor;
@@ -87,27 +79,25 @@ public class PlanDetailActivity extends BaseActivity
 
         planDetailPresenter = new PlanDetailPresenter(this, getIntent().getIntExtra("position", 0));
 
-        planDetailPresenter.getInitialDataAndShow();
+        planDetailPresenter.setInitialView();
 
-        planDetailPresenter.initSpinner();
-
-        IntentFilter intentFilter = new IntentFilter();
+        /*IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.zack.enderplan.ACTION_REMINDED");
         intentFilter.setPriority(1);
         remindedReceiver = new RemindedReceiver();
-        registerReceiver(remindedReceiver, intentFilter);
+        registerReceiver(remindedReceiver, intentFilter);*/
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        planDetailPresenter.syncWithDatabase();
+        //planDetailPresenter.syncWithDatabase();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(remindedReceiver);
+        //unregisterReceiver(remindedReceiver);
         planDetailPresenter.detachView();
     }
 
@@ -159,7 +149,7 @@ public class PlanDetailActivity extends BaseActivity
         planDetailPresenter.notifyReminderRemoved();
     }
 
-    @OnClick({R.id.text_content, R.id.item_view_deadline, R.id.item_view_reminder, R.id.fab})
+    @OnClick({R.id.text_content, R.id.item_view_deadline, R.id.item_view_reminder, R.id.fab, R.id.btn_switch_plan_status})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.text_content:
@@ -174,31 +164,24 @@ public class PlanDetailActivity extends BaseActivity
             case R.id.fab:
                 planDetailPresenter.notifyStarStatusChanged();
                 break;
+            case R.id.btn_switch_plan_status:
+                planDetailPresenter.notifyPlanStatusChanged();
+                break;
         }
     }
 
     @Override
-    public void showInitialView(String content, boolean isStarred, boolean hasDeadline, String deadline,
-                                boolean hasReminder, String reminderTime) {
+    public void showInitialView(String content, boolean isStarred, TypeSpinnerAdapter typeSpinnerAdapter,
+                                int posInSpinner, boolean hasDeadline, String deadline, boolean hasReminder,
+                                String reminderTime, String spsButtonText) {
+
         contentText.setText(content);
+
         if (isStarred) {
             fab.setImageResource(R.drawable.ic_star_color_accent_24dp);
             starMark.setVisibility(View.VISIBLE);
         }
-        if (hasDeadline) {
-            deadlineMark.setVisibility(View.VISIBLE);
-            deadlineDescriptionText.setText(deadline);
-            deadlineDescriptionText.setTextColor(primaryColor);
-        }
-        if (hasReminder) {
-            reminderMark.setVisibility(View.VISIBLE);
-            reminderDescriptionText.setText(reminderTime);
-            reminderDescriptionText.setTextColor(primaryColor);
-        }
-    }
 
-    @Override
-    public void showInitialSpinner(TypeSpinnerAdapter typeSpinnerAdapter, int posInSpinner) {
         spinner.setAdapter(typeSpinnerAdapter);
         spinner.setSelection(posInSpinner);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -217,6 +200,20 @@ public class PlanDetailActivity extends BaseActivity
 
             }
         });
+
+        if (hasDeadline) {
+            deadlineMark.setVisibility(View.VISIBLE);
+            deadlineDescriptionText.setText(deadline);
+            deadlineDescriptionText.setTextColor(primaryColor);
+        }
+
+        if (hasReminder) {
+            reminderMark.setVisibility(View.VISIBLE);
+            reminderDescriptionText.setText(reminderTime);
+            reminderDescriptionText.setTextColor(primaryColor);
+        }
+
+        switchPlanStatusButton.setText(spsButtonText);
     }
 
     @Override
@@ -234,11 +231,19 @@ public class PlanDetailActivity extends BaseActivity
     }
 
     @Override
-    public void onPlanDeleted(String content) {
+    public void onPlanDeleted(int position, String planCode, String content, boolean isCompleted) {
         Intent intent = new Intent();
+        intent.putExtra("position", position);
+        intent.putExtra("plan_code", planCode);
         intent.putExtra("content", content);
-        setResult(RESULT_FIRST_USER, intent);
+        intent.putExtra("is_completed", isCompleted);
+        setResult(RESULT_PLAN_DELETED, intent);
         finish();
+    }
+
+    @Override
+    public void onPlanStatusChanged(String newSpsButtonText) {
+        switchPlanStatusButton.setText(newSpsButtonText);
     }
 
     @Override
@@ -284,8 +289,17 @@ public class PlanDetailActivity extends BaseActivity
     }
 
     @Override
-    public void onActivityFinished() {
-        setResult(RESULT_OK);
+    public void onActivityFinished(int position, String planCode, boolean isPlanDetailChanged, boolean isPlanStatusChanged) {
+        Intent intent = new Intent();
+        intent.putExtra("position", position);
+        intent.putExtra("plan_code", planCode);
+        if (isPlanDetailChanged && isPlanStatusChanged) {
+            setResult(RESULT_PLAN_DETAIL_AND_STATUS_CHANGED, intent);
+        } else if (isPlanDetailChanged) {
+            setResult(RESULT_PLAN_DETAIL_CHANGED, intent);
+        } else if (isPlanStatusChanged) {
+            setResult(RESULT_PLAN_STATUS_CHANGED, intent);
+        }
     }
 
     @Override
@@ -324,12 +338,12 @@ public class PlanDetailActivity extends BaseActivity
         reminderMark.setVisibility(View.GONE);
     }
 
-    class RemindedReceiver extends BroadcastReceiver {
+    /*class RemindedReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             planDetailPresenter.notifyReminderOff(intent.getStringExtra("plan_code"));
             abortBroadcast();
         }
-    }
+    }*/
 }

@@ -29,6 +29,12 @@ public class LogUtil {
         }
     }
 
+    public static void d(String tag, int msg) {
+        if (level <= DEBUG) {
+            Log.d(tag, msg + "");
+        }
+    }
+
     public static void i(String tag, String msg) {
         if (level <= INFO) {
             Log.i(tag, msg);
@@ -48,6 +54,14 @@ public class LogUtil {
     }
 
     public static void d(String msg) {
-        Log.d(DEF_TAG, msg);
+        d(DEF_TAG, msg);
+    }
+
+    public static void d(int msg) {
+        d(DEF_TAG, msg);
+    }
+
+    public static void here() {
+        d("****HERE****");
     }
 }

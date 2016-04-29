@@ -71,13 +71,10 @@
     <string name="msg_dialog_delete_plan_pt2">”将会被立即删除。</string>
     <string name="title_activity_reminder">EnderPlan提醒</string>
     <string name="action_all_types">所有类型</string>
-    <string name="plan_count_of_each_type_multi">个计划</string>
-    <string name="plan_count_of_each_type_none">没有计划</string>
-    <string name="plan_count_of_each_type_one">1 个计划</string>
     <string name="type_name_hint">你的新类型的名称</string>
     <string name="title_dialog_type_not_empty">无法删除</string>
     <string name="title_dialog_create_type">创建一个新类型</string>
-    <string name="msg_dialog_type_not_empty">我们发现有一些计划属于你刚才想要删除的那个类型，如果你仍然想删除它，请先改变那些计划所属的类型。</string>
+    <string name="msg_dialog_type_not_empty">我们发现有一些计划属于你刚才想要删除的那个类型。\n\n注意：我们是不会管那些已经完成的计划的。</string>
     <string name="pref_title_theme">主题</string>
     <string name="pref_title_night_mode">夜间模式</string>
     <string name="hint_content_fast">快速创建一个新计划</string>
@@ -85,4 +82,11 @@
     <string name="toast_create_plan_failed">内容不能为空</string>
     <string name="toast_create_plan_success">创建成功</string>
     <string name="hint_edit_type_name">类型名称</string>
+    <string name="text_make_plan_c">完成</string>
+    <string name="text_make_plan_uc">未完成</string>
+    <string name="uc_plan_count_of_each_type_multi">个计划未完成</string>
+    <string name="uc_plan_count_of_each_type_none">没有未完成的计划</string>
+    <string name="uc_plan_count_of_each_type_one">1 个计划未完成</string>
+    <string name="developer">开发者</string>
+    <string name="me">全杰是也</string>
 </resources>

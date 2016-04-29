@@ -1,16 +1,17 @@
 package com.zack.enderplan.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,12 +34,10 @@ public class TypeDetailDialogFragment extends BottomSheetDialogFragment implemen
     TextView firstCharText;
     @Bind(R.id.text_type_name)
     TextView typeNameText;
-    @Bind(R.id.text_plan_count)
-    TextView planCountText;
+    @Bind(R.id.text_uc_plan_count)
+    TextView ucPlanCountText;
     @Bind(R.id.editor_content)
     EditText contentEditor;
-    @Bind(R.id.ic_clear_text)
-    ImageView clearTextIcon;
     @Bind(R.id.list_uc_plan)
     RecyclerView ucPlanList;
 
@@ -112,11 +111,11 @@ public class TypeDetailDialogFragment extends BottomSheetDialogFragment implemen
 
     @Override
     public void showInitialView(int typeMarkColorRes, String firstChar, String typeName,
-                                String planCountStr, PlanSingleTypeAdapter planSingleTypeAdapter) {
+                                String ucPlanCountStr, PlanSingleTypeAdapter planSingleTypeAdapter) {
         typeMarkIcon.setImageResource(typeMarkColorRes);
         firstCharText.setText(firstChar);
         typeNameText.setText(typeName);
-        planCountText.setText(planCountStr);
+        ucPlanCountText.setText(ucPlanCountStr);
 
         contentEditor.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -128,10 +127,10 @@ public class TypeDetailDialogFragment extends BottomSheetDialogFragment implemen
             }
         });
 
-        planSingleTypeAdapter.setOnCheckBoxStateChangedListener(new PlanSingleTypeAdapter.OnCheckBoxStateChangedListener() {
+        planSingleTypeAdapter.setOnStarMarkIconClickListener(new PlanSingleTypeAdapter.OnStarMarkIconClickListener() {
             @Override
-            public void onCheckBoxStateChanged(int position, boolean isChecked) {
-                typeDetailPresenter.notifyPlanCompleted(position);
+            public void onStarMarkIconClick(int itemPosition) {
+                typeDetailPresenter.notifyPlanStarStatusChanged(itemPosition);
             }
         });
 
@@ -145,18 +144,62 @@ public class TypeDetailDialogFragment extends BottomSheetDialogFragment implemen
         ucPlanList.setLayoutManager(new LinearLayoutManager(getActivity()));
         ucPlanList.setHasFixedSize(true);
         ucPlanList.setAdapter(planSingleTypeAdapter);
+        new ItemTouchHelper(new SingleTypeUcPlanListItemTouchCallback()).attachToRecyclerView(ucPlanList);
     }
 
     @Override
-    public void onPlanCreationSuccess(String planCountStr) {
+    public void onPlanCreationSuccess(String ucPlanCountStr) {
         Toast.makeText(getActivity(), R.string.toast_create_plan_success, Toast.LENGTH_SHORT).show();
         ucPlanList.scrollToPosition(0);
-        planCountText.setText(planCountStr);
+        ucPlanCountText.setText(ucPlanCountStr);
         contentEditor.setText("");
     }
 
     @Override
     public void onPlanCreationFailed() {
         Toast.makeText(getActivity(), R.string.toast_create_plan_failed, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onUcPlanCountChanged(String ucPlanCountStr) {
+        ucPlanCountText.setText(ucPlanCountStr);
+    }
+
+    @Override
+    public void onPlanItemClicked(int posInPlanList) {
+        Intent intent = new Intent(getActivity(), PlanDetailActivity.class);
+        intent.putExtra("position", posInPlanList);
+        getActivity().startActivityForResult(intent, HomeActivity.REQ_CODE_PLAN_DETAIL);
+    }
+
+    private class SingleTypeUcPlanListItemTouchCallback extends ItemTouchHelper.Callback {
+
+        @Override
+        public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+            int swipeFlags = ItemTouchHelper.END;
+            return makeMovementFlags(0, swipeFlags);
+        }
+
+        @Override
+        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            int position = viewHolder.getLayoutPosition();
+            switch (direction) {
+                case ItemTouchHelper.END:
+                    typeDetailPresenter.notifyPlanCompleted(position);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        @Override
+        public float getSwipeThreshold(RecyclerView.ViewHolder viewHolder) {
+            return .6f;
+        }
     }
 }

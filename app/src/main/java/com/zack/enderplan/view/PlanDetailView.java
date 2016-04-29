@@ -6,14 +6,15 @@ import com.zack.enderplan.widget.TypeSpinnerAdapter;
 
 public interface PlanDetailView {
 
-    void showInitialView(String content, boolean isStarred, boolean hasDeadline, String deadline,
-                             boolean hasReminder, String reminderTime);
-
-    void showInitialSpinner(TypeSpinnerAdapter typeSpinnerAdapter, int posInSpinner);
+    void showInitialView(String content, boolean isStarred, TypeSpinnerAdapter typeSpinnerAdapter,
+                         int posInSpinner, boolean hasDeadline, String deadline, boolean hasReminder,
+                         String reminderTime, String spsButtonText);
 
     void showPlanDeletionAlertDialog(String content);
 
-    void onPlanDeleted(String content);
+    void onPlanDeleted(int position, String planCode, String content, boolean isCompleted);
+
+    void onPlanStatusChanged(String newSpsButtonText);
 
     void showContentEditDialog(String content);
 
@@ -27,7 +28,7 @@ public interface PlanDetailView {
 
     void onCreateReminderDialog(DateTimePickerDialogFragment reminderDialog);
 
-    void onActivityFinished();
+    void onActivityFinished(int position, String planCode, boolean isPlanDetailChanged, boolean isPlanStatusChanged);
 
     void onDeadlineSelected(boolean isSetFirstTime, String deadline);
 

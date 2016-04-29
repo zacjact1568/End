@@ -25,7 +25,20 @@
             android:id="@+id/version_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="This is Version"/>
+            tools:text="20160429"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/developer"
+            android:textSize="18sp"
+            android:textColor="?attr/colorPrimary"
+            android:layout_marginTop="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/me"/>
 
     </LinearLayout>
 

@@ -7,6 +7,9 @@ import com.zack.enderplan.bean.Type;
 import com.zack.enderplan.database.EnderPlanDB;
 import com.zack.enderplan.event.DataLoadedEvent;
 import com.zack.enderplan.event.PlanCreatedEvent;
+import com.zack.enderplan.event.PlanDeletedEvent;
+import com.zack.enderplan.event.PlanDetailChangedEvent;
+import com.zack.enderplan.event.PlanStatusChangedEvent;
 import com.zack.enderplan.event.TypeCreatedEvent;
 import com.zack.enderplan.event.TypeDetailChangedEvent;
 import com.zack.enderplan.manager.DataManager;
@@ -22,7 +25,7 @@ public class AllTypesPresenter implements Presenter<AllTypesView> {
     private DataManager dataManager;
     private TypeAdapter typeAdapter;
     private EnderPlanDB enderplanDB;
-    private int typeItemClickPosition;
+    //private int typeItemClickPosition;
 
     public AllTypesPresenter(AllTypesView allTypesView) {
         attachView(allTypesView);
@@ -59,11 +62,11 @@ public class AllTypesPresenter implements Presenter<AllTypesView> {
     }
 
     public void createTypeAdapter() {
-        typeAdapter = new TypeAdapter(dataManager.getTypeList(), dataManager.getTypeMarkAndColorResMap(), dataManager.getPlanCountOfEachTypeMap());
+        typeAdapter = new TypeAdapter(dataManager.getTypeList(), dataManager.getTypeMarkAndColorResMap(), dataManager.getUcPlanCountOfEachTypeMap());
         typeAdapter.setOnTypeItemClickListener(new TypeAdapter.OnTypeItemClickListener() {
             @Override
             public void onTypeItemClick(View itemView, int position) {
-                typeItemClickPosition = position;
+                //typeItemClickPosition = position;
                 allTypesView.onShowTypeDetailDialogFragment(position);
             }
         });
@@ -92,10 +95,10 @@ public class AllTypesPresenter implements Presenter<AllTypesView> {
         dataManager.removeFromTypeList(position);
         typeAdapter.notifyItemRemoved(position);
 
-        if (dataManager.isPlanCountOfOneTypeExists(type.getTypeCode())) {
+        if (dataManager.isUcPlanCountOfOneTypeExists(type.getTypeCode())) {
             dataManager.addToTypeList(position, type);
             typeAdapter.notifyItemInserted(position);
-            //弹提示有计划属于该类型的dialog
+            //弹提示有未完成的计划属于该类型的dialog
             allTypesView.onShowPlanCountOfOneTypeExistsDialog();
         } else {
             dataManager.updateTypeMarkList(type.getTypeMark());
@@ -126,11 +129,30 @@ public class AllTypesPresenter implements Presenter<AllTypesView> {
 
     @Subscribe
     public void onPlanCreated(PlanCreatedEvent event) {
-        typeAdapter.notifyItemChanged(typeItemClickPosition);
+        //在Plan方面的状态改变，一般用全部刷新
+        typeAdapter.notifyDataSetChanged();
     }
 
     @Subscribe
     public void onTypeDetailChanged(TypeDetailChangedEvent event) {
-        typeAdapter.notifyItemChanged(typeItemClickPosition);
+        typeAdapter.notifyItemChanged(event.position);
+    }
+
+    @Subscribe
+    public void onPlanDetailChanged(PlanDetailChangedEvent event) {
+        //因为可能有多个item需要更新，比较麻烦，所以直接全部刷新了
+        typeAdapter.notifyDataSetChanged();
+    }
+
+    @Subscribe
+    public void onPlanStatusChanged(PlanStatusChangedEvent event) {
+        //因为可能有多个item需要更新，比较麻烦，所以直接全部刷新了
+        typeAdapter.notifyDataSetChanged();
+    }
+
+    @Subscribe
+    public void onPlanDeleted(PlanDeletedEvent event) {
+        //TODO 后续可改成定点刷新
+        typeAdapter.notifyDataSetChanged();
     }
 }
