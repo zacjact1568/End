@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.bean.Plan;
@@ -50,7 +51,7 @@ public class HomeActivity extends BaseActivity implements HomeView,
     DrawerLayout drawerLayout;
 
     private TextView ucPlanCountText;
-    private TextView ucPlanDscptText;
+    //private TextView ucPlanDscptText;
     private HomePresenter homePresenter;
     //private RemindedReceiver remindedReceiver;
 
@@ -69,7 +70,7 @@ public class HomeActivity extends BaseActivity implements HomeView,
 
         View navHeaderView = navView.getHeaderView(0);
         ucPlanCountText = ButterKnife.findById(navHeaderView, R.id.text_uc_plan_count);
-        ucPlanDscptText = ButterKnife.findById(navHeaderView, R.id.text_uc_plan_dscpt);
+        //ucPlanDscptText = ButterKnife.findById(navHeaderView, R.id.text_uc_plan_dscpt);
 
         homePresenter = new HomePresenter(this);
         homePresenter.initDrawerHeaderContent();
@@ -142,11 +143,15 @@ public class HomeActivity extends BaseActivity implements HomeView,
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+        homePresenter.notifyBackPressed(
+                drawerLayout.isDrawerOpen(GravityCompat.START),
+                getSupportFragmentManager().findFragmentByTag(TAG_ALL_TYPES) == null
+        );
+        /*if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
-        }
+        }*/
     }
 
     @Override
@@ -218,32 +223,6 @@ public class HomeActivity extends BaseActivity implements HomeView,
         return true;
     }
 
-    /*@Override
-    public void onDateTimeSelected(long newTimeInMillis) {
-        AllPlansFragment allPlansFragment = (AllPlansFragment) getFragmentManager().findFragmentByTag(TAG_ALL_PLANS);
-        int planItemClickPosition = allPlansFragment.getPlanItemClickPosition();
-        planModel.getPlanList().get(planItemClickPosition).setReminderTime(newTimeInMillis);
-        //allPlansFragment.getPlanList().get(planItemClickPosition).setReminderTime(newTimeInMillis);
-        allPlansFragment.getPlanAdapter().notifyItemChanged(planItemClickPosition);
-        //TODO 设定提醒，存储数据
-    }
-
-    @Override
-    public void onDateTimeRemoved() {
-        AllPlansFragment allPlansFragment = (AllPlansFragment) getFragmentManager().findFragmentByTag(TAG_ALL_PLANS);
-        int planItemClickPosition = allPlansFragment.getPlanItemClickPosition();
-        planModel.getPlanList().get(planItemClickPosition).setReminderTime(0);
-        //allPlansFragment.getPlanList().get(planItemClickPosition).setReminderTime(0);
-        allPlansFragment.getPlanAdapter().notifyItemChanged(planItemClickPosition);
-        //TODO 取消提醒，存储数据
-    }*/
-
-    /*private void updateDrawerHeaderContent(int uncompletedPlanCount) {
-        uncompletedPlan.setText(String.valueOf(uncompletedPlanCount));
-        uncompletedPlanDescription.setText(getResources().getString(uncompletedPlanCount == 0 ?
-                R.string.plan_uncompleted_none : R.string.plan_uncompleted_exist));
-    }*/
-
     private void makeCircularRevealAnimationOnFab(int imageRes) {
         Animator disappearanceAnim = ViewAnimationUtils.createCircularReveal(fab, fab.getWidth() / 2, fab.getHeight() / 2, fab.getWidth() / 2, 0);
         disappearanceAnim.setDuration(CR_ANIM_DURATION);
@@ -255,9 +234,9 @@ public class HomeActivity extends BaseActivity implements HomeView,
     }
 
     @Override
-    public void updateDrawerHeaderContent(String ucPlanCountStr, String ucPlanDscptStr) {
+    public void updateDrawerHeaderContent(String ucPlanCountStr) {
         ucPlanCountText.setText(ucPlanCountStr);
-        ucPlanDscptText.setText(ucPlanDscptStr);
+        //ucPlanDscptText.setText(ucPlanDscptStr);
     }
 
     @Override
@@ -271,6 +250,21 @@ public class HomeActivity extends BaseActivity implements HomeView,
     public void onPlanDeleted(String content) {
         String text = content + " " + getResources().getString(R.string.deleted_prompt);
         Snackbar.make(frameLayout, text, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onCloseDrawer() {
+        drawerLayout.closeDrawer(GravityCompat.START);
+    }
+
+    @Override
+    public void onPressBackKey() {
+        super.onBackPressed();
+    }
+
+    @Override
+    public void onShowDoubleClickToast() {
+        Toast.makeText(this, R.string.toast_double_click_exit, Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.fab)

@@ -22,8 +22,8 @@ public class HomePresenter implements Presenter<HomeView> {
 
     private HomeView homeView;
     private DataManager dataManager;
-    private String nonePlan;
-    private String planExist;
+    private long lastBackKeyPressedTime;
+    //private String nonePlan, onePlan, multiPlan;
 
     private static final String LOG_TAG = "HomePresenter";
 
@@ -31,9 +31,10 @@ public class HomePresenter implements Presenter<HomeView> {
         attachView(homeView);
         dataManager = DataManager.getInstance();
 
-        Context context = EnderPlanApp.getGlobalContext();
-        nonePlan = context.getResources().getString(R.string.plan_uncompleted_none);
-        planExist = context.getResources().getString(R.string.plan_uncompleted_exist);
+        /*Context context = EnderPlanApp.getGlobalContext();
+        nonePlan = context.getResources().getString(R.string.plan_uc_none);
+        onePlan = context.getResources().getString(R.string.plan_uc_one);
+        multiPlan = context.getResources().getString(R.string.plan_uc_multi);*/
     }
 
     @Override
@@ -46,6 +47,7 @@ public class HomePresenter implements Presenter<HomeView> {
     public void detachView() {
         homeView = null;
         EventBus.getDefault().unregister(this);
+        dataManager.clearData();
     }
 
     public void initDrawerHeaderContent() {
@@ -54,7 +56,15 @@ public class HomePresenter implements Presenter<HomeView> {
 
     //显示未完成的计划
     private void showUcPlanCount(int ucPlanCount) {
-        homeView.updateDrawerHeaderContent(String.valueOf(ucPlanCount), ucPlanCount == 0 ? nonePlan : planExist);
+        /*String ucPlanCountDscpt = "";
+        if (ucPlanCount == 0) {
+            ucPlanCountDscpt = nonePlan;
+        } else if (ucPlanCount == 1) {
+            ucPlanCountDscpt = onePlan;
+        } else if (ucPlanCount > 1) {
+            ucPlanCountDscpt = multiPlan;
+        }*/
+        homeView.updateDrawerHeaderContent(String.valueOf(ucPlanCount));
     }
 
     public void notifyPlanCreated() {
@@ -79,6 +89,7 @@ public class HomePresenter implements Presenter<HomeView> {
 
     public void notifyPlanStatusChanged(int position, String planCode) {
         EventBus.getDefault().post(new PlanStatusChangedEvent(position, planCode));
+        showUcPlanCount(dataManager.getUcPlanCount());
     }
 
     //通过PlanDetailActivity删除时（不能撤销）
@@ -94,6 +105,20 @@ public class HomePresenter implements Presenter<HomeView> {
 
         //show SnackBar
         homeView.onPlanDeleted(content);
+    }
+
+    public void notifyBackPressed(boolean isDrawerOpen, boolean isOnRootFragment) {
+        long currentTime = System.currentTimeMillis();
+        if (isDrawerOpen) {
+            homeView.onCloseDrawer();
+        } else if (!isOnRootFragment || currentTime - lastBackKeyPressedTime < 1500) {
+            //不是在根Fragment（可以直接退出的Fragment）上，或者连续点击间隔在1.5s以内，执行原back键操作
+            homeView.onPressBackKey();
+        } else {
+            //否则更新上次点击back键的时间，并显示一个toast
+            lastBackKeyPressedTime = currentTime;
+            homeView.onShowDoubleClickToast();
+        }
     }
 
     /*public void notifyReminderOff(String planCode) {

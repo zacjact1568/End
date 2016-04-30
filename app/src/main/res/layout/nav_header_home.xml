@@ -12,13 +12,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <!--<de.hdodenhof.circleimageview.CircleImageView-->
-        <!--android:id="@+id/imageView"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:paddingTop="@dimen/nav_header_vertical_spacing"-->
-        <!--android:src="@mipmap/enderplan_icon" />-->
-
     <TextView
         android:id="@+id/text_uc_plan_count"
         android:layout_width="wrap_content"
@@ -26,7 +19,25 @@
         android:textSize="60sp"
         android:textStyle="bold"
         android:textColor="@android:color/white"
-        tools:text="0"/>
+        android:typeface="monospace"
+        android:clickable="true"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        tools:text="4"/>
+
+    <TextView
+        android:id="@+id/text_view_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_view_details"
+        android:clickable="true"
+        android:background="?android:attr/selectableItemBackground"/>
+
+    <!--<de.hdodenhof.circleimageview.CircleImageView-->
+        <!--android:id="@+id/imageView"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:paddingTop="@dimen/nav_header_vertical_spacing"-->
+        <!--android:src="@mipmap/enderplan_icon" />-->
 
     <!--<TextView-->
         <!--android:layout_width="match_parent"-->
@@ -34,11 +45,5 @@
         <!--android:paddingTop="@dimen/nav_header_vertical_spacing"-->
         <!--android:text="2016 © ZACK DESIGN"-->
         <!--android:textAppearance="@style/TextAppearance.AppCompat.Body1" />-->
-
-    <TextView
-        android:id="@+id/text_uc_plan_dscpt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="Well done!"/>
 
 </LinearLayout>

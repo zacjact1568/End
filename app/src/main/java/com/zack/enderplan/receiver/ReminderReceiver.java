@@ -38,13 +38,11 @@ public class ReminderReceiver extends BroadcastReceiver {
                 .build();
         manager.notify(planCode, 0, notification);
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(EnderPlanDB.DB_STR_REMINDER_TIME, 0);
-        enderplanDB.editPlan(planCode, contentValues);
+        //数据库存储
+        enderplanDB.editReminderTime(planCode, 0);
 
-        //通知界面更新（NOTE：如果app已退出，那么就相当于没有订阅者，不会执行任何操作）
+        //通知界面更新（NOTE：如果app已退出，那么就相当于没有订阅者，不会执行界面更新的操作）
         EventBus.getDefault().post(new RemindedEvent(planCode));
-        //TODO 在退出程序但是又没有杀死进程的情况下收到提醒，DataManager中的数据将不会刷新！！
 
         /*Intent remindedIntent = new Intent("com.zack.enderplan.ACTION_REMINDED");
         remindedIntent.putExtra("plan_code", planCode);

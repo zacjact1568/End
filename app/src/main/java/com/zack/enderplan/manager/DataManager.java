@@ -28,7 +28,7 @@ public class DataManager {
     private EnderPlanDB enderplanDB;
     private List<Plan> planList;
     private List<Type> typeList;
-    private int uncompletedPlanCount = 0;
+    private int uncompletedPlanCount;
     private List<TypeMark> typeMarkList;
     private Map<String, Integer> typeCodeAndColorResMap;
     private Map<String, Integer> typeMarkAndColorResMap;
@@ -41,6 +41,7 @@ public class DataManager {
         enderplanDB = EnderPlanDB.getInstance();
         planList = new ArrayList<>();
         typeList = new ArrayList<>();
+        uncompletedPlanCount = 0;
         typeMarkList = new ArrayList<>();
         typeCodeAndColorResMap = new HashMap<>();
         typeMarkAndColorResMap = new HashMap<>();
@@ -54,9 +55,24 @@ public class DataManager {
     //从数据库加载
     public void loadFromDatabase() {
         if (!isAlive) {
-            //第一次或进程被杀后再次打开app，需要从数据库加载
+            //打开app后，从数据库加载数据
             isAlive = true;
             new LoadDataTask().execute();
+        }
+    }
+
+    //清除数据
+    public void clearData() {
+        if (isAlive) {
+            //退出app后，清除数据（但本类不会消失，除非进程被杀）
+            planList.clear();
+            typeList.clear();
+            uncompletedPlanCount = 0;
+            typeMarkList.clear();
+            typeCodeAndColorResMap.clear();
+            typeMarkAndColorResMap.clear();
+            ucPlanCountOfEachTypeMap.clear();
+            isAlive = false;
         }
     }
 
