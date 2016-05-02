@@ -17,6 +17,7 @@ import com.zack.enderplan.event.TypeDetailChangedEvent;
 import com.zack.enderplan.event.UcPlanCountChangedEvent;
 import com.zack.enderplan.manager.DataManager;
 import com.zack.enderplan.manager.ReminderManager;
+import com.zack.enderplan.util.LogUtil;
 import com.zack.enderplan.view.AllPlansView;
 import com.zack.enderplan.widget.PlanAdapter;
 
@@ -239,9 +240,10 @@ public class AllPlansPresenter implements Presenter<AllPlansView> {
 
     @Subscribe
     public void onReminded(RemindedEvent event) {
-        int position = dataManager.getPlanLocationInPlanList(event.planCode);
-        dataManager.getPlan(position).setReminderTime(0);
+        /*int position = dataManager.getPlanLocationInPlanList(event.planCode);
+        dataManager.getPlan(position).setReminderTime(0);*/
+
         //不用进行数据库存储了，在广播接收的时候已经处理过了
-        planAdapter.notifyItemChanged(position);
+        planAdapter.notifyItemChanged(event.position);
     }
 }

@@ -12,6 +12,7 @@ import com.zack.enderplan.bean.TypeMark;
 import com.zack.enderplan.database.EnderPlanDB;
 import com.zack.enderplan.event.DataLoadedEvent;
 import com.zack.enderplan.event.UcPlanCountChangedEvent;
+import com.zack.enderplan.util.LogUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -25,6 +26,18 @@ public class DataManager {
 
     private static final String LOG_TAG = "DataManager";
 
+    /** 数据加载状态标记 */
+    public enum DataStatus {
+        /** 状态标记：还未初始化存储的数据结构 */
+        STATUS_STRUCT_NOT_INIT,
+        /** 状态标记：已初始化数据结构，但还未加载数据（数据为空） */
+        STATUS_DATA_NOT_LOAD,
+        /** 状态标记：正在子线程中从数据库加载数据，此时应该避免再开加载数据的线程 */
+        STATUS_DATA_ON_LOAD,
+        /** 状态标记：数据加载完成 */
+        STATUS_DATA_LOADED
+    }
+
     private EnderPlanDB enderplanDB;
     private List<Plan> planList;
     private List<Type> typeList;
@@ -33,38 +46,54 @@ public class DataManager {
     private Map<String, Integer> typeCodeAndColorResMap;
     private Map<String, Integer> typeMarkAndColorResMap;
     private Map<String, Integer> ucPlanCountOfEachTypeMap;
-    private boolean isAlive = false;
+    //private boolean isDataLoaded = false;
+    private DataStatus dataStatus;
 
     private static DataManager ourInstance = new DataManager();
 
     private DataManager() {
         enderplanDB = EnderPlanDB.getInstance();
-        planList = new ArrayList<>();
-        typeList = new ArrayList<>();
-        uncompletedPlanCount = 0;
-        typeMarkList = new ArrayList<>();
-        typeCodeAndColorResMap = new HashMap<>();
-        typeMarkAndColorResMap = new HashMap<>();
-        ucPlanCountOfEachTypeMap = new HashMap<>();
+        //初始化状态
+        dataStatus = DataStatus.STATUS_STRUCT_NOT_INIT;
+
+        LogUtil.d(LOG_TAG, "DataManager实例化完成");
     }
 
     public static DataManager getInstance() {
         return ourInstance;
     }
 
-    //从数据库加载
+    /** 初始化数据存储结构<br>NOTE：必须经过HomeActivity的构造才能执行此方法 */
+    public void initDataStruct() {
+        if (dataStatus == DataStatus.STATUS_STRUCT_NOT_INIT) {
+            planList = new ArrayList<>();
+            typeList = new ArrayList<>();
+            uncompletedPlanCount = 0;
+            typeMarkList = new ArrayList<>();
+            typeCodeAndColorResMap = new HashMap<>();
+            typeMarkAndColorResMap = new HashMap<>();
+            ucPlanCountOfEachTypeMap = new HashMap<>();
+
+            //进入下一个状态
+            dataStatus = DataStatus.STATUS_DATA_NOT_LOAD;
+
+            LogUtil.d(LOG_TAG, "数据结构初始化完成");
+        }
+    }
+
+    /** 从数据库加载<br>NOTE：必须经过AllPlansFragment的构造才能执行此方法 */
     public void loadFromDatabase() {
-        if (!isAlive) {
-            //打开app后，从数据库加载数据
-            isAlive = true;
+        if (dataStatus == DataStatus.STATUS_DATA_NOT_LOAD) {
+            //进入下一个状态
+            dataStatus = DataStatus.STATUS_DATA_ON_LOAD;
+            //isDataLoaded = true;
             new LoadDataTask().execute();
         }
     }
 
-    //清除数据
+    /** 清除数据存储结构中的数据 */
     public void clearData() {
-        if (isAlive) {
-            //退出app后，清除数据（但本类不会消失，除非进程被杀）
+        if (dataStatus == DataStatus.STATUS_DATA_LOADED) {
             planList.clear();
             typeList.clear();
             uncompletedPlanCount = 0;
@@ -72,8 +101,16 @@ public class DataManager {
             typeCodeAndColorResMap.clear();
             typeMarkAndColorResMap.clear();
             ucPlanCountOfEachTypeMap.clear();
-            isAlive = false;
+
+            //将状态置为未加载
+            dataStatus = DataStatus.STATUS_DATA_NOT_LOAD;
+            //isDataLoaded = false;
         }
+    }
+
+    /** 获取当前状态 */
+    public DataStatus getDataStatus() {
+        return dataStatus;
     }
 
     //获取planList
@@ -427,6 +464,11 @@ public class DataManager {
 
         @Override
         protected void onPostExecute(Void result) {
+            //进入下一个状态
+            dataStatus = DataStatus.STATUS_DATA_LOADED;
+
+            LogUtil.d(LOG_TAG, "数据加载完毕");
+
             EventBus.getDefault().post(new DataLoadedEvent());
             EventBus.getDefault().post(new UcPlanCountChangedEvent());
         }

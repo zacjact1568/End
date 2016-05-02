@@ -1,16 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context="com.zack.enderplan.activity.ReminderActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="This function is under development..."
-        android:layout_gravity="center"
-        android:layout_margin="20dp"/>
+        app:cardCornerRadius="0dp">
+
+        <LinearLayout
+            android:id="@+id/layout_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            tools:background="@color/indigo">
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/ic_notifications_white_24dp"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:id="@+id/text_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/dialog_title_text_size"
+                android:textColor="@android:color/white"
+                android:maxLines="3"
+                android:ellipsize="end"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/image_text_spacing"
+                tools:text="Buy MacBook Pro"/>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_margin="20dp">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/btn_delay_reminder"
+            android:layout_width="@dimen/fab_size"
+            android:layout_height="@dimen/fab_size"
+            android:src="@drawable/ic_pause_white_24dp"
+            android:clickable="true"
+            android:layout_gravity="center"
+            app:backgroundTint="@color/red_300"
+            app:elevation="0dp"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/btn_cancel_reminder"
+            android:layout_width="@dimen/fab_size"
+            android:layout_height="@dimen/fab_size"
+            android:src="@drawable/ic_notifications_off_white_24dp"
+            android:clickable="true"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/fab_spacing"
+            app:backgroundTint="@color/blue_400"
+            app:elevation="0dp"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/btn_complete_plan"
+            android:layout_width="@dimen/fab_size"
+            android:layout_height="@dimen/fab_size"
+            android:src="@drawable/ic_check_white_24dp"
+            android:clickable="true"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/fab_spacing"
+            app:backgroundTint="@color/green_200"
+            app:elevation="0dp"/>
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -33,4 +33,8 @@
 
     <dimen name="bottom_sheet_margin">16dp</dimen>
 
+    <!-- ReminderActivity -->
+    <dimen name="fab_size">52dp</dimen>
+    <dimen name="fab_spacing">32dp</dimen>
+
 </resources>

@@ -16,6 +16,7 @@ import com.zack.enderplan.event.RemindedEvent;
 import com.zack.enderplan.event.UcPlanCountChangedEvent;
 import com.zack.enderplan.manager.DataManager;
 import com.zack.enderplan.manager.ReminderManager;
+import com.zack.enderplan.util.LogUtil;
 import com.zack.enderplan.view.PlanDetailView;
 import com.zack.enderplan.widget.TypeSpinnerAdapter;
 
@@ -24,9 +25,11 @@ import org.greenrobot.eventbus.Subscribe;
 
 public class PlanDetailPresenter implements Presenter<PlanDetailView> {
 
+    private static final String LOG_TAG = "PlanDetailPresenter";
+
     private PlanDetailView planDetailView;
     private DataManager dataManager;
-    private final int position;
+    private int position;
     private Plan plan;
     private EnderPlanDB enderplanDB;
     //private ContentValues contentValues;
@@ -201,6 +204,9 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
         int newPosition = isCompletedPast ? 0 : dataManager.getUcPlanCount();
         dataManager.addToPlanList(newPosition, plan);
 
+        //更新position
+        position = newPosition;
+
         //通知AllPlansPresenter（更新计划列表）与AllTypesPresenter（更新类型列表）
         //EventBus.getDefault().post(new PlanStatusChangedEvent());
 
@@ -278,7 +284,8 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
 
     @Subscribe
     public void onReminded(RemindedEvent event) {
-        if (plan.getPlanCode().equals(event.planCode)) {
+        //这里用position来识别可能不准确
+        if (position == event.position) {
             //是当前计划的提醒
             planDetailView.onReminderRemoved();
 

@@ -30,6 +30,7 @@ public class HomePresenter implements Presenter<HomeView> {
     public HomePresenter(HomeView homeView) {
         attachView(homeView);
         dataManager = DataManager.getInstance();
+        dataManager.initDataStruct();
 
         /*Context context = EnderPlanApp.getGlobalContext();
         nonePlan = context.getResources().getString(R.string.plan_uc_none);
@@ -47,7 +48,7 @@ public class HomePresenter implements Presenter<HomeView> {
     public void detachView() {
         homeView = null;
         EventBus.getDefault().unregister(this);
-        dataManager.clearData();
+        //dataManager.clearData();
     }
 
     public void initDrawerHeaderContent() {

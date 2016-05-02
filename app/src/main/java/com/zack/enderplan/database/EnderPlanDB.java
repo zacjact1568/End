@@ -79,6 +79,17 @@ public class EnderPlanDB {
         return typeList;
     }
 
+    public String queryTypeMarkByTypeCode(String typeCode) {
+        String typeMark = "";
+        Cursor cursor = database.query(DB_STR_TYPE, new String[]{DB_STR_TYPE_MARK}, DB_STR_TYPE_CODE + " = ?",
+                new String[]{typeCode}, null, null, null);
+        if (cursor.moveToFirst()) {
+            typeMark = cursor.getString(cursor.getColumnIndex(DB_STR_TYPE_MARK));
+        }
+        cursor.close();
+        return typeMark;
+    }
+
     public void editType(String typeCode, ContentValues values) {
         database.update(DB_STR_TYPE, values, DB_STR_TYPE_CODE + " = ?", new String[]{typeCode});
     }
@@ -165,6 +176,26 @@ public class EnderPlanDB {
 
     public void deletePlan(String planCode) {
         database.delete(DB_STR_PLAN, DB_STR_PLAN_CODE + " = ?", new String[]{planCode});
+    }
+
+    public Plan queryPlan(String planCode) {
+        Plan plan = null;
+        Cursor cursor = database.query(DB_STR_PLAN, null, DB_STR_PLAN_CODE + " = ?", new String[]{planCode},
+                null, null, null);
+        if (cursor.moveToFirst()) {
+            plan = new Plan(
+                    planCode,
+                    cursor.getString(cursor.getColumnIndex(DB_STR_CONTENT)),
+                    cursor.getString(cursor.getColumnIndex(DB_STR_TYPE_CODE)),
+                    cursor.getLong(cursor.getColumnIndex(DB_STR_CREATION_TIME)),
+                    cursor.getLong(cursor.getColumnIndex(DB_STR_DEADLINE)),
+                    cursor.getLong(cursor.getColumnIndex(DB_STR_COMPLETION_TIME)),
+                    cursor.getInt(cursor.getColumnIndex(DB_STR_STAR_STATUS)),
+                    cursor.getLong(cursor.getColumnIndex(DB_STR_REMINDER_TIME))
+            );
+        }
+        cursor.close();
+        return plan;
     }
 
     public String queryContentByPlanCode(String planCode) {

@@ -45,10 +45,8 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
         holder.typeNameText.setText(type.getTypeName());
 
         String ucPlanCountStr = getUcPlanCountStr(type.getTypeCode());
-        if (ucPlanCountStr != null) {
-            holder.ucPlanCountLayout.setVisibility(View.VISIBLE);
-            holder.ucPlanCountText.setText(ucPlanCountStr);
-        }
+        holder.ucPlanCountLayout.setVisibility(ucPlanCountStr == null ? View.INVISIBLE : View.VISIBLE);
+        holder.ucPlanCountText.setText(ucPlanCountStr == null ? "" : ucPlanCountStr);
 
         if (onTypeItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {

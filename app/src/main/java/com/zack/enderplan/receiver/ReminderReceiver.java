@@ -9,8 +9,10 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.bean.Plan;
 import com.zack.enderplan.database.EnderPlanDB;
 import com.zack.enderplan.event.RemindedEvent;
+import com.zack.enderplan.manager.DataManager;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -22,17 +24,20 @@ public class ReminderReceiver extends BroadcastReceiver {
         String planCode = intent.getStringExtra("plan_code");
 
         EnderPlanDB enderplanDB = EnderPlanDB.getInstance();
+        DataManager dataManager = DataManager.getInstance();
 
-        Intent contentIntent = new Intent("com.zack.enderplan.ACTION_REMINDER");
-        contentIntent.putExtra("plan_code", planCode);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, contentIntent, PendingIntent.FLAG_ONE_SHOT);
+        Plan plan = enderplanDB.queryPlan(planCode);
+
+        Intent reminderIntent = new Intent("com.zack.enderplan.ACTION_REMINDER");
+        reminderIntent.putExtra("plan_detail", plan);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, reminderIntent, PendingIntent.FLAG_ONE_SHOT);
 
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = new Notification.Builder(context)
                 .setSmallIcon(R.mipmap.enderplan_icon)
                 .setTicker(context.getResources().getString(R.string.notification_ticker))
                 .setContentTitle(context.getResources().getString(R.string.title_notification_content))
-                .setContentText(enderplanDB.queryContentByPlanCode(planCode))
+                .setContentText(plan.getContent())
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setContentIntent(pendingIntent)
                 .build();
@@ -41,8 +46,13 @@ public class ReminderReceiver extends BroadcastReceiver {
         //数据库存储
         enderplanDB.editReminderTime(planCode, 0);
 
-        //通知界面更新（NOTE：如果app已退出，那么就相当于没有订阅者，不会执行界面更新的操作）
-        EventBus.getDefault().post(new RemindedEvent(planCode));
+        if (dataManager.getDataStatus() == DataManager.DataStatus.STATUS_DATA_LOADED) {
+            //此时数据已加载完成，可以通过DataManager访问到数据
+            int position = dataManager.getPlanLocationInPlanList(planCode);
+            dataManager.getPlan(position).setReminderTime(0);
+            //通知界面更新（NOTE：如果app已退出，但进程还没被杀，仍然会发出通知）
+            EventBus.getDefault().post(new RemindedEvent(position, planCode));
+        }
 
         /*Intent remindedIntent = new Intent("com.zack.enderplan.ACTION_REMINDED");
         remindedIntent.putExtra("plan_code", planCode);
