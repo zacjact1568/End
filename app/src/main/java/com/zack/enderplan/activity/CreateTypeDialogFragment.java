@@ -167,6 +167,9 @@ public class CreateTypeDialogFragment extends DialogFragment implements CreateTy
                 //onTypeCreatedListener.onTypeCreated(type);
             }
         });
+
+        //必须放在这里，如果放在布局文件中的话，上一句setOnClickListener会将clickable设成true，就没用了
+        saveButton.setClickable(false);
     }
 
     @Override

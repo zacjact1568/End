@@ -174,6 +174,13 @@ public class EnderPlanDB {
         editPlan(planCode, values);
     }
 
+    public void editPlanStatus(String planCode, long creationTime, long completionTime) {
+        ContentValues values = new ContentValues();
+        values.put(DB_STR_CREATION_TIME, creationTime);
+        values.put(DB_STR_COMPLETION_TIME, completionTime);
+        editPlan(planCode, values);
+    }
+
     public void deletePlan(String planCode) {
         database.delete(DB_STR_PLAN, DB_STR_PLAN_CODE + " = ?", new String[]{planCode});
     }

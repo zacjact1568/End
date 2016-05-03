@@ -8,5 +8,5 @@ public interface ReminderView {
 
     void onReminderCanceled();
 
-    void onPlanCompleted(String content);
+    void onPlanCompleted();
 }

@@ -16,6 +16,7 @@ import com.zack.enderplan.presenter.ReminderPresenter;
 import com.zack.enderplan.view.ReminderView;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -80,16 +81,19 @@ public class ReminderActivity extends AppCompatActivity implements ReminderView 
 
     @Override
     public void onReminderDelayed(String nextReminderTime) {
-        Toast.makeText(this, "我将在" + nextReminderTime + "再次提醒你", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, nextReminderTime, Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     @Override
     public void onReminderCanceled() {
-        Toast.makeText(this, "提醒已取消", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.toast_reminder_canceled, Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     @Override
-    public void onPlanCompleted(String content) {
-        Toast.makeText(this, "您已完成计划：" + content, Toast.LENGTH_SHORT).show();
+    public void onPlanCompleted() {
+        Toast.makeText(this, R.string.toast_plan_completed, Toast.LENGTH_SHORT).show();
+        finish();
     }
 }

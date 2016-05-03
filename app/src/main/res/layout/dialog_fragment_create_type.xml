@@ -69,7 +69,6 @@
             android:layout_height="wrap_content"
             android:text="@string/save"
             android:textColor="@android:color/secondary_text_light_nodisable"
-            android:clickable="false"
             android:layout_marginStart="@dimen/dialog_button_spacing"
             style="@style/FlatButtonStyle"/>
 

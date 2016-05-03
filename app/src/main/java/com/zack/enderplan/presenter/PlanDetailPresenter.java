@@ -11,6 +11,7 @@ import com.zack.enderplan.activity.DateTimePickerDialogFragment;
 import com.zack.enderplan.application.EnderPlanApp;
 import com.zack.enderplan.bean.Plan;
 import com.zack.enderplan.database.EnderPlanDB;
+import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.event.PlanStatusChangedEvent;
 import com.zack.enderplan.event.RemindedEvent;
 import com.zack.enderplan.event.UcPlanCountChangedEvent;
@@ -297,6 +298,31 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
             /*if (getContentValues().containsKey("reminder_time")) {
                 getContentValues().remove("reminder_time");
             }*/
+        }
+    }
+
+    @Subscribe
+    public void onPlanDetailChanged(PlanDetailChangedEvent event) {
+        if (position == event.position) {
+            //是当前计划的详细信息改变了（目前只可能是提醒时间）TODO 后续加入判断
+            //修改显示的提醒时间
+            planDetailView.onReminderTimeSelected(
+                    true,
+                    DateFormat.format(dateTimeFormatStr, plan.getReminderTime()).toString()
+            );
+        }
+    }
+
+    @Subscribe
+    public void onPlanStatusChanged(PlanStatusChangedEvent event) {
+        if (position == event.position) {
+            //是当前计划的完成情况改变了
+
+            //更新position
+            position = dataManager.getUcPlanCount();
+
+            //修改改变完成情况的按钮文本
+            planDetailView.onPlanStatusChanged(makePlanUcStr);
         }
     }
 
