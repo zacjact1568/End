@@ -11,13 +11,11 @@ import com.zack.enderplan.event.DataLoadedEvent;
 import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDeletedEvent;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
-import com.zack.enderplan.event.PlanStatusChangedEvent;
 import com.zack.enderplan.event.RemindedEvent;
 import com.zack.enderplan.event.TypeDetailChangedEvent;
 import com.zack.enderplan.event.UcPlanCountChangedEvent;
 import com.zack.enderplan.manager.DataManager;
 import com.zack.enderplan.manager.ReminderManager;
-import com.zack.enderplan.util.LogUtil;
 import com.zack.enderplan.view.AllPlansView;
 import com.zack.enderplan.widget.PlanAdapter;
 
@@ -222,15 +220,16 @@ public class AllPlansPresenter implements Presenter<AllPlansView> {
 
     @Subscribe
     public void onPlanDetailChanged(PlanDetailChangedEvent event) {
-        //根据event中的成员变量刷新界面
-        planAdapter.notifyItemChanged(event.position);
-    }
-
-    @Subscribe
-    public void onPlanStatusChanged(PlanStatusChangedEvent event) {
-        //有点麻烦，直接使用全部刷新了
-        //TODO 可以用event.position配合算出的未完成计划数量，使用notifyItemMoved刷新
-        planAdapter.notifyDataSetChanged();
+        if (event.isPlanStatusChanged) {
+            //如果有完成情况的改变，直接全部刷新
+            //有点麻烦，直接使用全部刷新了
+            //TODO 可以用event.position配合算出的未完成计划数量，使用notifyItemMoved刷新
+            planAdapter.notifyDataSetChanged();
+        } else {
+            //普通、类型改变的刷新
+            //根据event中的成员变量刷新界面
+            planAdapter.notifyItemChanged(event.position);
+        }
     }
 
     @Subscribe

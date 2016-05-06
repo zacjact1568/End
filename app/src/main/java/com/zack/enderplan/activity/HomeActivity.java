@@ -111,20 +111,28 @@ public class HomeActivity extends BaseActivity implements HomeView,
                 break;
             case REQ_CODE_PLAN_DETAIL:
                 switch (resultCode) {
-                    case RESULT_PLAN_DETAIL_AND_STATUS_CHANGED:
+                    /*case RESULT_PLAN_DETAIL_AND_STATUS_CHANGED:
                         homePresenter.notifyPlanDetailAndStatusChanged(
                                 data.getIntExtra("position", 0),
                                 data.getStringExtra("plan_code")
                         );
-                        break;
+                        break;*/
                     case RESULT_PLAN_DETAIL_CHANGED:
-                        homePresenter.notifyPlanDetailChanged(data.getIntExtra("position", 0));
-                        break;
-                    case RESULT_PLAN_STATUS_CHANGED:
-                        homePresenter.notifyPlanStatusChanged(
+                        //能接收到这个resultCode，那么计划属性必定有更改
+
+                        homePresenter.notifyPlanDetailChanged(
+                                data.getIntExtra("position", 0),
+                                data.getStringExtra("plan_code"),
+                                data.getBooleanExtra("is_type_of_plan_changed", false),
+                                data.getBooleanExtra("is_plan_status_changed", false)
+                        );
+
+                        /*homePresenter.notifyPlanStatusChanged(
                                 data.getIntExtra("position", 0),
                                 data.getStringExtra("plan_code")
                         );
+                        homePresenter.notifyPlanDetailChanged(data.getIntExtra("position", 0));*/
+
                         break;
                     case RESULT_PLAN_DELETED:
                         homePresenter.notifyPlanDeleted(

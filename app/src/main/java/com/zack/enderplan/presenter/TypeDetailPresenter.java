@@ -12,11 +12,9 @@ import com.zack.enderplan.database.EnderPlanDB;
 import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDeletedEvent;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
-import com.zack.enderplan.event.PlanStatusChangedEvent;
 import com.zack.enderplan.event.UcPlanCountChangedEvent;
 import com.zack.enderplan.manager.DataManager;
 import com.zack.enderplan.manager.ReminderManager;
-import com.zack.enderplan.util.LogUtil;
 import com.zack.enderplan.util.Util;
 import com.zack.enderplan.view.TypeDetailView;
 import com.zack.enderplan.widget.PlanSingleTypeAdapter;
@@ -125,7 +123,7 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
         planSingleTypeAdapter.notifyItemChanged(position);
         //通知AllPlans界面更新
         int posInPlanList = dataManager.getPlanLocationInPlanList(plan.getPlanCode());
-        EventBus.getDefault().post(new PlanDetailChangedEvent(posInPlanList));
+        EventBus.getDefault().post(new PlanDetailChangedEvent(posInPlanList, plan.getPlanCode(), false, false, -1));
         //数据库存储
         ContentValues values = new ContentValues();
         values.put("star_status", newStarStatus);
@@ -173,7 +171,7 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
         dataManager.addToPlanList(dataManager.getUcPlanCount(), plan);
 
         //通知AllPlansPresenter（更新计划列表）、AllTypesPresenter（更新类型列表）与本Presenter更新界面
-        EventBus.getDefault().post(new PlanStatusChangedEvent(posInPlanList, position));
+        EventBus.getDefault().post(new PlanDetailChangedEvent(posInPlanList, plan.getPlanCode(), false, true, position));
 
         //数据库存储
         values.put(EnderPlanDB.DB_STR_CREATION_TIME, 0);
@@ -207,26 +205,10 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
         return -1;
     }
 
-    /*private ReminderManager getReminderManager() {
-        if (reminderManager == null) {
-            reminderManager = new ReminderManager();
-        }
-        return reminderManager;
-    }*/
-
     @Subscribe
     public void onPlanDetailChanged(PlanDetailChangedEvent event) {
-        //TODO 后续可改成定点刷新
-        planSingleTypeAdapter.notifyDataSetChanged();
-    }
 
-    @Subscribe
-    public void onPlanStatusChanged(PlanStatusChangedEvent event) {
-        //这个类中的这个订阅方法能收到通知，那么只有两种可能：1.右滑完成；2.点击item进入PlanDetail点击完成按钮后返回此界面，
-        //两种情况只可能是由未完成->完成，
-        //所以下面的position一定不为-1，也一定是从list中remove元素，而不可能是add元素（完成->未完成）
-
-        //刚才发生状态改变的计划在singleTypeUcPlanList中的位置
+        //刚才发生变化的计划在singleTypeUcPlanList中的位置
         int position;
 
         //NOTE: planCode和posInStUcPlanList中，有且仅有一个存在
@@ -238,12 +220,19 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
             position = event.posInStUcPlanList;
         }
 
-        //更新此列表
-        singleTypeUcPlanList.remove(position);
-        planSingleTypeAdapter.notifyItemRemoved(position);
+        if (event.isTypeOfPlanChanged || event.isPlanStatusChanged) {
+            //说明有类型或完成情况的更新，需要从singleTypeUcPlanList中移除
 
-        //更新显示的未完成计划数量
-        typeDetailView.onUcPlanCountChanged(getUcPlanCountStr(type.getTypeCode()));
+            //更新此列表
+            singleTypeUcPlanList.remove(position);
+            planSingleTypeAdapter.notifyItemRemoved(position);
+
+            //更新显示的未完成计划数量
+            typeDetailView.onUcPlanCountChanged(getUcPlanCountStr(type.getTypeCode()));
+        } else {
+            //普通更新，需要刷新singleTypeUcPlanList
+            planSingleTypeAdapter.notifyItemChanged(position);
+        }
     }
 
     @Subscribe

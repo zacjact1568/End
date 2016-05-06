@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class EnderPlanDB {
 
-    public static final String DB_NAME = "com.zack.enderplan_database";
+    public static final String DB_NAME = "com.zack.enderplan.db";
 
     public static final int DB_VERSION = 1;
 

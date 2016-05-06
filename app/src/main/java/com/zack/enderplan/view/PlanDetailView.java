@@ -1,5 +1,7 @@
 package com.zack.enderplan.view;
 
+import android.content.Intent;
+
 import com.zack.enderplan.activity.CalendarDialogFragment;
 import com.zack.enderplan.activity.DateTimePickerDialogFragment;
 import com.zack.enderplan.widget.TypeSpinnerAdapter;
@@ -28,7 +30,7 @@ public interface PlanDetailView {
 
     void onCreateReminderDialog(DateTimePickerDialogFragment reminderDialog);
 
-    void onActivityFinished(int position, String planCode, boolean isPlanDetailChanged, boolean isPlanStatusChanged);
+    void onActivityFinished(Intent intent);
 
     void onDeadlineSelected(boolean isSetFirstTime, String deadline);
 

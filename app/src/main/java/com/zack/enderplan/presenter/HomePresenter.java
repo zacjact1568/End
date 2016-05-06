@@ -1,18 +1,10 @@
 package com.zack.enderplan.presenter;
 
-import android.content.Context;
-
-import com.zack.enderplan.R;
-import com.zack.enderplan.application.EnderPlanApp;
-import com.zack.enderplan.bean.Plan;
-import com.zack.enderplan.event.DataLoadedEvent;
 import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDeletedEvent;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
-import com.zack.enderplan.event.PlanStatusChangedEvent;
 import com.zack.enderplan.event.UcPlanCountChangedEvent;
 import com.zack.enderplan.manager.DataManager;
-import com.zack.enderplan.util.LogUtil;
 import com.zack.enderplan.view.HomeView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -77,20 +69,16 @@ public class HomePresenter implements Presenter<HomeView> {
         homeView.onPlanCreated(dataManager.getPlan(0).getContent());
     }
 
-    public void notifyPlanDetailAndStatusChanged(int position, String planCode) {
-        //TODO 由于PlanStatus改变后AllPlans是全部刷新的，所以这里会产生重复
-        notifyPlanDetailChanged(position);
-        notifyPlanStatusChanged(position, planCode);
-    }
+    public void notifyPlanDetailChanged(int position, String planCode, boolean isTypeOfPlanChanged,
+                                        boolean isPlanStatusChanged) {
 
-    public void notifyPlanDetailChanged(int position) {
         //通知AllPlans、AllTypes、TypeDetail更新
-        EventBus.getDefault().post(new PlanDetailChangedEvent(position));
-    }
+        EventBus.getDefault().post(new PlanDetailChangedEvent(position, planCode, isTypeOfPlanChanged, isPlanStatusChanged, -1));
 
-    public void notifyPlanStatusChanged(int position, String planCode) {
-        EventBus.getDefault().post(new PlanStatusChangedEvent(position, planCode));
-        showUcPlanCount(dataManager.getUcPlanCount());
+        if (isPlanStatusChanged) {
+            //如果计划完成情况改变，需要更新drawer上的header中的内容
+            showUcPlanCount(dataManager.getUcPlanCount());
+        }
     }
 
     //通过PlanDetailActivity删除时（不能撤销）

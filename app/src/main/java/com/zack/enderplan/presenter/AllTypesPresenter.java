@@ -9,7 +9,6 @@ import com.zack.enderplan.event.DataLoadedEvent;
 import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDeletedEvent;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
-import com.zack.enderplan.event.PlanStatusChangedEvent;
 import com.zack.enderplan.event.TypeCreatedEvent;
 import com.zack.enderplan.event.TypeDetailChangedEvent;
 import com.zack.enderplan.manager.DataManager;
@@ -140,12 +139,7 @@ public class AllTypesPresenter implements Presenter<AllTypesView> {
 
     @Subscribe
     public void onPlanDetailChanged(PlanDetailChangedEvent event) {
-        //因为可能有多个item需要更新，比较麻烦，所以直接全部刷新了
-        typeAdapter.notifyDataSetChanged();
-    }
-
-    @Subscribe
-    public void onPlanStatusChanged(PlanStatusChangedEvent event) {
+        //类型、完成情况改变后的刷新（普通改变不需要在此界面上呈现）
         //因为可能有多个item需要更新，比较麻烦，所以直接全部刷新了
         typeAdapter.notifyDataSetChanged();
     }

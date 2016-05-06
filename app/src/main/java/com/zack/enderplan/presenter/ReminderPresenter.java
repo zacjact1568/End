@@ -8,7 +8,6 @@ import com.zack.enderplan.application.EnderPlanApp;
 import com.zack.enderplan.bean.Plan;
 import com.zack.enderplan.database.EnderPlanDB;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
-import com.zack.enderplan.event.PlanStatusChangedEvent;
 import com.zack.enderplan.event.UcPlanCountChangedEvent;
 import com.zack.enderplan.manager.DataManager;
 import com.zack.enderplan.manager.ReminderManager;
@@ -67,7 +66,7 @@ public class ReminderPresenter implements Presenter<ReminderView> {
             int position = dataManager.getPlanLocationInPlanList(plan.getPlanCode());
             dataManager.getPlan(position).setReminderTime(newReminderTime);
 
-            EventBus.getDefault().post(new PlanDetailChangedEvent(position));
+            EventBus.getDefault().post(new PlanDetailChangedEvent(position, plan.getPlanCode(), false, false, -1));
             //TODO 有4个订阅者，但只有两个需要刷新，虽然多刷新也无所谓，但后续也应添加判断
         }
 
@@ -113,7 +112,7 @@ public class ReminderPresenter implements Presenter<ReminderView> {
             dataManager.addToPlanList(dataManager.getUcPlanCount(), planInPlanList);
 
             //通知AllPlans、AllTypes、PlanDetail与TypeDetail（Presenters）更新其界面
-            EventBus.getDefault().post(new PlanStatusChangedEvent(posInPlanList, planInPlanList.getPlanCode()));
+            EventBus.getDefault().post(new PlanDetailChangedEvent(posInPlanList, planInPlanList.getPlanCode(), false, true, -1));
         }
 
         //数据库存储

@@ -34,8 +34,7 @@ public class ReminderReceiver extends BroadcastReceiver {
 
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = new Notification.Builder(context)
-                .setSmallIcon(R.mipmap.enderplan_icon)
-                .setTicker(context.getResources().getString(R.string.notification_ticker))
+                .setSmallIcon(R.drawable.ic_check_box_white_24dp)
                 .setContentTitle(context.getResources().getString(R.string.title_notification_content))
                 .setContentText(plan.getContent())
                 .setDefaults(Notification.DEFAULT_ALL)

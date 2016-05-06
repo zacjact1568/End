@@ -2,6 +2,7 @@ package com.zack.enderplan.presenter;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 
@@ -12,12 +13,9 @@ import com.zack.enderplan.application.EnderPlanApp;
 import com.zack.enderplan.bean.Plan;
 import com.zack.enderplan.database.EnderPlanDB;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
-import com.zack.enderplan.event.PlanStatusChangedEvent;
 import com.zack.enderplan.event.RemindedEvent;
-import com.zack.enderplan.event.UcPlanCountChangedEvent;
 import com.zack.enderplan.manager.DataManager;
 import com.zack.enderplan.manager.ReminderManager;
-import com.zack.enderplan.util.LogUtil;
 import com.zack.enderplan.view.PlanDetailView;
 import com.zack.enderplan.widget.TypeSpinnerAdapter;
 
@@ -37,7 +35,7 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
     private ReminderManager reminderManager;
     private String dateFormatStr, dateTimeFormatStr;
     private String makePlanCStr, makePlanUcStr;
-    private boolean isPlanDetailChanged, isPlanStatusChanged;
+    private boolean isPlanDetailChanged, isTypeOfPlanChanged, isPlanStatusChanged;
 
     public PlanDetailPresenter(PlanDetailView planDetailView, int position) {
         attachView(planDetailView);
@@ -111,7 +109,7 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
         }
         //再来改变typeCode
         plan.setTypeCode(newTypeCode);
-        isPlanDetailChanged = true;
+        isTypeOfPlanChanged = true;
         enderplanDB.editTypeOfPlan(plan.getPlanCode(), newTypeCode);
         //getContentValues().put("type_code", newTypeCode);
     }
@@ -208,9 +206,6 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
         //更新position
         position = newPosition;
 
-        //通知AllPlansPresenter（更新计划列表）与AllTypesPresenter（更新类型列表）
-        //EventBus.getDefault().post(new PlanStatusChangedEvent());
-
         //设立标志
         isPlanStatusChanged = true;
 
@@ -235,9 +230,24 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
 
     /** 非删除计划的普通退出 (Setting results are required) */
     public void notifyActivityFinished() {
-        if (isPlanDetailChanged || isPlanStatusChanged) {
+        if (isPlanDetailChanged || isTypeOfPlanChanged || isPlanStatusChanged) {
             //说明计划详情有改变
-            planDetailView.onActivityFinished(position, plan.getPlanCode(), isPlanDetailChanged, isPlanStatusChanged);
+
+            Intent intent = new Intent();
+            intent.putExtra("position", position);
+            intent.putExtra("plan_code", plan.getPlanCode());
+
+            /*if (isPlanDetailChanged) {
+                intent.putExtra("is_plan_detail_changed", true);
+            }*/
+            if (isTypeOfPlanChanged) {
+                intent.putExtra("is_type_of_plan_changed", true);
+            }
+            if (isPlanStatusChanged) {
+                intent.putExtra("is_plan_status_changed", true);
+            }
+
+            planDetailView.onActivityFinished(intent);
         }
     }
 
@@ -304,33 +314,23 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
     @Subscribe
     public void onPlanDetailChanged(PlanDetailChangedEvent event) {
         if (position == event.position) {
-            //是当前计划的详细信息改变了（目前只可能是提醒时间）TODO 后续加入判断
-            //修改显示的提醒时间
-            planDetailView.onReminderTimeSelected(
-                    true,
-                    DateFormat.format(dateTimeFormatStr, plan.getReminderTime()).toString()
-            );
+            if (event.isPlanStatusChanged) {
+                //说明完成情况也有改变（目前在这里提醒时间和完成情况不可能同时改变）
+
+                //更新position
+                position = dataManager.getUcPlanCount();
+
+                //修改改变完成情况的按钮文本
+                planDetailView.onPlanStatusChanged(makePlanUcStr);
+            } else {
+                //是当前计划的普通信息（目前只可能是提醒时间）或者完成情况改变了 TODO 后续加入判断
+
+                //修改显示的提醒时间
+                planDetailView.onReminderTimeSelected(
+                        true,
+                        DateFormat.format(dateTimeFormatStr, plan.getReminderTime()).toString()
+                );
+            }
         }
     }
-
-    @Subscribe
-    public void onPlanStatusChanged(PlanStatusChangedEvent event) {
-        if (position == event.position) {
-            //是当前计划的完成情况改变了
-
-            //更新position
-            position = dataManager.getUcPlanCount();
-
-            //修改改变完成情况的按钮文本
-            planDetailView.onPlanStatusChanged(makePlanUcStr);
-        }
-    }
-
-    /*private void postPlanDetailChangedEvent() {
-        EventBus.getDefault().post(new PlanDetailChangedEvent(position));
-    }
-
-    private void postPlanStatusChangedEvent() {
-        EventBus.getDefault().post(new PlanStatusChangedEvent());
-    }*/
 }

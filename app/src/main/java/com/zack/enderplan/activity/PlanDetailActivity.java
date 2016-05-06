@@ -289,17 +289,8 @@ public class PlanDetailActivity extends BaseActivity
     }
 
     @Override
-    public void onActivityFinished(int position, String planCode, boolean isPlanDetailChanged, boolean isPlanStatusChanged) {
-        Intent intent = new Intent();
-        intent.putExtra("position", position);
-        intent.putExtra("plan_code", planCode);
-        if (isPlanDetailChanged && isPlanStatusChanged) {
-            setResult(RESULT_PLAN_DETAIL_AND_STATUS_CHANGED, intent);
-        } else if (isPlanDetailChanged) {
-            setResult(RESULT_PLAN_DETAIL_CHANGED, intent);
-        } else if (isPlanStatusChanged) {
-            setResult(RESULT_PLAN_STATUS_CHANGED, intent);
-        }
+    public void onActivityFinished(Intent intent) {
+        setResult(RESULT_PLAN_DETAIL_CHANGED, intent);
     }
 
     @Override
