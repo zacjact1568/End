@@ -30,7 +30,7 @@
         <activity
             android:name=".activity.PlanDetailActivity"
             android:label="@string/title_activity_plan_detail"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme.TransparentStatusBar"/>
         <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings"

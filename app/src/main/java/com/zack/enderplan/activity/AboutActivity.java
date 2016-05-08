@@ -12,28 +12,27 @@ import android.widget.Toast;
 
 import com.zack.enderplan.R;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class AboutActivity extends BaseActivity {
+
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.text_version_name)
+    TextView versionNameText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        TextView versionName = (TextView) findViewById(R.id.version_name);
+        ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
         setupActionBar();
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(AboutActivity.this, "Please wait...", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        versionName.setText(getVersionName());
+        versionNameText.setText(getVersionName());
     }
 
     @Override
@@ -58,5 +57,10 @@ public class AboutActivity extends BaseActivity {
             versionName = "null";
         }
         return versionName;
+    }
+
+    @OnClick(R.id.fab)
+    public void onClick() {
+        //TODO 发送email
     }
 }

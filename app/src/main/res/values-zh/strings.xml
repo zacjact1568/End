@@ -94,5 +94,5 @@
     <string name="toast_double_click_exit">再次点击退出EnderPlan</string>
     <string name="toast_reminder_delayed_5min">我将会在5分钟之后提醒你</string>
     <string name="toast_reminder_canceled">提醒已取消</string>
-    <string name="toast_plan_completed">标记为完成</string>
+    <string name="toast_plan_completed">计划已标记为完成</string>
 </resources>

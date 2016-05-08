@@ -87,7 +87,7 @@
     <string name="title_activity_reminder">EnderPlan Reminder</string>
     <string name="toast_reminder_delayed_5min">I will notify you 5 minutes later</string>
     <string name="toast_reminder_canceled">Reminder has been canceled</string>
-    <string name="toast_plan_completed">Marked as completed</string>
+    <string name="toast_plan_completed">Plan has been marked as completed</string>
 
     <!--SettingsActivity-->
     <string name="title_activity_settings">Settings</string>

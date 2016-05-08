@@ -95,6 +95,7 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
                 DateFormat.format(dateFormatStr, plan.getDeadline()).toString(),
                 plan.getReminderTime() != 0,
                 DateFormat.format(dateTimeFormatStr, plan.getReminderTime()).toString(),
+                plan.getCompletionTime() != 0,
                 plan.getCompletionTime() == 0 ? makePlanCStr : makePlanUcStr
         );
     }
@@ -215,7 +216,7 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
         enderplanDB.editPlan(plan.getPlanCode(), values);
 
         //更新界面（NOTE：新的完成状态是旧的完成状态取反）
-        planDetailView.onPlanStatusChanged(isCompletedPast ? makePlanCStr : makePlanUcStr);
+        planDetailView.onPlanStatusChanged(!isCompletedPast, isCompletedPast ? makePlanCStr : makePlanUcStr);
     }
 
     public void createDeadlineDialog() {
@@ -315,13 +316,13 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
     public void onPlanDetailChanged(PlanDetailChangedEvent event) {
         if (position == event.position) {
             if (event.isPlanStatusChanged) {
-                //说明完成情况也有改变（目前在这里提醒时间和完成情况不可能同时改变）
+                //说明完成情况也有改变（目前在这里提醒时间和完成情况不可能同时改变），且只有可能是未完成->完成
 
                 //更新position
                 position = dataManager.getUcPlanCount();
 
                 //修改改变完成情况的按钮文本
-                planDetailView.onPlanStatusChanged(makePlanUcStr);
+                planDetailView.onPlanStatusChanged(true, makePlanUcStr);
             } else {
                 //是当前计划的普通信息（目前只可能是提醒时间）或者完成情况改变了 TODO 后续加入判断
 

@@ -173,7 +173,7 @@ public class PlanDetailActivity extends BaseActivity
     @Override
     public void showInitialView(String content, boolean isStarred, TypeSpinnerAdapter typeSpinnerAdapter,
                                 int posInSpinner, boolean hasDeadline, String deadline, boolean hasReminder,
-                                String reminderTime, String spsButtonText) {
+                                String reminderTime, boolean isCompleted, String spsButtonText) {
 
         contentText.setText(content);
 
@@ -213,6 +213,8 @@ public class PlanDetailActivity extends BaseActivity
             reminderDescriptionText.setTextColor(primaryColor);
         }
 
+        toolbar.setBackgroundResource(isCompleted ? R.drawable.bg_c_plan_detail : R.drawable.bg_uc_plan_detail);
+
         switchPlanStatusButton.setText(spsButtonText);
     }
 
@@ -242,7 +244,8 @@ public class PlanDetailActivity extends BaseActivity
     }
 
     @Override
-    public void onPlanStatusChanged(String newSpsButtonText) {
+    public void onPlanStatusChanged(boolean isCompleted, String newSpsButtonText) {
+        toolbar.setBackgroundResource(isCompleted ? R.drawable.bg_c_plan_detail : R.drawable.bg_uc_plan_detail);
         switchPlanStatusButton.setText(newSpsButtonText);
     }
 

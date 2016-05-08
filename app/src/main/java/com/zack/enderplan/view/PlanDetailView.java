@@ -10,13 +10,13 @@ public interface PlanDetailView {
 
     void showInitialView(String content, boolean isStarred, TypeSpinnerAdapter typeSpinnerAdapter,
                          int posInSpinner, boolean hasDeadline, String deadline, boolean hasReminder,
-                         String reminderTime, String spsButtonText);
+                         String reminderTime, boolean isCompleted, String spsButtonText);
 
     void showPlanDeletionAlertDialog(String content);
 
     void onPlanDeleted(int position, String planCode, String content, boolean isCompleted);
 
-    void onPlanStatusChanged(String newSpsButtonText);
+    void onPlanStatusChanged(boolean isCompleted, String newSpsButtonText);
 
     void showContentEditDialog(String content);
 
