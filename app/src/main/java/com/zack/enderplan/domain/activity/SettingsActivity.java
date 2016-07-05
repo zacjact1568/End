@@ -12,13 +12,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.model.preference.PreferenceDispatcher;
 
 import java.util.Locale;
 
 public class SettingsActivity extends BaseActivity {
-
-    private static final String KEY_PREF_LANGUAGE = "language";
-    private static final String KEY_PREF_NIGHT_MODE = "night_mode";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +53,8 @@ public class SettingsActivity extends BaseActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
 
-            languagePref = (ListPreference) findPreference(KEY_PREF_LANGUAGE);
-            nightModePref = (ListPreference) findPreference(KEY_PREF_NIGHT_MODE);
+            languagePref = (ListPreference) findPreference(PreferenceDispatcher.KEY_PREF_LANGUAGE);
+            nightModePref = (ListPreference) findPreference(PreferenceDispatcher.KEY_PREF_NIGHT_MODE);
 
             initPreferenceSummary();
         }
@@ -76,8 +74,8 @@ public class SettingsActivity extends BaseActivity {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             switch (key) {
-                case KEY_PREF_LANGUAGE:
-                    String languageValue = sharedPreferences.getString(KEY_PREF_LANGUAGE, "");
+                case PreferenceDispatcher.KEY_PREF_LANGUAGE:
+                    String languageValue = sharedPreferences.getString(PreferenceDispatcher.KEY_PREF_LANGUAGE, "");
                     languagePref.setSummary(languagePref.getEntries()[languagePref.findIndexOfValue(languageValue)]);
 
                     Configuration config = getResources().getConfiguration();
@@ -94,8 +92,8 @@ public class SettingsActivity extends BaseActivity {
                     }
                     getResources().updateConfiguration(config, null);
                     break;
-                case KEY_PREF_NIGHT_MODE:
-                    String nightModeValue = sharedPreferences.getString(KEY_PREF_NIGHT_MODE, "");
+                case PreferenceDispatcher.KEY_PREF_NIGHT_MODE:
+                    String nightModeValue = sharedPreferences.getString(PreferenceDispatcher.KEY_PREF_NIGHT_MODE, "");
                     nightModePref.setSummary(nightModePref.getEntries()[nightModePref.findIndexOfValue(nightModeValue)]);
 
                     int mode = AppCompatDelegate.MODE_NIGHT_NO;
@@ -127,11 +125,11 @@ public class SettingsActivity extends BaseActivity {
         }
 
         private void initPreferenceSummary() {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            PreferenceDispatcher dispatcher = PreferenceDispatcher.getInstance();
             //Language
-            languagePref.setSummary(languagePref.getEntries()[languagePref.findIndexOfValue(sharedPreferences.getString(KEY_PREF_LANGUAGE, ""))]);
+            languagePref.setSummary(languagePref.getEntries()[languagePref.findIndexOfValue(dispatcher.getStringPref(PreferenceDispatcher.KEY_PREF_LANGUAGE))]);
             //Night mode
-            nightModePref.setSummary(nightModePref.getEntries()[nightModePref.findIndexOfValue(sharedPreferences.getString(KEY_PREF_NIGHT_MODE, ""))]);
+            nightModePref.setSummary(nightModePref.getEntries()[nightModePref.findIndexOfValue(dispatcher.getStringPref(PreferenceDispatcher.KEY_PREF_NIGHT_MODE))]);
         }
     }
 }
