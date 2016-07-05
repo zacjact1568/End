@@ -23,8 +23,8 @@ import com.zack.enderplan.interactor.presenter.PlanDetailPresenter;
 import com.zack.enderplan.domain.view.PlanDetailView;
 import com.zack.enderplan.interactor.adapter.TypeSpinnerAdapter;
 
-import butterknife.Bind;
 import butterknife.BindColor;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -41,25 +41,25 @@ public class PlanDetailActivity extends BaseActivity
 
     private static final String CLASS_NAME = "PlanDetailActivity";
 
-    @Bind(R.id.text_content)
+    @BindView(R.id.text_content)
     TextView contentText;
-    @Bind(R.id.star_mark)
+    @BindView(R.id.star_mark)
     ImageView starMark;
-    @Bind(R.id.deadline_mark)
+    @BindView(R.id.deadline_mark)
     ImageView deadlineMark;
-    @Bind(R.id.reminder_mark)
+    @BindView(R.id.reminder_mark)
     ImageView reminderMark;
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.spinner)
+    @BindView(R.id.spinner)
     Spinner spinner;
-    @Bind(R.id.text_deadline_description)
+    @BindView(R.id.text_deadline_description)
     TextView deadlineDescriptionText;
-    @Bind(R.id.text_reminder_description)
+    @BindView(R.id.text_reminder_description)
     TextView reminderDescriptionText;
-    @Bind(R.id.fab)
+    @BindView(R.id.fab)
     FloatingActionButton fab;
-    @Bind(R.id.btn_switch_plan_status)
+    @BindView(R.id.btn_switch_plan_status)
     TextView switchPlanStatusButton;
 
     @BindColor(R.color.colorPrimary)

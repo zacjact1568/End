@@ -22,24 +22,24 @@ import com.zack.enderplan.interactor.presenter.TypeDetailPresenter;
 import com.zack.enderplan.domain.view.TypeDetailView;
 import com.zack.enderplan.interactor.adapter.PlanSingleTypeAdapter;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class TypeDetailDialogFragment extends BottomSheetDialogFragment implements TypeDetailView {
 
-    @Bind(R.id.ic_type_mark)
+    @BindView(R.id.ic_type_mark)
     CircleImageView typeMarkIcon;
-    @Bind(R.id.text_first_char)
+    @BindView(R.id.text_first_char)
     TextView firstCharText;
-    @Bind(R.id.text_type_name)
+    @BindView(R.id.text_type_name)
     TextView typeNameText;
-    @Bind(R.id.text_uc_plan_count)
+    @BindView(R.id.text_uc_plan_count)
     TextView ucPlanCountText;
-    @Bind(R.id.editor_content)
+    @BindView(R.id.editor_content)
     EditText contentEditor;
-    @Bind(R.id.list_uc_plan)
+    @BindView(R.id.list_uc_plan)
     RecyclerView ucPlanList;
 
     private static final String LOG_TAG = "TypeDetailDFragment";
@@ -88,12 +88,6 @@ public class TypeDetailDialogFragment extends BottomSheetDialogFragment implemen
     public void onDetach() {
         super.onDetach();
         typeDetailPresenter.detachView();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 
     @OnClick({R.id.ic_edit_type, R.id.ic_clear_text})

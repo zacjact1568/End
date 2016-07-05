@@ -20,17 +20,17 @@ import com.zack.enderplan.interactor.presenter.EditTypePresenter;
 import com.zack.enderplan.domain.view.EditTypeView;
 import com.zack.enderplan.interactor.adapter.TypeMarkAdapter;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class EditTypeDialogFragment extends DialogFragment implements EditTypeView {
 
-    @Bind(R.id.wrapper_type_name_editor)
+    @BindView(R.id.wrapper_type_name_editor)
     TextInputLayout typeNameEditorWrapper;
-    @Bind(R.id.grid_view)
+    @BindView(R.id.grid_view)
     GridView gridView;
-    @Bind(R.id.button_save)
+    @BindView(R.id.button_save)
     TextView saveButton;
 
     private static final String ARG_POSITION = "position";
@@ -86,12 +86,6 @@ public class EditTypeDialogFragment extends DialogFragment implements EditTypeVi
     public void onDetach() {
         super.onDetach();
         editTypePresenter.detachView();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 
     @Override

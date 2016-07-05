@@ -15,21 +15,21 @@ import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.interactor.presenter.ReminderPresenter;
 import com.zack.enderplan.domain.view.ReminderView;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class ReminderActivity extends AppCompatActivity implements ReminderView {
 
-    @Bind(R.id.text_content)
+    @BindView(R.id.text_content)
     TextView contentText;
-    @Bind(R.id.layout_title)
+    @BindView(R.id.layout_title)
     LinearLayout titleLayout;
-    @Bind(R.id.btn_delay_reminder)
+    @BindView(R.id.btn_delay_reminder)
     FloatingActionButton delayReminderButton;
-    @Bind(R.id.btn_cancel_reminder)
+    @BindView(R.id.btn_cancel_reminder)
     FloatingActionButton cancelReminderButton;
-    @Bind(R.id.btn_complete_plan)
+    @BindView(R.id.btn_complete_plan)
     FloatingActionButton completePlanButton;
 
     private ReminderPresenter reminderPresenter;

@@ -26,22 +26,22 @@ import com.zack.enderplan.domain.fragment.CreateTypeDialogFragment;
 import com.zack.enderplan.interactor.presenter.HomePresenter;
 import com.zack.enderplan.domain.view.HomeView;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class HomeActivity extends BaseActivity implements HomeView,
         NavigationView.OnNavigationItemSelectedListener {
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.frame_layout)
+    @BindView(R.id.frame_layout)
     FrameLayout frameLayout;
-    @Bind(R.id.fab)
+    @BindView(R.id.fab)
     FloatingActionButton fab;
-    @Bind(R.id.nav_view)
+    @BindView(R.id.nav_view)
     NavigationView navView;
-    @Bind(R.id.drawer_layout)
+    @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
 
     private TextView ucPlanCountText;

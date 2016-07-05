@@ -22,7 +22,7 @@ import com.zack.enderplan.domain.fragment.DateTimePickerDialogFragment;
 import com.zack.enderplan.interactor.presenter.CreatePlanPresenter;
 import com.zack.enderplan.domain.view.CreatePlanView;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -30,21 +30,21 @@ public class CreatePlanActivity extends BaseActivity
         implements CreatePlanView, CalendarDialogFragment.OnDateChangedListener,
         DateTimePickerDialogFragment.OnDateTimeChangedListener {
 
-    @Bind(R.id.button_save)
+    @BindView(R.id.button_save)
     ImageView saveButton;
-    @Bind(R.id.editor_content)
+    @BindView(R.id.editor_content)
     EditText contentEditor;
-    @Bind(R.id.spinner)
+    @BindView(R.id.spinner)
     Spinner spinner;
-    @Bind(R.id.star_mark)
+    @BindView(R.id.star_mark)
     ImageView starMark;
-    @Bind(R.id.deadline_mark)
+    @BindView(R.id.deadline_mark)
     ImageView deadlineMark;
-    @Bind(R.id.reminder_mark)
+    @BindView(R.id.reminder_mark)
     ImageView reminderMark;
-    @Bind(R.id.card_view)
+    @BindView(R.id.card_view)
     CardView cardView;
-    @Bind(R.id.circular_reveal_layout)
+    @BindView(R.id.circular_reveal_layout)
     LinearLayout circularRevealLayout;
 
     private CreatePlanPresenter createPlanPresenter;
