@@ -4,15 +4,14 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.bean.Plan;
-import com.zack.enderplan.database.EnderPlanDB;
+import com.zack.enderplan.model.bean.Plan;
+import com.zack.enderplan.model.database.DatabaseDispatcher;
 import com.zack.enderplan.event.RemindedEvent;
-import com.zack.enderplan.manager.DataManager;
+import com.zack.enderplan.model.ram.DataManager;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -23,10 +22,10 @@ public class ReminderReceiver extends BroadcastReceiver {
 
         String planCode = intent.getStringExtra("plan_code");
 
-        EnderPlanDB enderplanDB = EnderPlanDB.getInstance();
+        DatabaseDispatcher dispatcher = DatabaseDispatcher.getInstance();
         DataManager dataManager = DataManager.getInstance();
 
-        Plan plan = enderplanDB.queryPlan(planCode);
+        Plan plan = dispatcher.queryPlan(planCode);
 
         Intent reminderIntent = new Intent("com.zack.enderplan.ACTION_REMINDER");
         reminderIntent.putExtra("plan_detail", plan);
@@ -43,7 +42,7 @@ public class ReminderReceiver extends BroadcastReceiver {
         manager.notify(planCode, 0, notification);
 
         //数据库存储
-        enderplanDB.editReminderTime(planCode, 0);
+        dispatcher.editReminderTime(planCode, 0);
 
         if (dataManager.getDataStatus() == DataManager.DataStatus.STATUS_DATA_LOADED) {
             //此时数据已加载完成，可以通过DataManager访问到数据

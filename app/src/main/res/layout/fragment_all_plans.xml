@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.zack.enderplan.activity.AllPlansFragment">
+    tools:context=".domain.fragment.AllPlansFragment">
 
     <com.zack.enderplan.widget.EnhancedRecyclerView
         android:id="@+id/recycler_view"

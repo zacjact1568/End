@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.zack.enderplan.application.EnderPlanApp;
+import com.zack.enderplan.application.App;
 import com.zack.enderplan.receiver.ReminderReceiver;
 
 public class ReminderManager {
@@ -16,7 +16,7 @@ public class ReminderManager {
     private static ReminderManager ourInstance;
 
     private ReminderManager() {
-        context = EnderPlanApp.getGlobalContext();
+        context = App.getGlobalContext();
     }
 
     public static ReminderManager getInstance() {

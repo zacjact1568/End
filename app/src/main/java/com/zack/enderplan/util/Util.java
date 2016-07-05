@@ -6,7 +6,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.StrikethroughSpan;
 
-import com.zack.enderplan.application.EnderPlanApp;
+import com.zack.enderplan.application.App;
 
 import java.util.UUID;
 
@@ -33,7 +33,7 @@ public class Util {
     }
 
     public static void makeShortVibrate() {
-        Vibrator vibrator = (Vibrator) EnderPlanApp.getGlobalContext().getSystemService(Context.VIBRATOR_SERVICE);
+        Vibrator vibrator = (Vibrator) App.getGlobalContext().getSystemService(Context.VIBRATOR_SERVICE);
         long[] pattern = {0, 100};
         vibrator.vibrate(pattern, -1);
     }

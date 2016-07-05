@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:padding="8dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.zack.enderplan.activity.PlanDetailActivity"
+    tools:context=".domain.activity.PlanDetailActivity"
     tools:showIn="@layout/activity_plan_detail">
 
     <TextView
