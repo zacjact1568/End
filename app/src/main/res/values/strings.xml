@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name" translatable="false">EnderPlan</string>
+    <string name="app_name">EnderPlan</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_home">Home</string>
+    <string name="action_my_plans">My Plans</string>
     <string name="action_starred_plans">Starred Plans</string>
     <string name="action_all_types">All Types</string>
     <string name="action_recycle_bin">Recycle Bin</string>
@@ -42,7 +42,11 @@
     <string name="empty_view_prompt">No any plans here.\nClick the Floating Action Button in the right bottom corner to create one.</string>
     <string name="toast_double_click_exit">Click once again to exit EnderPlan</string>
 
+    <!--MyPlansFragment-->
+    <string name="title_fragment_my_plans">My Plans</string>
+
     <!--AllTypesFragment-->
+    <string name="title_fragment_all_types">All Types</string>
     <string name="uc_plan_count_of_each_type_none">No plan uncompleted</string>
     <string name="uc_plan_count_of_each_type_one">1 plan uncompleted</string>
     <string name="uc_plan_count_of_each_type_multi">plans uncompleted</string>

@@ -40,7 +40,6 @@
     <string name="title_activity_about">关于</string>
     <string name="title_activity_plan_detail">详细信息</string>
     <string name="unsettled">未设置</string>
-    <string name="action_home">主页</string>
     <string name="action_recycle_bin">回收站</string>
     <string name="title_activity_settings">设置</string>
     <string name="pref_title_language">语言</string>
@@ -95,4 +94,8 @@
     <string name="toast_reminder_delayed_5min">我将会在5分钟之后提醒你</string>
     <string name="toast_reminder_canceled">提醒已取消</string>
     <string name="toast_plan_completed">计划已标记为完成</string>
+    <string name="action_my_plans">我的计划</string>
+    <string name="app_name">Ender计划</string>
+    <string name="title_fragment_all_types">所有类型</string>
+    <string name="title_fragment_my_plans">我的计划</string>
 </resources>

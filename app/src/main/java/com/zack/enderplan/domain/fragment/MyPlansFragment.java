@@ -14,26 +14,26 @@ import android.view.ViewGroup;
 import com.zack.enderplan.R;
 import com.zack.enderplan.domain.activity.HomeActivity;
 import com.zack.enderplan.domain.activity.PlanDetailActivity;
+import com.zack.enderplan.domain.view.MyPlansView;
+import com.zack.enderplan.interactor.presenter.MyPlansPresenter;
 import com.zack.enderplan.model.bean.Plan;
-import com.zack.enderplan.interactor.presenter.AllPlansPresenter;
 import com.zack.enderplan.util.Util;
-import com.zack.enderplan.domain.view.AllPlansView;
 import com.zack.enderplan.widget.EnhancedRecyclerView;
 
-public class AllPlansFragment extends Fragment implements AllPlansView {
+public class MyPlansFragment extends Fragment implements MyPlansView {
 
-    private static final String CLASS_NAME = "AllPlansFragment";
+    private static final String CLASS_NAME = "MyPlansFragment";
 
-    private AllPlansPresenter allPlansPresenter;
+    private MyPlansPresenter myPlansPresenter;
     private EnhancedRecyclerView recyclerView;
     //private int planItemClickPosition;
 
-    public AllPlansFragment() {
+    public MyPlansFragment() {
         // Required empty public constructor
     }
 
-    /*public static AllPlansFragment newInstance(List<Plan> planList) {
-        AllPlansFragment fragment = new AllPlansFragment();
+    /*public static MyPlansFragment newInstance(List<Plan> planList) {
+        MyPlansFragment fragment = new MyPlansFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_PLAN_LIST, (ArrayList<Plan>) planList);
         fragment.setArguments(args);
@@ -44,16 +44,16 @@ public class AllPlansFragment extends Fragment implements AllPlansView {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        allPlansPresenter = new AllPlansPresenter(this);
+        myPlansPresenter = new MyPlansPresenter(this);
 
-        allPlansPresenter.createPlanAdapter();
+        myPlansPresenter.createPlanAdapter();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_all_plans, container, false);
+        return inflater.inflate(R.layout.fragment_my_plans, container, false);
     }
 
     @Override
@@ -65,15 +65,15 @@ public class AllPlansFragment extends Fragment implements AllPlansView {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
         recyclerView.setEmptyView(view.findViewById(R.id.text_empty_view));
-        recyclerView.setAdapter(allPlansPresenter.getPlanAdapter());
-        allPlansPresenter.initDataLists();
+        recyclerView.setAdapter(myPlansPresenter.getPlanAdapter());
+        myPlansPresenter.initDataLists();
         new ItemTouchHelper(new PlanListItemTouchCallback()).attachToRecyclerView(recyclerView);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        allPlansPresenter.detachView();
+        myPlansPresenter.detachView();
     }
 
     @Override
@@ -92,7 +92,7 @@ public class AllPlansFragment extends Fragment implements AllPlansView {
         snackbar.setAction(R.string.cancel, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                allPlansPresenter.notifyPlanRecreated(position, planUseForTakingBack);
+                myPlansPresenter.notifyPlanRecreated(position, planUseForTakingBack);
             }
         });
         snackbar.show();
@@ -116,10 +116,10 @@ public class AllPlansFragment extends Fragment implements AllPlansView {
             int position = viewHolder.getLayoutPosition();
             switch (direction) {
                 case ItemTouchHelper.START:
-                    allPlansPresenter.notifyPlanDeleted(position);
+                    myPlansPresenter.notifyPlanDeleted(position);
                     break;
                 case ItemTouchHelper.END:
-                    allPlansPresenter.notifyPlanStatusChanged(position);
+                    myPlansPresenter.notifyPlanStatusChanged(position);
                     break;
                 default:
                     break;

@@ -17,39 +17,39 @@ import com.zack.enderplan.event.UcPlanCountChangedEvent;
 import com.zack.enderplan.interactor.adapter.PlanAdapter;
 import com.zack.enderplan.model.ram.DataManager;
 import com.zack.enderplan.manager.ReminderManager;
-import com.zack.enderplan.domain.view.AllPlansView;
+import com.zack.enderplan.domain.view.MyPlansView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
-public class AllPlansPresenter implements Presenter<AllPlansView> {
+public class MyPlansPresenter implements Presenter<MyPlansView> {
 
-    private static final String LOG_TAG = "AllPlansPresenter";
+    private static final String LOG_TAG = "MyPlansPresenter";
 
-    private AllPlansView allPlansView;
+    private MyPlansView myPlansView;
     private DataManager dataManager;
     private PlanAdapter planAdapter;
     private DatabaseDispatcher databaseDispatcher;
     private ReminderManager reminderManager;
 
-    public AllPlansPresenter(AllPlansView allPlansView) {
-        attachView(allPlansView);
+    public MyPlansPresenter(MyPlansView myPlansView) {
+        attachView(myPlansView);
         dataManager = DataManager.getInstance();
         databaseDispatcher = DatabaseDispatcher.getInstance();
         reminderManager = ReminderManager.getInstance();
     }
 
     @Override
-    public void attachView(AllPlansView view) {
-        allPlansView = view;
+    public void attachView(MyPlansView view) {
+        myPlansView = view;
         EventBus.getDefault().register(this);
     }
 
     @Override
     public void detachView() {
-        allPlansView = null;
+        myPlansView = null;
         EventBus.getDefault().unregister(this);
     }
 
@@ -58,8 +58,8 @@ public class AllPlansPresenter implements Presenter<AllPlansView> {
         planAdapter.setOnPlanItemClickListener(new PlanAdapter.OnPlanItemClickListener() {
             @Override
             public void onPlanItemClick(View itemView, int position) {
-                allPlansView.onPlanItemClicked(position);
-                //allPlansView.onStartPlanDetailActivity(dataManager.getPlan(position));
+                myPlansView.onPlanItemClicked(position);
+                //myPlansView.onStartPlanDetailActivity(dataManager.getPlan(position));
             }
         });
         /*planAdapter.setOnPlanItemLongClickListener(new PlanAdapter.OnPlanItemLongClickListener() {
@@ -86,7 +86,7 @@ public class AllPlansPresenter implements Presenter<AllPlansView> {
                 databaseDispatcher.editPlan(plan.getPlanCode(), values);
             }
         });
-        //allPlansView.onPlanAdapterCreated(planAdapter);
+        //myPlansView.onPlanAdapterCreated(planAdapter);
     }
 
     public PlanAdapter getPlanAdapter() {
@@ -115,7 +115,7 @@ public class AllPlansPresenter implements Presenter<AllPlansView> {
         }
         dataManager.removeFromPlanList(position);
         planAdapter.notifyItemRemoved(position);
-        allPlansView.onPlanDeleted(plan.getContent(), position, plan);
+        myPlansView.onPlanDeleted(plan.getContent(), position, plan);
 
         databaseDispatcher.deletePlan(plan.getPlanCode());
 

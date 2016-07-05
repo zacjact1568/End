@@ -51,7 +51,7 @@
             android:id="@+id/btn_delay_reminder"
             android:layout_width="@dimen/fab_size"
             android:layout_height="@dimen/fab_size"
-            android:src="@drawable/ic_pause_white_24dp"
+            android:src="@drawable/ic_snooze_white_24dp"
             android:clickable="true"
             android:layout_gravity="center"
             app:backgroundTint="@color/red_300"

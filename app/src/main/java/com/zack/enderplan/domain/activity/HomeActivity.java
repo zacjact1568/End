@@ -20,7 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.domain.fragment.AllPlansFragment;
+import com.zack.enderplan.domain.fragment.MyPlansFragment;
 import com.zack.enderplan.domain.fragment.AllTypesFragment;
 import com.zack.enderplan.domain.fragment.CreateTypeDialogFragment;
 import com.zack.enderplan.interactor.presenter.HomePresenter;
@@ -51,7 +51,7 @@ public class HomeActivity extends BaseActivity implements HomeView,
 
     private static final String LOG_TAG = "HomeActivity";
     private static final String TAG_ALL_TYPES = "all_types";
-    private static final String TAG_ALL_PLANS = "all_plans";
+    private static final String TAG_MY_PLANS = "my_plans";
     private static final int REQ_CODE_CREATE_PLAN = 0;
     public static final int REQ_CODE_PLAN_DETAIL = 1;
     private static final int CR_ANIM_DURATION = 300;
@@ -77,8 +77,7 @@ public class HomeActivity extends BaseActivity implements HomeView,
 
         navView.setNavigationItemSelectedListener(this);
 
-        AllPlansFragment allPlansFragment = new AllPlansFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, allPlansFragment, TAG_ALL_PLANS).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, new MyPlansFragment(), TAG_MY_PLANS).commit();
 
         /*IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.zack.enderplan.ACTION_REMINDED");
@@ -187,7 +186,7 @@ public class HomeActivity extends BaseActivity implements HomeView,
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.nav_home:
+            case R.id.nav_my_plans:
                 if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
                     getSupportFragmentManager().popBackStack();
                 }
@@ -195,6 +194,7 @@ public class HomeActivity extends BaseActivity implements HomeView,
             case R.id.nav_all_types:
                 if (getSupportFragmentManager().findFragmentByTag(TAG_ALL_TYPES) == null) {
                     makeCircularRevealAnimationOnFab(R.drawable.ic_playlist_add_white_24dp);
+                    toolbar.setTitle(R.string.title_fragment_all_types);
                     AllTypesFragment allTypesFragment = new AllTypesFragment();
                     getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, allTypesFragment, TAG_ALL_TYPES).addToBackStack(null).commit();
                     getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
@@ -202,7 +202,8 @@ public class HomeActivity extends BaseActivity implements HomeView,
                         public void onBackStackChanged() {
                             if (getSupportFragmentManager().findFragmentByTag(TAG_ALL_TYPES) == null) {
                                 makeCircularRevealAnimationOnFab(R.drawable.ic_add_white_24dp);
-                                navView.setCheckedItem(R.id.nav_home);
+                                toolbar.setTitle(R.string.title_fragment_my_plans);
+                                navView.setCheckedItem(R.id.nav_my_plans);
                                 getSupportFragmentManager().removeOnBackStackChangedListener(this);
                             }
                         }

@@ -2,22 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
+
         <item
-            android:id="@+id/nav_home"
-            android:icon="@drawable/ic_home_grey600_24dp"
-            android:title="@string/action_home" />
-        <!--<item-->
-            <!--android:id="@+id/nav_starred_plans"-->
-            <!--android:icon="@drawable/ic_star_grey600_24dp"-->
-            <!--android:title="@string/action_starred_plans" />-->
+            android:id="@+id/nav_my_plans"
+            android:icon="@drawable/ic_event_grey600_24dp"
+            android:title="@string/action_my_plans" />
+
         <item
             android:id="@+id/nav_all_types"
             android:icon="@drawable/ic_subject_grey600_24dp"
             android:title="@string/action_all_types" />
-        <!--<item-->
-            <!--android:id="@+id/nav_recycle_bin"-->
-            <!--android:icon="@drawable/ic_delete_grey600_24dp"-->
-            <!--android:title="@string/action_recycle_bin" />-->
+
     </group>
 
     <item android:title="@string/nav_subheader">
