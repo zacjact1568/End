@@ -4,9 +4,9 @@ import com.zack.enderplan.interactor.adapter.TypeMarkAdapter;
 
 public interface EditTypeView {
 
-    void showInitialView(String typeName, TypeMarkAdapter typeMarkAdapter, int position);
+    void showInitialView(String typeName, TypeMarkAdapter typeMarkAdapter);
 
-    //void onTypeMarkClicked(boolean isSelected, int resId);
+    void updateSaveButton(boolean isEnabled);
 
-    void onUpdateSaveButton(boolean isEnable);
+    void closeDialog(boolean isCanceled);
 }

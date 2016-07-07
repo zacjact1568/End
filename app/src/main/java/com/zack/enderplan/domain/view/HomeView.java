@@ -2,7 +2,9 @@ package com.zack.enderplan.domain.view;
 
 public interface HomeView {
 
-    void updateDrawerHeaderContent(String ucPlanCountStr);
+    void showInitialView(String ucPlanCount);
+
+    void onUcPlanCountUpdated(String newUcPlanCount);
 
     void onPlanCreated(String content);
 

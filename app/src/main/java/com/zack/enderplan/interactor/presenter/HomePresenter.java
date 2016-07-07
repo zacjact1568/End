@@ -12,61 +12,41 @@ import org.greenrobot.eventbus.Subscribe;
 
 public class HomePresenter implements Presenter<HomeView> {
 
-    private HomeView homeView;
-    private DataManager dataManager;
-    private long lastBackKeyPressedTime;
-    //private String nonePlan, onePlan, multiPlan;
-
     private static final String LOG_TAG = "HomePresenter";
+
+    private HomeView mHomeView;
+    private DataManager mDataManager;
+    private long lastBackKeyPressedTime;
 
     public HomePresenter(HomeView homeView) {
         attachView(homeView);
-        dataManager = DataManager.getInstance();
-        dataManager.initDataStruct();
-
-        /*Context context = App.getGlobalContext();
-        nonePlan = context.getResources().getString(R.string.plan_uc_none);
-        onePlan = context.getResources().getString(R.string.plan_uc_one);
-        multiPlan = context.getResources().getString(R.string.plan_uc_multi);*/
+        mDataManager = DataManager.getInstance();
+        mDataManager.initDataStruct();
     }
 
     @Override
     public void attachView(HomeView view) {
-        homeView = view;
+        mHomeView = view;
         EventBus.getDefault().register(this);
     }
 
     @Override
     public void detachView() {
-        homeView = null;
+        mHomeView = null;
         EventBus.getDefault().unregister(this);
-        //dataManager.clearData();
     }
 
-    public void initDrawerHeaderContent() {
-        showUcPlanCount(dataManager.getUcPlanCount());
-    }
-
-    //显示未完成的计划
-    private void showUcPlanCount(int ucPlanCount) {
-        /*String ucPlanCountDscpt = "";
-        if (ucPlanCount == 0) {
-            ucPlanCountDscpt = nonePlan;
-        } else if (ucPlanCount == 1) {
-            ucPlanCountDscpt = onePlan;
-        } else if (ucPlanCount > 1) {
-            ucPlanCountDscpt = multiPlan;
-        }*/
-        homeView.updateDrawerHeaderContent(String.valueOf(ucPlanCount));
+    public void setInitialView() {
+        mHomeView.showInitialView(getUcPlanCount());
     }
 
     public void notifyPlanCreated() {
         //更新view
-        showUcPlanCount(dataManager.getUcPlanCount());
+        mHomeView.onUcPlanCountUpdated(getUcPlanCount());
         //通过EventBus通知刷新适配器
         EventBus.getDefault().post(new PlanCreatedEvent());
         //对view层回调
-        homeView.onPlanCreated(dataManager.getPlan(0).getContent());
+        mHomeView.onPlanCreated(mDataManager.getPlan(0).getContent());
     }
 
     public void notifyPlanDetailChanged(int position, String planCode, boolean isTypeOfPlanChanged,
@@ -77,7 +57,7 @@ public class HomePresenter implements Presenter<HomeView> {
 
         if (isPlanStatusChanged) {
             //如果计划完成情况改变，需要更新drawer上的header中的内容
-            showUcPlanCount(dataManager.getUcPlanCount());
+            mHomeView.onUcPlanCountUpdated(getUcPlanCount());
         }
     }
 
@@ -89,34 +69,34 @@ public class HomePresenter implements Presenter<HomeView> {
 
         if (!isCompleted) {
             //需要更新drawer上的未完成计划数量，因为刚刚删除了一个未完成的计划
-            showUcPlanCount(dataManager.getUcPlanCount());
+            mHomeView.onUcPlanCountUpdated(getUcPlanCount());
         }
 
         //show SnackBar
-        homeView.onPlanDeleted(content);
+        mHomeView.onPlanDeleted(content);
     }
 
     public void notifyBackPressed(boolean isDrawerOpen, boolean isOnRootFragment) {
         long currentTime = System.currentTimeMillis();
         if (isDrawerOpen) {
-            homeView.onCloseDrawer();
+            mHomeView.onCloseDrawer();
         } else if (!isOnRootFragment || currentTime - lastBackKeyPressedTime < 1500) {
             //不是在根Fragment（可以直接退出的Fragment）上，或者连续点击间隔在1.5s以内，执行原back键操作
-            homeView.onPressBackKey();
+            mHomeView.onPressBackKey();
         } else {
             //否则更新上次点击back键的时间，并显示一个toast
             lastBackKeyPressedTime = currentTime;
-            homeView.onShowDoubleClickToast();
+            mHomeView.onShowDoubleClickToast();
         }
     }
 
-    /*public void notifyReminderOff(String planCode) {
-
-    }*/
+    private String getUcPlanCount() {
+        return String.valueOf(mDataManager.getUcPlanCount());
+    }
 
     @Subscribe
     public void onUcPlanCountChanged(UcPlanCountChangedEvent event) {
         //当未完成计划数量改变的事件到来时，更新侧栏上显示的未完成计划数量
-        showUcPlanCount(dataManager.getUcPlanCount());
+        mHomeView.onUcPlanCountUpdated(getUcPlanCount());
     }
 }

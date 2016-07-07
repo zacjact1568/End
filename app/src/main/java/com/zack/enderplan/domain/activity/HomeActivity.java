@@ -33,6 +33,8 @@ import butterknife.OnClick;
 public class HomeActivity extends BaseActivity implements HomeView,
         NavigationView.OnNavigationItemSelectedListener {
 
+    private static final String LOG_TAG = "HomeActivity";
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.frame_layout)
@@ -45,11 +47,8 @@ public class HomeActivity extends BaseActivity implements HomeView,
     DrawerLayout drawerLayout;
 
     private TextView ucPlanCountText;
-    //private TextView ucPlanDscptText;
-    private HomePresenter homePresenter;
-    //private RemindedReceiver remindedReceiver;
+    private HomePresenter mHomePresenter;
 
-    private static final String LOG_TAG = "HomeActivity";
     private static final String TAG_ALL_TYPES = "all_types";
     private static final String TAG_MY_PLANS = "my_plans";
     private static final int REQ_CODE_CREATE_PLAN = 0;
@@ -64,33 +63,16 @@ public class HomeActivity extends BaseActivity implements HomeView,
 
         View navHeaderView = navView.getHeaderView(0);
         ucPlanCountText = ButterKnife.findById(navHeaderView, R.id.text_uc_plan_count);
-        //ucPlanDscptText = ButterKnife.findById(navHeaderView, R.id.text_uc_plan_dscpt);
 
-        homePresenter = new HomePresenter(this);
-        homePresenter.initDrawerHeaderContent();
+        mHomePresenter = new HomePresenter(this);
 
-        setSupportActionBar(toolbar);
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-
-        navView.setNavigationItemSelectedListener(this);
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, new MyPlansFragment(), TAG_MY_PLANS).commit();
-
-        /*IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.zack.enderplan.ACTION_REMINDED");
-        intentFilter.setPriority(0);
-        remindedReceiver = new RemindedReceiver();
-        registerReceiver(remindedReceiver, intentFilter);*/
+        mHomePresenter.setInitialView();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //unregisterReceiver(remindedReceiver);
-        homePresenter.detachView();
+        mHomePresenter.detachView();
     }
 
     @Override
@@ -100,35 +82,21 @@ public class HomeActivity extends BaseActivity implements HomeView,
         }
         switch (requestCode) {
             case REQ_CODE_CREATE_PLAN:
-                homePresenter.notifyPlanCreated();
+                mHomePresenter.notifyPlanCreated();
                 break;
             case REQ_CODE_PLAN_DETAIL:
                 switch (resultCode) {
-                    /*case RESULT_PLAN_DETAIL_AND_STATUS_CHANGED:
-                        homePresenter.notifyPlanDetailAndStatusChanged(
-                                data.getIntExtra("position", 0),
-                                data.getStringExtra("plan_code")
-                        );
-                        break;*/
                     case RESULT_PLAN_DETAIL_CHANGED:
                         //能接收到这个resultCode，那么计划属性必定有更改
-
-                        homePresenter.notifyPlanDetailChanged(
+                        mHomePresenter.notifyPlanDetailChanged(
                                 data.getIntExtra("position", 0),
                                 data.getStringExtra("plan_code"),
                                 data.getBooleanExtra("is_type_of_plan_changed", false),
                                 data.getBooleanExtra("is_plan_status_changed", false)
                         );
-
-                        /*homePresenter.notifyPlanStatusChanged(
-                                data.getIntExtra("position", 0),
-                                data.getStringExtra("plan_code")
-                        );
-                        homePresenter.notifyPlanDetailChanged(data.getIntExtra("position", 0));*/
-
                         break;
                     case RESULT_PLAN_DELETED:
-                        homePresenter.notifyPlanDeleted(
+                        mHomePresenter.notifyPlanDeleted(
                                 data.getIntExtra("position", 0),
                                 data.getStringExtra("plan_code"),
                                 data.getStringExtra("content"),
@@ -144,15 +112,10 @@ public class HomeActivity extends BaseActivity implements HomeView,
 
     @Override
     public void onBackPressed() {
-        homePresenter.notifyBackPressed(
+        mHomePresenter.notifyBackPressed(
                 drawerLayout.isDrawerOpen(GravityCompat.START),
                 getSupportFragmentManager().findFragmentByTag(TAG_ALL_TYPES) == null
         );
-        /*if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }*/
     }
 
     @Override
@@ -237,9 +200,23 @@ public class HomeActivity extends BaseActivity implements HomeView,
     }
 
     @Override
-    public void updateDrawerHeaderContent(String ucPlanCountStr) {
-        ucPlanCountText.setText(ucPlanCountStr);
-        //ucPlanDscptText.setText(ucPlanDscptStr);
+    public void showInitialView(String ucPlanCount) {
+        setSupportActionBar(toolbar);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navView.setNavigationItemSelectedListener(this);
+
+        ucPlanCountText.setText(ucPlanCount);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, new MyPlansFragment(), TAG_MY_PLANS).commit();
+    }
+
+    @Override
+    public void onUcPlanCountUpdated(String newUcPlanCount) {
+        ucPlanCountText.setText(newUcPlanCount);
     }
 
     @Override
@@ -280,13 +257,4 @@ public class HomeActivity extends BaseActivity implements HomeView,
         Intent intent = new Intent(this, CreatePlanActivity.class);
         startActivityForResult(intent, REQ_CODE_CREATE_PLAN);
     }
-
-    /*class RemindedReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String planCode = intent.getStringExtra("plan_code");
-            homePresenter.notifyReminderOff(planCode);
-        }
-    }*/
 }

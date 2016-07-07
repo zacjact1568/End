@@ -10,43 +10,41 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.domain.activity.HomeActivity;
 import com.zack.enderplan.domain.activity.PlanDetailActivity;
 import com.zack.enderplan.domain.view.MyPlansView;
+import com.zack.enderplan.interactor.adapter.PlanAdapter;
 import com.zack.enderplan.interactor.presenter.MyPlansPresenter;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.util.Util;
 import com.zack.enderplan.widget.EnhancedRecyclerView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MyPlansFragment extends Fragment implements MyPlansView {
 
-    private static final String CLASS_NAME = "MyPlansFragment";
+    private static final String LOG_TAG = "MyPlansFragment";
 
-    private MyPlansPresenter myPlansPresenter;
-    private EnhancedRecyclerView recyclerView;
-    //private int planItemClickPosition;
+    @BindView(R.id.list_my_plans)
+    EnhancedRecyclerView mMyPlansList;
+    @BindView(R.id.text_empty_view)
+    TextView mEmptyViewText;
+
+    private MyPlansPresenter mMyPlansPresenter;
 
     public MyPlansFragment() {
         // Required empty public constructor
     }
 
-    /*public static MyPlansFragment newInstance(List<Plan> planList) {
-        MyPlansFragment fragment = new MyPlansFragment();
-        Bundle args = new Bundle();
-        args.putParcelableArrayList(ARG_PLAN_LIST, (ArrayList<Plan>) planList);
-        fragment.setArguments(args);
-        return fragment;
-    }*/
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        myPlansPresenter = new MyPlansPresenter(this);
-
-        myPlansPresenter.createPlanAdapter();
+        mMyPlansPresenter = new MyPlansPresenter(this);
     }
 
     @Override
@@ -59,26 +57,29 @@ public class MyPlansFragment extends Fragment implements MyPlansView {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this, view);
 
-        recyclerView = (EnhancedRecyclerView) view.findViewById(R.id.recycler_view);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setEmptyView(view.findViewById(R.id.text_empty_view));
-        recyclerView.setAdapter(myPlansPresenter.getPlanAdapter());
-        myPlansPresenter.initDataLists();
-        new ItemTouchHelper(new PlanListItemTouchCallback()).attachToRecyclerView(recyclerView);
+        mMyPlansPresenter.setInitialView();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        myPlansPresenter.detachView();
+        mMyPlansPresenter.detachView();
+    }
+
+    @Override
+    public void showInitialView(PlanAdapter planAdapter) {
+        //初始化RecyclerView
+        mMyPlansList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mMyPlansList.setHasFixedSize(true);
+        mMyPlansList.setEmptyView(mEmptyViewText);
+        mMyPlansList.setAdapter(planAdapter);
+        new ItemTouchHelper(new PlanListItemTouchCallback()).attachToRecyclerView(mMyPlansList);
     }
 
     @Override
     public void onPlanItemClicked(int position) {
-        //planItemClickPosition = position;
         Intent intent = new Intent(getActivity(), PlanDetailActivity.class);
         intent.putExtra("position", position);
         getActivity().startActivityForResult(intent, HomeActivity.REQ_CODE_PLAN_DETAIL);
@@ -88,11 +89,11 @@ public class MyPlansFragment extends Fragment implements MyPlansView {
     public void onPlanDeleted(String content, final int position, final Plan planUseForTakingBack) {
         Util.makeShortVibrate();
         String text = content + " " + getResources().getString(R.string.deleted_prompt);
-        Snackbar snackbar = Snackbar.make(recyclerView, text, Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(mMyPlansList, text, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.cancel, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myPlansPresenter.notifyPlanRecreated(position, planUseForTakingBack);
+                mMyPlansPresenter.notifyPlanRecreated(position, planUseForTakingBack);
             }
         });
         snackbar.show();
@@ -116,10 +117,10 @@ public class MyPlansFragment extends Fragment implements MyPlansView {
             int position = viewHolder.getLayoutPosition();
             switch (direction) {
                 case ItemTouchHelper.START:
-                    myPlansPresenter.notifyPlanDeleted(position);
+                    mMyPlansPresenter.notifyPlanDeleted(position);
                     break;
                 case ItemTouchHelper.END:
-                    myPlansPresenter.notifyPlanStatusChanged(position);
+                    mMyPlansPresenter.notifyPlanStatusChanged(position);
                     break;
                 default:
                     break;
@@ -131,18 +132,4 @@ public class MyPlansFragment extends Fragment implements MyPlansView {
             return .7f;
         }
     }
-
-    /*public void onUncompletedPlanCountChanged(int newUncompletedPlanCount) {
-        if (onUncompletedPlanCountChangedListener != null) {
-            onUncompletedPlanCountChangedListener.onUncompletedPlanCountChanged(newUncompletedPlanCount);
-        }
-    }
-
-    public interface OnUncompletedPlanCountChangedListener {
-        void onUncompletedPlanCountChanged(int newUncompletedPlanCount);
-    }
-
-    public void setOnUncompletedPlanCountChangedListener(OnUncompletedPlanCountChangedListener listener) {
-        this.onUncompletedPlanCountChangedListener = listener;
-    }*/
 }

@@ -29,6 +29,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class TypeDetailDialogFragment extends BottomSheetDialogFragment implements TypeDetailView {
 
+    private static final String LOG_TAG = "TypeDetailDFragment";
+
     @BindView(R.id.ic_type_mark)
     CircleImageView typeMarkIcon;
     @BindView(R.id.text_first_char)
@@ -42,7 +44,6 @@ public class TypeDetailDialogFragment extends BottomSheetDialogFragment implemen
     @BindView(R.id.list_uc_plan)
     RecyclerView ucPlanList;
 
-    private static final String LOG_TAG = "TypeDetailDFragment";
     private static final String ARG_POSITION = "position";
 
     private int position;
@@ -88,20 +89,6 @@ public class TypeDetailDialogFragment extends BottomSheetDialogFragment implemen
     public void onDetach() {
         super.onDetach();
         typeDetailPresenter.detachView();
-    }
-
-    @OnClick({R.id.ic_edit_type, R.id.ic_clear_text})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.ic_edit_type:
-                getDialog().dismiss();
-                EditTypeDialogFragment dialog = EditTypeDialogFragment.newInstance(position);
-                dialog.show(getFragmentManager(), "edit_type");
-                break;
-            case R.id.ic_clear_text:
-                contentEditor.setText("");
-                break;
-        }
     }
 
     @Override
@@ -165,6 +152,20 @@ public class TypeDetailDialogFragment extends BottomSheetDialogFragment implemen
         Intent intent = new Intent(getActivity(), PlanDetailActivity.class);
         intent.putExtra("position", posInPlanList);
         getActivity().startActivityForResult(intent, HomeActivity.REQ_CODE_PLAN_DETAIL);
+    }
+
+    @OnClick({R.id.ic_edit_type, R.id.ic_clear_text})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.ic_edit_type:
+                getDialog().dismiss();
+                EditTypeDialogFragment dialog = EditTypeDialogFragment.newInstance(position);
+                dialog.show(getFragmentManager(), "edit_type");
+                break;
+            case R.id.ic_clear_text:
+                contentEditor.setText("");
+                break;
+        }
     }
 
     private class SingleTypeUcPlanListItemTouchCallback extends ItemTouchHelper.Callback {

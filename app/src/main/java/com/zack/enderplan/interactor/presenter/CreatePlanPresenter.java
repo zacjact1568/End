@@ -12,78 +12,78 @@ import com.zack.enderplan.interactor.adapter.TypeSpinnerAdapter;
 
 public class CreatePlanPresenter implements Presenter<CreatePlanView> {
 
-    private CreatePlanView createPlanView;
-    private DataManager dataManager;
-    private Plan plan;
+    private CreatePlanView mCreatePlanView;
+    private DataManager mDataManager;
+    private Plan mPlan;
 
     public CreatePlanPresenter(CreatePlanView createPlanView) {
         attachView(createPlanView);
-        dataManager = DataManager.getInstance();
-        plan = new Plan(Util.makeCode());
+        mDataManager = DataManager.getInstance();
+        mPlan = new Plan(Util.makeCode());
     }
 
     @Override
     public void attachView(CreatePlanView view) {
-        createPlanView = view;
+        mCreatePlanView = view;
     }
 
     @Override
     public void detachView() {
-        createPlanView = null;
+        mCreatePlanView = null;
     }
 
-    public TypeSpinnerAdapter createTypeSpinnerAdapter() {
-        return new TypeSpinnerAdapter(dataManager.getTypeList(), dataManager.getTypeMarkAndColorResMap());
+    public void setInitialView() {
+        mCreatePlanView.showInitialView(new TypeSpinnerAdapter(mDataManager.getTypeList(), mDataManager.getTypeMarkAndColorResMap()));
     }
 
     public void notifyContentChanged(String newContent) {
-        plan.setContent(newContent);
+        mPlan.setContent(newContent);
     }
 
     public void notifyTypeCodeChanged(int posInSpinner) {
-        plan.setTypeCode(dataManager.getType(posInSpinner).getTypeCode());
+        mPlan.setTypeCode(mDataManager.getType(posInSpinner).getTypeCode());
     }
 
     public void notifyDeadlineChanged(long newDeadline) {
-        plan.setDeadline(newDeadline);
+        mPlan.setDeadline(newDeadline);
     }
 
     public void notifyReminderTimeChanged(long newReminderTime) {
-        plan.setReminderTime(newReminderTime);
+        mPlan.setReminderTime(newReminderTime);
     }
 
     public void notifyStarStatusChanged() {
         //isStarred表示点击之前的星标状态
-        boolean isStarred = plan.getStarStatus() == Plan.PLAN_STAR_STATUS_STARRED;
-        plan.setStarStatus(isStarred ? Plan.PLAN_STAR_STATUS_NOT_STARRED : Plan.PLAN_STAR_STATUS_STARRED);
+        boolean isStarred = mPlan.getStarStatus() == Plan.PLAN_STAR_STATUS_STARRED;
+        mPlan.setStarStatus(isStarred ? Plan.PLAN_STAR_STATUS_NOT_STARRED : Plan.PLAN_STAR_STATUS_STARRED);
         //星标状态变化了
-        createPlanView.onStarStatusChanged(!isStarred);
+        mCreatePlanView.onStarStatusChanged(!isStarred);
     }
 
     public void createDeadlineDialog() {
-        CalendarDialogFragment deadlineDialog = CalendarDialogFragment.newInstance(plan.getDeadline());
-        createPlanView.onCreateDeadlineDialog(deadlineDialog);
+        CalendarDialogFragment deadlineDialog = CalendarDialogFragment.newInstance(mPlan.getDeadline());
+        mCreatePlanView.onCreateDeadlineDialog(deadlineDialog);
     }
 
     public void createReminderDialog() {
-        DateTimePickerDialogFragment reminderDialog = DateTimePickerDialogFragment.newInstance(plan.getReminderTime());
-        createPlanView.onCreateReminderDialog(reminderDialog);
+        DateTimePickerDialogFragment reminderDialog = DateTimePickerDialogFragment.newInstance(mPlan.getReminderTime());
+        mCreatePlanView.onCreateReminderDialog(reminderDialog);
     }
 
     public void createNewPlan() {
-        plan.setCreationTime(System.currentTimeMillis());
+        mPlan.setCreationTime(System.currentTimeMillis());
         //处理并向model层传送数据，更新model
-        dataManager.addToPlanList(0, plan);
+        mDataManager.addToPlanList(0, mPlan);
         //更新未完成计划的数量
-        dataManager.updateUcPlanCount(1);
+        mDataManager.updateUcPlanCount(1);
         //设置提醒
-        if (plan.getReminderTime() != 0) {
+        if (mPlan.getReminderTime() != 0) {
             //说明之前是设置了提醒的
-            ReminderManager.getInstance().setAlarm(plan.getPlanCode(), plan.getReminderTime());
+            ReminderManager.getInstance().setAlarm(mPlan.getPlanCode(), mPlan.getReminderTime());
         }
         //更新每个类型具有的计划数量map
-        dataManager.updateUcPlanCountOfEachTypeMap(plan.getTypeCode(), 1);
+        mDataManager.updateUcPlanCountOfEachTypeMap(mPlan.getTypeCode(), 1);
         //存储至数据库
-        DatabaseDispatcher.getInstance().savePlan(plan);
+        DatabaseDispatcher.getInstance().savePlan(mPlan);
     }
 }

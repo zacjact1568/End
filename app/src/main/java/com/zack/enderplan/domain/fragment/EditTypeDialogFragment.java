@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -20,6 +19,7 @@ import com.zack.enderplan.interactor.presenter.EditTypePresenter;
 import com.zack.enderplan.domain.view.EditTypeView;
 import com.zack.enderplan.interactor.adapter.TypeMarkAdapter;
 
+import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -33,15 +33,15 @@ public class EditTypeDialogFragment extends DialogFragment implements EditTypeVi
     @BindView(R.id.button_save)
     TextView saveButton;
 
+    @BindColor(android.R.color.secondary_text_light_nodisable)
+    int negativeColor;
+    @BindColor(R.color.colorPrimary)
+    int positiveColor;
+
     private static final String ARG_POSITION = "position";
 
     private int position;
     private EditTypePresenter editTypePresenter;
-    private TextInputEditText typeNameEditor;
-    private int clickedPosition = -1;
-    private int lastClickedPosition = -1;
-    //private int selectedTypeMarkResId;
-    private int negativeColor, positiveColor;
 
     public EditTypeDialogFragment() {
         // Required empty public constructor
@@ -61,9 +61,6 @@ public class EditTypeDialogFragment extends DialogFragment implements EditTypeVi
         if (getArguments() != null) {
             position = getArguments().getInt(ARG_POSITION);
         }
-
-        negativeColor = ContextCompat.getColor(getActivity(), android.R.color.secondary_text_light_nodisable);
-        positiveColor = ContextCompat.getColor(getActivity(), R.color.colorPrimary);
 
         editTypePresenter = new EditTypePresenter(this, position);
     }
@@ -95,10 +92,9 @@ public class EditTypeDialogFragment extends DialogFragment implements EditTypeVi
     }
 
     @Override
-    public void showInitialView(String typeName, TypeMarkAdapter typeMarkAdapter, int position) {
+    public void showInitialView(String typeName, TypeMarkAdapter typeMarkAdapter) {
 
-        //初始点击的位置为此类型颜色对应的位置
-        clickedPosition = position;
+        TextInputEditText typeNameEditor;
 
         if (typeNameEditorWrapper.getEditText() != null) {
             typeNameEditor = (TextInputEditText) typeNameEditorWrapper.getEditText();
@@ -129,37 +125,28 @@ public class EditTypeDialogFragment extends DialogFragment implements EditTypeVi
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                lastClickedPosition = clickedPosition;
-                clickedPosition = position;
-                editTypePresenter.notifyTypeMarkClicked(lastClickedPosition, clickedPosition);
+                editTypePresenter.notifyTypeMarkClicked(position);
             }
         });
     }
 
-    /*@Override
-    public void onTypeMarkClicked(boolean isSelected, int resId) {
-        isTypeMarkSelected = isSelected;
-        //传过来的resId可能为0，但不影响保存按钮可用与否的判断
-        selectedTypeMarkResId = resId;
-        updateSaveButton();
-    }*/
+    @Override
+    public void updateSaveButton(boolean isEnabled) {
+        saveButton.setClickable(isEnabled);
+        saveButton.setTextColor(isEnabled ? positiveColor : negativeColor);
+    }
 
     @Override
-    public void onUpdateSaveButton(boolean isEnable) {
-        saveButton.setClickable(isEnable);
-        saveButton.setTextColor(isEnable ? positiveColor : negativeColor);
+    public void closeDialog(boolean isCanceled) {
+        if (isCanceled) {
+            getDialog().cancel();
+        } else {
+            getDialog().dismiss();
+        }
     }
 
     @OnClick({R.id.button_cancel, R.id.button_save})
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.button_cancel:
-                getDialog().cancel();
-                break;
-            case R.id.button_save:
-                editTypePresenter.notifyTypeEdited(typeNameEditor.getText().toString(), position);
-                getDialog().dismiss();
-                break;
-        }
+        editTypePresenter.notifyViewClicked(view.getId());
     }
 }

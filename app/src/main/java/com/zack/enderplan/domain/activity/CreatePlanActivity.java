@@ -19,6 +19,7 @@ import android.widget.Spinner;
 import com.zack.enderplan.R;
 import com.zack.enderplan.domain.fragment.CalendarDialogFragment;
 import com.zack.enderplan.domain.fragment.DateTimePickerDialogFragment;
+import com.zack.enderplan.interactor.adapter.TypeSpinnerAdapter;
 import com.zack.enderplan.interactor.presenter.CreatePlanPresenter;
 import com.zack.enderplan.domain.view.CreatePlanView;
 
@@ -30,29 +31,30 @@ public class CreatePlanActivity extends BaseActivity
         implements CreatePlanView, CalendarDialogFragment.OnDateChangedListener,
         DateTimePickerDialogFragment.OnDateTimeChangedListener {
 
-    @BindView(R.id.button_save)
-    ImageView saveButton;
-    @BindView(R.id.editor_content)
-    EditText contentEditor;
-    @BindView(R.id.spinner)
-    Spinner spinner;
-    @BindView(R.id.star_mark)
-    ImageView starMark;
-    @BindView(R.id.deadline_mark)
-    ImageView deadlineMark;
-    @BindView(R.id.reminder_mark)
-    ImageView reminderMark;
-    @BindView(R.id.card_view)
-    CardView cardView;
-    @BindView(R.id.circular_reveal_layout)
-    LinearLayout circularRevealLayout;
+    private static final String LOG_TAG = "CreatePlanActivity";
 
-    private CreatePlanPresenter createPlanPresenter;
+    @BindView(R.id.button_save)
+    ImageView mSaveButton;
+    @BindView(R.id.editor_content)
+    EditText mContentEditor;
+    @BindView(R.id.spinner)
+    Spinner mSpinner;
+    @BindView(R.id.star_mark)
+    ImageView mStarMark;
+    @BindView(R.id.deadline_mark)
+    ImageView mDeadlineMark;
+    @BindView(R.id.reminder_mark)
+    ImageView mReminderMark;
+    @BindView(R.id.card_view)
+    CardView mCardView;
+    @BindView(R.id.circular_reveal_layout)
+    LinearLayout mCircularRevealLayout;
+
+    private CreatePlanPresenter mCreatePlanPresenter;
 
     private static final int FAB_COORDINATE_IN_DP = 44;
     private static final int CR_ANIM_DURATION = 400;
 
-    private static final String CLASS_NAME = "CreatePlanActivity";
     private static final String TAG_DEADLINE = "deadline";
     private static final String TAG_REMINDER = "reminder";
 
@@ -64,95 +66,65 @@ public class CreatePlanActivity extends BaseActivity
         ButterKnife.bind(this);
 
         if (savedInstanceState == null) {
-            cardView.setVisibility(View.INVISIBLE);
-            circularRevealLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            mCardView.setVisibility(View.INVISIBLE);
+            mCircularRevealLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
                 public boolean onPreDraw() {
-                    circularRevealLayout.getViewTreeObserver().removeOnPreDrawListener(this);
+                    mCircularRevealLayout.getViewTreeObserver().removeOnPreDrawListener(this);
                     makeCircularRevealAnimation(true);
                     return false;
                 }
             });
         }
 
-        createPlanPresenter = new CreatePlanPresenter(this);
+        mCreatePlanPresenter = new CreatePlanPresenter(this);
 
-        contentEditor.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                createPlanPresenter.notifyContentChanged(s.toString());
-                saveButton.setVisibility(TextUtils.isEmpty(s.toString()) ? View.INVISIBLE : View.VISIBLE);
-            }
-        });
-
-        spinner.setAdapter(createPlanPresenter.createTypeSpinnerAdapter());
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                hideInputMethodForContentEditor();
-                createPlanPresenter.notifyTypeCodeChanged(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+        mCreatePlanPresenter.setInitialView();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        createPlanPresenter.detachView();
+        mCreatePlanPresenter.detachView();
     }
 
     @Override
     public void onDateSelected(long newDateInMillis) {
-        createPlanPresenter.notifyDeadlineChanged(newDateInMillis);
-        deadlineMark.setImageResource(R.drawable.ic_schedule_color_accent_24dp);
+        mCreatePlanPresenter.notifyDeadlineChanged(newDateInMillis);
+        mDeadlineMark.setImageResource(R.drawable.ic_schedule_color_accent_24dp);
     }
 
     @Override
     public void onDateRemoved() {
-        createPlanPresenter.notifyDeadlineChanged(0);
-        deadlineMark.setImageResource(R.drawable.ic_schedule_grey600_24dp);
+        mCreatePlanPresenter.notifyDeadlineChanged(0);
+        mDeadlineMark.setImageResource(R.drawable.ic_schedule_grey600_24dp);
     }
 
     @Override
     public void onDateTimeSelected(long newTimeInMillis) {
-        createPlanPresenter.notifyReminderTimeChanged(newTimeInMillis);
-        reminderMark.setImageResource(R.drawable.ic_notifications_color_accent_24dp);
+        mCreatePlanPresenter.notifyReminderTimeChanged(newTimeInMillis);
+        mReminderMark.setImageResource(R.drawable.ic_notifications_color_accent_24dp);
     }
 
     @Override
     public void onDateTimeRemoved() {
-        createPlanPresenter.notifyReminderTimeChanged(0);
-        reminderMark.setImageResource(R.drawable.ic_notifications_none_grey600_24dp);
+        mCreatePlanPresenter.notifyReminderTimeChanged(0);
+        mReminderMark.setImageResource(R.drawable.ic_notifications_none_grey600_24dp);
     }
 
     //显示键盘
     private void showInputMethodForContentEditor() {
         InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        if (contentEditor.hasFocus()) {
-            manager.showSoftInput(contentEditor, 0);
+        if (mContentEditor.hasFocus()) {
+            manager.showSoftInput(mContentEditor, 0);
         }
     }
 
     //隐藏键盘
     private void hideInputMethodForContentEditor() {
         InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        if (manager.isActive(contentEditor)) {
-            manager.hideSoftInputFromWindow(contentEditor.getWindowToken(), 0);
+        if (manager.isActive(mContentEditor)) {
+            manager.hideSoftInputFromWindow(mContentEditor.getWindowToken(), 0);
         }
     }
 
@@ -160,13 +132,13 @@ public class CreatePlanActivity extends BaseActivity
     private void makeCircularRevealAnimation(final boolean isEnterAnim) {
         float scale = getResources().getDisplayMetrics().density;
         int fabCoordinateInPx = (int) (FAB_COORDINATE_IN_DP * scale + 0.5f);
-        int centerX = circularRevealLayout.getWidth() - fabCoordinateInPx;
-        int centerY = circularRevealLayout.getHeight() - fabCoordinateInPx;
+        int centerX = mCircularRevealLayout.getWidth() - fabCoordinateInPx;
+        int centerY = mCircularRevealLayout.getHeight() - fabCoordinateInPx;
         float radius = (float) Math.hypot(centerX, centerY);
         float startRadius = isEnterAnim ? 0 : radius;
         float endRadius = isEnterAnim ? radius : 0;
 
-        Animator circularRevealAnim = ViewAnimationUtils.createCircularReveal(circularRevealLayout, centerX, centerY, startRadius, endRadius);
+        Animator circularRevealAnim = ViewAnimationUtils.createCircularReveal(mCircularRevealLayout, centerX, centerY, startRadius, endRadius);
         circularRevealAnim.setDuration(CR_ANIM_DURATION);
         circularRevealAnim.addListener(new Animator.AnimatorListener() {
             @Override
@@ -180,10 +152,10 @@ public class CreatePlanActivity extends BaseActivity
             @Override
             public void onAnimationEnd(Animator animation) {
                 if (isEnterAnim) {
-                    cardView.setVisibility(View.VISIBLE);
+                    mCardView.setVisibility(View.VISIBLE);
                     showInputMethodForContentEditor();
                 } else {
-                    circularRevealLayout.setVisibility(View.INVISIBLE);
+                    mCircularRevealLayout.setVisibility(View.INVISIBLE);
                     finish();
                     overridePendingTransition(0, 0);
                 }
@@ -209,28 +181,60 @@ public class CreatePlanActivity extends BaseActivity
                 makeCircularRevealAnimation(false);
                 break;
             case R.id.button_save:
-                //enderplanDB.savePlan(plan);
-                createPlanPresenter.createNewPlan();
-                /*Intent intent = new Intent();
-                intent.putExtra("plan_detail", plan);*/
+                mCreatePlanPresenter.createNewPlan();
                 setResult(RESULT_OK);
                 makeCircularRevealAnimation(false);
                 break;
             case R.id.star_mark:
-                createPlanPresenter.notifyStarStatusChanged();
+                mCreatePlanPresenter.notifyStarStatusChanged();
                 break;
             case R.id.deadline_mark:
-                createPlanPresenter.createDeadlineDialog();
+                mCreatePlanPresenter.createDeadlineDialog();
                 break;
             case R.id.reminder_mark:
-                createPlanPresenter.createReminderDialog();
+                mCreatePlanPresenter.createReminderDialog();
                 break;
         }
     }
 
     @Override
+    public void showInitialView(TypeSpinnerAdapter typeSpinnerAdapter) {
+        mContentEditor.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mCreatePlanPresenter.notifyContentChanged(s.toString());
+                mSaveButton.setVisibility(TextUtils.isEmpty(s.toString()) ? View.INVISIBLE : View.VISIBLE);
+            }
+        });
+
+        mSpinner.setAdapter(typeSpinnerAdapter);
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                hideInputMethodForContentEditor();
+                mCreatePlanPresenter.notifyTypeCodeChanged(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    @Override
     public void onStarStatusChanged(boolean isStarred) {
-        starMark.setImageResource(isStarred ? R.drawable.ic_star_color_accent_24dp :
+        mStarMark.setImageResource(isStarred ? R.drawable.ic_star_color_accent_24dp :
                 R.drawable.ic_star_outline_grey600_24dp);
     }
 

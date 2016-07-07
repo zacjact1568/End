@@ -32,14 +32,7 @@ public class PlanDetailActivity extends BaseActivity
         implements PlanDetailView, CalendarDialogFragment.OnDateChangedListener,
         DateTimePickerDialogFragment.OnDateTimeChangedListener {
 
-    private PlanDetailPresenter planDetailPresenter;
-    private boolean flag = true;
-    //private RemindedReceiver remindedReceiver;
-
-    private static final String TAG_DEADLINE = "deadline";
-    private static final String TAG_REMINDER = "reminder";
-
-    private static final String CLASS_NAME = "PlanDetailActivity";
+    private static final String LOG_TAG = "PlanDetailActivity";
 
     @BindView(R.id.text_content)
     TextView contentText;
@@ -67,6 +60,12 @@ public class PlanDetailActivity extends BaseActivity
     @BindColor(android.R.color.tertiary_text_light)
     int lightTextColor;
 
+    private PlanDetailPresenter planDetailPresenter;
+    private boolean flag = true;
+
+    private static final String TAG_DEADLINE = "deadline";
+    private static final String TAG_REMINDER = "reminder";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,24 +78,11 @@ public class PlanDetailActivity extends BaseActivity
         planDetailPresenter = new PlanDetailPresenter(this, getIntent().getIntExtra("position", 0));
 
         planDetailPresenter.setInitialView();
-
-        /*IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.zack.enderplan.ACTION_REMINDED");
-        intentFilter.setPriority(1);
-        remindedReceiver = new RemindedReceiver();
-        registerReceiver(remindedReceiver, intentFilter);*/
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        //planDetailPresenter.syncWithDatabase();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //unregisterReceiver(remindedReceiver);
         planDetailPresenter.detachView();
     }
 
@@ -298,8 +284,6 @@ public class PlanDetailActivity extends BaseActivity
     @Override
     public void onDeadlineSelected(boolean isSetFirstTime, String deadline) {
         if (isSetFirstTime) {
-            //deadlineIcon.setImageResource(R.drawable.ic_schedule_color_primary_24dp);
-            //deadlineText.setTextColor(colorPrimary);
             deadlineDescriptionText.setTextColor(primaryColor);
             deadlineMark.setVisibility(View.VISIBLE);
         }
@@ -316,8 +300,6 @@ public class PlanDetailActivity extends BaseActivity
     @Override
     public void onReminderTimeSelected(boolean isSetFirstTime, String reminderTime) {
         if (isSetFirstTime) {
-            //reminderIcon.setImageResource(R.drawable.ic_notifications_color_primary_24dp);
-            //reminderText.setTextColor(colorPrimary);
             reminderDescriptionText.setTextColor(primaryColor);
             reminderMark.setVisibility(View.VISIBLE);
         }
@@ -330,13 +312,4 @@ public class PlanDetailActivity extends BaseActivity
         reminderDescriptionText.setTextColor(lightTextColor);
         reminderMark.setVisibility(View.GONE);
     }
-
-    /*class RemindedReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            planDetailPresenter.notifyReminderOff(intent.getStringExtra("plan_code"));
-            abortBroadcast();
-        }
-    }*/
 }

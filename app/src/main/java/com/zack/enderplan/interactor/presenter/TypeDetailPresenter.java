@@ -32,8 +32,6 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
     private PlanSingleTypeAdapter planSingleTypeAdapter;
     private List<Plan> singleTypeUcPlanList;
     private Type type;
-    private ReminderManager reminderManager;
-    //private int planItemClickPosition;
     private String noneUcPlan, oneUcPlan, multiUcPlan;
 
     public TypeDetailPresenter(TypeDetailView typeDetailView, int position) {
@@ -106,7 +104,6 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
     }
 
     public void notifyPlanItemClicked(int position) {
-        //planItemClickPosition = position;
         int posInPlanList = dataManager.getPlanLocationInPlanList(singleTypeUcPlanList.get(position).getPlanCode());
         typeDetailView.onPlanItemClicked(posInPlanList);
     }
@@ -136,16 +133,9 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
 
         Plan plan = singleTypeUcPlanList.get(position);
 
-        //更新此列表
-        /*singleTypeUcPlanList.remove(position);
-        planSingleTypeAdapter.notifyItemRemoved(position);*/
-
         //更新Maps
         dataManager.updateUcPlanCountOfEachTypeMap(plan.getTypeCode(), -1);
         dataManager.updateUcPlanCount(-1);
-
-        //更新显示的未完成计划数量
-        //typeDetailView.onUcPlanCountChanged(getPlanCountStr(type.getTypeCode()));
 
         //通知HomePresenter（更新侧栏header）
         EventBus.getDefault().post(new UcPlanCountChangedEvent());
@@ -160,7 +150,6 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
             ReminderManager.getInstance().cancelAlarm(plan.getPlanCode());
             plan.setReminderTime(0);
             values.put(DatabaseDispatcher.DB_STR_REMINDER_TIME, 0);
-            //removeReminder(plan.getPlanCode());
         }
 
         long newCompletionTime = System.currentTimeMillis();

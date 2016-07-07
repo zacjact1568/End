@@ -31,7 +31,6 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
     private int position;
     private Plan plan;
     private DatabaseDispatcher databaseDispatcher;
-    //private ContentValues contentValues;
     private ReminderManager reminderManager;
     private String dateFormatStr, dateTimeFormatStr;
     private String makePlanCStr, makePlanUcStr;
@@ -64,27 +63,6 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
         EventBus.getDefault().unregister(this);
     }
 
-    /*public void syncWithDatabase() {
-        if (contentValues != null && contentValues.size() != 0) {
-            databaseDispatcher.editPlan(plan.getPlanCode(), contentValues);
-            contentValues.clear();
-        }
-    }*/
-
-    /*private ContentValues getContentValues() {
-        if (contentValues == null) {
-            contentValues = new ContentValues();
-        }
-        return contentValues;
-    }*/
-
-    /*private ReminderManager getReminderManager() {
-        if (reminderManager == null) {
-            reminderManager = new ReminderManager();
-        }
-        return reminderManager;
-    }*/
-
     public void setInitialView() {
         planDetailView.showInitialView(
                 plan.getContent(),
@@ -112,7 +90,6 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
         plan.setTypeCode(newTypeCode);
         isTypeOfPlanChanged = true;
         databaseDispatcher.editTypeOfPlan(plan.getPlanCode(), newTypeCode);
-        //getContentValues().put("type_code", newTypeCode);
     }
 
     public void notifyPlanDeletion() {
@@ -127,7 +104,6 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
             //说明该计划还未完成
             dataManager.updateUcPlanCountOfEachTypeMap(plan.getTypeCode(), -1);
             dataManager.updateUcPlanCount(-1);
-            //EventBus.getDefault().post(new UcPlanCountChangedEvent());
         }
         if (plan.getReminderTime() != 0) {
             //说明该计划有提醒，需要将提醒取消
@@ -136,9 +112,6 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
         dataManager.removeFromPlanList(position);
         databaseDispatcher.deletePlan(plan.getPlanCode());
 
-        /*if (contentValues != null) {
-            contentValues.clear();
-        }*/
         planDetailView.onPlanDeleted(position, plan.getPlanCode(), plan.getContent(), isCompleted);
     }
 
@@ -152,7 +125,6 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
             plan.setContent(newContent);
             isPlanDetailChanged = true;
             databaseDispatcher.editContent(plan.getPlanCode(), newContent);
-            //getContentValues().put("content", newContent);
             planDetailView.onContentEditSuccess(newContent);
         } else {
             //内容为空，不合法
@@ -166,7 +138,6 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
         plan.setStarStatus(newStarStatus);
         isPlanDetailChanged = true;
         databaseDispatcher.editStarStatus(plan.getPlanCode(), newStarStatus);
-        //getContentValues().put("star_status", newStarStatus);
         planDetailView.onStarStatusChanged(!isStarred);
     }
 
@@ -179,14 +150,12 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
         //更新Maps
         dataManager.updateUcPlanCountOfEachTypeMap(plan.getTypeCode(), isCompletedPast ? 1 : -1);
         dataManager.updateUcPlanCount(isCompletedPast ? 1 : -1);
-        //EventBus.getDefault().post(new UcPlanCountChangedEvent());
 
         if (plan.getReminderTime() != 0) {
             //有设置提醒，需要移除
             reminderManager.cancelAlarm(plan.getPlanCode());
             plan.setReminderTime(0);
             isPlanDetailChanged = true;
-            //databaseDispatcher.editReminderTime(plan.getPlanCode(), 0);
             values.put("reminder_time", 0);
             planDetailView.onReminderRemoved();
         }
@@ -238,9 +207,6 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
             intent.putExtra("position", position);
             intent.putExtra("plan_code", plan.getPlanCode());
 
-            /*if (isPlanDetailChanged) {
-                intent.putExtra("is_plan_detail_changed", true);
-            }*/
             if (isTypeOfPlanChanged) {
                 intent.putExtra("is_type_of_plan_changed", true);
             }
@@ -257,7 +223,6 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
         plan.setDeadline(newDeadline);
         //TODO 暂时不用通知更新界面，因为没有其他组件的界面显示有这个属性
         databaseDispatcher.editDeadline(plan.getPlanCode(), newDeadline);
-        //getContentValues().put("deadline", newDeadline);
     }
 
     public void notifyDeadlineRemoved() {
@@ -265,7 +230,6 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
             plan.setDeadline(0);
             //TODO 暂时不用 ...
             databaseDispatcher.editDeadline(plan.getPlanCode(), 0);
-            //getContentValues().put("deadline", 0);
             planDetailView.onDeadlineRemoved();
         }
     }
@@ -276,7 +240,6 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
         plan.setReminderTime(newReminderTime);
         isPlanDetailChanged = true;
         databaseDispatcher.editReminderTime(plan.getPlanCode(), newReminderTime);
-        //getContentValues().put("reminder_time", newReminderTime);
     }
 
     public void notifyReminderRemoved() {
@@ -285,14 +248,9 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
             plan.setReminderTime(0);
             isPlanDetailChanged = true;
             databaseDispatcher.editReminderTime(plan.getPlanCode(), 0);
-            //getContentValues().put("reminder_time", 0);
             planDetailView.onReminderRemoved();
         }
     }
-
-    /*public void notifyReminderOff(String planCode) {
-
-    }*/
 
     @Subscribe
     public void onReminded(RemindedEvent event) {
@@ -303,12 +261,6 @@ public class PlanDetailPresenter implements Presenter<PlanDetailView> {
 
             //plan.setReminderTime(0)这一句其实放在这里也可以，只是不知道AllPlansPresenter中的订阅和这个订阅谁先执行
             //如果plan.setReminderTime(0)这一句放在这里，且AllPlansPresenter中的订阅先执行，那么AllPlansList将得不到刷新
-
-            /*plan.setReminderTime(0);
-            isPlanDetailChanged = true;*/
-            /*if (getContentValues().containsKey("reminder_time")) {
-                getContentValues().remove("reminder_time");
-            }*/
         }
     }
 

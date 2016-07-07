@@ -1,5 +1,8 @@
 package com.zack.enderplan.interactor.presenter;
 
+import android.text.TextUtils;
+
+import com.zack.enderplan.R;
 import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.model.bean.TypeMark;
 import com.zack.enderplan.model.database.DatabaseDispatcher;
@@ -13,60 +16,89 @@ import org.greenrobot.eventbus.EventBus;
 
 public class CreateTypePresenter implements Presenter<CreateTypeView> {
 
-    private CreateTypeView createTypeView;
-    private DataManager dataManager;
-    private TypeMarkAdapter typeMarkAdapter;
-    private Type type;
-    private int selectedPosition;
+    private CreateTypeView mCreateTypeView;
+    private DataManager mDataManager;
+    private TypeMarkAdapter mTypeMarkAdapter;
+    private Type mType;
+
+    private int clickedPosition = -1;
+    private int selectedPosition = -1;
 
     public CreateTypePresenter(CreateTypeView createTypeView) {
         attachView(createTypeView);
-        dataManager = DataManager.getInstance();
-        type = new Type(Util.makeCode(), dataManager.getTypeCount());
+        mDataManager = DataManager.getInstance();
+        mType = new Type(Util.makeCode(), mDataManager.getTypeCount());
     }
 
     @Override
     public void attachView(CreateTypeView view) {
-        createTypeView = view;
+        mCreateTypeView = view;
     }
 
     @Override
     public void detachView() {
-        createTypeView = null;
+        mCreateTypeView = null;
         if (selectedPosition != -1) {
-            dataManager.getTypeMark(selectedPosition).setIsSelected(false);
+            mDataManager.getTypeMark(selectedPosition).setIsSelected(false);
         }
     }
 
-    public TypeMarkAdapter createTypeMarkAdapter() {
-        typeMarkAdapter = new TypeMarkAdapter(dataManager.getTypeMarkList());
-        return typeMarkAdapter;
+    public void setInitialView() {
+        mTypeMarkAdapter = new TypeMarkAdapter(mDataManager.getTypeMarkList());
+        mCreateTypeView.showInitialView(mTypeMarkAdapter);
     }
 
     public void notifyTypeNameChanged(String newTypeName) {
-        type.setTypeName(newTypeName);
+        mType.setTypeName(newTypeName);
+        updateSaveButton();
     }
 
-    public void notifyTypeMarkClicked(int lastClickedPosition, int clickedPosition) {
-        TypeMark typeMark = dataManager.getTypeMark(clickedPosition);
+    public void notifyTypeMarkClicked(int position) {
+
+        //点击事件来临时，将上一个点击位置赋给lastClickedPosition，将此次点击的位置赋给clickedPosition
+        //并将此次点击的位置保存成全局变量，供下一次点击事件来临时使用（作为下一次点击事件的上一个点击位置）
+        int lastClickedPosition = clickedPosition;
+        clickedPosition = position;
+
+        TypeMark typeMark = mDataManager.getTypeMark(clickedPosition);
         typeMark.setIsSelected(!typeMark.isSelected());
+        //不是初始点击且两次点击的不是同一个
         if (lastClickedPosition != -1 && clickedPosition != lastClickedPosition) {
-            dataManager.getTypeMark(lastClickedPosition).setIsSelected(false);
+            //取消上一次点击的
+            mDataManager.getTypeMark(lastClickedPosition).setIsSelected(false);
         }
-        typeMarkAdapter.notifyDataSetChanged();
-        createTypeView.onTypeMarkClicked(typeMark.isSelected(), typeMark.isSelected() ? typeMark.getResId() : 0);
+        //刷新选中状态的显示
+        mTypeMarkAdapter.notifyDataSetChanged();
 
         //若当前点击的被选中，那么说明该颜色被选择，否则什么都没选
         selectedPosition = typeMark.isSelected() ? clickedPosition : -1;
+
+        updateSaveButton();
     }
 
-    public void createNewType(String typeMark) {
-        type.setTypeMark(typeMark);
-        dataManager.addToTypeList(type);
-        //只会在类型颜色有选择时执行，不必考虑selectedPosition为-1的情况
-        dataManager.updateTypeMarkList(selectedPosition);
-        dataManager.putMappingInFindingColorResMap(type.getTypeCode(), type.getTypeMark());
-        DatabaseDispatcher.getInstance().saveType(type);
-        EventBus.getDefault().post(new TypeCreatedEvent());
+    public void notifyViewClicked(int viewId) {
+        switch (viewId) {
+            case R.id.btn_cancel:
+                mCreateTypeView.closeDialog();
+                break;
+            case R.id.btn_save:
+                mType.setTypeMark(Util.parseColor(mDataManager.getTypeMark(selectedPosition).getColorInt()));
+
+                mDataManager.addToTypeList(mType);
+                //只会在类型颜色有选择时执行，不必考虑selectedPosition为-1的情况
+                mDataManager.updateTypeMarkList(selectedPosition);
+                mDataManager.putMappingInFindingColorResMap(mType.getTypeCode(), mType.getTypeMark());
+
+                DatabaseDispatcher.getInstance().saveType(mType);
+
+                EventBus.getDefault().post(new TypeCreatedEvent());
+
+                mCreateTypeView.closeDialog();
+                break;
+        }
+    }
+
+    private void updateSaveButton() {
+        mCreateTypeView.updateSaveButton(!TextUtils.isEmpty(mType.getTypeName()) && selectedPosition != -1);
     }
 }
