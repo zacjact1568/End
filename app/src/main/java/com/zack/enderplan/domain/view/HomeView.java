@@ -15,4 +15,6 @@ public interface HomeView {
     void onPressBackKey();
 
     void onShowDoubleClickToast();
+
+    void showWelcome();
 }

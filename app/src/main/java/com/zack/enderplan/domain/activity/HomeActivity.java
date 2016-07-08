@@ -52,7 +52,7 @@ public class HomeActivity extends BaseActivity implements HomeView,
     private static final String TAG_ALL_TYPES = "all_types";
     private static final String TAG_MY_PLANS = "my_plans";
     private static final int REQ_CODE_CREATE_PLAN = 0;
-    public static final int REQ_CODE_PLAN_DETAIL = 1;
+    public static final int REQ_CODE_PLAN_DETAIL = 1;//TODO try to let it private
     private static final int CR_ANIM_DURATION = 300;
 
     @Override
@@ -67,6 +67,12 @@ public class HomeActivity extends BaseActivity implements HomeView,
         mHomePresenter = new HomePresenter(this);
 
         mHomePresenter.setInitialView();
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mHomePresenter.notifyStartingUpCompleted();
     }
 
     @Override
@@ -245,6 +251,12 @@ public class HomeActivity extends BaseActivity implements HomeView,
     @Override
     public void onShowDoubleClickToast() {
         Toast.makeText(this, R.string.toast_double_click_exit, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showWelcome() {
+        Intent intent = new Intent(this, WelcomeActivity.class);
+        startActivity(intent);
     }
 
     @OnClick(R.id.fab)

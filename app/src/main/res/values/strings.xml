@@ -104,6 +104,11 @@
     <string name="version">Version</string>
     <string name="developer">Developer</string>
     <string name="me">Zack Zhang</string>
+    <string name="slogan">Making plans until the world ends!</string>
+
+    <!--WelcomeActivity-->
+    <string name="title_activity_welcome">Welcome</string>
+    <string name="btn_enter">Start EnderPlan</string>
 
     <!--Default types-->
     <string name="to_do">To-Do</string>

@@ -98,4 +98,7 @@
     <string name="app_name">Ender计划</string>
     <string name="title_fragment_all_types">所有类型</string>
     <string name="title_fragment_my_plans">我的计划</string>
+    <string name="title_activity_welcome">欢迎</string>
+    <string name="btn_enter">进入Ender计划</string>
+    <string name="slogan">哪怕世界末日到了也要做计划！</string>
 </resources>

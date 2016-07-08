@@ -49,6 +49,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".domain.activity.WelcomeActivity"
+            android:label="@string/title_activity_welcome"
+            android:theme="@style/AppTheme"/>
 
         <receiver
             android:name=".receiver.ReminderReceiver"
