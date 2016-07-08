@@ -44,7 +44,7 @@
     <string name="title_activity_settings">设置</string>
     <string name="pref_title_language">语言</string>
     <string name="version">版本</string>
-    <string name="empty_view_prompt">这里没有任何计划。\n触摸右下角的悬浮动作按钮来创建一个吧。</string>
+    <string name="empty_view_prompt">这里还没有计划呢</string>
     <string name="action_starred_plans">星标计划</string>
     <string name="edit_content_hint">在这儿修改你计划的内容</string>
     <string name="action_delete">删除</string>
@@ -99,6 +99,6 @@
     <string name="title_fragment_all_types">所有类型</string>
     <string name="title_fragment_my_plans">我的计划</string>
     <string name="title_activity_welcome">欢迎</string>
-    <string name="btn_enter">进入Ender计划</string>
-    <string name="slogan">哪怕世界末日到了也要做计划！</string>
+    <string name="btn_text_start">开始</string>
+    <string name="slogan">「哪怕世界末日到了也要做计划」</string>
 </resources>
