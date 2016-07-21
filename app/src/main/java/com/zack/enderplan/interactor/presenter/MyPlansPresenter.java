@@ -51,27 +51,20 @@ public class MyPlansPresenter implements Presenter<MyPlansView> {
     public void setInitialView() {
         //初始化adapter
         mPlanAdapter = new PlanAdapter(mDataManager.getPlanList(), mDataManager.getTypeCodeAndColorResMap());
-        mPlanAdapter.setOnPlanItemClickListener(new PlanAdapter.OnPlanItemClickListener() {
-            @Override
-            public void onPlanItemClick(View itemView, int position) {
-                mMyPlansView.onPlanItemClicked(position);
-            }
-        });
-        mPlanAdapter.setOnStarMarkClickListener(new PlanAdapter.OnStarMarkClickListener() {
-            @Override
-            public void onStarMarkClick(ImageView starMark, int itemPosition) {
-                Plan plan = mDataManager.getPlan(itemPosition);
-                int newStarStatus = plan.getStarStatus() == Plan.PLAN_STAR_STATUS_STARRED ? Plan.PLAN_STAR_STATUS_NOT_STARRED : Plan.PLAN_STAR_STATUS_STARRED;
-                plan.setStarStatus(newStarStatus);
-                mPlanAdapter.notifyItemChanged(itemPosition);
-                mDatabaseManager.editStarStatus(plan.getPlanCode(), newStarStatus);
-            }
-        });
 
         mMyPlansView.showInitialView(mPlanAdapter);
 
         //开始从数据库加载数据
         mDataManager.loadFromDatabase();
+    }
+
+    public void notifyPlanItemClicked(int position) {
+        mMyPlansView.onPlanItemClicked(position);
+    }
+
+    public void notifyStarMarkClicked(int position) {
+        mDataManager.notifyStarStatusChanged(position);
+        mPlanAdapter.notifyItemChanged(position);
     }
 
     //滑动删除时（可以撤销）

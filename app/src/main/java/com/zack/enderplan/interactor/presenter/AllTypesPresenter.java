@@ -41,19 +41,16 @@ public class AllTypesPresenter implements Presenter<AllTypesView> {
 
     public void setInitialView() {
         mTypeAdapter = new TypeAdapter(mDataManager.getTypeList(), mDataManager.getTypeMarkAndColorResMap(), mDataManager.getUcPlanCountOfEachTypeMap());
-        mTypeAdapter.setOnTypeItemClickListener(new TypeAdapter.OnTypeItemClickListener() {
-            @Override
-            public void onTypeItemClick(View itemView, int position) {
-                mAllTypesView.onShowTypeDetailDialogFragment(position);
-            }
-        });
-
         mAllTypesView.showInitialView(mTypeAdapter);
     }
 
     //储存类型列表的排序
     public void syncWithDatabase() {
         mDataManager.notifyTypeSequenceRearranged();
+    }
+
+    public void notifyTypeItemClicked(int position) {
+        mAllTypesView.onShowTypeDetailDialogFragment(position);
     }
 
     public void notifyTypeSequenceChanged(int fromPosition, int toPosition) {

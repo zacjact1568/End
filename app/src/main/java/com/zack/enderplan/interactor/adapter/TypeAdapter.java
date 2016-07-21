@@ -52,7 +52,7 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onTypeItemClickListener.onTypeItemClick(holder.itemView, holder.getLayoutPosition());
+                    onTypeItemClickListener.onTypeItemClick(holder.getLayoutPosition());
                 }
             });
         }
@@ -90,7 +90,7 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
     }
 
     public interface OnTypeItemClickListener {
-        void onTypeItemClick(View itemView, int position);
+        void onTypeItemClick(int position);
     }
 
     public void setOnTypeItemClickListener(OnTypeItemClickListener listener) {

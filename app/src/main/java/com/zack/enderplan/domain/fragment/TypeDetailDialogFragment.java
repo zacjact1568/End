@@ -109,17 +109,17 @@ public class TypeDetailDialogFragment extends BottomSheetDialogFragment implemen
             }
         });
 
-        planSingleTypeAdapter.setOnStarMarkIconClickListener(new PlanSingleTypeAdapter.OnStarMarkIconClickListener() {
-            @Override
-            public void onStarMarkIconClick(int itemPosition) {
-                typeDetailPresenter.notifyPlanStarStatusChanged(itemPosition);
-            }
-        });
-
         planSingleTypeAdapter.setOnPlanItemClickListener(new PlanSingleTypeAdapter.OnPlanItemClickListener() {
             @Override
             public void onPlanItemClick(int position) {
                 typeDetailPresenter.notifyPlanItemClicked(position);
+            }
+        });
+
+        planSingleTypeAdapter.setOnStarMarkIconClickListener(new PlanSingleTypeAdapter.OnStarMarkIconClickListener() {
+            @Override
+            public void onStarMarkIconClick(int position) {
+                typeDetailPresenter.notifyPlanStarStatusChanged(position);
             }
         });
 

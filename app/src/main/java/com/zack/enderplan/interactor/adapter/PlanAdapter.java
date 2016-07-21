@@ -18,14 +18,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
 
-    private static final String CLASS_NAME = "PlanAdapter";
+    private static final String LOG_TAG = "PlanAdapter";
 
     private List<Plan> planList;
     private Map<String, Integer> typeCodeAndColorResMap;
 
     private OnPlanItemClickListener onPlanItemClickListener;
     private OnPlanItemLongClickListener onPlanItemLongClickListener;
-    private OnStarMarkClickListener onStarMarkClickListener;
+    private OnStarMarkIconClickListener onStarMarkIconClickListener;
 
     public PlanAdapter(List<Plan> planList, Map<String, Integer> typeCodeAndColorResMap) {
         this.planList = planList;
@@ -51,11 +51,11 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
                 R.drawable.ic_star_outline_grey600_24dp :
                 R.drawable.ic_star_color_accent_24dp);
 
-        if (onStarMarkClickListener != null) {
+        if (onStarMarkIconClickListener != null) {
             holder.starMark.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onStarMarkClickListener.onStarMarkClick(holder.starMark, holder.getLayoutPosition());
+                    onStarMarkIconClickListener.onStarMarkIconClick(holder.getLayoutPosition());
                 }
             });
         }
@@ -64,7 +64,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onPlanItemClickListener.onPlanItemClick(holder.itemView, holder.getLayoutPosition());
+                    onPlanItemClickListener.onPlanItemClick(holder.getLayoutPosition());
                 }
             });
         }
@@ -73,7 +73,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    onPlanItemLongClickListener.onPlanItemLongClick(holder.itemView, holder.getLayoutPosition());
+                    onPlanItemLongClickListener.onPlanItemLongClick(holder.getLayoutPosition());
                     return true;
                 }
             });
@@ -100,7 +100,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
     }
 
     public interface OnPlanItemClickListener {
-        void onPlanItemClick(View itemView, int position);
+        void onPlanItemClick(int position);
     }
 
     public void setOnPlanItemClickListener(OnPlanItemClickListener listener) {
@@ -108,18 +108,18 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
     }
 
     public interface OnPlanItemLongClickListener {
-        void onPlanItemLongClick(View itemView, int position);
+        void onPlanItemLongClick(int position);
     }
 
     public void setOnPlanItemLongClickListener(OnPlanItemLongClickListener listener) {
         this.onPlanItemLongClickListener = listener;
     }
 
-    public interface OnStarMarkClickListener {
-        void onStarMarkClick(ImageView starMark, int itemPosition);
+    public interface OnStarMarkIconClickListener {
+        void onStarMarkIconClick(int position);
     }
 
-    public void setOnStarMarkClickListener(OnStarMarkClickListener listener) {
-        this.onStarMarkClickListener = listener;
+    public void setOnStarMarkIconClickListener(OnStarMarkIconClickListener listener) {
+        this.onStarMarkIconClickListener = listener;
     }
 }

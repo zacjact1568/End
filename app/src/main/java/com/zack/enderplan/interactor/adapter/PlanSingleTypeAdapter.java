@@ -82,7 +82,7 @@ public class PlanSingleTypeAdapter extends RecyclerView.Adapter<PlanSingleTypeAd
     }
 
     public interface OnStarMarkIconClickListener {
-        void onStarMarkIconClick(int itemPosition);
+        void onStarMarkIconClick(int position);
     }
 
     public void setOnStarMarkIconClickListener(OnStarMarkIconClickListener listener) {
