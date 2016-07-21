@@ -1,10 +1,8 @@
 package com.zack.enderplan.interactor.presenter;
 
-import android.content.ContentValues;
 import android.view.View;
 
 import com.zack.enderplan.model.bean.Type;
-import com.zack.enderplan.model.database.DatabaseDispatcher;
 import com.zack.enderplan.event.DataLoadedEvent;
 import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDeletedEvent;
@@ -22,13 +20,11 @@ public class AllTypesPresenter implements Presenter<AllTypesView> {
 
     private AllTypesView mAllTypesView;
     private DataManager mDataManager;
-    private DatabaseDispatcher mDatabaseDispatcher;
     private TypeAdapter mTypeAdapter;
 
     public AllTypesPresenter(AllTypesView allTypesView) {
         attachView(allTypesView);
         mDataManager = DataManager.getInstance();
-        mDatabaseDispatcher = DatabaseDispatcher.getInstance();
     }
 
     @Override
@@ -57,59 +53,39 @@ public class AllTypesPresenter implements Presenter<AllTypesView> {
 
     //储存类型列表的排序
     public void syncWithDatabase() {
-        for (int i = 0; i < mDataManager.getTypeCount(); i++) {
-            Type type = mDataManager.getType(i);
-            if (type.getTypeSequence() != i) {
-                //更新typeList
-                //在移动typeList的item的时候只是交换了items在list中的位置，并没有改变item中的type_sequence
-                type.setTypeSequence(i);
-                //更新数据库
-                ContentValues values = new ContentValues();
-                values.put("type_sequence", i);
-                mDatabaseDispatcher.editType(type.getTypeCode(), values);
-            }
-        }
+        mDataManager.notifyTypeSequenceRearranged();
     }
 
     public void notifyTypeSequenceChanged(int fromPosition, int toPosition) {
-        if (fromPosition < toPosition) {
-            for (int i = fromPosition; i < toPosition; i++) {
-                mDataManager.swapTypesInTypeList(i, i + 1);
-            }
-        } else {
-            for (int i = fromPosition; i > toPosition; i--) {
-                mDataManager.swapTypesInTypeList(i, i - 1);
-            }
-        }
+        mDataManager.swapTypesInTypeList(fromPosition, toPosition);
         mTypeAdapter.notifyItemMoved(fromPosition, toPosition);
     }
 
     public void notifyTypeDeleted(int position) {
         Type type = mDataManager.getType(position);
 
-        mDataManager.removeFromTypeList(position);
-        mTypeAdapter.notifyItemRemoved(position);
-
         if (mDataManager.isUcPlanCountOfOneTypeExists(type.getTypeCode())) {
-            mDataManager.addToTypeList(position, type);
-            mTypeAdapter.notifyItemInserted(position);
+            //Some uc plans belong to this type, do fake deleting
+            mDataManager.removeFromTypeList(position);
+            mTypeAdapter.notifyItemRemoved(position);
+
             //弹提示有未完成的计划属于该类型的dialog
             mAllTypesView.onShowPlanCountOfOneTypeExistsDialog();
+
+            mDataManager.addToTypeList(position, type);
+            mTypeAdapter.notifyItemInserted(position);
         } else {
-            mDataManager.updateTypeMarkList(type.getTypeMark());
-            mDataManager.removeMappingInFindingColorResMap(type.getTypeCode(), type.getTypeMark());
+            //Do real deleting
+            mDataManager.notifyTypeDeleted(position);
+            mTypeAdapter.notifyItemRemoved(position);
             //弹提示删除成功的SnackBar
             mAllTypesView.onTypeDeleted(type.getTypeName(), position, type);
-            mDatabaseDispatcher.deleteType(type.getTypeCode());
         }
     }
 
     public void notifyTypeRecreated(int position, Type type) {
-        mDataManager.addToTypeList(position, type);
-        mDataManager.updateTypeMarkList(type.getTypeMark());
-        mDataManager.putMappingInFindingColorResMap(type.getTypeCode(), type.getTypeMark());
+        mDataManager.notifyTypeCreated(position, type);
         mTypeAdapter.notifyItemInserted(position);
-        mDatabaseDispatcher.saveType(type);
     }
 
     @Subscribe
@@ -130,7 +106,7 @@ public class AllTypesPresenter implements Presenter<AllTypesView> {
 
     @Subscribe
     public void onTypeDetailChanged(TypeDetailChangedEvent event) {
-        mTypeAdapter.notifyItemChanged(event.position);
+        mTypeAdapter.notifyItemChanged(event.getPosition());
     }
 
     @Subscribe

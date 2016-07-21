@@ -84,14 +84,12 @@ public class CreateTypePresenter implements Presenter<CreateTypeView> {
             case R.id.btn_save:
                 mType.setTypeMark(Util.parseColor(mDataManager.getTypeMark(selectedPosition).getColorInt()));
 
-                mDataManager.addToTypeList(mType);
-                //只会在类型颜色有选择时执行，不必考虑selectedPosition为-1的情况
-                mDataManager.updateTypeMarkList(selectedPosition);
-                mDataManager.putMappingInFindingColorResMap(mType.getTypeCode(), mType.getTypeMark());
+                mDataManager.notifyTypeCreated(mType);
 
-                DatabaseDispatcher.getInstance().saveType(mType);
-
-                EventBus.getDefault().post(new TypeCreatedEvent());
+                EventBus.getDefault().post(new TypeCreatedEvent(
+                        mDataManager.getRecentlyCreatedType().getTypeCode(),
+                        mDataManager.getRecentlyCreatedTypeLocation()
+                ));
 
                 mCreateTypeView.closeDialog();
                 break;

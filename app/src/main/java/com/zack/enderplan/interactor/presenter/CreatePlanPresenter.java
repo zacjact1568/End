@@ -72,18 +72,6 @@ public class CreatePlanPresenter implements Presenter<CreatePlanView> {
 
     public void createNewPlan() {
         mPlan.setCreationTime(System.currentTimeMillis());
-        //处理并向model层传送数据，更新model
-        mDataManager.addToPlanList(0, mPlan);
-        //更新未完成计划的数量
-        mDataManager.updateUcPlanCount(1);
-        //设置提醒
-        if (mPlan.getReminderTime() != 0) {
-            //说明之前是设置了提醒的
-            ReminderManager.getInstance().setAlarm(mPlan.getPlanCode(), mPlan.getReminderTime());
-        }
-        //更新每个类型具有的计划数量map
-        mDataManager.updateUcPlanCountOfEachTypeMap(mPlan.getTypeCode(), 1);
-        //存储至数据库
-        DatabaseDispatcher.getInstance().savePlan(mPlan);
+        mDataManager.notifyPlanCreated(mPlan);
     }
 }

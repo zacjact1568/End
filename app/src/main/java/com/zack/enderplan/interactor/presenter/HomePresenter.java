@@ -54,16 +54,19 @@ public class HomePresenter implements Presenter<HomeView> {
         //更新view
         mHomeView.onUcPlanCountUpdated(getUcPlanCount());
         //通过EventBus通知刷新适配器
-        EventBus.getDefault().post(new PlanCreatedEvent());
+        EventBus.getDefault().post(new PlanCreatedEvent(
+                mDataManager.getRecentlyCreatedPlan().getPlanCode(),
+                mDataManager.getRecentlyCreatedPlanLocation()
+        ));
         //对view层回调
-        mHomeView.onPlanCreated(mDataManager.getPlan(0).getContent());
+        mHomeView.onPlanCreated(mDataManager.getRecentlyCreatedPlan().getContent());
     }
 
     public void notifyPlanDetailChanged(int position, String planCode, boolean isTypeOfPlanChanged,
                                         boolean isPlanStatusChanged) {
 
         //通知AllPlans、AllTypes、TypeDetail更新
-        EventBus.getDefault().post(new PlanDetailChangedEvent(position, planCode, isTypeOfPlanChanged, isPlanStatusChanged, -1));
+        EventBus.getDefault().post(new PlanDetailChangedEvent(planCode, position, isTypeOfPlanChanged, isPlanStatusChanged, -1));
 
         if (isPlanStatusChanged) {
             //如果计划完成情况改变，需要更新drawer上的header中的内容
@@ -75,7 +78,7 @@ public class HomePresenter implements Presenter<HomeView> {
     public void notifyPlanDeleted(int position, String planCode, String content, boolean isCompleted) {
 
         //通知AllPlans、AllTypes、TypeDetail更新
-        EventBus.getDefault().post(new PlanDeletedEvent(position, planCode, isCompleted));
+        EventBus.getDefault().post(new PlanDeletedEvent(planCode, position, isCompleted));
 
         if (!isCompleted) {
             //需要更新drawer上的未完成计划数量，因为刚刚删除了一个未完成的计划

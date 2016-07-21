@@ -1,6 +1,5 @@
 package com.zack.enderplan.interactor.presenter;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -8,13 +7,11 @@ import com.zack.enderplan.R;
 import com.zack.enderplan.application.App;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.bean.Type;
-import com.zack.enderplan.model.database.DatabaseDispatcher;
 import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDeletedEvent;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.event.UcPlanCountChangedEvent;
 import com.zack.enderplan.model.ram.DataManager;
-import com.zack.enderplan.manager.ReminderManager;
 import com.zack.enderplan.util.Util;
 import com.zack.enderplan.domain.view.TypeDetailView;
 import com.zack.enderplan.interactor.adapter.PlanSingleTypeAdapter;
@@ -28,7 +25,6 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
 
     private TypeDetailView typeDetailView;
     private DataManager dataManager;
-    private DatabaseDispatcher databaseDispatcher;
     private PlanSingleTypeAdapter planSingleTypeAdapter;
     private List<Plan> singleTypeUcPlanList;
     private Type type;
@@ -37,7 +33,6 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
     public TypeDetailPresenter(TypeDetailView typeDetailView, int position) {
         attachView(typeDetailView);
         dataManager = DataManager.getInstance();
-        databaseDispatcher = DatabaseDispatcher.getInstance();
 
         type = dataManager.getType(position);
 
@@ -83,18 +78,16 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
             plan.setTypeCode(type.getTypeCode());
             plan.setCreationTime(System.currentTimeMillis());
 
-            //存储至list
-            dataManager.addToPlanList(0, plan);
-            //通知AllPlansPresenter（更新计划列表）与AllTypesPresenter（更新类型列表）
-            EventBus.getDefault().post(new PlanCreatedEvent());
+            dataManager.notifyPlanCreated(plan);
 
-            dataManager.updateUcPlanCount(1);
-            dataManager.updateUcPlanCountOfEachTypeMap(type.getTypeCode(), 1);
+            //通知AllPlansPresenter（更新计划列表）与AllTypesPresenter（更新类型列表）
+            EventBus.getDefault().post(new PlanCreatedEvent(
+                    dataManager.getRecentlyCreatedPlan().getPlanCode(),
+                    dataManager.getRecentlyCreatedPlanLocation()
+            ));
+
             //通知HomePresenter（更新侧栏header）
             EventBus.getDefault().post(new UcPlanCountChangedEvent());
-
-            //存储至数据库
-            databaseDispatcher.savePlan(plan);
 
             //更新此fragment中的数据
             singleTypeUcPlanList.add(0, plan);
@@ -111,61 +104,31 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
     public void notifyPlanStarStatusChanged(int position) {
         //获取plan
         Plan plan = singleTypeUcPlanList.get(position);
-        //获取原始状态，计算变化后的状态
-        boolean isStarred = plan.getStarStatus() == Plan.PLAN_STAR_STATUS_STARRED;
-        int newStarStatus = isStarred ? Plan.PLAN_STAR_STATUS_NOT_STARRED : Plan.PLAN_STAR_STATUS_STARRED;
-        //更新plan
-        plan.setStarStatus(newStarStatus);
+
+        int posInPlanList = dataManager.getPlanLocationInPlanList(plan.getPlanCode());
+
+        dataManager.notifyStarStatusChanged(posInPlanList);
+
         //更新界面
         planSingleTypeAdapter.notifyItemChanged(position);
         //通知AllPlans界面更新
-        int posInPlanList = dataManager.getPlanLocationInPlanList(plan.getPlanCode());
-        EventBus.getDefault().post(new PlanDetailChangedEvent(posInPlanList, plan.getPlanCode(), false, false, -1));
-        //数据库存储
-        ContentValues values = new ContentValues();
-        values.put("star_status", newStarStatus);
-        databaseDispatcher.editPlan(plan.getPlanCode(), values);
+        EventBus.getDefault().post(new PlanDetailChangedEvent(plan.getPlanCode(), posInPlanList, false, false, -1));
     }
 
     public void notifyPlanCompleted(int position) {
 
-        ContentValues values = new ContentValues();
-
         Plan plan = singleTypeUcPlanList.get(position);
-
-        //更新Maps
-        dataManager.updateUcPlanCountOfEachTypeMap(plan.getTypeCode(), -1);
-        dataManager.updateUcPlanCount(-1);
-
-        //通知HomePresenter（更新侧栏header）
-        EventBus.getDefault().post(new UcPlanCountChangedEvent());
 
         //操作list，用posInPlanList（而不是position）标记位置
         int posInPlanList = dataManager.getPlanLocationInPlanList(plan.getPlanCode());
 
-        dataManager.removeFromPlanList(posInPlanList);
+        dataManager.notifyPlanStatusChanged(posInPlanList);
 
-        //取消提醒
-        if (plan.getReminderTime() != 0) {
-            ReminderManager.getInstance().cancelAlarm(plan.getPlanCode());
-            plan.setReminderTime(0);
-            values.put(DatabaseDispatcher.DB_STR_REMINDER_TIME, 0);
-        }
-
-        long newCompletionTime = System.currentTimeMillis();
-
-        plan.setCreationTime(0);
-        plan.setCompletionTime(newCompletionTime);
-
-        dataManager.addToPlanList(dataManager.getUcPlanCount(), plan);
+        //通知HomePresenter（更新侧栏header）
+        EventBus.getDefault().post(new UcPlanCountChangedEvent());
 
         //通知AllPlansPresenter（更新计划列表）、AllTypesPresenter（更新类型列表）与本Presenter更新界面
-        EventBus.getDefault().post(new PlanDetailChangedEvent(posInPlanList, plan.getPlanCode(), false, true, position));
-
-        //数据库存储
-        values.put(DatabaseDispatcher.DB_STR_CREATION_TIME, 0);
-        values.put(DatabaseDispatcher.DB_STR_COMPLETION_TIME, newCompletionTime);
-        databaseDispatcher.editPlan(plan.getPlanCode(), values);
+        EventBus.getDefault().post(new PlanDetailChangedEvent(plan.getPlanCode(), posInPlanList, false, true, position));
     }
 
     /** 注意！必须在更新UcPlanCountOfEachTypeMap之后调用才有效果 */
@@ -201,15 +164,15 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
         int position;
 
         //NOTE: planCode和posInStUcPlanList中，有且仅有一个存在
-        if (event.posInStUcPlanList == -1) {
+        if (event.getPosInStUcPlanList() == -1) {
             //event中没有singleTypeUcPlanList中的位置信息，用planCode去获取
-            position = getPosInSingleTypeUcPlanList(event.planCode);
+            position = getPosInSingleTypeUcPlanList(event.getPlanCode());
         } else {
             //event中有singleTypeUcPlanList中的位置信息，直接使用
-            position = event.posInStUcPlanList;
+            position = event.getPosInStUcPlanList();
         }
 
-        if (event.isTypeOfPlanChanged || event.isPlanStatusChanged) {
+        if (event.isTypeOfPlanChanged() || event.isPlanStatusChanged()) {
             //说明有类型或完成情况的更新，需要从singleTypeUcPlanList中移除
 
             //更新此列表
@@ -228,13 +191,13 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
     public void onPlanDeleted(PlanDeletedEvent event) {
 
         //计算刚才删除的计划在这个list中的位置
-        int position = getPosInSingleTypeUcPlanList(event.planCode);
+        int position = getPosInSingleTypeUcPlanList(event.getPlanCode());
 
         //刷新list
         singleTypeUcPlanList.remove(position);
         planSingleTypeAdapter.notifyItemRemoved(position);
 
-        if (!event.isCompleted) {
+        if (!event.isCompleted()) {
             //说明刚才删除的是个未完成的计划，需要修改界面上的内容
             typeDetailView.onUcPlanCountChanged(getUcPlanCountStr(type.getTypeCode()));
         }

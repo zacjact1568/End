@@ -94,6 +94,19 @@ public class DatabaseDispatcher {
         database.update(DB_STR_TYPE, values, DB_STR_TYPE_CODE + " = ?", new String[]{typeCode});
     }
 
+    public void editTypeBase(String typeCode, String typeName, String typeMark) {
+        ContentValues values = new ContentValues();
+        values.put(DB_STR_TYPE_NAME, typeName);
+        values.put(DB_STR_TYPE_MARK, typeMark);
+        editType(typeCode, values);
+    }
+
+    public void editTypeSequence(String typeCode, int typeSequence) {
+        ContentValues values = new ContentValues();
+        values.put(DB_STR_TYPE_SEQUENCE, typeSequence);
+        editType(typeCode, values);
+    }
+
     public void deleteType(String typeCode) {
         database.delete(DB_STR_TYPE, DB_STR_TYPE_CODE + " = ?", new String[]{typeCode});
     }

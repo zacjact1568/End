@@ -1,25 +1,32 @@
 package com.zack.enderplan.event;
 
 /** 有计划详细信息的更改事件 */
-public class PlanDetailChangedEvent {
+public class PlanDetailChangedEvent extends BasePlanEvent {
 
-    /** 在AllPlansList中的位置 */
-    public int position;
-    /** 状态改变的计划的编码 */
-    public String planCode;
     /** 类型是否发生改变 */
-    public boolean isTypeOfPlanChanged;
+    private boolean isTypeOfPlanChanged;
     /** 完成情况是否发生改变 */
-    public boolean isPlanStatusChanged;
+    private boolean isPlanStatusChanged;
     /** 在singleTypeUcPlanList中的位置 */
-    public int posInStUcPlanList;
+    private int posInStUcPlanList;
 
-    public PlanDetailChangedEvent(int position, String planCode, boolean isTypeOfPlanChanged,
+    public PlanDetailChangedEvent(String planCode, int position, boolean isTypeOfPlanChanged,
                                   boolean isPlanStatusChanged, int posInStUcPlanList) {
-        this.position = position;
-        this.planCode = planCode;
+        super(planCode, position);
         this.isTypeOfPlanChanged = isTypeOfPlanChanged;
         this.isPlanStatusChanged = isPlanStatusChanged;
         this.posInStUcPlanList = posInStUcPlanList;
+    }
+
+    public boolean isTypeOfPlanChanged() {
+        return isTypeOfPlanChanged;
+    }
+
+    public boolean isPlanStatusChanged() {
+        return isPlanStatusChanged;
+    }
+
+    public int getPosInStUcPlanList() {
+        return posInStUcPlanList;
     }
 }

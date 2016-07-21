@@ -1,12 +1,10 @@
 package com.zack.enderplan.interactor.presenter;
 
-import android.content.ContentValues;
 import android.text.TextUtils;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.model.bean.TypeMark;
-import com.zack.enderplan.model.database.DatabaseDispatcher;
 import com.zack.enderplan.event.TypeDetailChangedEvent;
 import com.zack.enderplan.model.ram.DataManager;
 import com.zack.enderplan.util.Util;
@@ -34,7 +32,7 @@ public class EditTypePresenter implements Presenter<EditTypeView> {
         mType = mDataManager.getType(position);
         mPosition = position;
 
-        initTypeMarkSelection();
+        initTypeValues();
     }
 
     @Override
@@ -95,20 +93,14 @@ public class EditTypePresenter implements Presenter<EditTypeView> {
                 mEditTypeView.closeDialog(true);
                 break;
             case R.id.button_save:
-                String typeMark = Util.parseColor(mDataManager.getTypeMark(selectedPosition).getColorInt());
                 //只会在类型颜色有选择时执行，所以就不必考虑selectedPosition为-1的情况
                 mDataManager.getTypeMark(selectedPosition).setIsSelected(false);
-                mDataManager.updateTypeMarkList(originalPosition, selectedPosition);
-                mDataManager.updateFindingColorResMap(mType.getTypeCode(), mType.getTypeMark(), typeMark);
-                //更新type（list中的type实际上也更新了）
-                mType.setTypeName(typeName);
-                mType.setTypeMark(typeMark);
 
-                //更新数据库
-                ContentValues values = new ContentValues();
-                values.put("type_name", typeName);
-                values.put("type_mark", typeMark);
-                DatabaseDispatcher.getInstance().editType(mType.getTypeCode(), values);
+                mDataManager.notifyTypeEdited(
+                        mPosition,
+                        typeName,
+                        Util.parseColor(mDataManager.getTypeMark(originalPosition).getColorInt()),
+                        Util.parseColor(mDataManager.getTypeMark(selectedPosition).getColorInt()));
 
                 //通知AllTypesFragment和AllPlansFragment更新
                 EventBus.getDefault().post(new TypeDetailChangedEvent(mType.getTypeCode(), mPosition));
@@ -118,8 +110,9 @@ public class EditTypePresenter implements Presenter<EditTypeView> {
         }
     }
 
-    /** 使此类型对应的初始颜色选中且变为可用，并初始化一些值 */
-    private void initTypeMarkSelection() {
+    /** 1. 初始化类型名<br>2. 使此类型对应的初始颜色选中且变为可用<br>3. 初始化类型颜色的位置 */
+    private void initTypeValues() {
+        typeName = mType.getTypeName();
         //获取此类型初始颜色的位置
         originalPosition = mDataManager.getTypeMarkLocationInTypeMarkList(mType.getTypeMark());
 
