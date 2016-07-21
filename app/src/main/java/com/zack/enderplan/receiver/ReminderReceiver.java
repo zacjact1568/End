@@ -9,9 +9,9 @@ import android.content.Intent;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.model.bean.Plan;
-import com.zack.enderplan.model.database.DatabaseDispatcher;
+import com.zack.enderplan.model.database.DatabaseManager;
 import com.zack.enderplan.event.RemindedEvent;
-import com.zack.enderplan.model.ram.DataManager;
+import com.zack.enderplan.model.DataManager;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -22,16 +22,16 @@ public class ReminderReceiver extends BroadcastReceiver {
 
         String planCode = intent.getStringExtra("plan_code");
 
-        DatabaseDispatcher dispatcher = DatabaseDispatcher.getInstance();
+        DatabaseManager dManager = DatabaseManager.getInstance();
         DataManager dataManager = DataManager.getInstance();
 
-        Plan plan = dispatcher.queryPlan(planCode);
+        Plan plan = dManager.queryPlan(planCode);
 
         Intent reminderIntent = new Intent("com.zack.enderplan.ACTION_REMINDER");
         reminderIntent.putExtra("plan_detail", plan);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, reminderIntent, PendingIntent.FLAG_ONE_SHOT);
 
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager nManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = new Notification.Builder(context)
                 .setSmallIcon(R.drawable.ic_check_box_white_24dp)
                 .setContentTitle(context.getResources().getString(R.string.title_notification_content))
@@ -39,10 +39,10 @@ public class ReminderReceiver extends BroadcastReceiver {
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setContentIntent(pendingIntent)
                 .build();
-        manager.notify(planCode, 0, notification);
+        nManager.notify(planCode, 0, notification);
 
         //数据库存储
-        dispatcher.editReminderTime(planCode, 0);
+        dManager.editReminderTime(planCode, 0);
 
         if (dataManager.getDataStatus() == DataManager.DataStatus.STATUS_DATA_LOADED) {
             //此时数据已加载完成，可以通过DataManager访问到数据

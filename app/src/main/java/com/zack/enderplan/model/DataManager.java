@@ -1,19 +1,19 @@
-package com.zack.enderplan.model.ram;
+package com.zack.enderplan.model;
 
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.AsyncTask;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.application.App;
-import com.zack.enderplan.manager.ReminderManager;
+import com.zack.enderplan.App;
+import com.zack.enderplan.utility.ReminderManager;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.model.bean.TypeMark;
-import com.zack.enderplan.model.database.DatabaseDispatcher;
+import com.zack.enderplan.model.database.DatabaseManager;
 import com.zack.enderplan.event.DataLoadedEvent;
 import com.zack.enderplan.event.UcPlanCountChangedEvent;
-import com.zack.enderplan.util.LogUtil;
+import com.zack.enderplan.utility.LogUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -40,7 +40,7 @@ public class DataManager {
         STATUS_DATA_LOADED
     }
 
-    private DatabaseDispatcher databaseDispatcher;
+    private DatabaseManager mDatabaseManager;
     private ReminderManager mReminderManager;
     private List<Plan> planList;
     private List<Type> typeList;
@@ -54,7 +54,7 @@ public class DataManager {
     private static DataManager ourInstance = new DataManager();
 
     private DataManager() {
-        databaseDispatcher = DatabaseDispatcher.getInstance();
+        mDatabaseManager = DatabaseManager.getInstance();
         mReminderManager = ReminderManager.getInstance();
 
         //初始化状态
@@ -131,7 +131,7 @@ public class DataManager {
             mReminderManager.setAlarm(newPlan.getPlanCode(), newPlan.getReminderTime());
         }
         //存储至数据库
-        databaseDispatcher.savePlan(newPlan);
+        mDatabaseManager.savePlan(newPlan);
     }
 
     /** 删除计划 */
@@ -148,14 +148,14 @@ public class DataManager {
         }
         removeFromPlanList(location);
         //更新数据库
-        databaseDispatcher.deletePlan(plan.getPlanCode());
+        mDatabaseManager.deletePlan(plan.getPlanCode());
     }
 
     /** 编辑计划内容 */
     public void notifyPlanContentChanged(int location, String newContent) {
         Plan plan = getPlan(location);
         plan.setContent(newContent);
-        databaseDispatcher.editContent(plan.getPlanCode(), newContent);
+        mDatabaseManager.editContent(plan.getPlanCode(), newContent);
     }
 
     /** 编辑计划类型 */
@@ -167,7 +167,7 @@ public class DataManager {
         }
         //再来改变typeCode
         plan.setTypeCode(newTypeCode);
-        databaseDispatcher.editTypeOfPlan(plan.getPlanCode(), newTypeCode);
+        mDatabaseManager.editTypeOfPlan(plan.getPlanCode(), newTypeCode);
     }
 
     /** 编辑计划星标状态 */
@@ -176,14 +176,14 @@ public class DataManager {
         int newStarStatus = plan.getStarStatus() == Plan.PLAN_STAR_STATUS_STARRED ?
                 Plan.PLAN_STAR_STATUS_NOT_STARRED : Plan.PLAN_STAR_STATUS_STARRED;
         plan.setStarStatus(newStarStatus);
-        databaseDispatcher.editStarStatus(plan.getPlanCode(), newStarStatus);
+        mDatabaseManager.editStarStatus(plan.getPlanCode(), newStarStatus);
     }
 
     /** 编辑计划截止时间 */
     public void notifyDeadlineChanged(int location, long newDeadline) {
         Plan plan = getPlan(location);
         plan.setDeadline(newDeadline);
-        databaseDispatcher.editDeadline(plan.getPlanCode(), newDeadline);
+        mDatabaseManager.editDeadline(plan.getPlanCode(), newDeadline);
     }
 
     /** 编辑计划提醒时间 */
@@ -195,7 +195,7 @@ public class DataManager {
             mReminderManager.cancelAlarm(plan.getPlanCode());
         }
         plan.setReminderTime(newReminderTime);
-        databaseDispatcher.editReminderTime(plan.getPlanCode(), newReminderTime);
+        mDatabaseManager.editReminderTime(plan.getPlanCode(), newReminderTime);
     }
 
     /** 编辑计划完成状态 */
@@ -212,7 +212,7 @@ public class DataManager {
             //有设置提醒，需要移除
             mReminderManager.cancelAlarm(plan.getPlanCode());
             plan.setReminderTime(0);
-            databaseDispatcher.editReminderTime(plan.getPlanCode(), 0);
+            mDatabaseManager.editReminderTime(plan.getPlanCode(), 0);
         }
 
         //操作list
@@ -228,7 +228,7 @@ public class DataManager {
         int newPosition = isCompletedPast ? 0 : getUcPlanCount();
         addToPlanList(newPosition, plan);
 
-        databaseDispatcher.editPlanStatus(plan.getPlanCode(), newCreationTime, newCompletionTime);
+        mDatabaseManager.editPlanStatus(plan.getPlanCode(), newCreationTime, newCompletionTime);
     }
 
     /** 创建类型 (Inserted at the end of typeList) */
@@ -242,7 +242,7 @@ public class DataManager {
         updateTypeMarkList(newType.getTypeMark());
         putMappingInFindingColorResMaps(newType.getTypeCode(), newType.getTypeMark());
         //储存至数据库
-        databaseDispatcher.saveType(newType);
+        mDatabaseManager.saveType(newType);
     }
 
     /** 删除类型 */
@@ -252,7 +252,7 @@ public class DataManager {
         //删除了一个类型，需要更新可用的类型颜色
         updateTypeMarkList(type.getTypeMark());
         removeMappingInFindingColorResMap(type.getTypeCode(), type.getTypeMark());
-        databaseDispatcher.deleteType(type.getTypeCode());
+        mDatabaseManager.deleteType(type.getTypeCode());
     }
 
     /** 编辑类型 */
@@ -264,7 +264,7 @@ public class DataManager {
         type.setTypeName(newTypeName);
         type.setTypeMark(newTypeMark);
         //更新数据库
-        databaseDispatcher.editTypeBase(type.getTypeCode(), type.getTypeName(), type.getTypeMark());
+        mDatabaseManager.editTypeBase(type.getTypeCode(), type.getTypeName(), type.getTypeMark());
     }
 
     /** 重排类型 (集中重排) */
@@ -276,7 +276,7 @@ public class DataManager {
                 //在移动typeList的item的时候只是交换了items在list中的位置，并没有改变item中的type_sequence
                 type.setTypeSequence(i);
                 //更新数据库
-                databaseDispatcher.editTypeSequence(type.getTypeCode(), i);
+                mDatabaseManager.editTypeSequence(type.getTypeCode(), i);
             }
         }
     }
@@ -645,8 +645,8 @@ public class DataManager {
 
         @Override
         protected Void doInBackground(Void... params) {
-            planList.addAll(databaseDispatcher.loadPlan());
-            typeList.addAll(databaseDispatcher.loadType());
+            planList.addAll(mDatabaseManager.loadPlan());
+            typeList.addAll(mDatabaseManager.loadType());
             initOtherDataUsingLists();
             return null;
         }

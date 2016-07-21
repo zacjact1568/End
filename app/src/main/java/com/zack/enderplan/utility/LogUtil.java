@@ -1,4 +1,4 @@
-package com.zack.enderplan.util;
+package com.zack.enderplan.utility;
 
 import android.util.Log;
 

@@ -4,15 +4,15 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.application.App;
+import com.zack.enderplan.App;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDeletedEvent;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.event.UcPlanCountChangedEvent;
-import com.zack.enderplan.model.ram.DataManager;
-import com.zack.enderplan.util.Util;
+import com.zack.enderplan.model.DataManager;
+import com.zack.enderplan.utility.Util;
 import com.zack.enderplan.domain.view.TypeDetailView;
 import com.zack.enderplan.interactor.adapter.PlanSingleTypeAdapter;
 

@@ -1,4 +1,4 @@
-package com.zack.enderplan.manager;
+package com.zack.enderplan.utility;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.zack.enderplan.application.App;
+import com.zack.enderplan.App;
 import com.zack.enderplan.receiver.ReminderReceiver;
 
 public class ReminderManager {

@@ -3,9 +3,9 @@ package com.zack.enderplan.model.preference;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.zack.enderplan.application.App;
+import com.zack.enderplan.App;
 
-public class PreferenceDispatcher {
+public class PreferenceHelper {
 
     public static final String KEY_PREF_NEED_WELCOME = "need_welcome";
     public static final String KEY_PREF_LANGUAGE = "language";
@@ -13,13 +13,13 @@ public class PreferenceDispatcher {
 
     private SharedPreferences sharedPreferences;
 
-    private static PreferenceDispatcher ourInstance = new PreferenceDispatcher();
+    private static PreferenceHelper ourInstance = new PreferenceHelper();
 
-    private PreferenceDispatcher() {
+    private PreferenceHelper() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(App.getGlobalContext());
     }
 
-    public static PreferenceDispatcher getInstance() {
+    public static PreferenceHelper getInstance() {
         return ourInstance;
     }
 

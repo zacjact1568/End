@@ -17,7 +17,7 @@ import com.zack.enderplan.domain.view.AllTypesView;
 import com.zack.enderplan.interactor.adapter.TypeAdapter;
 import com.zack.enderplan.interactor.presenter.AllTypesPresenter;
 import com.zack.enderplan.model.bean.Type;
-import com.zack.enderplan.util.Util;
+import com.zack.enderplan.utility.Util;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

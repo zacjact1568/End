@@ -1,4 +1,4 @@
-package com.zack.enderplan.util;
+package com.zack.enderplan.utility;
 
 import android.content.Context;
 import android.os.Vibrator;
@@ -6,7 +6,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.StrikethroughSpan;
 
-import com.zack.enderplan.application.App;
+import com.zack.enderplan.App;
 
 import java.util.UUID;
 

@@ -4,7 +4,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.zack.enderplan.model.bean.Plan;
-import com.zack.enderplan.model.database.DatabaseDispatcher;
+import com.zack.enderplan.model.database.DatabaseManager;
 import com.zack.enderplan.event.DataLoadedEvent;
 import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDeletedEvent;
@@ -13,7 +13,7 @@ import com.zack.enderplan.event.RemindedEvent;
 import com.zack.enderplan.event.TypeDetailChangedEvent;
 import com.zack.enderplan.event.UcPlanCountChangedEvent;
 import com.zack.enderplan.interactor.adapter.PlanAdapter;
-import com.zack.enderplan.model.ram.DataManager;
+import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.domain.view.MyPlansView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -27,13 +27,13 @@ public class MyPlansPresenter implements Presenter<MyPlansView> {
 
     private MyPlansView mMyPlansView;
     private DataManager mDataManager;
-    private DatabaseDispatcher mDatabaseDispatcher;
+    private DatabaseManager mDatabaseManager;
     private PlanAdapter mPlanAdapter;
 
     public MyPlansPresenter(MyPlansView myPlansView) {
         attachView(myPlansView);
         mDataManager = DataManager.getInstance();
-        mDatabaseDispatcher = DatabaseDispatcher.getInstance();
+        mDatabaseManager = DatabaseManager.getInstance();
     }
 
     @Override
@@ -64,7 +64,7 @@ public class MyPlansPresenter implements Presenter<MyPlansView> {
                 int newStarStatus = plan.getStarStatus() == Plan.PLAN_STAR_STATUS_STARRED ? Plan.PLAN_STAR_STATUS_NOT_STARRED : Plan.PLAN_STAR_STATUS_STARRED;
                 plan.setStarStatus(newStarStatus);
                 mPlanAdapter.notifyItemChanged(itemPosition);
-                mDatabaseDispatcher.editStarStatus(plan.getPlanCode(), newStarStatus);
+                mDatabaseManager.editStarStatus(plan.getPlanCode(), newStarStatus);
             }
         });
 

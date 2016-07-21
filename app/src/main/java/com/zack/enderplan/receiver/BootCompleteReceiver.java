@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.zack.enderplan.model.database.DatabaseDispatcher;
-import com.zack.enderplan.manager.ReminderManager;
+import com.zack.enderplan.model.database.DatabaseManager;
+import com.zack.enderplan.utility.ReminderManager;
 
 import java.util.Map;
 
@@ -15,14 +15,14 @@ public class BootCompleteReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d("BootCompleteReceiver", "Boot Finished");
-        ReminderManager manager = ReminderManager.getInstance();
+        ReminderManager rManager = ReminderManager.getInstance();
 
-        DatabaseDispatcher dispatcher = DatabaseDispatcher.getInstance();
+        DatabaseManager dManager = DatabaseManager.getInstance();
 
-        Map<String, Long> reminderTimeMap = dispatcher.queryReminderTimeWithEnabledReminder();
+        Map<String, Long> reminderTimeMap = dManager.queryReminderTimeWithEnabledReminder();
 
         for (Map.Entry<String, Long> entry : reminderTimeMap.entrySet()) {
-            manager.setAlarm(entry.getKey(), entry.getValue());
+            rManager.setAlarm(entry.getKey(), entry.getValue());
         }
     }
 }

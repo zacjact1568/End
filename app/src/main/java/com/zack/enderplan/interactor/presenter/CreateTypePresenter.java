@@ -5,10 +5,9 @@ import android.text.TextUtils;
 import com.zack.enderplan.R;
 import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.model.bean.TypeMark;
-import com.zack.enderplan.model.database.DatabaseDispatcher;
 import com.zack.enderplan.event.TypeCreatedEvent;
-import com.zack.enderplan.model.ram.DataManager;
-import com.zack.enderplan.util.Util;
+import com.zack.enderplan.model.DataManager;
+import com.zack.enderplan.utility.Util;
 import com.zack.enderplan.domain.view.CreateTypeView;
 import com.zack.enderplan.interactor.adapter.TypeMarkAdapter;
 

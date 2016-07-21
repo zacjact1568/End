@@ -19,7 +19,7 @@ import com.zack.enderplan.domain.view.MyPlansView;
 import com.zack.enderplan.interactor.adapter.PlanAdapter;
 import com.zack.enderplan.interactor.presenter.MyPlansPresenter;
 import com.zack.enderplan.model.bean.Plan;
-import com.zack.enderplan.util.Util;
+import com.zack.enderplan.utility.Util;
 import com.zack.enderplan.widget.EnhancedRecyclerView;
 
 import butterknife.BindView;

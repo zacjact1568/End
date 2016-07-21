@@ -10,7 +10,7 @@ import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.event.TypeCreatedEvent;
 import com.zack.enderplan.event.TypeDetailChangedEvent;
 import com.zack.enderplan.interactor.adapter.TypeAdapter;
-import com.zack.enderplan.model.ram.DataManager;
+import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.domain.view.AllTypesView;
 
 import org.greenrobot.eventbus.EventBus;

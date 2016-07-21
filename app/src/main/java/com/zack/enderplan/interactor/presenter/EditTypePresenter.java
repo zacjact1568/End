@@ -6,8 +6,8 @@ import com.zack.enderplan.R;
 import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.model.bean.TypeMark;
 import com.zack.enderplan.event.TypeDetailChangedEvent;
-import com.zack.enderplan.model.ram.DataManager;
-import com.zack.enderplan.util.Util;
+import com.zack.enderplan.model.DataManager;
+import com.zack.enderplan.utility.Util;
 import com.zack.enderplan.domain.view.EditTypeView;
 import com.zack.enderplan.interactor.adapter.TypeMarkAdapter;
 

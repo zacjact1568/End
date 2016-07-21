@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.model.bean.Plan;
-import com.zack.enderplan.util.Util;
+import com.zack.enderplan.utility.Util;
 
 import java.util.List;
 import java.util.Map;

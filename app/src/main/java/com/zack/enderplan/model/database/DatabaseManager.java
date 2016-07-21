@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.zack.enderplan.application.App;
+import com.zack.enderplan.App;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.bean.Type;
 
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DatabaseDispatcher {
+public class DatabaseManager {
 
     public static final String DB_NAME = "com.zack.enderplan.db";
 
@@ -36,15 +36,15 @@ public class DatabaseDispatcher {
 
     private SQLiteDatabase database;
 
-    private static DatabaseDispatcher ourInstance = new DatabaseDispatcher();
+    private static DatabaseManager ourInstance = new DatabaseManager();
 
-    private DatabaseDispatcher() {
+    private DatabaseManager() {
         Context context = App.getGlobalContext();
         DatabaseOpenHelper dbHelper = new DatabaseOpenHelper(context, DB_NAME, null, DB_VERSION);
         database = dbHelper.getWritableDatabase();
     }
 
-    public static DatabaseDispatcher getInstance() {
+    public static DatabaseManager getInstance() {
         return ourInstance;
     }
 

@@ -4,8 +4,8 @@ import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDeletedEvent;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.event.UcPlanCountChangedEvent;
-import com.zack.enderplan.model.preference.PreferenceDispatcher;
-import com.zack.enderplan.model.ram.DataManager;
+import com.zack.enderplan.model.preference.PreferenceHelper;
+import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.domain.view.HomeView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -17,13 +17,13 @@ public class HomePresenter implements Presenter<HomeView> {
 
     private HomeView mHomeView;
     private DataManager mDataManager;
-    private PreferenceDispatcher mPreferenceDispatcher;
+    private PreferenceHelper mPreferenceHelper;
     private long lastBackKeyPressedTime;
 
     public HomePresenter(HomeView homeView) {
         attachView(homeView);
         mDataManager = DataManager.getInstance();
-        mPreferenceDispatcher = PreferenceDispatcher.getInstance();
+        mPreferenceHelper = PreferenceHelper.getInstance();
 
         mDataManager.initDataStruct();
     }
@@ -45,7 +45,7 @@ public class HomePresenter implements Presenter<HomeView> {
     }
 
     public void notifyStartingUpCompleted() {
-        if (mPreferenceDispatcher.getBooleanPref(PreferenceDispatcher.KEY_PREF_NEED_WELCOME)) {
+        if (mPreferenceHelper.getBooleanPref(PreferenceHelper.KEY_PREF_NEED_WELCOME)) {
             mHomeView.showWelcome();
         }
     }

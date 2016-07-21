@@ -3,10 +3,8 @@ package com.zack.enderplan.interactor.presenter;
 import com.zack.enderplan.domain.fragment.CalendarDialogFragment;
 import com.zack.enderplan.domain.fragment.DateTimePickerDialogFragment;
 import com.zack.enderplan.model.bean.Plan;
-import com.zack.enderplan.model.database.DatabaseDispatcher;
-import com.zack.enderplan.model.ram.DataManager;
-import com.zack.enderplan.manager.ReminderManager;
-import com.zack.enderplan.util.Util;
+import com.zack.enderplan.model.DataManager;
+import com.zack.enderplan.utility.Util;
 import com.zack.enderplan.domain.view.CreatePlanView;
 import com.zack.enderplan.interactor.adapter.TypeSpinnerAdapter;
 

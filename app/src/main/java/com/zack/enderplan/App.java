@@ -1,4 +1,4 @@
-package com.zack.enderplan.application;
+package com.zack.enderplan;
 
 import android.app.Application;
 import android.content.Context;
@@ -6,8 +6,7 @@ import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatDelegate;
 
-import com.zack.enderplan.R;
-import com.zack.enderplan.model.preference.PreferenceDispatcher;
+import com.zack.enderplan.model.preference.PreferenceHelper;
 
 import java.util.Locale;
 
@@ -35,11 +34,11 @@ public class App extends Application {
 
     /** 通过Preference中的数据初始化某些设置 */
     private void initFromPreferences() {
-        PreferenceDispatcher dispatcher = PreferenceDispatcher.getInstance();
+        PreferenceHelper helper = PreferenceHelper.getInstance();
         //设定运行时的默认语言
-        initLocale(dispatcher.getStringPref(PreferenceDispatcher.KEY_PREF_LANGUAGE));
+        initLocale(helper.getStringPref(PreferenceHelper.KEY_PREF_LANGUAGE));
         //设定白天夜间模式
-        initNightMode(dispatcher.getStringPref(PreferenceDispatcher.KEY_PREF_NIGHT_MODE));
+        initNightMode(helper.getStringPref(PreferenceHelper.KEY_PREF_NIGHT_MODE));
     }
 
     private void initLocale(String value) {

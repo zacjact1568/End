@@ -8,11 +8,11 @@ import android.text.format.DateFormat;
 import com.zack.enderplan.R;
 import com.zack.enderplan.domain.fragment.CalendarDialogFragment;
 import com.zack.enderplan.domain.fragment.DateTimePickerDialogFragment;
-import com.zack.enderplan.application.App;
+import com.zack.enderplan.App;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.event.RemindedEvent;
-import com.zack.enderplan.model.ram.DataManager;
+import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.domain.view.PlanDetailView;
 import com.zack.enderplan.interactor.adapter.TypeSpinnerAdapter;
 

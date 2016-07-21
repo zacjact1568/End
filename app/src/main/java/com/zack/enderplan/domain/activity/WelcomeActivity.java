@@ -5,10 +5,9 @@ import android.widget.Toast;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.model.bean.Type;
-import com.zack.enderplan.model.database.DatabaseDispatcher;
-import com.zack.enderplan.model.preference.PreferenceDispatcher;
-import com.zack.enderplan.model.ram.DataManager;
-import com.zack.enderplan.util.Util;
+import com.zack.enderplan.model.DataManager;
+import com.zack.enderplan.model.preference.PreferenceHelper;
+import com.zack.enderplan.utility.Util;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -40,31 +39,17 @@ public class WelcomeActivity extends BaseActivity {
 
     @OnClick(R.id.btn_start)
     public void onClick() {
-        //TODO 去掉DataManager中一些map，改为动态获取，不然在这里创建新type很麻烦
-        //PreferenceDispatcher.getInstance().setPref(PreferenceDispatcher.KEY_PREF_NEED_WELCOME, false);
-        //addDefaultTypes();
+        PreferenceHelper.getInstance().setPref(PreferenceHelper.KEY_PREF_NEED_WELCOME, false);
+        addDefaultTypes();
         finish();
     }
 
     /** 添加预置的几个type */
     private void addDefaultTypes() {
-        DatabaseDispatcher dispatcher = DatabaseDispatcher.getInstance();
         DataManager manager = DataManager.getInstance();
-
-        Type type0 = new Type(Util.makeCode(), getResources().getString(R.string.to_do), "#FF3F51B5", 0);
-        manager.addToTypeList(type0);
-        dispatcher.saveType(type0);
-
-        Type type1 = new Type(Util.makeCode(), getResources().getString(R.string.family), "#FFE51C23", 1);
-        manager.addToTypeList(type1);
-        dispatcher.saveType(type1);
-
-        Type type2 = new Type(Util.makeCode(), getResources().getString(R.string.work), "#FFFF9800", 2);
-        manager.addToTypeList(type2);
-        dispatcher.saveType(type2);
-
-        Type type3 = new Type(Util.makeCode(), getResources().getString(R.string.study), "#FF259B24", 3);
-        manager.addToTypeList(type3);
-        dispatcher.saveType(type3);
+        manager.notifyTypeCreated(new Type(Util.makeCode(), getResources().getString(R.string.to_do), "#FF3F51B5", 0));
+        manager.notifyTypeCreated(new Type(Util.makeCode(), getResources().getString(R.string.family), "#FFE51C23", 1));
+        manager.notifyTypeCreated(new Type(Util.makeCode(), getResources().getString(R.string.work), "#FFFF9800", 2));
+        manager.notifyTypeCreated(new Type(Util.makeCode(), getResources().getString(R.string.study), "#FF259B24", 3));
     }
 }

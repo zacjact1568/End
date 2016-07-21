@@ -4,13 +4,13 @@ import android.content.Context;
 import android.graphics.Color;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.application.App;
+import com.zack.enderplan.App;
 import com.zack.enderplan.model.bean.Plan;
-import com.zack.enderplan.model.database.DatabaseDispatcher;
+import com.zack.enderplan.model.database.DatabaseManager;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.event.UcPlanCountChangedEvent;
-import com.zack.enderplan.model.ram.DataManager;
-import com.zack.enderplan.manager.ReminderManager;
+import com.zack.enderplan.model.DataManager;
+import com.zack.enderplan.utility.ReminderManager;
 import com.zack.enderplan.domain.view.ReminderView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -19,7 +19,7 @@ public class ReminderPresenter implements Presenter<ReminderView> {
 
     private ReminderView reminderView;
     private Plan plan;//TODO 把这个plan换掉，只传需要的进来
-    private DatabaseDispatcher databaseDispatcher;
+    private DatabaseManager mDatabaseManager;
     private DataManager dataManager;
     private ReminderManager reminderManager;
     private String reminderDelayed5minStr;
@@ -28,7 +28,7 @@ public class ReminderPresenter implements Presenter<ReminderView> {
         attachView(reminderView);
         this.plan = plan;
 
-        databaseDispatcher = DatabaseDispatcher.getInstance();
+        mDatabaseManager = DatabaseManager.getInstance();
         dataManager = DataManager.getInstance();
         reminderManager = ReminderManager.getInstance();
 
@@ -49,7 +49,7 @@ public class ReminderPresenter implements Presenter<ReminderView> {
     public void setInitialView() {
         reminderView.showInitialView(
                 plan.getContent(),
-                Color.parseColor(databaseDispatcher.queryTypeMarkByTypeCode(plan.getTypeCode()))
+                Color.parseColor(mDatabaseManager.queryTypeMarkByTypeCode(plan.getTypeCode()))
         );
     }
 
@@ -71,7 +71,7 @@ public class ReminderPresenter implements Presenter<ReminderView> {
         }
 
         //数据库存储
-        databaseDispatcher.editReminderTime(plan.getPlanCode(), newReminderTime);
+        mDatabaseManager.editReminderTime(plan.getPlanCode(), newReminderTime);
 
         reminderView.onReminderDelayed(reminderDelayed5minStr);
     }
@@ -116,7 +116,7 @@ public class ReminderPresenter implements Presenter<ReminderView> {
         }
 
         //数据库存储
-        databaseDispatcher.editPlanStatus(plan.getPlanCode(), 0, newCompletionTime);
+        mDatabaseManager.editPlanStatus(plan.getPlanCode(), 0, newCompletionTime);
 
         reminderView.onPlanCompleted();
     }
