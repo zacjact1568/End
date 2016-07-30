@@ -53,7 +53,7 @@ public class HomeActivity extends BaseActivity implements HomeView,
     private static final String TAG_MY_PLANS = "my_plans";
     private static final int REQ_CODE_CREATE_PLAN = 0;
     public static final int REQ_CODE_PLAN_DETAIL = 1;//TODO try to let it private
-    private static final int REQ_CODE_WELCOME = 2;
+    private static final int REQ_CODE_GUIDE = 2;
     private static final int CR_ANIM_DURATION = 300;
 
     @Override
@@ -112,7 +112,7 @@ public class HomeActivity extends BaseActivity implements HomeView,
                         break;
                 }
                 break;
-            case REQ_CODE_WELCOME:
+            case REQ_CODE_GUIDE:
                 finish();
                 break;
             default:
@@ -258,9 +258,9 @@ public class HomeActivity extends BaseActivity implements HomeView,
     }
 
     @Override
-    public void showWelcome() {
-        Intent intent = new Intent(this, WelcomeActivity.class);
-        startActivityForResult(intent, REQ_CODE_WELCOME);
+    public void showGuide() {
+        Intent intent = new Intent(this, GuideActivity.class);
+        startActivityForResult(intent, REQ_CODE_GUIDE);
     }
 
     @OnClick(R.id.fab)

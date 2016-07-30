@@ -615,6 +615,7 @@ public class DataManager {
             updateUcPlanCountOfEachTypeMap(plan.getTypeCode(), 1);
         }
 
+        //TODO 这一段放到需要时（新建type时）才用
         //Using typeMarkResArray & typeList
         TypedArray typeMarkResArray = App.getGlobalContext().getResources().obtainTypedArray(R.array.type_marks);
         for (int i = 0; i < typeMarkResArray.length(); i++) {

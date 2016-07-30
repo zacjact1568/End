@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:background="@color/colorPrimary"
+    tools:context=".domain.fragment.FirstPlanFragment">
+
+    <ImageView
+        android:id="@+id/ic_logo"
+        android:layout_width="@dimen/logo_guide_half_size"
+        android:layout_height="@dimen/logo_guide_half_size"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/logo_guide_vertical_margin"
+        android:src="@drawable/ic_check_box_white_24dp"
+        android:alpha="0.8"/>
+
+    <LinearLayout
+        android:id="@+id/layout_editor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="12dp"
+        android:gravity="center">
+
+        <EditText
+            android:id="@+id/editor_content"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:hint="@string/hint_first_plan_content"
+            android:textSize="16sp"
+            android:textColorHint="@android:color/white"
+            android:background="@drawable/bg_editor_first_plan"
+            android:maxLines="2"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_enter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:src="@drawable/ic_arrow_forward_white_24dp"
+            app:fabSize="mini"
+            app:elevation="2dp"
+            app:pressedTranslationZ="2dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -46,7 +46,7 @@ public class HomePresenter implements Presenter<HomeView> {
 
     public void notifyStartingUpCompleted() {
         if (mPreferenceHelper.getBooleanPref(PreferenceHelper.KEY_PREF_NEED_WELCOME)) {
-            mHomeView.showWelcome();
+            mHomeView.showGuide();
         }
     }
 

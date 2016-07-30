@@ -101,4 +101,6 @@
     <string name="title_activity_welcome">欢迎</string>
     <string name="btn_text_start">开始</string>
     <string name="slogan">「哪怕世界末日到了也要做计划」</string>
+    <string name="hint_first_plan_content">输入你的第一个计划</string>
+    <string name="toast_empty_content">你还没输入呢</string>
 </resources>

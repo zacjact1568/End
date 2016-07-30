@@ -37,4 +37,9 @@
     <dimen name="fab_size">52dp</dimen>
     <dimen name="fab_spacing">32dp</dimen>
 
+    <dimen name="logo_guide_size">160dp</dimen>
+    <!--TODO 修改上面的half位置-->
+    <dimen name="logo_guide_half_size">80dp</dimen>
+    <dimen name="logo_guide_vertical_margin">80dp</dimen>
+
 </resources>

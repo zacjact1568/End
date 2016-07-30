@@ -8,8 +8,8 @@ android {
         applicationId "com.zack.enderplan"
         minSdkVersion 21
         targetSdkVersion 23
-        versionCode 236
-        versionName "20160721"
+        versionCode 245
+        versionName "20160730"
     }
     buildTypes {
         release {

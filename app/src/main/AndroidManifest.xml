@@ -56,7 +56,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".domain.activity.WelcomeActivity"
+            android:name=".domain.activity.GuideActivity"
             android:label="@string/title_activity_welcome"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"/>

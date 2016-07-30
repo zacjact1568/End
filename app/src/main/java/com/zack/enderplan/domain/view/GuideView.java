@@ -1,0 +1,14 @@
+package com.zack.enderplan.domain.view;
+
+import android.support.annotation.StringRes;
+
+public interface GuideView {
+
+    void showInitialView();
+
+    void navigateBack();
+
+    void showToast(@StringRes int msgResId);
+
+    void endGuide();
+}

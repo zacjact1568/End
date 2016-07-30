@@ -16,5 +16,5 @@ public interface HomeView {
 
     void onShowDoubleClickToast();
 
-    void showWelcome();
+    void showGuide();
 }
