@@ -2,13 +2,16 @@ package com.zack.enderplan.interactor.presenter;
 
 import com.zack.enderplan.domain.fragment.CalendarDialogFragment;
 import com.zack.enderplan.domain.fragment.DateTimePickerDialogFragment;
+import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.utility.Util;
 import com.zack.enderplan.domain.view.CreatePlanView;
 import com.zack.enderplan.interactor.adapter.TypeSpinnerAdapter;
 
-public class CreatePlanPresenter implements Presenter<CreatePlanView> {
+import org.greenrobot.eventbus.EventBus;
+
+public class CreatePlanPresenter extends BasePresenter implements Presenter<CreatePlanView> {
 
     private CreatePlanView mCreatePlanView;
     private DataManager mDataManager;
@@ -68,8 +71,9 @@ public class CreatePlanPresenter implements Presenter<CreatePlanView> {
         mCreatePlanView.onCreateReminderDialog(reminderDialog);
     }
 
-    public void createNewPlan() {
+    public void notifyCreatingNewPlan() {
         mPlan.setCreationTime(System.currentTimeMillis());
         mDataManager.notifyPlanCreated(mPlan);
+        EventBus.getDefault().post(new PlanCreatedEvent(getPresenterName(), mPlan.getPlanCode(), mDataManager.getRecentlyCreatedPlanLocation()));
     }
 }

@@ -22,6 +22,7 @@ import com.zack.enderplan.domain.fragment.DateTimePickerDialogFragment;
 import com.zack.enderplan.interactor.presenter.PlanDetailPresenter;
 import com.zack.enderplan.domain.view.PlanDetailView;
 import com.zack.enderplan.interactor.adapter.TypeSpinnerAdapter;
+import com.zack.enderplan.model.bean.FormattedPlan;
 
 import butterknife.BindColor;
 import butterknife.BindView;
@@ -69,14 +70,7 @@ public class PlanDetailActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_plan_detail);
-        ButterKnife.bind(this);
-
-        setSupportActionBar(toolbar);
-        setupActionBar();
-
         planDetailPresenter = new PlanDetailPresenter(this, getIntent().getIntExtra("position", 0));
-
         planDetailPresenter.setInitialView();
     }
 
@@ -87,12 +81,6 @@ public class PlanDetailActivity extends BaseActivity
     }
 
     @Override
-    public void onBackPressed() {
-        planDetailPresenter.notifyActivityFinished();
-        super.onBackPressed();
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_plan_detail, menu);
         return true;
@@ -100,18 +88,164 @@ public class PlanDetailActivity extends BaseActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                planDetailPresenter.notifyActivityFinished();
-                finish();
-                break;
-            case R.id.action_delete:
-                planDetailPresenter.notifyPlanDeletion();
-                break;
-            default:
-                break;
-        }
+        planDetailPresenter.notifyMenuItemSelected(item.getItemId());
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void showInitialView(FormattedPlan formattedPlan, TypeSpinnerAdapter typeSpinnerAdapter) {
+
+        setContentView(R.layout.activity_plan_detail);
+        ButterKnife.bind(this);
+
+        setSupportActionBar(toolbar);
+        setupActionBar();
+
+        contentText.setText(formattedPlan.getContent());
+
+        if (formattedPlan.isStarred()) {
+            fab.setImageResource(R.drawable.ic_star_color_accent_24dp);
+            starMark.setVisibility(View.VISIBLE);
+        }
+
+        spinner.setAdapter(typeSpinnerAdapter);
+        spinner.setSelection(formattedPlan.getSpinnerPos());
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (flag) {
+                    //防止重复执行
+                    flag = false;
+                    return;
+                }
+                planDetailPresenter.notifyTypeCodeChanged(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        if (formattedPlan.getDeadline() == null) {
+            deadlineMark.setVisibility(View.VISIBLE);
+            deadlineDescriptionText.setText(formattedPlan.getDeadline());
+            deadlineDescriptionText.setTextColor(primaryColor);
+        }
+
+        if (formattedPlan.getReminderTime() == null) {
+            reminderMark.setVisibility(View.VISIBLE);
+            reminderDescriptionText.setText(formattedPlan.getReminderTime());
+            reminderDescriptionText.setTextColor(primaryColor);
+        }
+
+        toolbar.setBackgroundResource(formattedPlan.isCompleted() ? R.drawable.bg_c_plan_detail : R.drawable.bg_uc_plan_detail);
+
+        switchPlanStatusButton.setText(formattedPlan.isCompleted() ? R.string.text_make_plan_uc : R.string.text_make_plan_c);
+    }
+
+    @Override
+    public void showPlanDeletionDialog(String content) {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.title_dialog_delete_plan)
+                .setMessage(getResources().getString(R.string.msg_dialog_delete_plan_pt1) + content
+                        + getResources().getString(R.string.msg_dialog_delete_plan_pt2))
+                .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        planDetailPresenter.notifyPlanDeleted();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
+    }
+
+    @Override
+    public void onPlanStatusChanged(boolean isCompleted) {
+        toolbar.setBackgroundResource(isCompleted ? R.drawable.bg_c_plan_detail : R.drawable.bg_uc_plan_detail);
+        switchPlanStatusButton.setText(isCompleted ? R.string.text_make_plan_uc : R.string.text_make_plan_c);
+    }
+
+    @Override
+    public void showContentEditorDialog(String content) {
+        View contentEditorView = getLayoutInflater().inflate(R.layout.dialog_content_editor, null);
+        final EditText contentEditor = (EditText) contentEditorView.findViewById(R.id.editor_content);
+        contentEditor.setText(content);
+        contentEditor.setSelection(contentEditor.length());
+        new AlertDialog.Builder(this)
+                .setView(contentEditorView)
+                .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        planDetailPresenter.notifyContentChanged(contentEditor.getText().toString());
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
+    }
+
+    @Override
+    public void onContentEditedSuccessfully(String newContent) {
+        contentText.setText(newContent);
+    }
+
+    @Override
+    public void onContentEditedAbortively() {
+        Toast.makeText(this, R.string.prompt_empty_content, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onStarStatusChanged(boolean isStarred) {
+        fab.setImageResource(isStarred ? R.drawable.ic_star_color_accent_24dp : R.drawable.ic_star_grey600_24dp);
+        starMark.setVisibility(isStarred ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void onTypeOfPlanChanged(int posInTypeList) {
+        spinner.setSelection(posInTypeList);
+    }
+
+    @Override
+    public void showDeadlineDialog(long deadline) {
+        CalendarDialogFragment.newInstance(deadline).show(getFragmentManager(), TAG_DEADLINE);
+    }
+
+    @Override
+    public void showReminderTimeDialog(long reminderTime) {
+        DateTimePickerDialogFragment.newInstance(reminderTime).show(getFragmentManager(), TAG_REMINDER);
+    }
+
+    @Override
+    public void onDeadlineSelected(String newDeadlineText) {
+        deadlineMark.setVisibility(View.VISIBLE);
+        deadlineDescriptionText.setText(newDeadlineText);
+        deadlineDescriptionText.setTextColor(primaryColor);
+    }
+
+    @Override
+    public void onDeadlineRemoved() {
+        deadlineMark.setVisibility(View.GONE);
+        deadlineDescriptionText.setText(R.string.unsettled);
+        deadlineDescriptionText.setTextColor(lightTextColor);
+    }
+
+    @Override
+    public void onReminderTimeSelected(String newReminderTimeText) {
+        reminderMark.setVisibility(View.VISIBLE);
+        reminderDescriptionText.setText(newReminderTimeText);
+        reminderDescriptionText.setTextColor(primaryColor);
+    }
+
+    @Override
+    public void onReminderRemoved() {
+        reminderMark.setVisibility(View.GONE);
+        reminderDescriptionText.setText(R.string.unsettled);
+        reminderDescriptionText.setTextColor(lightTextColor);
+    }
+
+    @Override
+    public void exitPlanDetail() {
+        finish();
     }
 
     @Override
@@ -136,180 +270,6 @@ public class PlanDetailActivity extends BaseActivity
 
     @OnClick({R.id.text_content, R.id.item_view_deadline, R.id.item_view_reminder, R.id.fab, R.id.btn_switch_plan_status})
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.text_content:
-                planDetailPresenter.notifyContentEdit();
-                break;
-            case R.id.item_view_deadline:
-                planDetailPresenter.createDeadlineDialog();
-                break;
-            case R.id.item_view_reminder:
-                planDetailPresenter.createReminderDialog();
-                break;
-            case R.id.fab:
-                planDetailPresenter.notifyStarStatusChanged();
-                break;
-            case R.id.btn_switch_plan_status:
-                planDetailPresenter.notifyPlanStatusChanged();
-                break;
-        }
-    }
-
-    @Override
-    public void showInitialView(String content, boolean isStarred, TypeSpinnerAdapter typeSpinnerAdapter,
-                                int posInSpinner, boolean hasDeadline, String deadline, boolean hasReminder,
-                                String reminderTime, boolean isCompleted, String spsButtonText) {
-
-        contentText.setText(content);
-
-        if (isStarred) {
-            fab.setImageResource(R.drawable.ic_star_color_accent_24dp);
-            starMark.setVisibility(View.VISIBLE);
-        }
-
-        spinner.setAdapter(typeSpinnerAdapter);
-        spinner.setSelection(posInSpinner);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (flag) {
-                    //防止重复执行
-                    flag = false;
-                    return;
-                }
-                planDetailPresenter.notifyTypeCodeChanged(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        if (hasDeadline) {
-            deadlineMark.setVisibility(View.VISIBLE);
-            deadlineDescriptionText.setText(deadline);
-            deadlineDescriptionText.setTextColor(primaryColor);
-        }
-
-        if (hasReminder) {
-            reminderMark.setVisibility(View.VISIBLE);
-            reminderDescriptionText.setText(reminderTime);
-            reminderDescriptionText.setTextColor(primaryColor);
-        }
-
-        toolbar.setBackgroundResource(isCompleted ? R.drawable.bg_c_plan_detail : R.drawable.bg_uc_plan_detail);
-
-        switchPlanStatusButton.setText(spsButtonText);
-    }
-
-    @Override
-    public void showPlanDeletionAlertDialog(String content) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        String message = getResources().getString(R.string.msg_dialog_delete_plan_pt1) +
-                content + getResources().getString(R.string.msg_dialog_delete_plan_pt2);
-        builder.setTitle(R.string.title_dialog_delete_plan).setMessage(message);
-        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                planDetailPresenter.notifyPlanDeleted();
-            }
-        }).setNegativeButton(R.string.cancel, null).show();
-    }
-
-    @Override
-    public void onPlanDeleted(int position, String planCode, String content, boolean isCompleted) {
-        Intent intent = new Intent();
-        intent.putExtra("position", position);
-        intent.putExtra("plan_code", planCode);
-        intent.putExtra("content", content);
-        intent.putExtra("is_completed", isCompleted);
-        setResult(RESULT_PLAN_DELETED, intent);
-        finish();
-    }
-
-    @Override
-    public void onPlanStatusChanged(boolean isCompleted, String newSpsButtonText) {
-        toolbar.setBackgroundResource(isCompleted ? R.drawable.bg_c_plan_detail : R.drawable.bg_uc_plan_detail);
-        switchPlanStatusButton.setText(newSpsButtonText);
-    }
-
-    @Override
-    public void showContentEditDialog(String content) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View contentEditorView = getLayoutInflater().inflate(R.layout.dialog_content_editor, null);
-        final EditText contentEditor = (EditText) contentEditorView.findViewById(R.id.editor_content);
-        contentEditor.setText(content);
-        contentEditor.setSelection(contentEditor.length());
-        builder.setView(contentEditorView).setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                planDetailPresenter.notifyContentEdited(contentEditor.getText().toString());
-            }
-        }).setNegativeButton(R.string.cancel, null).show();
-    }
-
-    @Override
-    public void onContentEditSuccess(String content) {
-        contentText.setText(content);
-    }
-
-    @Override
-    public void onContentEditFailed() {
-        Toast.makeText(this, R.string.prompt_empty_content, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onStarStatusChanged(boolean isStarred) {
-        fab.setImageResource(isStarred ? R.drawable.ic_star_color_accent_24dp :
-                R.drawable.ic_star_grey600_24dp);
-        starMark.setVisibility(isStarred ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public void onCreateDeadlineDialog(CalendarDialogFragment deadlineDialog) {
-        deadlineDialog.show(getFragmentManager(), TAG_DEADLINE);
-    }
-
-    @Override
-    public void onCreateReminderDialog(DateTimePickerDialogFragment reminderDialog) {
-        reminderDialog.show(getFragmentManager(), TAG_REMINDER);
-    }
-
-    @Override
-    public void onActivityFinished(Intent intent) {
-        setResult(RESULT_PLAN_DETAIL_CHANGED, intent);
-    }
-
-    @Override
-    public void onDeadlineSelected(boolean isSetFirstTime, String deadline) {
-        if (isSetFirstTime) {
-            deadlineDescriptionText.setTextColor(primaryColor);
-            deadlineMark.setVisibility(View.VISIBLE);
-        }
-        deadlineDescriptionText.setText(deadline);
-    }
-
-    @Override
-    public void onDeadlineRemoved() {
-        deadlineDescriptionText.setText(R.string.unsettled);
-        deadlineDescriptionText.setTextColor(lightTextColor);
-        deadlineMark.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onReminderTimeSelected(boolean isSetFirstTime, String reminderTime) {
-        if (isSetFirstTime) {
-            reminderDescriptionText.setTextColor(primaryColor);
-            reminderMark.setVisibility(View.VISIBLE);
-        }
-        reminderDescriptionText.setText(reminderTime);
-    }
-
-    @Override
-    public void onReminderRemoved() {
-        reminderDescriptionText.setText(R.string.unsettled);
-        reminderDescriptionText.setTextColor(lightTextColor);
-        reminderMark.setVisibility(View.GONE);
+        planDetailPresenter.notifyViewClicked(view.getId());
     }
 }

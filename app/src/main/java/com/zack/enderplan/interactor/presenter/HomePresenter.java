@@ -1,9 +1,18 @@
 package com.zack.enderplan.interactor.presenter;
 
+import android.view.View;
+
+import com.zack.enderplan.App;
+import com.zack.enderplan.R;
+import com.zack.enderplan.event.DataLoadedEvent;
+import com.zack.enderplan.event.GuideEndedEvent;
 import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDeletedEvent;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
-import com.zack.enderplan.event.UcPlanCountChangedEvent;
+import com.zack.enderplan.event.TypeCreatedEvent;
+import com.zack.enderplan.event.TypeDeletedEvent;
+import com.zack.enderplan.model.bean.Plan;
+import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.model.preference.PreferenceHelper;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.domain.view.HomeView;
@@ -11,16 +20,16 @@ import com.zack.enderplan.domain.view.HomeView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-public class HomePresenter implements Presenter<HomeView> {
-
-    private static final String LOG_TAG = "HomePresenter";
+public class HomePresenter extends BasePresenter implements Presenter<HomeView> {
 
     private HomeView mHomeView;
     private DataManager mDataManager;
     private PreferenceHelper mPreferenceHelper;
+    private EventBus mEventBus;
     private long lastBackKeyPressedTime;
 
     public HomePresenter(HomeView homeView) {
+        mEventBus = EventBus.getDefault();
         attachView(homeView);
         mDataManager = DataManager.getInstance();
         mPreferenceHelper = PreferenceHelper.getInstance();
@@ -31,13 +40,13 @@ public class HomePresenter implements Presenter<HomeView> {
     @Override
     public void attachView(HomeView view) {
         mHomeView = view;
-        EventBus.getDefault().register(this);
+        mEventBus.register(this);
     }
 
     @Override
     public void detachView() {
         mHomeView = null;
-        EventBus.getDefault().unregister(this);
+        mEventBus.unregister(this);
     }
 
     public void setInitialView() {
@@ -50,45 +59,6 @@ public class HomePresenter implements Presenter<HomeView> {
         }
     }
 
-    public void notifyPlanCreated() {
-        //更新view
-        mHomeView.onUcPlanCountUpdated(getUcPlanCount());
-        //通过EventBus通知刷新适配器
-        EventBus.getDefault().post(new PlanCreatedEvent(
-                mDataManager.getRecentlyCreatedPlan().getPlanCode(),
-                mDataManager.getRecentlyCreatedPlanLocation()
-        ));
-        //对view层回调
-        mHomeView.onPlanCreated(mDataManager.getRecentlyCreatedPlan().getContent());
-    }
-
-    public void notifyPlanDetailChanged(int position, String planCode, boolean isTypeOfPlanChanged,
-                                        boolean isPlanStatusChanged) {
-
-        //通知AllPlans、AllTypes、TypeDetail更新
-        EventBus.getDefault().post(new PlanDetailChangedEvent(planCode, position, isTypeOfPlanChanged, isPlanStatusChanged, -1));
-
-        if (isPlanStatusChanged) {
-            //如果计划完成情况改变，需要更新drawer上的header中的内容
-            mHomeView.onUcPlanCountUpdated(getUcPlanCount());
-        }
-    }
-
-    //通过PlanDetailActivity删除时（不能撤销）
-    public void notifyPlanDeleted(int position, String planCode, String content, boolean isCompleted) {
-
-        //通知AllPlans、AllTypes、TypeDetail更新
-        EventBus.getDefault().post(new PlanDeletedEvent(planCode, position, isCompleted));
-
-        if (!isCompleted) {
-            //需要更新drawer上的未完成计划数量，因为刚刚删除了一个未完成的计划
-            mHomeView.onUcPlanCountUpdated(getUcPlanCount());
-        }
-
-        //show SnackBar
-        mHomeView.onPlanDeleted(content);
-    }
-
     public void notifyBackPressed(boolean isDrawerOpen, boolean isOnRootFragment) {
         long currentTime = System.currentTimeMillis();
         if (isDrawerOpen) {
@@ -99,8 +69,20 @@ public class HomePresenter implements Presenter<HomeView> {
         } else {
             //否则更新上次点击back键的时间，并显示一个toast
             lastBackKeyPressedTime = currentTime;
-            mHomeView.onShowDoubleClickToast();
+            mHomeView.showToast(R.string.toast_double_click_exit);
         }
+    }
+
+    public void notifyCreatingPlan(int position, Plan newPlan) {
+        if (!newPlan.isCompleted()) {
+            mHomeView.onUcPlanCountUpdated(getUcPlanCount());
+        }
+        mDataManager.notifyPlanCreated(position, newPlan);
+        mEventBus.post(new PlanCreatedEvent(getPresenterName(), newPlan.getPlanCode(), position));
+    }
+
+    public void notifyCreatingType(int position, Type newType) {
+        //
     }
 
     private String getUcPlanCount() {
@@ -108,8 +90,71 @@ public class HomePresenter implements Presenter<HomeView> {
     }
 
     @Subscribe
-    public void onUcPlanCountChanged(UcPlanCountChangedEvent event) {
-        //当未完成计划数量改变的事件到来时，更新侧栏上显示的未完成计划数量
+    public void onDataLoaded(DataLoadedEvent event) {
         mHomeView.onUcPlanCountUpdated(getUcPlanCount());
+    }
+
+    @Subscribe
+    public void onPlanCreated(PlanCreatedEvent event) {
+        if (event.getEventSource().equals(getPresenterName())) return;
+        if (!mDataManager.isPlanCompleted(event.getPosition())) {
+            //若创建的是一个未完成的计划，需要更新侧边栏
+            mHomeView.onUcPlanCountUpdated(getUcPlanCount());
+        }
+        mHomeView.showSnackbar(mDataManager.getPlan(event.getPosition()).getContent() + " " + App.getGlobalContext().getResources().getString(R.string.created_prompt));
+    }
+
+    @Subscribe
+    public void onPlanDeleted(final PlanDeletedEvent event) {
+        if (event.getEventSource().equals(getPresenterName())) return;
+        if (!event.getDeletedPlan().isCompleted()) {
+            //若删除的是一个未完成的计划，需要更新侧边栏
+            mHomeView.onUcPlanCountUpdated(getUcPlanCount());
+        }
+        mHomeView.showSnackbar(
+                event.getDeletedPlan().getContent() + " " + App.getGlobalContext().getResources().getString(R.string.deleted_prompt),
+                R.string.cancel,
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        notifyCreatingPlan(event.getPosition(), event.getDeletedPlan());
+                    }
+                }
+        );
+    }
+
+    @Subscribe
+    public void onPlanDetailChanged(PlanDetailChangedEvent event) {
+        if (event.getEventSource().equals(getPresenterName())) return;
+        if (event.getChangedField() == PlanDetailChangedEvent.FIELD_PLAN_STATUS) {
+            mHomeView.onUcPlanCountUpdated(getUcPlanCount());
+        }
+    }
+
+    @Subscribe
+    public void onTypeCreated(TypeCreatedEvent event) {
+        mHomeView.showSnackbar(mDataManager.getType(event.getPosition()).getTypeName() + " " + App.getGlobalContext().getResources().getString(R.string.created_prompt));
+    }
+
+    @Subscribe
+    public void onTypeDeleted(final TypeDeletedEvent event) {
+        mHomeView.showSnackbar(
+                event.getDeletedType().getTypeName() + " " + App.getGlobalContext().getResources().getString(R.string.deleted_prompt),
+                R.string.cancel,
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        notifyCreatingType(event.getPosition(), event.getDeletedType());
+                    }
+                }
+        );
+    }
+
+    @Subscribe
+    public void onGuideEnded(GuideEndedEvent event) {
+        if (event.getEventSource().equals(getPresenterName())) return;
+        if (!event.isEndNormally()) {
+            mHomeView.exitHome();
+        }
     }
 }

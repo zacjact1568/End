@@ -79,20 +79,12 @@ public class ReminderActivity extends AppCompatActivity implements ReminderView 
     }
 
     @Override
-    public void onReminderDelayed(String nextReminderTime) {
-        Toast.makeText(this, nextReminderTime, Toast.LENGTH_SHORT).show();
-        finish();
+    public void showToast(int msgResId) {
+        Toast.makeText(this, msgResId, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onReminderCanceled() {
-        Toast.makeText(this, R.string.toast_reminder_canceled, Toast.LENGTH_SHORT).show();
-        finish();
-    }
-
-    @Override
-    public void onPlanCompleted() {
-        Toast.makeText(this, R.string.toast_plan_completed, Toast.LENGTH_SHORT).show();
+    public void exitReminder() {
         finish();
     }
 }

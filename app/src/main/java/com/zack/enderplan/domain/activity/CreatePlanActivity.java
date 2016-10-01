@@ -181,8 +181,7 @@ public class CreatePlanActivity extends BaseActivity
                 makeCircularRevealAnimation(false);
                 break;
             case R.id.button_save:
-                mCreatePlanPresenter.createNewPlan();
-                setResult(RESULT_OK);
+                mCreatePlanPresenter.notifyCreatingNewPlan();
                 makeCircularRevealAnimation(false);
                 break;
             case R.id.star_mark:

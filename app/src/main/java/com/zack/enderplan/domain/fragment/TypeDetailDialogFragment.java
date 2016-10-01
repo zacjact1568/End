@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.domain.activity.HomeActivity;
 import com.zack.enderplan.domain.activity.PlanDetailActivity;
 import com.zack.enderplan.interactor.presenter.TypeDetailPresenter;
 import com.zack.enderplan.domain.view.TypeDetailView;
@@ -151,7 +150,7 @@ public class TypeDetailDialogFragment extends BottomSheetDialogFragment implemen
     public void onPlanItemClicked(int posInPlanList) {
         Intent intent = new Intent(getActivity(), PlanDetailActivity.class);
         intent.putExtra("position", posInPlanList);
-        getActivity().startActivityForResult(intent, HomeActivity.REQ_CODE_PLAN_DETAIL);
+        getActivity().startActivity(intent);
     }
 
     @OnClick({R.id.ic_edit_type, R.id.ic_clear_text})

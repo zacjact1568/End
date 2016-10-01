@@ -1,55 +1,48 @@
 package com.zack.enderplan.interactor.presenter;
 
-import android.content.Context;
 import android.graphics.Color;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.App;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.database.DatabaseManager;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
-import com.zack.enderplan.event.UcPlanCountChangedEvent;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.utility.ReminderManager;
 import com.zack.enderplan.domain.view.ReminderView;
 
 import org.greenrobot.eventbus.EventBus;
 
-public class ReminderPresenter implements Presenter<ReminderView> {
+public class ReminderPresenter extends BasePresenter implements Presenter<ReminderView> {
 
-    private ReminderView reminderView;
-    private Plan plan;//TODO 把这个plan换掉，只传需要的进来
+    private ReminderView mReminderView;
+    private Plan mPlan;
     private DatabaseManager mDatabaseManager;
-    private DataManager dataManager;
-    private ReminderManager reminderManager;
-    private String reminderDelayed5minStr;
+    private DataManager mDataManager;
+    private ReminderManager mReminderManager;
 
     public ReminderPresenter(ReminderView reminderView, Plan plan) {
         attachView(reminderView);
-        this.plan = plan;
+        this.mPlan = plan;
 
         mDatabaseManager = DatabaseManager.getInstance();
-        dataManager = DataManager.getInstance();
-        reminderManager = ReminderManager.getInstance();
-
-        Context context = App.getGlobalContext();
-        reminderDelayed5minStr = context.getResources().getString(R.string.toast_reminder_delayed_5min);
+        mDataManager = DataManager.getInstance();
+        mReminderManager = ReminderManager.getInstance();
     }
 
     @Override
     public void attachView(ReminderView view) {
-        reminderView = view;
+        mReminderView = view;
     }
 
     @Override
     public void detachView() {
-        reminderView = null;
+        mReminderView = null;
     }
 
     public void setInitialView() {
-        reminderView.showInitialView(
-                plan.getContent(),
-                Color.parseColor(mDatabaseManager.queryTypeMarkByTypeCode(plan.getTypeCode()))
+        mReminderView.showInitialView(
+                mPlan.getContent(),
+                Color.parseColor(mDatabaseManager.queryTypeMarkByTypeCode(mPlan.getTypeCode()))
         );
     }
 
@@ -58,26 +51,32 @@ public class ReminderPresenter implements Presenter<ReminderView> {
         long newReminderTime = System.currentTimeMillis() + 300000;
 
         //设定提醒
-        reminderManager.setAlarm(plan.getPlanCode(), newReminderTime);
+        mReminderManager.setAlarm(mPlan.getPlanCode(), newReminderTime);
 
         //修改list（NOTE：在这个类里的plan上修改没有作用，因为它和list中的plan不是同一个对象）
-        if (dataManager.getDataStatus() == DataManager.DataStatus.STATUS_DATA_LOADED) {
+        if (mDataManager.getDataStatus() == DataManager.DataStatus.STATUS_DATA_LOADED) {
             //说明数据已加载完成
-            int position = dataManager.getPlanLocationInPlanList(plan.getPlanCode());
-            dataManager.getPlan(position).setReminderTime(newReminderTime);
+            int position = mDataManager.getPlanLocationInPlanList(mPlan.getPlanCode());
+            mDataManager.getPlan(position).setReminderTime(newReminderTime);
 
-            EventBus.getDefault().post(new PlanDetailChangedEvent(plan.getPlanCode(), position, false, false, -1));
-            //TODO 有4个订阅者，但只有两个需要刷新，虽然多刷新也无所谓，但后续也应添加判断
+            EventBus.getDefault().post(new PlanDetailChangedEvent(
+                    getPresenterName(),
+                    mPlan.getPlanCode(),
+                    position,
+                    PlanDetailChangedEvent.FIELD_REMINDER_TIME
+            ));
         }
 
         //数据库存储
-        mDatabaseManager.editReminderTime(plan.getPlanCode(), newReminderTime);
+        mDatabaseManager.editReminderTime(mPlan.getPlanCode(), newReminderTime);
 
-        reminderView.onReminderDelayed(reminderDelayed5minStr);
+        mReminderView.showToast(R.string.toast_reminder_delayed_5min);
+        mReminderView.exitReminder();
     }
 
     public void notifyReminderCanceled() {
-        reminderView.onReminderCanceled();
+        mReminderView.showToast(R.string.toast_reminder_canceled);
+        mReminderView.exitReminder();
     }
 
     public void notifyPlanCompleted() {
@@ -85,39 +84,43 @@ public class ReminderPresenter implements Presenter<ReminderView> {
         long newCompletionTime = System.currentTimeMillis();
 
         //修改数据
-        if (dataManager.getDataStatus() == DataManager.DataStatus.STATUS_DATA_LOADED) {
+        if (mDataManager.getDataStatus() == DataManager.DataStatus.STATUS_DATA_LOADED) {
             //说明数据已经加载完成
 
             //获取要修改的plan在list中的位置
-            int posInPlanList = dataManager.getPlanLocationInPlanList(plan.getPlanCode());
+            int posInPlanList = mDataManager.getPlanLocationInPlanList(mPlan.getPlanCode());
 
             //获取list中的plan（在这之后，所有的plan都用planInPlanList）
-            Plan planInPlanList = dataManager.getPlan(posInPlanList);
+            Plan planInPlanList = mDataManager.getPlan(posInPlanList);
 
             //更新Maps
-            dataManager.updateUcPlanCountOfEachTypeMap(planInPlanList.getTypeCode(), -1);
-            dataManager.updateUcPlanCount(-1);
-
-            //通知HomePresenter（更新侧栏header）
-            EventBus.getDefault().post(new UcPlanCountChangedEvent());
+            mDataManager.updateUcPlanCountOfEachTypeMap(planInPlanList.getTypeCode(), -1);
+            mDataManager.updateUcPlanCount(-1);
 
             //从list（未完成区域）中移除
-            dataManager.removeFromPlanList(posInPlanList);
+            mDataManager.removeFromPlanList(posInPlanList);
 
             //设置新的creationTime与completionTime
             planInPlanList.setCreationTime(0);
             planInPlanList.setCompletionTime(newCompletionTime);
 
             //添加到list（已完成区域）
-            dataManager.addToPlanList(dataManager.getUcPlanCount(), planInPlanList);
+            int newPosInPlanList = mDataManager.getUcPlanCount();
+            mDataManager.addToPlanList(newPosInPlanList, planInPlanList);
 
             //通知AllPlans、AllTypes、PlanDetail与TypeDetail（Presenters）更新其界面
-            EventBus.getDefault().post(new PlanDetailChangedEvent(planInPlanList.getPlanCode(), posInPlanList, false, true, -1));
+            EventBus.getDefault().post(new PlanDetailChangedEvent(
+                    getPresenterName(),
+                    planInPlanList.getPlanCode(),
+                    newPosInPlanList,
+                    PlanDetailChangedEvent.FIELD_PLAN_STATUS
+            ));
         }
 
         //数据库存储
-        mDatabaseManager.editPlanStatus(plan.getPlanCode(), 0, newCompletionTime);
+        mDatabaseManager.editPlanStatus(mPlan.getPlanCode(), 0, newCompletionTime);
 
-        reminderView.onPlanCompleted();
+        mReminderView.showToast(R.string.toast_plan_completed);
+        mReminderView.exitReminder();
     }
 }

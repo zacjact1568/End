@@ -8,9 +8,8 @@ import android.text.TextUtils;
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
 import com.zack.enderplan.domain.view.FirstPlanView;
-import com.zack.enderplan.event.GuidePageTurnedEvent;
+import com.zack.enderplan.event.GuideEndedEvent;
 import com.zack.enderplan.event.PlanCreatedEvent;
-import com.zack.enderplan.event.UcPlanCountChangedEvent;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.bean.Type;
@@ -18,15 +17,17 @@ import com.zack.enderplan.utility.Util;
 
 import org.greenrobot.eventbus.EventBus;
 
-public class FirstPlanPresenter implements Presenter<FirstPlanView> {
+public class FirstPlanPresenter extends BasePresenter implements Presenter<FirstPlanView> {
 
     private FirstPlanView mFirstPlanView;
     private DataManager mDataManager;
+    private EventBus mEventBus;
     private Plan mPlan;
 
     public FirstPlanPresenter(FirstPlanView firstPlanView) {
         attachView(firstPlanView);
         mDataManager = DataManager.getInstance();
+        mEventBus = EventBus.getDefault();
         mPlan = new Plan(Util.makeCode());
     }
 
@@ -53,15 +54,15 @@ public class FirstPlanPresenter implements Presenter<FirstPlanView> {
             mPlan.setCreationTime(System.currentTimeMillis());
             mDataManager.notifyPlanCreated(mPlan);
             mFirstPlanView.onFirstPlanCreated();
-            EventBus.getDefault().post(new PlanCreatedEvent(mPlan.getPlanCode(), mDataManager.getRecentlyCreatedPlanLocation()));
-            EventBus.getDefault().post(new UcPlanCountChangedEvent());
+            mEventBus.post(new PlanCreatedEvent(getPresenterName(), mPlan.getPlanCode(), mDataManager.getRecentlyCreatedPlanLocation()));
         } else {
             mFirstPlanView.onDetectedEmptyContent();
         }
     }
 
     public void notifyExitAnimationEnded() {
-        EventBus.getDefault().post(new GuidePageTurnedEvent(GuidePageTurnedEvent.PAGE_FIRST_PLAN));
+        //通知GuidePresenter，正常结束向导
+        mEventBus.post(new GuideEndedEvent(getPresenterName(), true));
     }
 
     /** 添加预置的几个type */

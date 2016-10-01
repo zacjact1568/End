@@ -6,8 +6,6 @@ public interface GuideView {
 
     void showInitialView();
 
-    void navigateBack();
-
     void showToast(@StringRes int msgResId);
 
     void endGuide();

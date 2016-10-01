@@ -12,7 +12,6 @@ import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.model.bean.TypeMark;
 import com.zack.enderplan.model.database.DatabaseManager;
 import com.zack.enderplan.event.DataLoadedEvent;
-import com.zack.enderplan.event.UcPlanCountChangedEvent;
 import com.zack.enderplan.utility.LogUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -596,7 +595,7 @@ public class DataManager {
         ucPlanCountOfEachTypeMap.remove(typeCode);
     }
 
-    /** 获取指定位置计划的完成状态 */
+    /** 获取指定位置计划的完成状态 TODO delete this method */
     public boolean isPlanCompleted(int location) {
         return getPlan(location).getCompletionTime() != 0;
     }
@@ -660,7 +659,6 @@ public class DataManager {
             LogUtil.d(LOG_TAG, "数据加载完毕");
 
             EventBus.getDefault().post(new DataLoadedEvent());
-            EventBus.getDefault().post(new UcPlanCountChangedEvent());
         }
     }
 }

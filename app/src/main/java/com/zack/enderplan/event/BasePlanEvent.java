@@ -1,12 +1,13 @@
 package com.zack.enderplan.event;
 
 /** 基本计划事件 */
-public abstract class BasePlanEvent {
+public abstract class BasePlanEvent extends BaseEvent {
 
     protected String planCode;
     protected int position;
 
-    protected BasePlanEvent(String planCode, int position) {
+    protected BasePlanEvent(String eventSource, String planCode, int position) {
+        super(eventSource);
         this.planCode = planCode;
         this.position = position;
     }

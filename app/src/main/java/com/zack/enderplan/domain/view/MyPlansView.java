@@ -8,6 +8,4 @@ public interface MyPlansView {
     void showInitialView(PlanAdapter planAdapter);
 
     void onPlanItemClicked(int position);
-
-    void onPlanDeleted(String content, int position, Plan planUseForTakingBack);
 }

@@ -1,51 +1,45 @@
 package com.zack.enderplan.interactor.presenter;
 
-import android.view.View;
-import android.widget.ImageView;
-
 import com.zack.enderplan.model.bean.Plan;
-import com.zack.enderplan.model.database.DatabaseManager;
 import com.zack.enderplan.event.DataLoadedEvent;
 import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDeletedEvent;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.event.RemindedEvent;
 import com.zack.enderplan.event.TypeDetailChangedEvent;
-import com.zack.enderplan.event.UcPlanCountChangedEvent;
 import com.zack.enderplan.interactor.adapter.PlanAdapter;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.domain.view.MyPlansView;
+import com.zack.enderplan.utility.Util;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
-public class MyPlansPresenter implements Presenter<MyPlansView> {
-
-    private static final String LOG_TAG = "MyPlansPresenter";
+public class MyPlansPresenter extends BasePresenter implements Presenter<MyPlansView> {
 
     private MyPlansView mMyPlansView;
     private DataManager mDataManager;
-    private DatabaseManager mDatabaseManager;
     private PlanAdapter mPlanAdapter;
+    private EventBus mEventBus;
 
     public MyPlansPresenter(MyPlansView myPlansView) {
+        mEventBus = EventBus.getDefault();
         attachView(myPlansView);
         mDataManager = DataManager.getInstance();
-        mDatabaseManager = DatabaseManager.getInstance();
     }
 
     @Override
     public void attachView(MyPlansView view) {
         mMyPlansView = view;
-        EventBus.getDefault().register(this);
+        mEventBus.register(this);
     }
 
     @Override
     public void detachView() {
         mMyPlansView = null;
-        EventBus.getDefault().unregister(this);
+        mEventBus.unregister(this);
     }
 
     public void setInitialView() {
@@ -70,59 +64,49 @@ public class MyPlansPresenter implements Presenter<MyPlansView> {
     //滑动删除时（可以撤销）
     public void notifyPlanDeleted(int position) {
 
+        //必须先把要删除计划的引用拿到
         Plan plan = mDataManager.getPlan(position);
 
         mDataManager.notifyPlanDeleted(position);
-
-        if (plan.getCompletionTime() == 0) {
-            //说明该计划还未完成
-            EventBus.getDefault().post(new UcPlanCountChangedEvent());
-        }
-
         mPlanAdapter.notifyItemRemoved(position);
-        mMyPlansView.onPlanDeleted(plan.getContent(), position, plan);
 
-        //这里不用postPlanDeletedEvent了，因为当可以滑动删除（即调用这个方法）时，其他需要更新的界面都不存在
-    }
+        Util.makeShortVibrate();
 
-    public void notifyPlanRecreated(int position, Plan plan) {
-
-        mDataManager.notifyPlanCreated(position, plan);
-
-        mPlanAdapter.notifyItemInserted(position);
-
-        if (mDataManager.getPlan(position).getCompletionTime() == 0) {
-            //说明还未完成
-            EventBus.getDefault().post(new UcPlanCountChangedEvent());
-        }
-        //这里如果有需要，可以添加向view的回调
+        mEventBus.post(new PlanDeletedEvent(getPresenterName(), plan.getPlanCode(), position, plan));
     }
 
     public void notifyPlanStatusChanged(int position) {
 
-        boolean isCompletedPast = mDataManager.getPlan(position).getCompletionTime() != 0;
+        Plan plan = mDataManager.getPlan(position);
+        boolean isCompletedPast = plan.getCompletionTime() != 0;
 
         //执行以下语句时，只是在view上让position处的plan删除了，实际上还未被删除但也即将被删除
         //NOTE: 不能用notifyItemRemoved，会没有效果
         mPlanAdapter.notifyItemRemoved(position);
-
         mDataManager.notifyPlanStatusChanged(position);
 
-        mPlanAdapter.notifyItemInserted(isCompletedPast ? 0 : mDataManager.getUcPlanCount());
+        int newPosition = isCompletedPast ? 0 : mDataManager.getUcPlanCount();
+        mPlanAdapter.notifyItemInserted(newPosition);
 
-        EventBus.getDefault().post(new UcPlanCountChangedEvent());
+        mEventBus.post(new PlanDetailChangedEvent(
+                getPresenterName(),
+                plan.getPlanCode(),
+                newPosition,
+                PlanDetailChangedEvent.FIELD_PLAN_STATUS
+        ));
     }
 
     @Subscribe
-    public void onPlanListLoaded(DataLoadedEvent event) {
+    public void onDataLoaded(DataLoadedEvent event) {
         mPlanAdapter.notifyDataSetChanged();
     }
 
     @Subscribe
     public void onPlanCreated(PlanCreatedEvent event) {
-        mPlanAdapter.notifyDataSetChanged();
-        //有一定几率报错
-        //mPlanAdapter.notifyItemInserted(0);
+        if (event.getEventSource().equals(getPresenterName())) return;
+        //可能会报错
+        mPlanAdapter.notifyItemInserted(event.getPosition());
+        //mPlanAdapter.notifyDataSetChanged();
     }
 
     @Subscribe
@@ -136,26 +120,24 @@ public class MyPlansPresenter implements Presenter<MyPlansView> {
 
     @Subscribe
     public void onPlanDetailChanged(PlanDetailChangedEvent event) {
-        if (event.isPlanStatusChanged()) {
-            //如果有完成情况的改变，直接全部刷新
-            //有点麻烦，直接使用全部刷新了
-            //TODO 可以用event.position配合算出的未完成计划数量，使用notifyItemMoved刷新
+        if (event.getEventSource().equals(getPresenterName())) return;
+        if (event.getChangedField() == PlanDetailChangedEvent.FIELD_PLAN_STATUS) {
+            //有完成情况的改变，直接全部刷新
             mPlanAdapter.notifyDataSetChanged();
         } else {
             //普通、类型改变的刷新
-            //根据event中的成员变量刷新界面
             mPlanAdapter.notifyItemChanged(event.getPosition());
         }
     }
 
     @Subscribe
     public void onPlanDeleted(PlanDeletedEvent event) {
+        if (event.getEventSource().equals(getPresenterName())) return;
         mPlanAdapter.notifyItemRemoved(event.getPosition());
     }
 
     @Subscribe
     public void onReminded(RemindedEvent event) {
-        //不用进行数据库存储了，在广播接收的时候已经处理过了
-        mPlanAdapter.notifyItemChanged(event.position);
+        mPlanAdapter.notifyItemChanged(event.getPosition());
     }
 }

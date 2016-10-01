@@ -96,21 +96,7 @@ public class MyPlansFragment extends Fragment implements MyPlansView {
     public void onPlanItemClicked(int position) {
         Intent intent = new Intent(getActivity(), PlanDetailActivity.class);
         intent.putExtra("position", position);
-        getActivity().startActivityForResult(intent, HomeActivity.REQ_CODE_PLAN_DETAIL);
-    }
-
-    @Override
-    public void onPlanDeleted(String content, final int position, final Plan planUseForTakingBack) {
-        Util.makeShortVibrate();
-        String text = content + " " + getResources().getString(R.string.deleted_prompt);
-        Snackbar snackbar = Snackbar.make(mMyPlansList, text, Snackbar.LENGTH_LONG);
-        snackbar.setAction(R.string.cancel, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mMyPlansPresenter.notifyPlanRecreated(position, planUseForTakingBack);
-            }
-        });
-        snackbar.show();
+        getActivity().startActivity(intent);
     }
 
     private class PlanListItemTouchCallback extends ItemTouchHelper.Callback {

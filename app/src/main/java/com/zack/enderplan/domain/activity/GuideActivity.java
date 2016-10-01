@@ -33,12 +33,6 @@ public class GuideActivity extends BaseActivity implements GuideView {
     }
 
     @Override
-    public void navigateBack() {
-        setResult(RESULT_OK);
-        super.onBackPressed();
-    }
-
-    @Override
     public void showToast(int msgResId) {
         Toast.makeText(this, msgResId, Toast.LENGTH_SHORT).show();
     }
@@ -46,5 +40,6 @@ public class GuideActivity extends BaseActivity implements GuideView {
     @Override
     public void endGuide() {
         finish();
+        //TODO 添加动画
     }
 }

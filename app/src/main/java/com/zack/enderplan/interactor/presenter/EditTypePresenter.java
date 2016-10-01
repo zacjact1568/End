@@ -13,7 +13,7 @@ import com.zack.enderplan.interactor.adapter.TypeMarkAdapter;
 
 import org.greenrobot.eventbus.EventBus;
 
-public class EditTypePresenter implements Presenter<EditTypeView> {
+public class EditTypePresenter extends BasePresenter implements Presenter<EditTypeView> {
 
     private EditTypeView mEditTypeView;
     private DataManager mDataManager;
@@ -103,7 +103,7 @@ public class EditTypePresenter implements Presenter<EditTypeView> {
                         Util.parseColor(mDataManager.getTypeMark(selectedPosition).getColorInt()));
 
                 //通知AllTypesFragment和AllPlansFragment更新
-                EventBus.getDefault().post(new TypeDetailChangedEvent(mType.getTypeCode(), mPosition));
+                EventBus.getDefault().post(new TypeDetailChangedEvent(getPresenterName(), mType.getTypeCode(), mPosition));
 
                 mEditTypeView.closeDialog(false);
                 break;

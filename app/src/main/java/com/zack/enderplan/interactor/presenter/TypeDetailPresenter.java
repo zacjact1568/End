@@ -10,7 +10,6 @@ import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDeletedEvent;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
-import com.zack.enderplan.event.UcPlanCountChangedEvent;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.utility.Util;
 import com.zack.enderplan.domain.view.TypeDetailView;
@@ -21,16 +20,18 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
-public class TypeDetailPresenter implements Presenter<TypeDetailView> {
+public class TypeDetailPresenter extends BasePresenter implements Presenter<TypeDetailView> {
 
     private TypeDetailView typeDetailView;
     private DataManager dataManager;
     private PlanSingleTypeAdapter planSingleTypeAdapter;
     private List<Plan> singleTypeUcPlanList;
     private Type type;
+    private EventBus mEventBus;
     private String noneUcPlan, oneUcPlan, multiUcPlan;
 
     public TypeDetailPresenter(TypeDetailView typeDetailView, int position) {
+        mEventBus = EventBus.getDefault();
         attachView(typeDetailView);
         dataManager = DataManager.getInstance();
 
@@ -48,13 +49,13 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
     @Override
     public void attachView(TypeDetailView view) {
         typeDetailView = view;
-        EventBus.getDefault().register(this);
+        mEventBus.register(this);
     }
 
     @Override
     public void detachView() {
         typeDetailView = null;
-        EventBus.getDefault().unregister(this);
+        mEventBus.unregister(this);
     }
 
     public void setInitialView() {
@@ -81,13 +82,11 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
             dataManager.notifyPlanCreated(plan);
 
             //通知AllPlansPresenter（更新计划列表）与AllTypesPresenter（更新类型列表）
-            EventBus.getDefault().post(new PlanCreatedEvent(
+            mEventBus.post(new PlanCreatedEvent(
+                    getPresenterName(),
                     dataManager.getRecentlyCreatedPlan().getPlanCode(),
                     dataManager.getRecentlyCreatedPlanLocation()
             ));
-
-            //通知HomePresenter（更新侧栏header）
-            EventBus.getDefault().post(new UcPlanCountChangedEvent());
 
             //更新此fragment中的数据
             singleTypeUcPlanList.add(0, plan);
@@ -112,7 +111,7 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
         //更新界面
         planSingleTypeAdapter.notifyItemChanged(position);
         //通知AllPlans界面更新
-        EventBus.getDefault().post(new PlanDetailChangedEvent(plan.getPlanCode(), posInPlanList, false, false, -1));
+        mEventBus.post(new PlanDetailChangedEvent(getPresenterName(), plan.getPlanCode(), posInPlanList, PlanDetailChangedEvent.FIELD_STAR_STATUS));
     }
 
     public void notifyPlanCompleted(int position) {
@@ -124,11 +123,9 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
 
         dataManager.notifyPlanStatusChanged(posInPlanList);
 
-        //通知HomePresenter（更新侧栏header）
-        EventBus.getDefault().post(new UcPlanCountChangedEvent());
-
+        int newPosInPlanList = dataManager.getUcPlanCount();
         //通知AllPlansPresenter（更新计划列表）、AllTypesPresenter（更新类型列表）与本Presenter更新界面
-        EventBus.getDefault().post(new PlanDetailChangedEvent(plan.getPlanCode(), posInPlanList, false, true, position));
+        mEventBus.post(new PlanDetailChangedEvent(getPresenterName(), plan.getPlanCode(), newPosInPlanList, PlanDetailChangedEvent.FIELD_PLAN_STATUS));
     }
 
     /** 注意！必须在更新UcPlanCountOfEachTypeMap之后调用才有效果 */
@@ -160,19 +157,12 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
     @Subscribe
     public void onPlanDetailChanged(PlanDetailChangedEvent event) {
 
+        if (event.getEventSource().equals(getPresenterName())) return;
+
         //刚才发生变化的计划在singleTypeUcPlanList中的位置
-        int position;
+        int position = getPosInSingleTypeUcPlanList(event.getPlanCode());
 
-        //NOTE: planCode和posInStUcPlanList中，有且仅有一个存在
-        if (event.getPosInStUcPlanList() == -1) {
-            //event中没有singleTypeUcPlanList中的位置信息，用planCode去获取
-            position = getPosInSingleTypeUcPlanList(event.getPlanCode());
-        } else {
-            //event中有singleTypeUcPlanList中的位置信息，直接使用
-            position = event.getPosInStUcPlanList();
-        }
-
-        if (event.isTypeOfPlanChanged() || event.isPlanStatusChanged()) {
+        if (event.getChangedField() == PlanDetailChangedEvent.FIELD_TYPE_OF_PLAN || event.getChangedField() == PlanDetailChangedEvent.FIELD_PLAN_STATUS) {
             //说明有类型或完成情况的更新，需要从singleTypeUcPlanList中移除
 
             //更新此列表
@@ -182,13 +172,15 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
             //更新显示的未完成计划数量
             typeDetailView.onUcPlanCountChanged(getUcPlanCountStr(type.getTypeCode()));
         } else {
-            //普通更新，需要刷新singleTypeUcPlanList
+            //其他更新，需要刷新singleTypeUcPlanList
             planSingleTypeAdapter.notifyItemChanged(position);
         }
     }
 
     @Subscribe
     public void onPlanDeleted(PlanDeletedEvent event) {
+
+        if (event.getEventSource().equals(getPresenterName())) return;
 
         //计算刚才删除的计划在这个list中的位置
         int position = getPosInSingleTypeUcPlanList(event.getPlanCode());
@@ -197,7 +189,7 @@ public class TypeDetailPresenter implements Presenter<TypeDetailView> {
         singleTypeUcPlanList.remove(position);
         planSingleTypeAdapter.notifyItemRemoved(position);
 
-        if (!event.isCompleted()) {
+        if (!event.getDeletedPlan().isCompleted()) {
             //说明刚才删除的是个未完成的计划，需要修改界面上的内容
             typeDetailView.onUcPlanCountChanged(getUcPlanCountStr(type.getTypeCode()));
         }

@@ -3,6 +3,7 @@ package com.zack.enderplan.domain.activity;
 import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -33,8 +34,6 @@ import butterknife.OnClick;
 public class HomeActivity extends BaseActivity implements HomeView,
         NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String LOG_TAG = "HomeActivity";
-
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.frame_layout)
@@ -51,9 +50,6 @@ public class HomeActivity extends BaseActivity implements HomeView,
 
     private static final String TAG_ALL_TYPES = "all_types";
     private static final String TAG_MY_PLANS = "my_plans";
-    private static final int REQ_CODE_CREATE_PLAN = 0;
-    public static final int REQ_CODE_PLAN_DETAIL = 1;//TODO try to let it private
-    private static final int REQ_CODE_GUIDE = 2;
     private static final int CR_ANIM_DURATION = 300;
 
     @Override
@@ -80,44 +76,6 @@ public class HomeActivity extends BaseActivity implements HomeView,
     protected void onDestroy() {
         super.onDestroy();
         mHomePresenter.detachView();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_CANCELED) {
-            return;
-        }
-        switch (requestCode) {
-            case REQ_CODE_CREATE_PLAN:
-                mHomePresenter.notifyPlanCreated();
-                break;
-            case REQ_CODE_PLAN_DETAIL:
-                switch (resultCode) {
-                    case RESULT_PLAN_DETAIL_CHANGED:
-                        //能接收到这个resultCode，那么计划属性必定有更改
-                        mHomePresenter.notifyPlanDetailChanged(
-                                data.getIntExtra("position", 0),
-                                data.getStringExtra("plan_code"),
-                                data.getBooleanExtra("is_type_of_plan_changed", false),
-                                data.getBooleanExtra("is_plan_status_changed", false)
-                        );
-                        break;
-                    case RESULT_PLAN_DELETED:
-                        mHomePresenter.notifyPlanDeleted(
-                                data.getIntExtra("position", 0),
-                                data.getStringExtra("plan_code"),
-                                data.getStringExtra("content"),
-                                data.getBooleanExtra("is_completed", false)
-                        );
-                        break;
-                }
-                break;
-            case REQ_CODE_GUIDE:
-                finish();
-                break;
-            default:
-                break;
-        }
     }
 
     @Override
@@ -230,19 +188,6 @@ public class HomeActivity extends BaseActivity implements HomeView,
     }
 
     @Override
-    public void onPlanCreated(String content) {
-        //显示SnackBar
-        String text = content + " " + getResources().getString(R.string.created_prompt);
-        Snackbar.make(frameLayout, text, Snackbar.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onPlanDeleted(String content) {
-        String text = content + " " + getResources().getString(R.string.deleted_prompt);
-        Snackbar.make(frameLayout, text, Snackbar.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void onCloseDrawer() {
         drawerLayout.closeDrawer(GravityCompat.START);
     }
@@ -253,14 +198,31 @@ public class HomeActivity extends BaseActivity implements HomeView,
     }
 
     @Override
-    public void onShowDoubleClickToast() {
-        Toast.makeText(this, R.string.toast_double_click_exit, Toast.LENGTH_SHORT).show();
+    public void showGuide() {
+        Intent intent = new Intent(this, GuideActivity.class);
+        startActivity(intent);
     }
 
     @Override
-    public void showGuide() {
-        Intent intent = new Intent(this, GuideActivity.class);
-        startActivityForResult(intent, REQ_CODE_GUIDE);
+    public void exitHome() {
+        finish();
+    }
+
+    @Override
+    public void showToast(int msgResId) {
+        Toast.makeText(this, msgResId, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showSnackbar(String msg) {
+        Snackbar.make(frameLayout, msg, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showSnackbar(String msg, int actionResId, View.OnClickListener actionListener) {
+        Snackbar snackbar = Snackbar.make(frameLayout, msg, Snackbar.LENGTH_LONG);
+        snackbar.setAction(actionResId, actionListener);
+        snackbar.show();
     }
 
     @OnClick(R.id.fab)
@@ -271,6 +233,6 @@ public class HomeActivity extends BaseActivity implements HomeView,
             return;
         }
         Intent intent = new Intent(this, CreatePlanActivity.class);
-        startActivityForResult(intent, REQ_CODE_CREATE_PLAN);
+        startActivity(intent);
     }
 }

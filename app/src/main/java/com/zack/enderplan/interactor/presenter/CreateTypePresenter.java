@@ -13,7 +13,7 @@ import com.zack.enderplan.interactor.adapter.TypeMarkAdapter;
 
 import org.greenrobot.eventbus.EventBus;
 
-public class CreateTypePresenter implements Presenter<CreateTypeView> {
+public class CreateTypePresenter extends BasePresenter implements Presenter<CreateTypeView> {
 
     private CreateTypeView mCreateTypeView;
     private DataManager mDataManager;
@@ -86,6 +86,7 @@ public class CreateTypePresenter implements Presenter<CreateTypeView> {
                 mDataManager.notifyTypeCreated(mType);
 
                 EventBus.getDefault().post(new TypeCreatedEvent(
+                        getPresenterName(),
                         mDataManager.getRecentlyCreatedType().getTypeCode(),
                         mDataManager.getRecentlyCreatedTypeLocation()
                 ));

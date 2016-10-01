@@ -49,7 +49,7 @@ public class ReminderReceiver extends BroadcastReceiver {
             int position = dataManager.getPlanLocationInPlanList(planCode);
             dataManager.getPlan(position).setReminderTime(0);
             //通知界面更新（NOTE：如果app已退出，但进程还没被杀，仍然会发出通知）
-            EventBus.getDefault().post(new RemindedEvent(position, planCode));
+            EventBus.getDefault().post(new RemindedEvent(getClass().getSimpleName(), planCode, position));
         }
 
         /*Intent remindedIntent = new Intent("com.zack.enderplan.ACTION_REMINDED");

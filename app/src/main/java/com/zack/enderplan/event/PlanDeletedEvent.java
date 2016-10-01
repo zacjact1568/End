@@ -1,17 +1,23 @@
 package com.zack.enderplan.event;
 
+import com.zack.enderplan.model.bean.Plan;
+
 /** 有计划被删除的事件 */
 public class PlanDeletedEvent extends BasePlanEvent {
 
-    /** 是否是一个已完成的计划 */
-    private boolean isCompleted;
+    /**
+     * 已删除的计划<br>
+     * 给接收此event的组件做后续处理使用<br>
+     * 因为计划已删除，无法再通过position从DataManager中取得plan
+     */
+    private Plan deletedPlan;
 
-    public PlanDeletedEvent(String planCode, int position, boolean isCompleted) {
-        super(planCode, position);
-        this.isCompleted = isCompleted;
+    public PlanDeletedEvent(String eventSource, String planCode, int position, Plan deletedPlan) {
+        super(eventSource, planCode, position);
+        this.deletedPlan = deletedPlan;
     }
 
-    public boolean isCompleted() {
-        return isCompleted;
+    public Plan getDeletedPlan() {
+        return deletedPlan;
     }
 }

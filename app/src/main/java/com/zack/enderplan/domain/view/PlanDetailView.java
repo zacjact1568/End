@@ -1,42 +1,37 @@
 package com.zack.enderplan.domain.view;
 
-import android.content.Intent;
-
-import com.zack.enderplan.domain.fragment.CalendarDialogFragment;
-import com.zack.enderplan.domain.fragment.DateTimePickerDialogFragment;
 import com.zack.enderplan.interactor.adapter.TypeSpinnerAdapter;
+import com.zack.enderplan.model.bean.FormattedPlan;
 
 public interface PlanDetailView {
 
-    void showInitialView(String content, boolean isStarred, TypeSpinnerAdapter typeSpinnerAdapter,
-                         int posInSpinner, boolean hasDeadline, String deadline, boolean hasReminder,
-                         String reminderTime, boolean isCompleted, String spsButtonText);
+    void showInitialView(FormattedPlan formattedPlan, TypeSpinnerAdapter typeSpinnerAdapter);
 
-    void showPlanDeletionAlertDialog(String content);
+    void showPlanDeletionDialog(String content);
 
-    void onPlanDeleted(int position, String planCode, String content, boolean isCompleted);
+    void onPlanStatusChanged(boolean isCompleted);
 
-    void onPlanStatusChanged(boolean isCompleted, String newSpsButtonText);
+    void showContentEditorDialog(String content);
 
-    void showContentEditDialog(String content);
+    void onContentEditedSuccessfully(String newContent);
 
-    void onContentEditSuccess(String content);
-
-    void onContentEditFailed();
+    void onContentEditedAbortively();
 
     void onStarStatusChanged(boolean isStarred);
 
-    void onCreateDeadlineDialog(CalendarDialogFragment deadlineDialog);
+    void onTypeOfPlanChanged(int posInTypeList);
 
-    void onCreateReminderDialog(DateTimePickerDialogFragment reminderDialog);
+    void showDeadlineDialog(long deadline);
 
-    void onActivityFinished(Intent intent);
+    void showReminderTimeDialog(long reminderTime);
 
-    void onDeadlineSelected(boolean isSetFirstTime, String deadline);
+    void onDeadlineSelected(String newDeadlineText);
 
     void onDeadlineRemoved();
 
-    void onReminderTimeSelected(boolean isSetFirstTime, String reminderTime);
+    void onReminderTimeSelected(String newReminderTimeText);
 
     void onReminderRemoved();
+
+    void exitPlanDetail();
 }

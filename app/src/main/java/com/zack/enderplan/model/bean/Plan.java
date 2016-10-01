@@ -124,6 +124,10 @@ public class Plan implements Parcelable {
         this.reminderTime = reminderTime;
     }
 
+    public boolean isCompleted() {
+        return completionTime != 0;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -139,12 +143,5 @@ public class Plan implements Parcelable {
         dest.writeLong(completionTime);
         dest.writeInt(starStatus);
         dest.writeLong(reminderTime);
-    }
-
-    @Override
-    public String toString() {
-        String format = "Plan Code: %s%nContent: %s%nType Code: %s%nCreation Time: %d%nDeadline: %d%nCompletion Time: %d%nStar Status: %d%nReminder Time: %d";
-        return String.format(Locale.getDefault(), format,
-                planCode, content, typeCode, creationTime, deadline, completionTime, starStatus, reminderTime);
     }
 }

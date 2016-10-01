@@ -3,7 +3,6 @@ package com.zack.enderplan.domain.fragment;
 import android.app.AlertDialog;
 import android.graphics.Canvas;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,8 +15,6 @@ import com.zack.enderplan.R;
 import com.zack.enderplan.domain.view.AllTypesView;
 import com.zack.enderplan.interactor.adapter.TypeAdapter;
 import com.zack.enderplan.interactor.presenter.AllTypesPresenter;
-import com.zack.enderplan.model.bean.Type;
-import com.zack.enderplan.utility.Util;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -87,20 +84,6 @@ public class AllTypesFragment extends Fragment implements AllTypesView {
     public void onShowTypeDetailDialogFragment(int position) {
         TypeDetailDialogFragment bottomSheet = TypeDetailDialogFragment.newInstance(position);
         bottomSheet.show(getFragmentManager(), "type_detail");
-    }
-
-    @Override
-    public void onTypeDeleted(String typeName, final int position, final Type typeUseForTakingBack) {
-        Util.makeShortVibrate();
-        String text = typeName + " " + getResources().getString(R.string.deleted_prompt);
-        Snackbar snackbar = Snackbar.make(mAllTypesList, text, Snackbar.LENGTH_LONG);
-        snackbar.setAction(R.string.cancel, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mAllTypesPresenter.notifyTypeRecreated(position, typeUseForTakingBack);
-            }
-        });
-        snackbar.show();
     }
 
     @Override
