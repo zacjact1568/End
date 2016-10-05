@@ -1,6 +1,8 @@
 package com.zack.enderplan.domain.fragment;
 
+import android.app.ActivityOptions;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.domain.activity.PlanDetailActivity;
+import com.zack.enderplan.domain.activity.TypeDetailActivity;
 import com.zack.enderplan.domain.view.AllTypesView;
 import com.zack.enderplan.interactor.adapter.TypeAdapter;
 import com.zack.enderplan.interactor.presenter.AllTypesPresenter;
@@ -69,8 +73,8 @@ public class AllTypesFragment extends Fragment implements AllTypesView {
 
         typeAdapter.setOnTypeItemClickListener(new TypeAdapter.OnTypeItemClickListener() {
             @Override
-            public void onTypeItemClick(int position) {
-                mAllTypesPresenter.notifyTypeItemClicked(position);
+            public void onTypeItemClick(int position, View typeItem) {
+                mAllTypesPresenter.notifyTypeItemClicked(position, typeItem);
             }
         });
 
@@ -81,9 +85,15 @@ public class AllTypesFragment extends Fragment implements AllTypesView {
     }
 
     @Override
-    public void onShowTypeDetailDialogFragment(int position) {
-        TypeDetailDialogFragment bottomSheet = TypeDetailDialogFragment.newInstance(position);
-        bottomSheet.show(getFragmentManager(), "type_detail");
+    public void onTypeItemClicked(int position, View typeItem) {
+        Intent intent = new Intent(getActivity(), TypeDetailActivity.class);
+        intent.putExtra("position", position);
+        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
+                getActivity(),
+                typeItem.findViewById(R.id.ic_type_mark),
+                getResources().getString(R.string.name_type_mark_shared_element_transition)
+        );
+        getActivity().startActivity(intent, options.toBundle());
     }
 
     @Override

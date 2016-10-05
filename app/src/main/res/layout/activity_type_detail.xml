@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".domain.activity.TypeDetailActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/layout_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/layout_collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:titleEnabled="false">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:title=" "/>
+
+            <LinearLayout
+                android:id="@+id/layout_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="76dp"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_collapseMode="parallax">
+
+                <com.zack.enderplan.widget.CircleColorView
+                    android:id="@+id/ic_type_mark"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:transitionName="@string/name_type_mark_shared_element_transition"
+                    app:edge_color="@android:color/white"
+                    app:edge_width="1dp"/>
+
+                <!--<FrameLayout-->
+                    <!--android:id="@+id/layout_type_mark"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:transitionName="@string/transition_type_mark_shared_element">-->
+
+                    <!--<de.hdodenhof.circleimageview.CircleImageView-->
+                        <!--android:id="@+id/ic_type_mark"-->
+                        <!--android:layout_width="56dp"-->
+                        <!--android:layout_height="56dp"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--app:civ_border_width="1dp"-->
+                        <!--app:civ_border_color="@android:color/white"-->
+                        <!--tools:src="@color/indigo"/>-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/text_first_char"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:textSize="32sp"-->
+                        <!--android:textColor="@android:color/white"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--tools:text="学"/>-->
+
+                <!--</FrameLayout>-->
+
+                <TextView
+                    android:id="@+id/text_type_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold"
+                    tools:text="学习"/>
+
+                <TextView
+                    android:id="@+id/text_uc_plan_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/white"
+                    tools:text="5 plans uncompleted"/>
+
+            </LinearLayout>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <include layout="@layout/content_type_detail"/>
+
+    <FrameLayout
+        android:id="@+id/layout_editor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/colorPrimary"
+        android:padding="8dp">
+
+        <EditText
+            android:id="@+id/editor_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:hint="@string/hint_content_fast"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
+            android:background="@drawable/bg_editor"
+            android:paddingStart="8dp"
+            android:paddingEnd="28dp"/>
+
+        <ImageView
+            android:id="@+id/ic_clear_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_close_grey600_24dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:layout_gravity="center|end"
+            android:layout_marginEnd="8dp"/>
+
+    </FrameLayout>
+
+</android.support.design.widget.CoordinatorLayout>

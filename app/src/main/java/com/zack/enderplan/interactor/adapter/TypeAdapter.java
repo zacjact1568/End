@@ -1,19 +1,18 @@
 package com.zack.enderplan.interactor.adapter;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.model.bean.Type;
+import com.zack.enderplan.widget.CircleColorView;
 
 import java.util.List;
 import java.util.Map;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
 
@@ -21,7 +20,7 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
 
     private List<Type> typeList;
     private Map<String, Integer> ucPlanCountOfEachTypeMap;
-    private Map<String, Integer> typeMarkAndColorResMap;
+    private Map<String, Integer> typeMarkAndColorResMap;//TODO useless
     private OnTypeItemClickListener onTypeItemClickListener;
 
     public TypeAdapter(List<Type> typeList, Map<String, Integer> typeMarkAndColorResMap, Map<String, Integer> ucPlanCountOfEachTypeMap) {
@@ -40,19 +39,19 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
     public void onBindViewHolder(final ViewHolder holder, int position) {
         Type type = typeList.get(position);
 
-        holder.typeMarkIcon.setImageResource(typeMarkAndColorResMap.get(type.getTypeMark()));
-        holder.firstCharText.setText(type.getTypeName().substring(0, 1));
+        holder.typeMarkIcon.setFillColor(Color.parseColor(type.getTypeMark()));
+        holder.typeMarkIcon.setInnerText(type.getTypeName().substring(0, 1));
         holder.typeNameText.setText(type.getTypeName());
 
         String ucPlanCountStr = getUcPlanCountStr(type.getTypeCode());
-        holder.ucPlanCountLayout.setVisibility(ucPlanCountStr == null ? View.INVISIBLE : View.VISIBLE);
-        holder.ucPlanCountText.setText(ucPlanCountStr == null ? "" : ucPlanCountStr);
+        holder.ucPlanCountIcon.setVisibility(ucPlanCountStr == null ? View.INVISIBLE : View.VISIBLE);
+        holder.ucPlanCountIcon.setInnerText(ucPlanCountStr == null ? "" : ucPlanCountStr);
 
         if (onTypeItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onTypeItemClickListener.onTypeItemClick(holder.getLayoutPosition());
+                    onTypeItemClickListener.onTypeItemClick(holder.getLayoutPosition(), holder.itemView);
                 }
             });
         }
@@ -75,22 +74,19 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        CircleImageView typeMarkIcon;
-        TextView firstCharText, typeNameText, ucPlanCountText;
-        FrameLayout ucPlanCountLayout;
+        CircleColorView typeMarkIcon, ucPlanCountIcon;
+        TextView typeNameText;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            typeMarkIcon = (CircleImageView) itemView.findViewById(R.id.ic_type_mark);
-            firstCharText = (TextView) itemView.findViewById(R.id.text_first_char);
+            typeMarkIcon = (CircleColorView) itemView.findViewById(R.id.ic_type_mark);
             typeNameText = (TextView) itemView.findViewById(R.id.text_type_name);
-            ucPlanCountText = (TextView) itemView.findViewById(R.id.text_uc_plan_count);
-            ucPlanCountLayout = (FrameLayout) itemView.findViewById(R.id.layout_uc_plan_count);
+            ucPlanCountIcon = (CircleColorView) itemView.findViewById(R.id.ic_uc_plan_count);
         }
     }
 
     public interface OnTypeItemClickListener {
-        void onTypeItemClick(int position);
+        void onTypeItemClick(int position, View typeItem);
     }
 
     public void setOnTypeItemClickListener(OnTypeItemClickListener listener) {

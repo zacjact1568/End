@@ -1,11 +1,13 @@
 package com.zack.enderplan.domain.view;
 
+import android.support.annotation.StringRes;
+
 import com.zack.enderplan.interactor.adapter.PlanSingleTypeAdapter;
+import com.zack.enderplan.model.bean.FormattedType;
 
 public interface TypeDetailView {
 
-    void showInitialView(int typeMarkColorRes, String firstChar, String typeName, String ucPlanCountStr,
-                         PlanSingleTypeAdapter planSingleTypeAdapter);
+    void showInitialView(FormattedType formattedType, PlanSingleTypeAdapter planSingleTypeAdapter);
 
     void onPlanCreationSuccess(String ucPlanCountStr);
 
@@ -14,4 +16,20 @@ public interface TypeDetailView {
     void onUcPlanCountChanged(String ucPlanCountStr);
 
     void onPlanItemClicked(int posInPlanList);
+
+    void changeHeaderOpacity(float alpha);
+
+    void changeTitle(String title);
+
+    void changeEditorVisibility(boolean isVisible);
+
+    void backToTop();
+
+    void pressBack();
+
+    void showToast(@StringRes int msgResId);
+
+    void showDeletionConfirmationDialog(String typeName);
+
+    void exitTypeDetail();
 }

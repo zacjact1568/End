@@ -125,6 +125,7 @@ public class PlanDetailPresenter extends BasePresenter implements Presenter<Plan
     public void notifyPlanStatusChanged() {
         //首先检测此计划是否有提醒
         if (plan.getReminderTime() != 0) {
+            dataManager.notifyReminderTimeChanged(position, 0);
             planDetailView.onReminderRemoved();
             postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_REMINDER_TIME);
         }

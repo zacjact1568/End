@@ -1,16 +1,21 @@
 package com.zack.enderplan.interactor.presenter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.App;
+import com.zack.enderplan.event.TypeDeletedEvent;
+import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDeletedEvent;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.model.DataManager;
+import com.zack.enderplan.utility.LogUtil;
 import com.zack.enderplan.utility.Util;
 import com.zack.enderplan.domain.view.TypeDetailView;
 import com.zack.enderplan.interactor.adapter.PlanSingleTypeAdapter;
@@ -22,19 +27,27 @@ import java.util.List;
 
 public class TypeDetailPresenter extends BasePresenter implements Presenter<TypeDetailView> {
 
+    private static final int APP_BAR_STATE_EXPANDED = 1;
+    private static final int APP_BAR_STATE_INTERMEDIATE = 0;
+    private static final int APP_BAR_STATE_COLLAPSED = -1;
+
     private TypeDetailView typeDetailView;
     private DataManager dataManager;
     private PlanSingleTypeAdapter planSingleTypeAdapter;
     private List<Plan> singleTypeUcPlanList;
+    private int mPosition;
     private Type type;
     private EventBus mEventBus;
     private String noneUcPlan, oneUcPlan, multiUcPlan;
+    private float mLastHeaderOpacity = 1f;
+    private int mAppBarState = APP_BAR_STATE_EXPANDED;
 
     public TypeDetailPresenter(TypeDetailView typeDetailView, int position) {
         mEventBus = EventBus.getDefault();
         attachView(typeDetailView);
         dataManager = DataManager.getInstance();
 
+        mPosition = position;
         type = dataManager.getType(position);
 
         singleTypeUcPlanList = dataManager.getSingleTypeUcPlanList(type.getTypeCode());
@@ -59,13 +72,41 @@ public class TypeDetailPresenter extends BasePresenter implements Presenter<Type
     }
 
     public void setInitialView() {
-        typeDetailView.showInitialView(
-                dataManager.findColorResByTypeMark(type.getTypeMark()),
+        typeDetailView.showInitialView(new FormattedType(
+                Color.parseColor(type.getTypeMark()),
                 type.getTypeName().substring(0, 1),
                 type.getTypeName(),
-                getUcPlanCountStr(type.getTypeCode()),
-                planSingleTypeAdapter
-        );
+                getUcPlanCountStr(type.getTypeCode())
+        ), planSingleTypeAdapter);
+    }
+
+    public void notifyAppBarScrolled(int offset, int maxRange) {
+        float alpha = 1f - Math.abs(offset) * 1.3f / maxRange;
+        if (alpha < 0) alpha = 0;
+        typeDetailView.changeHeaderOpacity(alpha);
+
+        if ((alpha == 0 || mLastHeaderOpacity == 0) && alpha != mLastHeaderOpacity) {
+            //刚退出透明状态或刚进入透明状态
+            typeDetailView.changeTitle(alpha == 0 ? type.getTypeName() : " ");
+            typeDetailView.changeEditorVisibility(alpha > 0);
+            mLastHeaderOpacity = alpha;
+        }
+
+        if (offset == 0) {
+            mAppBarState = APP_BAR_STATE_EXPANDED;
+        } else if (Math.abs(offset) == maxRange) {
+            mAppBarState = APP_BAR_STATE_COLLAPSED;
+        } else {
+            mAppBarState = APP_BAR_STATE_INTERMEDIATE;
+        }
+    }
+
+    public void notifyBackPressed() {
+        if (mAppBarState == APP_BAR_STATE_EXPANDED) {
+            typeDetailView.pressBack();
+        } else {
+            typeDetailView.backToTop();
+        }
     }
 
     public void notifyPlanCreation(String newContent) {
@@ -115,17 +156,40 @@ public class TypeDetailPresenter extends BasePresenter implements Presenter<Type
     }
 
     public void notifyPlanCompleted(int position) {
-
+        //获取plan
         Plan plan = singleTypeUcPlanList.get(position);
-
         //操作list，用posInPlanList（而不是position）标记位置
         int posInPlanList = dataManager.getPlanLocationInPlanList(plan.getPlanCode());
-
+        //检测是否设置了提醒
+        if (plan.getReminderTime() != 0) {
+            //有设置提醒，需要移除
+            dataManager.notifyReminderTimeChanged(posInPlanList, 0);
+            mEventBus.post(new PlanDetailChangedEvent(getPresenterName(), plan.getPlanCode(), posInPlanList, PlanDetailChangedEvent.FIELD_REMINDER_TIME));
+        }
         dataManager.notifyPlanStatusChanged(posInPlanList);
-
+        //新位置
         int newPosInPlanList = dataManager.getUcPlanCount();
-        //通知AllPlansPresenter（更新计划列表）、AllTypesPresenter（更新类型列表）与本Presenter更新界面
+        //更新此列表
+        singleTypeUcPlanList.remove(position);
+        planSingleTypeAdapter.notifyItemRemoved(position);
+        //更新显示的未完成计划数量
+        typeDetailView.onUcPlanCountChanged(getUcPlanCountStr(type.getTypeCode()));
+        //发送事件，更新其他组件
         mEventBus.post(new PlanDetailChangedEvent(getPresenterName(), plan.getPlanCode(), newPosInPlanList, PlanDetailChangedEvent.FIELD_PLAN_STATUS));
+    }
+
+    public void notifyTypeDeletionButtonClicked() {
+        if (dataManager.isUcPlanCountOfOneTypeExists(type.getTypeCode())) {
+            typeDetailView.showToast(R.string.toast_type_not_empty);
+        } else {
+            typeDetailView.showDeletionConfirmationDialog(type.getTypeName());
+        }
+    }
+
+    public void notifyDeletingType() {
+        dataManager.notifyTypeDeleted(mPosition);
+        mEventBus.post(new TypeDeletedEvent(getPresenterName(), type.getTypeCode(), mPosition, type));
+        typeDetailView.exitTypeDetail();
     }
 
     /** 注意！必须在更新UcPlanCountOfEachTypeMap之后调用才有效果 */

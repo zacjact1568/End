@@ -38,7 +38,7 @@
     <string name="pos_button_deadline_overdue_dialog">好吧，我再改改</string>
     <string name="plan_operation">任务操作</string>
     <string name="title_activity_about">关于</string>
-    <string name="title_activity_plan_detail">详细信息</string>
+    <string name="title_activity_plan_detail">计划详情</string>
     <string name="unsettled">未设置</string>
     <string name="action_recycle_bin">回收站</string>
     <string name="title_activity_settings">设置</string>
@@ -103,4 +103,9 @@
     <string name="slogan">「哪怕世界末日到了也要做计划」</string>
     <string name="hint_first_plan_content">输入你的第一个计划</string>
     <string name="toast_empty_content">你还没输入呢</string>
+    <string name="action_edit">编辑</string>
+    <string name="title_activity_type_detail">类型详情</string>
+    <string name="toast_type_not_empty">类型非空，不能删除</string>
+    <string name="name_type_mark_shared_element_transition">类型标记共享元素转换</string>
+    <string name="msg_dialog_delete_type">此类型将被删除。</string>
 </resources>

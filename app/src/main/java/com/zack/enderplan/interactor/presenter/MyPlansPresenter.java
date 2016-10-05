@@ -76,24 +76,22 @@ public class MyPlansPresenter extends BasePresenter implements Presenter<MyPlans
     }
 
     public void notifyPlanStatusChanged(int position) {
-
         Plan plan = mDataManager.getPlan(position);
-        boolean isCompletedPast = plan.getCompletionTime() != 0;
-
+        //首先检测此计划是否有提醒
+        if (plan.getReminderTime() != 0) {
+            mDataManager.notifyReminderTimeChanged(position, 0);
+            mPlanAdapter.notifyItemChanged(position);
+            mEventBus.post(new PlanDetailChangedEvent(getPresenterName(), plan.getPlanCode(), position, PlanDetailChangedEvent.FIELD_REMINDER_TIME));
+        }
         //执行以下语句时，只是在view上让position处的plan删除了，实际上还未被删除但也即将被删除
         //NOTE: 不能用notifyItemRemoved，会没有效果
         mPlanAdapter.notifyItemRemoved(position);
         mDataManager.notifyPlanStatusChanged(position);
-
-        int newPosition = isCompletedPast ? 0 : mDataManager.getUcPlanCount();
+        //这里，plan的状态已经更新
+        int newPosition = plan.isCompleted() ? mDataManager.getUcPlanCount() : 0;
         mPlanAdapter.notifyItemInserted(newPosition);
-
-        mEventBus.post(new PlanDetailChangedEvent(
-                getPresenterName(),
-                plan.getPlanCode(),
-                newPosition,
-                PlanDetailChangedEvent.FIELD_PLAN_STATUS
-        ));
+        //发送事件，更新其他组件
+        mEventBus.post(new PlanDetailChangedEvent(getPresenterName(), plan.getPlanCode(), newPosition, PlanDetailChangedEvent.FIELD_PLAN_STATUS));
     }
 
     @Subscribe

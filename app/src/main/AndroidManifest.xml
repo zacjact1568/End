@@ -35,6 +35,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.TransparentStatusBar"/>
         <activity
+            android:name=".domain.activity.TypeDetailActivity"
+            android:label="@string/title_activity_type_detail"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Transition.SharedElement.TransparentStatusBar"/>
+        <activity
             android:name=".domain.activity.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:screenOrientation="portrait"

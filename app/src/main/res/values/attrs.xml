@@ -1,0 +1,9 @@
+<resources>
+    <declare-styleable name="CircleColorView">
+        <attr name="fill_color" format="color"/>
+        <attr name="edge_width" format="dimension"/>
+        <attr name="edge_color" format="color"/>
+        <attr name="inner_text" format="string"/>
+        <attr name="inner_text_color" format="color"/>
+    </declare-styleable>
+</resources>

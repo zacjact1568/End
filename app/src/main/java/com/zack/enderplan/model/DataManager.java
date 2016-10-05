@@ -207,13 +207,6 @@ public class DataManager {
         updateUcPlanCountOfEachTypeMap(plan.getTypeCode(), isCompletedPast ? 1 : -1);
         updateUcPlanCount(isCompletedPast ? 1 : -1);
 
-        if (plan.getReminderTime() != 0) {
-            //有设置提醒，需要移除
-            mReminderManager.cancelAlarm(plan.getPlanCode());
-            plan.setReminderTime(0);
-            mDatabaseManager.editReminderTime(plan.getPlanCode(), 0);
-        }
-
         //操作list
         removeFromPlanList(location);
 

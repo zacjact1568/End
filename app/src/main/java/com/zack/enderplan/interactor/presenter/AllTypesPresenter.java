@@ -1,5 +1,7 @@
 package com.zack.enderplan.interactor.presenter;
 
+import android.view.View;
+
 import com.zack.enderplan.event.TypeDeletedEvent;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.bean.Type;
@@ -52,8 +54,8 @@ public class AllTypesPresenter extends BasePresenter implements Presenter<AllTyp
         mDataManager.notifyTypeSequenceRearranged();
     }
 
-    public void notifyTypeItemClicked(int position) {
-        mAllTypesView.onShowTypeDetailDialogFragment(position);
+    public void notifyTypeItemClicked(int position, View typeItem) {
+        mAllTypesView.onTypeItemClicked(position, typeItem);
     }
 
     public void notifyTypeSequenceChanged(int fromPosition, int toPosition) {
@@ -83,11 +85,6 @@ public class AllTypesPresenter extends BasePresenter implements Presenter<AllTyp
 
             mEventBus.post(new TypeDeletedEvent(getPresenterName(), type.getTypeCode(), position, type));
         }
-    }
-
-    public void notifyTypeRecreated(int position, Type type) {
-        mDataManager.notifyTypeCreated(position, type);
-        mTypeAdapter.notifyItemInserted(position);
     }
 
     @Subscribe

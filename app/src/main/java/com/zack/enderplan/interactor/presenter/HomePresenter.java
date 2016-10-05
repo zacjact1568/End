@@ -82,7 +82,8 @@ public class HomePresenter extends BasePresenter implements Presenter<HomeView> 
     }
 
     public void notifyCreatingType(int position, Type newType) {
-        //
+        mDataManager.notifyTypeCreated(position, newType);
+        mEventBus.post(new TypeCreatedEvent(getPresenterName(), newType.getTypeCode(), position));
     }
 
     private String getUcPlanCount() {
@@ -133,6 +134,7 @@ public class HomePresenter extends BasePresenter implements Presenter<HomeView> 
 
     @Subscribe
     public void onTypeCreated(TypeCreatedEvent event) {
+        if (event.getEventSource().equals(getPresenterName())) return;
         mHomeView.showSnackbar(mDataManager.getType(event.getPosition()).getTypeName() + " " + App.getGlobalContext().getResources().getString(R.string.created_prompt));
     }
 
