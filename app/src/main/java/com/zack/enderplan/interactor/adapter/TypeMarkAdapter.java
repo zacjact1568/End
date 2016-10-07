@@ -11,6 +11,8 @@ import com.zack.enderplan.model.bean.TypeMark;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class TypeMarkAdapter extends BaseAdapter {
@@ -45,9 +47,7 @@ public class TypeMarkAdapter extends BaseAdapter {
         ViewHolder viewHolder;
         if (convertView == null) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_type_mark, parent, false);
-            viewHolder = new ViewHolder();
-            viewHolder.typeMark = (CircleImageView) view.findViewById(R.id.type_mark);
-            viewHolder.selectionMark = (ImageView) view.findViewById(R.id.selection_mark);
+            viewHolder = new ViewHolder(view);
             view.setTag(viewHolder);
         } else {
             view = convertView;
@@ -69,7 +69,13 @@ public class TypeMarkAdapter extends BaseAdapter {
     }
 
     class ViewHolder {
+        @BindView(R.id.type_mark)
         CircleImageView typeMark;
+        @BindView(R.id.selection_mark)
         ImageView selectionMark;
+
+        public ViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
     }
 }

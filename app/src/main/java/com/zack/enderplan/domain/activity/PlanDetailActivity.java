@@ -148,14 +148,8 @@ public class PlanDetailActivity extends BaseActivity
     public void showPlanDeletionDialog(String content) {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.title_dialog_delete_plan)
-                .setMessage(getResources().getString(R.string.msg_dialog_delete_plan_pt1) + content
-                        + getResources().getString(R.string.msg_dialog_delete_plan_pt2))
-                .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        planDetailPresenter.notifyPlanDeleted();
-                    }
-                })
+                .setMessage(getResources().getString(R.string.msg_dialog_delete_plan_pt1) + content + getResources().getString(R.string.msg_dialog_delete_plan_pt2))
+                .setPositiveButton(R.string.delete, (dialog, which) -> planDetailPresenter.notifyPlanDeleted())
                 .setNegativeButton(R.string.cancel, null)
                 .show();
     }
@@ -169,17 +163,12 @@ public class PlanDetailActivity extends BaseActivity
     @Override
     public void showContentEditorDialog(String content) {
         View contentEditorView = getLayoutInflater().inflate(R.layout.dialog_content_editor, null);
-        final EditText contentEditor = (EditText) contentEditorView.findViewById(R.id.editor_content);
+        EditText contentEditor = (EditText) contentEditorView.findViewById(R.id.editor_content);
         contentEditor.setText(content);
         contentEditor.setSelection(contentEditor.length());
         new AlertDialog.Builder(this)
                 .setView(contentEditorView)
-                .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        planDetailPresenter.notifyContentChanged(contentEditor.getText().toString());
-                    }
-                })
+                .setPositiveButton(R.string.save, (dialog, which) -> planDetailPresenter.notifyContentChanged(contentEditor.getText().toString()))
                 .setNegativeButton(R.string.cancel, null)
                 .show();
     }

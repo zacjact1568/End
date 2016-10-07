@@ -14,6 +14,9 @@ import com.zack.enderplan.widget.CircleColorView;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
 
     private static final String CLASS_NAME = "TypeAdapter";
@@ -36,7 +39,7 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         Type type = typeList.get(position);
 
         holder.typeMarkIcon.setFillColor(Color.parseColor(type.getTypeMark()));
@@ -48,12 +51,7 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
         holder.ucPlanCountIcon.setInnerText(ucPlanCountStr == null ? "" : ucPlanCountStr);
 
         if (onTypeItemClickListener != null) {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onTypeItemClickListener.onTypeItemClick(holder.getLayoutPosition(), holder.itemView);
-                }
-            });
+            holder.itemView.setOnClickListener(v -> onTypeItemClickListener.onTypeItemClick(holder.getLayoutPosition(), holder.itemView));
         }
     }
 
@@ -74,14 +72,16 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        CircleColorView typeMarkIcon, ucPlanCountIcon;
+        @BindView(R.id.ic_type_mark)
+        CircleColorView typeMarkIcon;
+        @BindView(R.id.text_type_name)
         TextView typeNameText;
+        @BindView(R.id.ic_uc_plan_count)
+        CircleColorView ucPlanCountIcon;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            typeMarkIcon = (CircleColorView) itemView.findViewById(R.id.ic_type_mark);
-            typeNameText = (TextView) itemView.findViewById(R.id.text_type_name);
-            ucPlanCountIcon = (CircleColorView) itemView.findViewById(R.id.ic_uc_plan_count);
+            ButterKnife.bind(this, itemView);
         }
     }
 

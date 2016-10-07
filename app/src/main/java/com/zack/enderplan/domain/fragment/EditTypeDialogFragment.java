@@ -40,7 +40,7 @@ public class EditTypeDialogFragment extends DialogFragment implements EditTypeVi
 
     private static final String ARG_POSITION = "position";
 
-    private int position;
+    private int mPosition;
     private EditTypePresenter editTypePresenter;
 
     public EditTypeDialogFragment() {
@@ -59,10 +59,10 @@ public class EditTypeDialogFragment extends DialogFragment implements EditTypeVi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            position = getArguments().getInt(ARG_POSITION);
+            mPosition = getArguments().getInt(ARG_POSITION);
         }
 
-        editTypePresenter = new EditTypePresenter(this, position);
+        editTypePresenter = new EditTypePresenter(this, mPosition);
     }
 
     @Override
@@ -122,12 +122,7 @@ public class EditTypeDialogFragment extends DialogFragment implements EditTypeVi
         });
 
         gridView.setAdapter(typeMarkAdapter);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                editTypePresenter.notifyTypeMarkClicked(position);
-            }
-        });
+        gridView.setOnItemClickListener((parent, view, position, id) -> editTypePresenter.notifyTypeMarkClicked(position));
     }
 
     @Override

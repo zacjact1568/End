@@ -71,12 +71,7 @@ public class AllTypesFragment extends Fragment implements AllTypesView {
     @Override
     public void showInitialView(TypeAdapter typeAdapter) {
 
-        typeAdapter.setOnTypeItemClickListener(new TypeAdapter.OnTypeItemClickListener() {
-            @Override
-            public void onTypeItemClick(int position, View typeItem) {
-                mAllTypesPresenter.notifyTypeItemClicked(position, typeItem);
-            }
-        });
+        typeAdapter.setOnTypeItemClickListener((position, typeItem) -> mAllTypesPresenter.notifyTypeItemClicked(position, typeItem));
 
         mAllTypesList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAllTypesList.setHasFixedSize(true);

@@ -96,6 +96,7 @@ public class CalendarDialogFragment extends DialogFragment {
             }
         });
 
+        //TODO use ButterKnife
         negativeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

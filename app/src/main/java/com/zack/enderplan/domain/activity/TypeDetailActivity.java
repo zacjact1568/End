@@ -102,12 +102,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailView {
         setContentView(R.layout.activity_type_detail);
         ButterKnife.bind(this);
 
-        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                typeDetailPresenter.notifyAppBarScrolled(verticalOffset, appBarLayout.getTotalScrollRange());
-            }
-        });
+        mAppBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> typeDetailPresenter.notifyAppBarScrolled(verticalOffset, appBarLayout.getTotalScrollRange()));
 
         setSupportActionBar(toolbar);
         setupActionBar();
@@ -117,29 +112,16 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailView {
         typeNameText.setText(formattedType.getTypeName());
         ucPlanCountText.setText(formattedType.getUcPlanCountStr());
 
-        contentEditor.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    typeDetailPresenter.notifyPlanCreation(contentEditor.getText().toString());
-                }
-                return false;
+        contentEditor.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                typeDetailPresenter.notifyPlanCreation(v.getText().toString());
             }
+            return false;
         });
 
-        planSingleTypeAdapter.setOnPlanItemClickListener(new PlanSingleTypeAdapter.OnPlanItemClickListener() {
-            @Override
-            public void onPlanItemClick(int position) {
-                typeDetailPresenter.notifyPlanItemClicked(position);
-            }
-        });
+        planSingleTypeAdapter.setOnPlanItemClickListener(position -> typeDetailPresenter.notifyPlanItemClicked(position));
 
-        planSingleTypeAdapter.setOnStarMarkIconClickListener(new PlanSingleTypeAdapter.OnStarMarkIconClickListener() {
-            @Override
-            public void onStarMarkIconClick(int position) {
-                typeDetailPresenter.notifyPlanStarStatusChanged(position);
-            }
-        });
+        planSingleTypeAdapter.setOnStarMarkIconClickListener(position -> typeDetailPresenter.notifyPlanStarStatusChanged(position));
 
         ucPlanList.setLayoutManager(new LinearLayoutManager(this));
         ucPlanList.setHasFixedSize(true);
@@ -211,12 +193,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailView {
         new AlertDialog.Builder(this)
                 .setTitle(typeName)
                 .setMessage(R.string.msg_dialog_delete_type)
-                .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        typeDetailPresenter.notifyDeletingType();
-                    }
-                })
+                .setPositiveButton(R.string.delete, (dialog, which) -> typeDetailPresenter.notifyDeletingType())
                 .setNegativeButton(R.string.cancel, null)
                 .show();
     }

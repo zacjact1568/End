@@ -106,7 +106,7 @@ public class HomePresenter extends BasePresenter implements Presenter<HomeView> 
     }
 
     @Subscribe
-    public void onPlanDeleted(final PlanDeletedEvent event) {
+    public void onPlanDeleted(PlanDeletedEvent event) {
         if (event.getEventSource().equals(getPresenterName())) return;
         if (!event.getDeletedPlan().isCompleted()) {
             //若删除的是一个未完成的计划，需要更新侧边栏
@@ -115,12 +115,7 @@ public class HomePresenter extends BasePresenter implements Presenter<HomeView> 
         mHomeView.showSnackbar(
                 event.getDeletedPlan().getContent() + " " + App.getGlobalContext().getResources().getString(R.string.deleted_prompt),
                 R.string.cancel,
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        notifyCreatingPlan(event.getPosition(), event.getDeletedPlan());
-                    }
-                }
+                v -> notifyCreatingPlan(event.getPosition(), event.getDeletedPlan())
         );
     }
 
@@ -139,16 +134,11 @@ public class HomePresenter extends BasePresenter implements Presenter<HomeView> 
     }
 
     @Subscribe
-    public void onTypeDeleted(final TypeDeletedEvent event) {
+    public void onTypeDeleted(TypeDeletedEvent event) {
         mHomeView.showSnackbar(
                 event.getDeletedType().getTypeName() + " " + App.getGlobalContext().getResources().getString(R.string.deleted_prompt),
                 R.string.cancel,
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        notifyCreatingType(event.getPosition(), event.getDeletedType());
-                    }
-                }
+                v -> notifyCreatingType(event.getPosition(), event.getDeletedType())
         );
     }
 

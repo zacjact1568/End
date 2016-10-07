@@ -12,6 +12,8 @@ import com.zack.enderplan.model.bean.Type;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class TypeSpinnerAdapter extends BaseAdapter {
@@ -46,9 +48,7 @@ public class TypeSpinnerAdapter extends BaseAdapter {
         ViewHolder viewHolder;
         if (convertView == null) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_type_spinner, parent, false);
-            viewHolder = new ViewHolder();
-            viewHolder.typeMark = (CircleImageView) view.findViewById(R.id.type_mark);
-            viewHolder.typeName = (TextView) view.findViewById(R.id.type_name);
+            viewHolder = new ViewHolder(view);
             view.setTag(viewHolder);
         } else {
             view = convertView;
@@ -60,7 +60,13 @@ public class TypeSpinnerAdapter extends BaseAdapter {
     }
 
     class ViewHolder {
+        @BindView(R.id.type_mark)
         CircleImageView typeMark;
+        @BindView(R.id.type_name)
         TextView typeName;
+
+        public ViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
     }
 }

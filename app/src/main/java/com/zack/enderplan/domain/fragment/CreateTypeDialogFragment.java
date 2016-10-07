@@ -99,12 +99,7 @@ public class CreateTypeDialogFragment extends DialogFragment implements CreateTy
         });
 
         mTypeMarksGrid.setAdapter(typeMarkAdapter);
-        mTypeMarksGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mCreateTypePresenter.notifyTypeMarkClicked(position);
-            }
-        });
+        mTypeMarksGrid.setOnItemClickListener((parent, view, position, id) -> mCreateTypePresenter.notifyTypeMarkClicked(position));
 
         //必须放在这里，如果放在布局文件中的话，setOnClickListener会将clickable设成true，就没用了
         mSaveButton.setClickable(false);

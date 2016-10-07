@@ -14,6 +14,8 @@ import com.zack.enderplan.utility.Util;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
@@ -39,7 +41,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         final Plan plan = planList.get(position);
         boolean isCompleted = plan.getCompletionTime() != 0;
 
@@ -52,30 +54,17 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
                 R.drawable.ic_star_color_accent_24dp);
 
         if (onStarMarkIconClickListener != null) {
-            holder.starMark.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onStarMarkIconClickListener.onStarMarkIconClick(holder.getLayoutPosition());
-                }
-            });
+            holder.starMark.setOnClickListener(v -> onStarMarkIconClickListener.onStarMarkIconClick(holder.getLayoutPosition()));
         }
 
         if (onPlanItemClickListener != null) {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onPlanItemClickListener.onPlanItemClick(holder.getLayoutPosition());
-                }
-            });
+            holder.itemView.setOnClickListener(v -> onPlanItemClickListener.onPlanItemClick(holder.getLayoutPosition()));
         }
 
         if (onPlanItemLongClickListener != null) {
-            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    onPlanItemLongClickListener.onPlanItemLongClick(holder.getLayoutPosition());
-                    return true;
-                }
+            holder.itemView.setOnLongClickListener(v -> {
+                onPlanItemLongClickListener.onPlanItemLongClick(holder.getLayoutPosition());
+                return true;
             });
         }
     }
@@ -86,16 +75,18 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.type_mark)
         CircleImageView typeMark;
+        @BindView(R.id.text_content)
         TextView contentText;
-        ImageView reminderMark, starMark;
+        @BindView(R.id.reminder_mark)
+        ImageView reminderMark;
+        @BindView(R.id.star_mark)
+        ImageView starMark;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            typeMark = (CircleImageView) itemView.findViewById(R.id.type_mark);
-            contentText = (TextView) itemView.findViewById(R.id.text_content);
-            reminderMark = (ImageView) itemView.findViewById(R.id.reminder_mark);
-            starMark = (ImageView) itemView.findViewById(R.id.star_mark);
+            ButterKnife.bind(this, itemView);
         }
     }
 

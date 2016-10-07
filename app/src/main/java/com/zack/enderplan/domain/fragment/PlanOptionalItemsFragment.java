@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.zack.enderplan.R;
 
+/** Deprecated class */
 public class PlanOptionalItemsFragment extends Fragment {
 
     private static final String ARG_PRIORITY_LEVEL = "priority_level";
