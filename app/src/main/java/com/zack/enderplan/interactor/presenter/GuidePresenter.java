@@ -52,7 +52,7 @@ public class GuidePresenter extends BasePresenter implements Presenter<GuideView
         if (!event.getEventSource().equals(getPresenterName())) {
             if (event.isEndNormally()) {
                 //正常结束，不再显示向导
-                PreferenceHelper.getInstance().setPref(PreferenceHelper.KEY_PREF_NEED_WELCOME, false);
+                PreferenceHelper.getInstance().setPref(PreferenceHelper.KEY_PREF_NEED_GUIDE, false);
             }
             mGuideView.endGuide();
         }

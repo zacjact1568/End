@@ -2,6 +2,8 @@ package com.zack.enderplan.domain.fragment;
 
 import android.app.DialogFragment;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
@@ -15,7 +17,7 @@ import android.widget.TextView;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.domain.view.CreateTypeView;
-import com.zack.enderplan.interactor.adapter.TypeMarkAdapter;
+import com.zack.enderplan.interactor.adapter.TypeMarkColorAdapter;
 import com.zack.enderplan.interactor.presenter.CreateTypePresenter;
 
 import butterknife.BindColor;
@@ -23,6 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/** Deprecated class */
 public class CreateTypeDialogFragment extends DialogFragment implements CreateTypeView {
 
     @BindView(R.id.wrapper_type_name_editor)
@@ -70,8 +73,7 @@ public class CreateTypeDialogFragment extends DialogFragment implements CreateTy
         mCreateTypePresenter.detachView();
     }
 
-    @Override
-    public void showInitialView(TypeMarkAdapter typeMarkAdapter) {
+    public void showInitialView(TypeMarkColorAdapter typeMarkColorAdapter) {
 
         TextInputEditText typeNameEditor;
 
@@ -94,30 +96,68 @@ public class CreateTypeDialogFragment extends DialogFragment implements CreateTy
 
             @Override
             public void afterTextChanged(Editable s) {
-                mCreateTypePresenter.notifyTypeNameChanged(s.toString());
+                //mCreateTypePresenter.notifyTypeNameChanged(s.toString());
             }
         });
 
-        mTypeMarksGrid.setAdapter(typeMarkAdapter);
-        mTypeMarksGrid.setOnItemClickListener((parent, view, position, id) -> mCreateTypePresenter.notifyTypeMarkClicked(position));
+        mTypeMarksGrid.setAdapter(typeMarkColorAdapter);
+        mTypeMarksGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //mCreateTypePresenter.notifyTypeMarkClicked(position);
+            }
+        });
 
         //必须放在这里，如果放在布局文件中的话，setOnClickListener会将clickable设成true，就没用了
         mSaveButton.setClickable(false);
     }
 
     @Override
+    public void showInitialView(int typeMarkColorInt, String firstChar, String typeName, String typeMarkColorName) {
+
+    }
+
+    @Override
+    public void onTypeMarkColorChanged(int colorInt, String colorName) {
+
+    }
+
+    @Override
+    public void onTypeNameChanged(String typeName, String firstChar, boolean isValid) {
+
+    }
+
+    @Override
+    public void showTypeMarkColorPickerDialog(String defaultColor) {
+
+    }
+
+    @Override
+    public void playShakeAnimation(String tag) {
+
+    }
+
+    @Override
+    public void showToast(@StringRes int msgResId) {
+
+    }
+
+    @Override
+    public void exitCreateType() {
+
+    }
+
     public void updateSaveButton(boolean isEnabled) {
         mSaveButton.setClickable(isEnabled);
         mSaveButton.setTextColor(isEnabled ? mPositiveColor : mNegativeColor);
     }
 
-    @Override
     public void closeDialog() {
         getDialog().dismiss();
     }
 
     @OnClick({R.id.btn_cancel, R.id.btn_save})
     public void onClick(View view) {
-        mCreateTypePresenter.notifyViewClicked(view.getId());
+        //mCreateTypePresenter.notifyViewClicked(view.getId());
     }
 }

@@ -58,15 +58,12 @@ public class PlanDetailPresenter extends BasePresenter implements Presenter<Plan
                 dataManager.getTypeLocationInTypeList(plan.getTypeCode()),
                 DateFormat.format(dateFormatStr, plan.getDeadline()).toString(),
                 DateFormat.format(dateTimeFormatStr, plan.getReminderTime()).toString(),
-                plan.getCompletionTime() != 0
-        ), new TypeSpinnerAdapter(dataManager.getTypeList(), dataManager.getTypeMarkAndColorResMap()));
+                plan.isCompleted()
+        ), new TypeSpinnerAdapter(dataManager.getTypeList()));
     }
 
     public void notifyViewClicked(int viewId) {
         switch (viewId) {
-            case R.id.text_content:
-                planDetailView.showContentEditorDialog(plan.getContent());
-                break;
             case R.id.item_view_deadline:
                 planDetailView.showDeadlineDialog(plan.getDeadline());
                 break;
@@ -86,6 +83,9 @@ public class PlanDetailPresenter extends BasePresenter implements Presenter<Plan
         switch (itemId) {
             case android.R.id.home:
                 planDetailView.exitPlanDetail();
+                break;
+            case R.id.action_edit:
+                planDetailView.showContentEditorDialog(plan.getContent());
                 break;
             case R.id.action_delete:
                 planDetailView.showPlanDeletionDialog(plan.getContent());

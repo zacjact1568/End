@@ -19,7 +19,8 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_TYPE = "create table type (" +
             "type_code text primary key, " +
             "type_name text, " +
-            "type_mark text, " +
+            "type_mark_color text, " +
+            "type_mark_pattern text, " +
             "type_sequence integer)";
 
     public DatabaseOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {

@@ -16,9 +16,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zack.enderplan.App;
 import com.zack.enderplan.R;
 import com.zack.enderplan.domain.fragment.CalendarDialogFragment;
 import com.zack.enderplan.domain.fragment.DateTimePickerDialogFragment;
+import com.zack.enderplan.domain.fragment.EditorDialogFragment;
 import com.zack.enderplan.interactor.presenter.PlanDetailPresenter;
 import com.zack.enderplan.domain.view.PlanDetailView;
 import com.zack.enderplan.interactor.adapter.TypeSpinnerAdapter;
@@ -149,8 +151,13 @@ public class PlanDetailActivity extends BaseActivity
         new AlertDialog.Builder(this)
                 .setTitle(R.string.title_dialog_delete_plan)
                 .setMessage(getResources().getString(R.string.msg_dialog_delete_plan_pt1) + content + getResources().getString(R.string.msg_dialog_delete_plan_pt2))
-                .setPositiveButton(R.string.delete, (dialog, which) -> planDetailPresenter.notifyPlanDeleted())
-                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        planDetailPresenter.notifyPlanDeleted();
+                    }
+                })
+                .setNegativeButton(R.string.button_cancel, null)
                 .show();
     }
 
@@ -162,15 +169,14 @@ public class PlanDetailActivity extends BaseActivity
 
     @Override
     public void showContentEditorDialog(String content) {
-        View contentEditorView = getLayoutInflater().inflate(R.layout.dialog_content_editor, null);
-        EditText contentEditor = (EditText) contentEditorView.findViewById(R.id.editor_content);
-        contentEditor.setText(content);
-        contentEditor.setSelection(contentEditor.length());
-        new AlertDialog.Builder(this)
-                .setView(contentEditorView)
-                .setPositiveButton(R.string.save, (dialog, which) -> planDetailPresenter.notifyContentChanged(contentEditor.getText().toString()))
-                .setNegativeButton(R.string.cancel, null)
-                .show();
+        EditorDialogFragment fragment = EditorDialogFragment.newInstance(App.getGlobalContext().getString(R.string.title_dialog_content_editor), content);
+        fragment.setOnPositiveButtonClickListener(new EditorDialogFragment.OnPositiveButtonClickListener() {
+            @Override
+            public void onPositiveButtonClick(String editorText) {
+                planDetailPresenter.notifyContentChanged(editorText);
+            }
+        });
+        fragment.show(getSupportFragmentManager(), "content_editor");
     }
 
     @Override
@@ -180,7 +186,7 @@ public class PlanDetailActivity extends BaseActivity
 
     @Override
     public void onContentEditedAbortively() {
-        Toast.makeText(this, R.string.prompt_empty_content, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.toast_empty_content, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -214,7 +220,7 @@ public class PlanDetailActivity extends BaseActivity
     @Override
     public void onDeadlineRemoved() {
         deadlineMark.setVisibility(View.GONE);
-        deadlineDescriptionText.setText(R.string.unsettled);
+        deadlineDescriptionText.setText(R.string.dscpt_unsettled);
         deadlineDescriptionText.setTextColor(lightTextColor);
     }
 
@@ -228,7 +234,7 @@ public class PlanDetailActivity extends BaseActivity
     @Override
     public void onReminderRemoved() {
         reminderMark.setVisibility(View.GONE);
-        reminderDescriptionText.setText(R.string.unsettled);
+        reminderDescriptionText.setText(R.string.dscpt_unsettled);
         reminderDescriptionText.setTextColor(lightTextColor);
     }
 
@@ -257,7 +263,7 @@ public class PlanDetailActivity extends BaseActivity
         planDetailPresenter.notifyReminderRemoved();
     }
 
-    @OnClick({R.id.text_content, R.id.item_view_deadline, R.id.item_view_reminder, R.id.fab, R.id.btn_switch_plan_status})
+    @OnClick({R.id.item_view_deadline, R.id.item_view_reminder, R.id.fab, R.id.btn_switch_plan_status})
     public void onClick(View view) {
         planDetailPresenter.notifyViewClicked(view.getId());
     }

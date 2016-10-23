@@ -42,9 +42,9 @@ public class ReminderReceiver extends BroadcastReceiver {
         nManager.notify(planCode, 0, notification);
 
         //数据库存储
-        dManager.editReminderTime(planCode, 0);
+        dManager.updateReminderTime(planCode, 0);
 
-        if (dataManager.getDataStatus() == DataManager.DataStatus.STATUS_DATA_LOADED) {
+        if (dataManager.getDataStatus() == DataManager.STATUS_DATA_LOADED) {
             //此时数据已加载完成，可以通过DataManager访问到数据
             int position = dataManager.getPlanLocationInPlanList(planCode);
             dataManager.getPlan(position).setReminderTime(0);

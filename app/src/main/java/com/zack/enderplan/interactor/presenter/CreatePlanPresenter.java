@@ -34,7 +34,7 @@ public class CreatePlanPresenter extends BasePresenter implements Presenter<Crea
     }
 
     public void setInitialView() {
-        mCreatePlanView.showInitialView(new TypeSpinnerAdapter(mDataManager.getTypeList(), mDataManager.getTypeMarkAndColorResMap()));
+        mCreatePlanView.showInitialView(new TypeSpinnerAdapter(mDataManager.getTypeList()));
     }
 
     public void notifyContentChanged(String newContent) {

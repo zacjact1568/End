@@ -45,7 +45,7 @@ public class AllTypesPresenter extends BasePresenter implements Presenter<AllTyp
     }
 
     public void setInitialView() {
-        mTypeAdapter = new TypeAdapter(mDataManager.getTypeList(), mDataManager.getTypeMarkAndColorResMap(), mDataManager.getUcPlanCountOfEachTypeMap());
+        mTypeAdapter = new TypeAdapter(mDataManager.getTypeList(), mDataManager.getUcPlanCountOfEachTypeMap());
         mAllTypesView.showInitialView(mTypeAdapter);
     }
 
@@ -66,7 +66,7 @@ public class AllTypesPresenter extends BasePresenter implements Presenter<AllTyp
     public void notifyTypeDeleted(int position) {
         Type type = mDataManager.getType(position);
 
-        if (mDataManager.isUcPlanCountOfOneTypeExists(type.getTypeCode())) {
+        if (mDataManager.isUcPlanOfOneTypeExists(type.getTypeCode())) {
             //Some uc plans belong to this type, do fake deleting
             mDataManager.removeFromTypeList(position);
             mTypeAdapter.notifyItemRemoved(position);

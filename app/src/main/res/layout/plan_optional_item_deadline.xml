@@ -19,7 +19,7 @@
         android:id="@+id/text_deadline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/item_deadline"
+        android:text="@string/title_deadline"
         android:textSize="16sp"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@id/ic_deadline"
@@ -29,7 +29,7 @@
         android:id="@+id/text_deadline_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/unsettled"
+        android:text="@string/dscpt_unsettled"
         android:textSize="12sp"
         android:layout_below="@id/text_deadline"
         android:layout_alignStart="@id/text_deadline"/>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".domain.activity.EditTypeActivity"
+    tools:showIn="@layout/activity_edit_type">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:elevation="4dp">
+
+        <com.zack.enderplan.widget.CircleColorView
+            android:id="@+id/ic_type_mark_preview"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            app:edge_width="1dp"/>
+
+        <TextView
+            android:id="@+id/text_type_name_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            tools:text="Work"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_type_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_name"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"/>
+
+        <TextView
+            android:id="@+id/text_type_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="12sp"
+            tools:text="Work"/>
+
+    </LinearLayout>
+
+    <include layout="@layout/divider"/>
+
+    <RelativeLayout
+        android:id="@+id/layout_type_mark_color"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/text_tmc_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_color"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"/>
+
+        <TextView
+            android:id="@+id/text_type_mark_color_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_tmc_item"
+            android:layout_marginTop="4dp"
+            android:textSize="12sp"
+            tools:text="Indigo"/>
+
+        <com.zack.enderplan.widget.CircleColorView
+            android:id="@+id/ic_type_mark_color"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"/>
+
+    </RelativeLayout>
+
+    <include layout="@layout/divider"/>
+
+    <RelativeLayout
+        android:id="@+id/layout_type_mark_pattern"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/text_tmp_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_pattern"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"/>
+
+        <TextView
+            android:id="@+id/text_type_mark_pattern_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_tmp_item"
+            android:layout_marginTop="4dp"
+            android:text="@string/dscpt_unsettled"
+            android:textSize="12sp"/>
+
+        <ImageView
+            android:id="@+id/ic_type_mark_pattern"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_close_grey600_24dp"/>
+
+    </RelativeLayout>
+
+    <include layout="@layout/divider"/>
+
+</LinearLayout>

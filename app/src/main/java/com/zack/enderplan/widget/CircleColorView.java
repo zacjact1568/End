@@ -5,6 +5,8 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
@@ -13,11 +15,12 @@ import com.zack.enderplan.R;
 
 public class CircleColorView extends View {
 
-    private int mFillColor = Color.BLACK;
-    private float mEdgeWidth = 0f;
-    private int mEdgeColor = Color.GRAY;
+    private int mFillColor;
+    private float mEdgeWidth;
+    private int mEdgeColor;
     private String mInnerText;
-    private int mInnerTextColor = Color.WHITE;
+    private int mInnerTextColor;
+    private Drawable mInnerIcon;
 
     private Paint mPaint;
     private TextPaint mTextPaint;
@@ -59,11 +62,12 @@ public class CircleColorView extends View {
     /** 加载自定义的属性 */
     private void loadAttrs(AttributeSet attrs, int defStyle) {
         TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.CircleColorView, defStyle, 0);
-        mFillColor = ta.getColor(R.styleable.CircleColorView_fill_color, mFillColor);
-        mEdgeWidth = ta.getDimension(R.styleable.CircleColorView_edge_width, mEdgeWidth);
-        mEdgeColor = ta.getColor(R.styleable.CircleColorView_edge_color, mEdgeColor);
+        mFillColor = ta.getColor(R.styleable.CircleColorView_fill_color, Color.BLACK);
+        mEdgeWidth = ta.getDimension(R.styleable.CircleColorView_edge_width, 0f);
+        mEdgeColor = ta.getColor(R.styleable.CircleColorView_edge_color, Color.WHITE);
         mInnerText = ta.getString(R.styleable.CircleColorView_inner_text);
-        mInnerTextColor = ta.getColor(R.styleable.CircleColorView_inner_text_color, mInnerTextColor);
+        mInnerTextColor = ta.getColor(R.styleable.CircleColorView_inner_text_color, Color.WHITE);
+        mInnerIcon = ta.getDrawable(R.styleable.CircleColorView_inner_icon);
         ta.recycle();
     }
 
@@ -71,22 +75,16 @@ public class CircleColorView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        initSize();
+
         drawCircle(canvas);
 
         drawText(canvas);
+
+        drawIcon(canvas);
     }
 
-    public void setFillColor(int fillColor) {
-        mFillColor = fillColor;
-        invalidate();
-    }
-
-    public void setInnerText(String innerText) {
-        mInnerText = innerText;
-        invalidate();
-    }
-
-    private void drawCircle(Canvas canvas) {
+    private void initSize() {
         int paddingLeft = getPaddingLeft();
         int paddingTop = getPaddingTop();
 
@@ -97,6 +95,9 @@ public class CircleColorView extends View {
         mCenterY = paddingTop + contentHeight / 2f;
 
         mDiameter = Math.min(contentWidth, contentHeight);
+    }
+
+    private void drawCircle(Canvas canvas) {
 
         float edgeRadius = mDiameter / 2f;
 
@@ -112,7 +113,7 @@ public class CircleColorView extends View {
     }
 
     private void drawText(Canvas canvas) {
-        if (mInnerText == null) return;
+        if (mInnerText == null || mInnerIcon != null) return;
 
         mTextPaint.setTextSize(mDiameter / 2f);
         mTextPaint.setColor(mInnerTextColor);
@@ -120,5 +121,36 @@ public class CircleColorView extends View {
         float textOffsetY = (mTextPaint.descent() - mTextPaint.ascent()) / 2f - mTextPaint.descent();
 
         canvas.drawText(mInnerText, mCenterX, mCenterY + textOffsetY, mTextPaint);
+    }
+
+    private void drawIcon(Canvas canvas) {
+        if (mInnerIcon == null) return;
+
+        float radius = mDiameter / 2f;
+        mInnerIcon.setBounds(
+                (int) (mCenterX - radius),
+                (int) (mCenterY - radius),
+                (int) (mCenterX + radius),
+                (int) (mCenterY + radius)
+        );
+        mInnerIcon.draw(canvas);
+    }
+
+    public void setFillColor(int fillColor) {
+        if (fillColor == mFillColor) return;
+        mFillColor = fillColor;
+        invalidate();
+    }
+
+    public void setInnerText(@NonNull String innerText) {
+        if (innerText.equals(mInnerText)) return;
+        mInnerText = innerText;
+        invalidate();
+    }
+
+    public void setInnerIcon(@NonNull Drawable innerIcon) {
+        if (innerIcon.equals(mInnerIcon)) return;
+        mInnerIcon = innerIcon;
+        invalidate();
     }
 }

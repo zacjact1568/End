@@ -44,7 +44,7 @@ public class MyPlansPresenter extends BasePresenter implements Presenter<MyPlans
 
     public void setInitialView() {
         //初始化adapter
-        mPlanAdapter = new PlanAdapter(mDataManager.getPlanList(), mDataManager.getTypeCodeAndColorResMap());
+        mPlanAdapter = new PlanAdapter(mDataManager.getPlanList(), mDataManager.getTypeCodeAndTypeMarkMap());
 
         mMyPlansView.showInitialView(mPlanAdapter);
 

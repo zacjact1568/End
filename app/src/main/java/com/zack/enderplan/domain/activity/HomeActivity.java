@@ -225,14 +225,17 @@ public class HomeActivity extends BaseActivity implements HomeView,
         snackbar.show();
     }
 
-    @OnClick(R.id.fab)
-    public void onClick() {
-        if (getSupportFragmentManager().findFragmentByTag(TAG_ALL_TYPES) != null) {
-            CreateTypeDialogFragment dialog = new CreateTypeDialogFragment();
-            dialog.show(getFragmentManager(), "create_type");
-            return;
+    @OnClick({R.id.fab})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.fab:
+                //TODO 优化点击后事件的选择
+                boolean isOnRootFragment = getSupportFragmentManager().findFragmentByTag(TAG_ALL_TYPES) == null;
+                Intent intent = new Intent(this, isOnRootFragment ? CreatePlanActivity.class : CreateTypeActivity.class);
+                startActivity(intent);
+                //CreateTypeDialogFragment dialog = new CreateTypeDialogFragment();
+                //dialog.show(getFragmentManager(), "create_type");
+                break;
         }
-        Intent intent = new Intent(this, CreatePlanActivity.class);
-        startActivity(intent);
     }
 }

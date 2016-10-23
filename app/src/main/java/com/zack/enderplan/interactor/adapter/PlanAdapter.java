@@ -1,5 +1,6 @@
 package com.zack.enderplan.interactor.adapter;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,29 +10,28 @@ import android.widget.TextView;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.model.bean.Plan;
+import com.zack.enderplan.model.bean.TypeMark;
 import com.zack.enderplan.utility.Util;
+import com.zack.enderplan.widget.CircleColorView;
 
 import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
 
-    private static final String LOG_TAG = "PlanAdapter";
-
     private List<Plan> planList;
-    private Map<String, Integer> typeCodeAndColorResMap;
+    private Map<String, TypeMark> mTypeCodeAndTypeMarkMap;
 
     private OnPlanItemClickListener onPlanItemClickListener;
     private OnPlanItemLongClickListener onPlanItemLongClickListener;
     private OnStarMarkIconClickListener onStarMarkIconClickListener;
 
-    public PlanAdapter(List<Plan> planList, Map<String, Integer> typeCodeAndColorResMap) {
+    public PlanAdapter(List<Plan> planList, Map<String, TypeMark> typeCodeAndTypeMarkMap) {
         this.planList = planList;
-        this.typeCodeAndColorResMap = typeCodeAndColorResMap;
+        mTypeCodeAndTypeMarkMap = typeCodeAndTypeMarkMap;
     }
 
     @Override
@@ -41,11 +41,11 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         final Plan plan = planList.get(position);
-        boolean isCompleted = plan.getCompletionTime() != 0;
+        boolean isCompleted = plan.isCompleted();
 
-        holder.typeMark.setImageResource(isCompleted ? R.color.grey : typeCodeAndColorResMap.get(plan.getTypeCode()));
+        holder.typeMarkIcon.setFillColor(isCompleted ? Color.GRAY : Color.parseColor(mTypeCodeAndTypeMarkMap.get(plan.getTypeCode()).getColorHex()));
         holder.contentText.setText(isCompleted ? Util.addStrikethroughSpan(plan.getContent()) :
                 plan.getContent());
         holder.reminderMark.setVisibility(plan.getReminderTime() == 0 ? View.INVISIBLE : View.VISIBLE);
@@ -54,17 +54,30 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
                 R.drawable.ic_star_color_accent_24dp);
 
         if (onStarMarkIconClickListener != null) {
-            holder.starMark.setOnClickListener(v -> onStarMarkIconClickListener.onStarMarkIconClick(holder.getLayoutPosition()));
+            holder.starMark.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onStarMarkIconClickListener.onStarMarkIconClick(holder.getLayoutPosition());
+                }
+            });
         }
 
         if (onPlanItemClickListener != null) {
-            holder.itemView.setOnClickListener(v -> onPlanItemClickListener.onPlanItemClick(holder.getLayoutPosition()));
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onPlanItemClickListener.onPlanItemClick(holder.getLayoutPosition());
+                }
+            });
         }
 
         if (onPlanItemLongClickListener != null) {
-            holder.itemView.setOnLongClickListener(v -> {
-                onPlanItemLongClickListener.onPlanItemLongClick(holder.getLayoutPosition());
-                return true;
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    onPlanItemLongClickListener.onPlanItemLongClick(holder.getLayoutPosition());
+                    return true;
+                }
             });
         }
     }
@@ -75,8 +88,8 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.type_mark)
-        CircleImageView typeMark;
+        @BindView(R.id.ic_type_mark)
+        CircleColorView typeMarkIcon;
         @BindView(R.id.text_content)
         TextView contentText;
         @BindView(R.id.reminder_mark)

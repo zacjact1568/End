@@ -1,12 +1,20 @@
 package com.zack.enderplan.domain.view;
 
-import com.zack.enderplan.interactor.adapter.TypeMarkAdapter;
+import android.support.annotation.StringRes;
 
 public interface CreateTypeView {
 
-    void showInitialView(TypeMarkAdapter typeMarkAdapter);
+    void showInitialView(int typeMarkColorInt, String firstChar, String typeName, String typeMarkColorName);
 
-    void updateSaveButton(boolean isEnabled);
+    void onTypeMarkColorChanged(int colorInt, String colorName);
 
-    void closeDialog();
+    void onTypeNameChanged(String typeName, String firstChar, boolean isValid);
+
+    void showTypeMarkColorPickerDialog(String defaultColor);
+
+    void playShakeAnimation(String tag);
+
+    void showToast(@StringRes int msgResId);
+
+    void exitCreateType();
 }

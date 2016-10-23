@@ -1,5 +1,7 @@
 package com.zack.enderplan.interactor.adapter;
 
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,22 +10,20 @@ import android.widget.TextView;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.model.bean.Type;
+import com.zack.enderplan.widget.CircleColorView;
 
 import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class TypeSpinnerAdapter extends BaseAdapter {
 
     private List<Type> typeList;
-    private Map<String, Integer> typeMarkAndColorResMap;
 
-    public TypeSpinnerAdapter(List<Type> typeList, Map<String, Integer> typeMarkAndColorResMap) {
+    public TypeSpinnerAdapter(List<Type> typeList) {
         this.typeList = typeList;
-        this.typeMarkAndColorResMap = typeMarkAndColorResMap;
     }
 
     @Override
@@ -54,16 +54,16 @@ public class TypeSpinnerAdapter extends BaseAdapter {
             view = convertView;
             viewHolder = (ViewHolder) view.getTag();
         }
-        viewHolder.typeMark.setImageResource(typeMarkAndColorResMap.get(type.getTypeMark()));
-        viewHolder.typeName.setText(type.getTypeName());
+        viewHolder.typeMarkIcon.setFillColor(Color.parseColor(type.getTypeMarkColor()));
+        viewHolder.typeNameText.setText(type.getTypeName());
         return view;
     }
 
     class ViewHolder {
-        @BindView(R.id.type_mark)
-        CircleImageView typeMark;
-        @BindView(R.id.type_name)
-        TextView typeName;
+        @BindView(R.id.ic_type_mark)
+        CircleColorView typeMarkIcon;
+        @BindView(R.id.text_type_name)
+        TextView typeNameText;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);

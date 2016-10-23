@@ -2,52 +2,26 @@ package com.zack.enderplan.model.bean;
 
 public class TypeMark {
 
-    private int resId, colorInt;
-    private boolean isSelected, isValid;
+    private String colorHex, patternId;
 
-    public TypeMark(int resId, int colorInt, boolean isSelected) {
-        this.resId = resId;
-        this.colorInt = colorInt;
-        this.isSelected = isSelected;
-        this.isValid = true;
+    public TypeMark(String colorHex, String patternId) {
+        this.colorHex = colorHex;
+        this.patternId = patternId;
     }
 
-    public TypeMark(int resId, int colorInt, boolean isSelected, boolean isValid) {
-        this.resId = resId;
-        this.colorInt = colorInt;
-        this.isSelected = isSelected;
-        this.isValid = isValid;
+    public String getColorHex() {
+        return colorHex;
     }
 
-    public int getResId() {
-        return resId;
+    public void setColorHex(String colorHex) {
+        this.colorHex = colorHex;
     }
 
-    public void setResId(int resId) {
-        this.resId = resId;
+    public String getPatternId() {
+        return patternId;
     }
 
-    public int getColorInt() {
-        return colorInt;
-    }
-
-    public void setColorInt(int colorInt) {
-        this.colorInt = colorInt;
-    }
-
-    public boolean isSelected() {
-        return isSelected;
-    }
-
-    public void setIsSelected(boolean isSelected) {
-        this.isSelected = isSelected;
-    }
-
-    public boolean isValid() {
-        return isValid;
-    }
-
-    public void setIsValid(boolean isValid) {
-        this.isValid = isValid;
+    public void setPatternId(String patternId) {
+        this.patternId = patternId;
     }
 }

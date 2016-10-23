@@ -75,6 +75,7 @@ public class FirstPlanPresenter extends BasePresenter implements Presenter<First
                     Util.makeCode(),
                     context.getResources().getString(typeNameResIds[i]),
                     Util.parseColor(ContextCompat.getColor(context, typeMarkResIds[i])),
+                    null,//TODO default pattern
                     i
             ));
         }

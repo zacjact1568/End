@@ -8,15 +8,20 @@ import android.database.sqlite.SQLiteDatabase;
 import com.zack.enderplan.App;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.bean.Type;
+import com.zack.enderplan.model.bean.TypeMark;
+import com.zack.enderplan.model.bean.TypeMarkColor;
+import com.zack.enderplan.utility.Util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class DatabaseManager {
 
     public static final String DB_NAME = "com.zack.enderplan.db";
+    public static final String DB_TYPE_MARK = "type_mark.db";
 
     public static final int DB_VERSION = 1;
 
@@ -24,7 +29,8 @@ public class DatabaseManager {
     public static final String DB_STR_TYPE = "type";
     public static final String DB_STR_TYPE_CODE = "type_code";
     public static final String DB_STR_TYPE_NAME = "type_name";
-    public static final String DB_STR_TYPE_MARK = "type_mark";
+    public static final String DB_STR_TYPE_MARK_COLOR = "type_mark_color";
+    public static final String DB_STR_TYPE_MARK_PATTERN = "type_mark_pattern";
     public static final String DB_STR_TYPE_SEQUENCE = "type_sequence";
     public static final String DB_STR_PLAN_CODE = "plan_code";
     public static final String DB_STR_CONTENT = "content";
@@ -55,56 +61,86 @@ public class DatabaseManager {
             ContentValues values = new ContentValues();
             values.put(DB_STR_TYPE_CODE, type.getTypeCode());
             values.put(DB_STR_TYPE_NAME, type.getTypeName());
-            values.put(DB_STR_TYPE_MARK, type.getTypeMark());
+            values.put(DB_STR_TYPE_MARK_COLOR, type.getTypeMarkColor());
+            values.put(DB_STR_TYPE_MARK_PATTERN, type.getTypeMarkPattern());
             values.put(DB_STR_TYPE_SEQUENCE, type.getTypeSequence());
             database.insert(DB_STR_TYPE, null, values);
         }
     }
 
     public List<Type> loadType() {
-        String typeCode, typeName, typeMark;
-        int typeSequence;
         List<Type> typeList = new ArrayList<>();
         Cursor cursor = database.query(DB_STR_TYPE, null, null, null, null, null, DB_STR_TYPE_SEQUENCE);
         if (cursor.moveToFirst()) {
             do {
-                typeCode = cursor.getString(cursor.getColumnIndex(DB_STR_TYPE_CODE));
-                typeName = cursor.getString(cursor.getColumnIndex(DB_STR_TYPE_NAME));
-                typeMark = cursor.getString(cursor.getColumnIndex(DB_STR_TYPE_MARK));
-                typeSequence = cursor.getInt(cursor.getColumnIndex(DB_STR_TYPE_SEQUENCE));
-                typeList.add(new Type(typeCode, typeName, typeMark, typeSequence));
+                typeList.add(new Type(
+                        cursor.getString(cursor.getColumnIndex(DB_STR_TYPE_CODE)),
+                        cursor.getString(cursor.getColumnIndex(DB_STR_TYPE_NAME)),
+                        cursor.getString(cursor.getColumnIndex(DB_STR_TYPE_MARK_COLOR)),
+                        cursor.getString(cursor.getColumnIndex(DB_STR_TYPE_MARK_PATTERN)),
+                        cursor.getInt(cursor.getColumnIndex(DB_STR_TYPE_SEQUENCE))
+                ));
             } while (cursor.moveToNext());
         }
         cursor.close();
         return typeList;
     }
 
-    public String queryTypeMarkByTypeCode(String typeCode) {
-        String typeMark = "";
-        Cursor cursor = database.query(DB_STR_TYPE, new String[]{DB_STR_TYPE_MARK}, DB_STR_TYPE_CODE + " = ?",
-                new String[]{typeCode}, null, null, null);
+    public TypeMark queryTypeMarkByTypeCode(String typeCode) {
+        TypeMark typeMark = null;
+        Cursor cursor = database.query(DB_STR_TYPE, new String[]{DB_STR_TYPE_MARK_COLOR, DB_STR_TYPE_MARK_PATTERN},
+                DB_STR_TYPE_CODE + " = ?", new String[]{typeCode}, null, null, null);
         if (cursor.moveToFirst()) {
-            typeMark = cursor.getString(cursor.getColumnIndex(DB_STR_TYPE_MARK));
+            typeMark = new TypeMark(
+                    cursor.getString(cursor.getColumnIndex(DB_STR_TYPE_MARK_COLOR)),
+                    cursor.getString(cursor.getColumnIndex(DB_STR_TYPE_MARK_PATTERN))
+            );
         }
         cursor.close();
         return typeMark;
     }
 
-    public void editType(String typeCode, ContentValues values) {
+    public void updateType(String typeCode, ContentValues values) {
         database.update(DB_STR_TYPE, values, DB_STR_TYPE_CODE + " = ?", new String[]{typeCode});
     }
 
-    public void editTypeBase(String typeCode, String typeName, String typeMark) {
+    public void updateTypeBase(String typeCode, String typeName, String typeMarkColor, String typeMarkPattern) {
         ContentValues values = new ContentValues();
         values.put(DB_STR_TYPE_NAME, typeName);
-        values.put(DB_STR_TYPE_MARK, typeMark);
-        editType(typeCode, values);
+        values.put(DB_STR_TYPE_MARK_COLOR, typeMarkColor);
+        values.put(DB_STR_TYPE_MARK_PATTERN, typeMarkPattern);
+        updateType(typeCode, values);
     }
 
-    public void editTypeSequence(String typeCode, int typeSequence) {
+    public void updateTypeName(String typeCode, String typeName) {
+        ContentValues values = new ContentValues();
+        values.put(DB_STR_TYPE_NAME, typeName);
+        updateType(typeCode, values);
+    }
+
+    public void updateTypeMark(String typeCode, String typeMarkColor, String typeMarkPattern) {
+        ContentValues values = new ContentValues();
+        values.put(DB_STR_TYPE_MARK_COLOR, typeMarkColor);
+        values.put(DB_STR_TYPE_MARK_PATTERN, typeMarkPattern);
+        updateType(typeCode, values);
+    }
+
+    public void updateTypeMarkColor(String typeCode, String typeMarkColor) {
+        ContentValues values = new ContentValues();
+        values.put(DB_STR_TYPE_MARK_COLOR, typeMarkColor);
+        updateType(typeCode, values);
+    }
+
+    public void updateTypeMarkPattern(String typeCode, String typeMarkPattern) {
+        ContentValues values = new ContentValues();
+        values.put(DB_STR_TYPE_MARK_PATTERN, typeMarkPattern);
+        updateType(typeCode, values);
+    }
+
+    public void updateTypeSequence(String typeCode, int typeSequence) {
         ContentValues values = new ContentValues();
         values.put(DB_STR_TYPE_SEQUENCE, typeSequence);
-        editType(typeCode, values);
+        updateType(typeCode, values);
     }
 
     public void deleteType(String typeCode) {
@@ -153,45 +189,45 @@ public class DatabaseManager {
         return planList;
     }
 
-    public void editPlan(String planCode, ContentValues values) {
+    public void updatePlan(String planCode, ContentValues values) {
         database.update(DB_STR_PLAN, values, DB_STR_PLAN_CODE + " = ?", new String[]{planCode});
     }
 
-    public void editContent(String planCode, String content) {
+    public void updateContent(String planCode, String content) {
         ContentValues values = new ContentValues();
         values.put(DB_STR_CONTENT, content);
-        editPlan(planCode, values);
+        updatePlan(planCode, values);
     }
 
-    public void editTypeOfPlan(String planCode, String typeCode) {
+    public void updateTypeOfPlan(String planCode, String typeCode) {
         ContentValues values = new ContentValues();
         values.put(DB_STR_TYPE_CODE, typeCode);
-        editPlan(planCode, values);
+        updatePlan(planCode, values);
     }
 
-    public void editDeadline(String planCode, long deadline) {
+    public void updateDeadline(String planCode, long deadline) {
         ContentValues values = new ContentValues();
         values.put(DB_STR_DEADLINE, deadline);
-        editPlan(planCode, values);
+        updatePlan(planCode, values);
     }
 
-    public void editStarStatus(String planCode, int starStatus) {
+    public void updateStarStatus(String planCode, int starStatus) {
         ContentValues values = new ContentValues();
         values.put(DB_STR_STAR_STATUS, starStatus);
-        editPlan(planCode, values);
+        updatePlan(planCode, values);
     }
 
-    public void editReminderTime(String planCode, long reminderTime) {
+    public void updateReminderTime(String planCode, long reminderTime) {
         ContentValues values = new ContentValues();
         values.put(DB_STR_REMINDER_TIME, reminderTime);
-        editPlan(planCode, values);
+        updatePlan(planCode, values);
     }
 
-    public void editPlanStatus(String planCode, long creationTime, long completionTime) {
+    public void updatePlanStatus(String planCode, long creationTime, long completionTime) {
         ContentValues values = new ContentValues();
         values.put(DB_STR_CREATION_TIME, creationTime);
         values.put(DB_STR_COMPLETION_TIME, completionTime);
-        editPlan(planCode, values);
+        updatePlan(planCode, values);
     }
 
     public void deletePlan(String planCode) {
@@ -244,5 +280,38 @@ public class DatabaseManager {
         }
         cursor.close();
         return reminderTimeMap;
+    }
+
+    //*****************TypeMark*****************
+
+    public List<TypeMarkColor> loadTypeMarkColor() {
+        SQLiteDatabase typeMarkDB = SQLiteDatabase.openDatabase(App.getGlobalContext().getDatabasePath(DB_TYPE_MARK).getPath(), null, SQLiteDatabase.OPEN_READONLY);
+        List<TypeMarkColor> typeMarkColorList = new ArrayList<>();
+        boolean shouldUseChinese = Util.getPreferredLocale().equals(Locale.SIMPLIFIED_CHINESE);
+        Cursor cursor = typeMarkDB.rawQuery("select * from color", null);
+        if (cursor.moveToFirst()) {
+            do {
+                typeMarkColorList.add(new TypeMarkColor(
+                        cursor.getString(cursor.getColumnIndex("color_hex")),
+                        cursor.getString(cursor.getColumnIndex(shouldUseChinese ? "color_zh" : "color_en"))
+                ));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        typeMarkDB.close();
+        return typeMarkColorList;
+    }
+
+    public String queryTypeMarkColorNameByTypeMarkColorHex(String typeMarkColorHex) {
+        SQLiteDatabase typeMarkDB = SQLiteDatabase.openDatabase(App.getGlobalContext().getDatabasePath(DB_TYPE_MARK).getPath(), null, SQLiteDatabase.OPEN_READONLY);
+        String columnName = Util.getPreferredLocale().equals(Locale.SIMPLIFIED_CHINESE) ? "color_zh" : "color_en";
+        Cursor cursor = typeMarkDB.rawQuery("select " + columnName + " from color where color_hex = ?", new String[]{typeMarkColorHex});
+        String typeMarkColorName = null;
+        if (cursor.moveToFirst()) {
+            typeMarkColorName = cursor.getString(cursor.getColumnIndex(columnName));
+        }
+        cursor.close();
+        typeMarkDB.close();
+        return typeMarkColorName;
     }
 }

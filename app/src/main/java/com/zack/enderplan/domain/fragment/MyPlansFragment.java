@@ -71,8 +71,18 @@ public class MyPlansFragment extends Fragment implements MyPlansView {
     @Override
     public void showInitialView(PlanAdapter planAdapter) {
 
-        planAdapter.setOnPlanItemClickListener(position -> mMyPlansPresenter.notifyPlanItemClicked(position));
-        planAdapter.setOnStarMarkIconClickListener(position -> mMyPlansPresenter.notifyStarMarkClicked(position));
+        planAdapter.setOnPlanItemClickListener(new PlanAdapter.OnPlanItemClickListener() {
+            @Override
+            public void onPlanItemClick(int position) {
+                mMyPlansPresenter.notifyPlanItemClicked(position);
+            }
+        });
+        planAdapter.setOnStarMarkIconClickListener(new PlanAdapter.OnStarMarkIconClickListener() {
+            @Override
+            public void onStarMarkIconClick(int position) {
+                mMyPlansPresenter.notifyStarMarkClicked(position);
+            }
+        });
 
         //初始化RecyclerView
         mMyPlansList.setLayoutManager(new LinearLayoutManager(getActivity()));

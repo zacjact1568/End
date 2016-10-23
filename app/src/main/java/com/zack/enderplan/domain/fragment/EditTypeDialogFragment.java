@@ -2,6 +2,8 @@ package com.zack.enderplan.domain.fragment;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
@@ -10,20 +12,21 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.interactor.adapter.TypeMarkColorAdapter;
+import com.zack.enderplan.interactor.adapter.TypeMarkColourAdapter;
 import com.zack.enderplan.interactor.presenter.EditTypePresenter;
 import com.zack.enderplan.domain.view.EditTypeView;
-import com.zack.enderplan.interactor.adapter.TypeMarkAdapter;
 
 import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/** Deprecated class */
 public class EditTypeDialogFragment extends DialogFragment implements EditTypeView {
 
     @BindView(R.id.wrapper_type_name_editor)
@@ -88,11 +91,10 @@ public class EditTypeDialogFragment extends DialogFragment implements EditTypeVi
     @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
-        editTypePresenter.notifyTypeEditCanceled();
+        //editTypePresenter.notifyTypeEditCanceled();
     }
 
-    @Override
-    public void showInitialView(String typeName, TypeMarkAdapter typeMarkAdapter) {
+    public void showInitialView(String typeName, TypeMarkColorAdapter typeMarkColorAdapter) {
 
         TextInputEditText typeNameEditor;
 
@@ -117,21 +119,19 @@ public class EditTypeDialogFragment extends DialogFragment implements EditTypeVi
 
             @Override
             public void afterTextChanged(Editable s) {
-                editTypePresenter.notifyTypeNameChanged(s.toString());
+                //editTypePresenter.notifyTypeNameChanged(s.toString());
             }
         });
 
-        gridView.setAdapter(typeMarkAdapter);
-        gridView.setOnItemClickListener((parent, view, position, id) -> editTypePresenter.notifyTypeMarkClicked(position));
+        gridView.setAdapter(typeMarkColorAdapter);
+        //gridView.setOnItemClickListener((parent, view, position, id) -> editTypePresenter.notifyTypeMarkClicked(position));
     }
 
-    @Override
     public void updateSaveButton(boolean isEnabled) {
         saveButton.setClickable(isEnabled);
         saveButton.setTextColor(isEnabled ? positiveColor : negativeColor);
     }
 
-    @Override
     public void closeDialog(boolean isCanceled) {
         if (isCanceled) {
             getDialog().cancel();
@@ -142,6 +142,36 @@ public class EditTypeDialogFragment extends DialogFragment implements EditTypeVi
 
     @OnClick({R.id.button_cancel, R.id.button_save})
     public void onClick(View view) {
-        editTypePresenter.notifyViewClicked(view.getId());
+        //editTypePresenter.notifyViewClicked(view.getId());
+    }
+
+    @Override
+    public void showInitialView(int typeMarkColorInt, String firstChar, String typeName, String typeMarkColorName) {
+
+    }
+
+    @Override
+    public void showTypeNameEditorDialog(String originalEditorText) {
+
+    }
+
+    @Override
+    public void onTypeNameChanged(String typeName, String firstChar) {
+
+    }
+
+    @Override
+    public void onTypeMarkColorChanged(int colorInt, String colorName) {
+
+    }
+
+    @Override
+    public void showTypeMarkColorPickerDialog(String defaultColor) {
+
+    }
+
+    @Override
+    public void showToast(@StringRes int msgResId) {
+
     }
 }

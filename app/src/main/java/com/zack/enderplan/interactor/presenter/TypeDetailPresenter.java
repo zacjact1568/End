@@ -73,7 +73,7 @@ public class TypeDetailPresenter extends BasePresenter implements Presenter<Type
 
     public void setInitialView() {
         typeDetailView.showInitialView(new FormattedType(
-                Color.parseColor(type.getTypeMark()),
+                Color.parseColor(type.getTypeMarkColor()),
                 type.getTypeName().substring(0, 1),
                 type.getTypeName(),
                 getUcPlanCountStr(type.getTypeCode())
@@ -178,8 +178,12 @@ public class TypeDetailPresenter extends BasePresenter implements Presenter<Type
         mEventBus.post(new PlanDetailChangedEvent(getPresenterName(), plan.getPlanCode(), newPosInPlanList, PlanDetailChangedEvent.FIELD_PLAN_STATUS));
     }
 
+    public void notifyTypeEditingButtonClicked() {
+        typeDetailView.enterEditType(mPosition);
+    }
+
     public void notifyTypeDeletionButtonClicked() {
-        if (dataManager.isUcPlanCountOfOneTypeExists(type.getTypeCode())) {
+        if (dataManager.isUcPlanOfOneTypeExists(type.getTypeCode())) {
             typeDetailView.showToast(R.string.toast_type_not_empty);
         } else {
             typeDetailView.showDeletionConfirmationDialog(type.getTypeName());

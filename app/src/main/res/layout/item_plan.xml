@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="10dp"
@@ -9,11 +11,10 @@
     android:background="?android:attr/selectableItemBackground"
     android:descendantFocusability="blocksDescendants">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/type_mark"
-        android:layout_width="@dimen/circle_image_view_size"
-        android:layout_height="@dimen/circle_image_view_size"
-        android:src="@color/indigo"
+    <com.zack.enderplan.widget.CircleColorView
+        android:id="@+id/ic_type_mark"
+        android:layout_width="@dimen/circle_color_view_size"
+        android:layout_height="@dimen/circle_color_view_size"
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true"/>
 
@@ -21,13 +22,13 @@
         android:id="@+id/text_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="This is content"
         android:textSize="@dimen/plan_item_text_size"
-        android:singleLine="true"
+        android:maxLines="1"
         android:maxWidth="250dp"
         android:layout_centerVertical="true"
-        android:layout_toEndOf="@id/type_mark"
-        android:layout_marginStart="@dimen/image_text_spacing"/>
+        android:layout_toEndOf="@id/ic_type_mark"
+        android:layout_marginStart="@dimen/image_text_spacing"
+        tools:text="This is content"/>
 
     <ImageView
         android:id="@+id/reminder_mark"

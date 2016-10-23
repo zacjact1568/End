@@ -27,6 +27,8 @@ public interface TypeDetailView {
 
     void pressBack();
 
+    void enterEditType(int position);
+
     void showToast(@StringRes int msgResId);
 
     void showDeletionConfirmationDialog(String typeName);

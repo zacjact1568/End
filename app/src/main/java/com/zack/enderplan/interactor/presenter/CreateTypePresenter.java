@@ -1,15 +1,16 @@
 package com.zack.enderplan.interactor.presenter;
 
+import android.graphics.Color;
 import android.text.TextUtils;
 
+import com.zack.enderplan.App;
 import com.zack.enderplan.R;
 import com.zack.enderplan.model.bean.Type;
-import com.zack.enderplan.model.bean.TypeMark;
+import com.zack.enderplan.model.bean.TypeMarkColor;
 import com.zack.enderplan.event.TypeCreatedEvent;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.utility.Util;
 import com.zack.enderplan.domain.view.CreateTypeView;
-import com.zack.enderplan.interactor.adapter.TypeMarkAdapter;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -17,16 +18,17 @@ public class CreateTypePresenter extends BasePresenter implements Presenter<Crea
 
     private CreateTypeView mCreateTypeView;
     private DataManager mDataManager;
-    private TypeMarkAdapter mTypeMarkAdapter;
     private Type mType;
-
-    private int clickedPosition = -1;
-    private int selectedPosition = -1;
+    private String mDefaultTypeName, mEmptyTypeName;
 
     public CreateTypePresenter(CreateTypeView createTypeView) {
         attachView(createTypeView);
         mDataManager = DataManager.getInstance();
+        mDefaultTypeName = App.getGlobalContext().getString(R.string.text_new_type_name);
+        mEmptyTypeName = App.getGlobalContext().getString(R.string.text_empty_type_name);
         mType = new Type(Util.makeCode(), mDataManager.getTypeCount());
+        mType.setTypeName(mDefaultTypeName);
+        mType.setTypeMarkColor(mDataManager.getRandomTypeMarkColor());
     }
 
     @Override
@@ -37,66 +39,57 @@ public class CreateTypePresenter extends BasePresenter implements Presenter<Crea
     @Override
     public void detachView() {
         mCreateTypeView = null;
-        if (selectedPosition != -1) {
-            mDataManager.getTypeMark(selectedPosition).setIsSelected(false);
-        }
     }
 
     public void setInitialView() {
-        mTypeMarkAdapter = new TypeMarkAdapter(mDataManager.getTypeMarkList());
-        mCreateTypeView.showInitialView(mTypeMarkAdapter);
+        mCreateTypeView.showInitialView(
+                Color.parseColor(mType.getTypeMarkColor()),
+                mDefaultTypeName.substring(0, 1),
+                mDefaultTypeName,
+                mDataManager.getTypeMarkColorName(mType.getTypeMarkColor())
+        );
     }
 
-    public void notifyTypeNameChanged(String newTypeName) {
-        mType.setTypeName(newTypeName);
-        updateSaveButton();
-    }
-
-    public void notifyTypeMarkClicked(int position) {
-
-        //点击事件来临时，将上一个点击位置赋给lastClickedPosition，将此次点击的位置赋给clickedPosition
-        //并将此次点击的位置保存成全局变量，供下一次点击事件来临时使用（作为下一次点击事件的上一个点击位置）
-        int lastClickedPosition = clickedPosition;
-        clickedPosition = position;
-
-        TypeMark typeMark = mDataManager.getTypeMark(clickedPosition);
-        typeMark.setIsSelected(!typeMark.isSelected());
-        //不是初始点击且两次点击的不是同一个
-        if (lastClickedPosition != -1 && clickedPosition != lastClickedPosition) {
-            //取消上一次点击的
-            mDataManager.getTypeMark(lastClickedPosition).setIsSelected(false);
-        }
-        //刷新选中状态的显示
-        mTypeMarkAdapter.notifyDataSetChanged();
-
-        //若当前点击的被选中，那么说明该颜色被选择，否则什么都没选
-        selectedPosition = typeMark.isSelected() ? clickedPosition : -1;
-
-        updateSaveButton();
-    }
-
-    public void notifyViewClicked(int viewId) {
-        switch (viewId) {
-            case R.id.btn_cancel:
-                mCreateTypeView.closeDialog();
-                break;
-            case R.id.btn_save:
-                mType.setTypeMark(Util.parseColor(mDataManager.getTypeMark(selectedPosition).getColorInt()));
-
-                mDataManager.notifyTypeCreated(mType);
-
-                EventBus.getDefault().post(new TypeCreatedEvent(
-                        getPresenterName(),
-                        mDataManager.getRecentlyCreatedType().getTypeCode(),
-                        mDataManager.getRecentlyCreatedTypeLocation()
-                ));
-
-                mCreateTypeView.closeDialog();
-                break;
+    public void notifyTypeNameTextChanged(String typeName) {
+        mType.setTypeName(typeName);
+        if (TextUtils.isEmpty(typeName)) {
+            mCreateTypeView.onTypeNameChanged(mEmptyTypeName, "-", false);
+        } else {
+            mCreateTypeView.onTypeNameChanged(typeName, typeName.substring(0, 1), true);
         }
     }
 
-    private void updateSaveButton() {
-        mCreateTypeView.updateSaveButton(!TextUtils.isEmpty(mType.getTypeName()) && selectedPosition != -1);
+    public void notifyTypeMarkColorLayoutClicked() {
+        mCreateTypeView.showTypeMarkColorPickerDialog(mType.getTypeMarkColor());
+    }
+
+    public void notifyTypeMarkColorSelected(TypeMarkColor typeMarkColor) {
+        String colorHex = typeMarkColor.getColorHex();
+        mType.setTypeMarkColor(colorHex);
+        mCreateTypeView.onTypeMarkColorChanged(Color.parseColor(colorHex), typeMarkColor.getColorName());
+    }
+
+    public void notifyCreateButtonClicked() {
+        //TODO 后续：只要color和pattern的组合唯一就ok
+        if (mDataManager.isTypeNameUsed(mType.getTypeName())) {
+            mCreateTypeView.playShakeAnimation("type_name");
+            mCreateTypeView.showToast(R.string.toast_type_name_exists);
+        } else if (mDataManager.isTypeMarkColorUsed(mType.getTypeMarkColor())) {
+            mCreateTypeView.playShakeAnimation("type_mark_color");
+            mCreateTypeView.showToast(R.string.toast_type_mark_exists);
+        } else {
+            mDataManager.notifyTypeCreated(mType);
+            EventBus.getDefault().post(new TypeCreatedEvent(
+                    getPresenterName(),
+                    mDataManager.getRecentlyCreatedType().getTypeCode(),
+                    mDataManager.getRecentlyCreatedTypeLocation()
+            ));
+            mCreateTypeView.exitCreateType();
+        }
+    }
+
+    public void notifyCancelButtonClicked() {
+        //TODO 判断是否已编辑过
+        mCreateTypeView.exitCreateType();
     }
 }

@@ -17,13 +17,13 @@ import butterknife.ButterKnife;
 
 public class PlanSingleTypeAdapter extends RecyclerView.Adapter<PlanSingleTypeAdapter.ViewHolder> {
 
-    private List<Plan> planList;
+    private List<Plan> mSingleTypeUcPlanList;
 
     private OnStarMarkIconClickListener onStarMarkIconClickListener;
     private OnPlanItemClickListener onPlanItemClickListener;
 
-    public PlanSingleTypeAdapter(List<Plan> planList) {
-        this.planList = planList;
+    public PlanSingleTypeAdapter(List<Plan> singleTypeUcPlanList) {
+        this.mSingleTypeUcPlanList = singleTypeUcPlanList;
     }
 
     @Override
@@ -33,8 +33,8 @@ public class PlanSingleTypeAdapter extends RecyclerView.Adapter<PlanSingleTypeAd
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        final Plan plan = planList.get(position);
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+        Plan plan = mSingleTypeUcPlanList.get(position);
 
         holder.contentText.setText(plan.getContent());
         holder.starMarkIcon.setImageResource(plan.getStarStatus() == Plan.PLAN_STAR_STATUS_NOT_STARRED ?
@@ -42,17 +42,27 @@ public class PlanSingleTypeAdapter extends RecyclerView.Adapter<PlanSingleTypeAd
                 R.drawable.ic_star_color_accent_24dp);
 
         if (onStarMarkIconClickListener != null) {
-            holder.starMarkIcon.setOnClickListener(v -> onStarMarkIconClickListener.onStarMarkIconClick(holder.getLayoutPosition()));
+            holder.starMarkIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onStarMarkIconClickListener.onStarMarkIconClick(holder.getLayoutPosition());
+                }
+            });
         }
 
         if (onPlanItemClickListener != null) {
-            holder.itemView.setOnClickListener(v -> onPlanItemClickListener.onPlanItemClick(holder.getLayoutPosition()));
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onPlanItemClickListener.onPlanItemClick(holder.getLayoutPosition());
+                }
+            });
         }
     }
 
     @Override
     public int getItemCount() {
-        return planList.size();
+        return mSingleTypeUcPlanList.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

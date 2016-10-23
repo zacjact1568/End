@@ -2,20 +2,22 @@ package com.zack.enderplan.model.bean;
 
 public class Type {
 
-    private String typeCode, typeName, typeMark;
+    private String typeCode, typeName, typeMarkColor, typeMarkPattern;
     private int typeSequence;
 
     public Type(String typeCode, int typeSequence) {
         this.typeCode = typeCode;
         this.typeName = null;
-        this.typeMark = null;
+        this.typeMarkColor = null;
+        this.typeMarkPattern = null;
         this.typeSequence = typeSequence;
     }
 
-    public Type(String typeCode, String typeName, String typeMark, int typeSequence) {
+    public Type(String typeCode, String typeName, String typeMarkColor, String typeMarkPattern, int typeSequence) {
         this.typeCode = typeCode;
         this.typeName = typeName;
-        this.typeMark = typeMark;
+        this.typeMarkColor = typeMarkColor;
+        this.typeMarkPattern = typeMarkPattern;
         this.typeSequence = typeSequence;
     }
 
@@ -35,12 +37,20 @@ public class Type {
         this.typeName = typeName;
     }
 
-    public String getTypeMark() {
-        return typeMark;
+    public String getTypeMarkColor() {
+        return typeMarkColor;
     }
 
-    public void setTypeMark(String typeMark) {
-        this.typeMark = typeMark;
+    public void setTypeMarkColor(String typeMarkColor) {
+        this.typeMarkColor = typeMarkColor;
+    }
+
+    public String getTypeMarkPattern() {
+        return typeMarkPattern;
+    }
+
+    public void setTypeMarkPattern(String typeMarkPattern) {
+        this.typeMarkPattern = typeMarkPattern;
     }
 
     public int getTypeSequence() {

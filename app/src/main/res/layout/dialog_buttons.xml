@@ -7,14 +7,14 @@
         android:id="@+id/dialog_button_negative"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/dialog_button_remove"
+        android:text="@string/button_remove"
         style="@style/FlatButtonStyle"/>
 
     <TextView
         android:id="@+id/dialog_button_positive"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/dialog_button_ok"
+        android:text="@string/button_ok"
         style="@style/FlatButtonStyle"
         android:layout_marginStart="@dimen/dialog_button_spacing"/>
 

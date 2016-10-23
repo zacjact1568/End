@@ -4,6 +4,7 @@ import android.graphics.Color;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.model.bean.Plan;
+import com.zack.enderplan.model.bean.TypeMark;
 import com.zack.enderplan.model.database.DatabaseManager;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.model.DataManager;
@@ -40,9 +41,11 @@ public class ReminderPresenter extends BasePresenter implements Presenter<Remind
     }
 
     public void setInitialView() {
+        TypeMark typeMark = mDatabaseManager.queryTypeMarkByTypeCode(mPlan.getTypeCode());
         mReminderView.showInitialView(
                 mPlan.getContent(),
-                Color.parseColor(mDatabaseManager.queryTypeMarkByTypeCode(mPlan.getTypeCode()))
+                Color.parseColor(typeMark.getColorHex()),
+                0//TODO patternId
         );
     }
 
@@ -54,7 +57,7 @@ public class ReminderPresenter extends BasePresenter implements Presenter<Remind
         mReminderManager.setAlarm(mPlan.getPlanCode(), newReminderTime);
 
         //修改list（NOTE：在这个类里的plan上修改没有作用，因为它和list中的plan不是同一个对象）
-        if (mDataManager.getDataStatus() == DataManager.DataStatus.STATUS_DATA_LOADED) {
+        if (mDataManager.getDataStatus() == DataManager.STATUS_DATA_LOADED) {
             //说明数据已加载完成
             int position = mDataManager.getPlanLocationInPlanList(mPlan.getPlanCode());
             mDataManager.getPlan(position).setReminderTime(newReminderTime);
@@ -68,7 +71,7 @@ public class ReminderPresenter extends BasePresenter implements Presenter<Remind
         }
 
         //数据库存储
-        mDatabaseManager.editReminderTime(mPlan.getPlanCode(), newReminderTime);
+        mDatabaseManager.updateReminderTime(mPlan.getPlanCode(), newReminderTime);
 
         mReminderView.showToast(R.string.toast_reminder_delayed_5min);
         mReminderView.exitReminder();
@@ -84,7 +87,7 @@ public class ReminderPresenter extends BasePresenter implements Presenter<Remind
         long newCompletionTime = System.currentTimeMillis();
 
         //修改数据
-        if (mDataManager.getDataStatus() == DataManager.DataStatus.STATUS_DATA_LOADED) {
+        if (mDataManager.getDataStatus() == DataManager.STATUS_DATA_LOADED) {
             //说明数据已经加载完成
 
             //获取要修改的plan在list中的位置
@@ -118,7 +121,7 @@ public class ReminderPresenter extends BasePresenter implements Presenter<Remind
         }
 
         //数据库存储
-        mDatabaseManager.editPlanStatus(mPlan.getPlanCode(), 0, newCompletionTime);
+        mDatabaseManager.updatePlanStatus(mPlan.getPlanCode(), 0, newCompletionTime);
 
         mReminderView.showToast(R.string.toast_plan_completed);
         mReminderView.exitReminder();

@@ -186,6 +186,11 @@ public class TypeDetailDialogFragment extends BottomSheetDialogFragment implemen
     }
 
     @Override
+    public void enterEditType(int position) {
+
+    }
+
+    @Override
     public void showToast(@StringRes int msgResId) {
 
     }

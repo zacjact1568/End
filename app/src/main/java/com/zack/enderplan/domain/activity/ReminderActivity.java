@@ -2,6 +2,8 @@ package com.zack.enderplan.domain.activity;
 
 import android.app.NotificationManager;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
+import android.support.annotation.DrawableRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -73,9 +75,10 @@ public class ReminderActivity extends AppCompatActivity implements ReminderView 
     }
 
     @Override
-    public void showInitialView(String contentStr, int titleBgColorInt) {
-        contentText.setText(contentStr);
-        titleLayout.setBackgroundColor(titleBgColorInt);
+    public void showInitialView(String content, int headerColorInt, int typeMarkPtnResId) {
+        contentText.setText(content);
+        //TODO title->header
+        titleLayout.setBackgroundColor(headerColorInt);
     }
 
     @Override

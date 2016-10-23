@@ -71,7 +71,12 @@ public class AllTypesFragment extends Fragment implements AllTypesView {
     @Override
     public void showInitialView(TypeAdapter typeAdapter) {
 
-        typeAdapter.setOnTypeItemClickListener((position, typeItem) -> mAllTypesPresenter.notifyTypeItemClicked(position, typeItem));
+        typeAdapter.setOnTypeItemClickListener(new TypeAdapter.OnTypeItemClickListener() {
+            @Override
+            public void onTypeItemClick(int position, View typeItem) {
+                mAllTypesPresenter.notifyTypeItemClicked(position, typeItem);
+            }
+        });
 
         mAllTypesList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAllTypesList.setHasFixedSize(true);
@@ -96,7 +101,7 @@ public class AllTypesFragment extends Fragment implements AllTypesView {
         new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.title_dialog_type_not_empty)
                 .setMessage(R.string.msg_dialog_type_not_empty)
-                .setPositiveButton(R.string.dialog_button_ok, null)
+                .setPositiveButton(R.string.button_ok, null)
                 .show();
     }
 

@@ -19,16 +19,12 @@ import butterknife.ButterKnife;
 
 public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
 
-    private static final String CLASS_NAME = "TypeAdapter";
-
     private List<Type> typeList;
     private Map<String, Integer> ucPlanCountOfEachTypeMap;
-    private Map<String, Integer> typeMarkAndColorResMap;//TODO useless
     private OnTypeItemClickListener onTypeItemClickListener;
 
-    public TypeAdapter(List<Type> typeList, Map<String, Integer> typeMarkAndColorResMap, Map<String, Integer> ucPlanCountOfEachTypeMap) {
+    public TypeAdapter(List<Type> typeList, Map<String, Integer> ucPlanCountOfEachTypeMap) {
         this.typeList = typeList;
-        this.typeMarkAndColorResMap = typeMarkAndColorResMap;
         this.ucPlanCountOfEachTypeMap = ucPlanCountOfEachTypeMap;
     }
 
@@ -39,10 +35,10 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         Type type = typeList.get(position);
 
-        holder.typeMarkIcon.setFillColor(Color.parseColor(type.getTypeMark()));
+        holder.typeMarkIcon.setFillColor(Color.parseColor(type.getTypeMarkColor()));
         holder.typeMarkIcon.setInnerText(type.getTypeName().substring(0, 1));
         holder.typeNameText.setText(type.getTypeName());
 
@@ -51,7 +47,12 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
         holder.ucPlanCountIcon.setInnerText(ucPlanCountStr == null ? "" : ucPlanCountStr);
 
         if (onTypeItemClickListener != null) {
-            holder.itemView.setOnClickListener(v -> onTypeItemClickListener.onTypeItemClick(holder.getLayoutPosition(), holder.itemView));
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onTypeItemClickListener.onTypeItemClick(holder.getLayoutPosition(), holder.itemView);
+                }
+            });
         }
     }
 

@@ -15,7 +15,7 @@
 
     </group>
 
-    <item android:title="@string/nav_subheader">
+    <item android:title="@string/nav_sub_header">
         <menu>
             <item
                 android:id="@+id/nav_settings"
