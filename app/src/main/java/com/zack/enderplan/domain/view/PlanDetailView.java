@@ -21,9 +21,9 @@ public interface PlanDetailView {
 
     void onTypeOfPlanChanged(int posInTypeList);
 
-    void showDeadlineDialog(long deadline);
+    void showDeadlinePickerDialog(long defaultDeadline);
 
-    void showReminderTimeDialog(long reminderTime);
+    void showReminderTimePickerDialog(long defaultReminderTime);
 
     void onDeadlineSelected(String newDeadlineText);
 

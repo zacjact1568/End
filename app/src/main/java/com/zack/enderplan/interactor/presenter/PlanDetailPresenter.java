@@ -65,10 +65,10 @@ public class PlanDetailPresenter extends BasePresenter implements Presenter<Plan
     public void notifyViewClicked(int viewId) {
         switch (viewId) {
             case R.id.item_view_deadline:
-                planDetailView.showDeadlineDialog(plan.getDeadline());
+                planDetailView.showDeadlinePickerDialog(plan.getDeadline());
                 break;
             case R.id.item_view_reminder:
-                planDetailView.showReminderTimeDialog(plan.getReminderTime());
+                planDetailView.showReminderTimePickerDialog(plan.getReminderTime());
                 break;
             case R.id.fab:
                 notifyStarStatusChanged();
@@ -139,35 +139,27 @@ public class PlanDetailPresenter extends BasePresenter implements Presenter<Plan
     }
 
     public void notifyDeadlineChanged(long newDeadline) {
-        if (plan.getDeadline() != newDeadline) {
-            planDetailView.onDeadlineSelected(DateFormat.format(dateFormatStr, newDeadline).toString());
-            dataManager.notifyDeadlineChanged(position, newDeadline);
-            postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_DEADLINE);
-        }
-    }
-
-    public void notifyDeadlineRemoved() {
-        if (plan.getDeadline() != 0) {
+        if (plan.getDeadline() == newDeadline) return;
+        if (newDeadline == 0) {
+            //removed
             planDetailView.onDeadlineRemoved();
-            dataManager.notifyDeadlineChanged(position, 0);
-            postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_DEADLINE);
+        } else {
+            //just changed
+            planDetailView.onDeadlineSelected(DateFormat.format(dateTimeFormatStr, newDeadline).toString());
         }
+        dataManager.notifyDeadlineChanged(position, newDeadline);
+        postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_DEADLINE);
     }
 
     public void notifyReminderTimeChanged(long newReminderTime) {
-        if (plan.getReminderTime() != newReminderTime) {
-            dataManager.notifyReminderTimeChanged(position, newReminderTime);
-            planDetailView.onReminderTimeSelected(DateFormat.format(dateTimeFormatStr, newReminderTime).toString());
-            postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_REMINDER_TIME);
-        }
-    }
-
-    public void notifyReminderRemoved() {
-        if (plan.getReminderTime() != 0) {
-            dataManager.notifyReminderTimeChanged(position, 0);
+        if (plan.getReminderTime() == newReminderTime) return;
+        if (newReminderTime == 0) {
             planDetailView.onReminderRemoved();
-            postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_REMINDER_TIME);
+        } else {
+            planDetailView.onReminderTimeSelected(DateFormat.format(dateTimeFormatStr, newReminderTime).toString());
         }
+        dataManager.notifyReminderTimeChanged(position, newReminderTime);
+        postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_REMINDER_TIME);
     }
 
     private void postPlanDetailChangedEvent(int changedField) {

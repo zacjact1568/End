@@ -1,7 +1,5 @@
 package com.zack.enderplan.interactor.presenter;
 
-import com.zack.enderplan.domain.fragment.CalendarDialogFragment;
-import com.zack.enderplan.domain.fragment.DateTimePickerDialogFragment;
 import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.interactor.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.model.bean.Plan;
@@ -61,14 +59,12 @@ public class CreatePlanPresenter extends BasePresenter implements Presenter<Crea
         mCreatePlanView.onStarStatusChanged(!isStarred);
     }
 
-    public void createDeadlineDialog() {
-        CalendarDialogFragment deadlineDialog = CalendarDialogFragment.newInstance(mPlan.getDeadline());
-        mCreatePlanView.onCreateDeadlineDialog(deadlineDialog);
+    public void notifyDeadlineButtonClicked() {
+        mCreatePlanView.showDeadlinePickerDialog(mPlan.getDeadline());
     }
 
-    public void createReminderDialog() {
-        DateTimePickerDialogFragment reminderDialog = DateTimePickerDialogFragment.newInstance(mPlan.getReminderTime());
-        mCreatePlanView.onCreateReminderDialog(reminderDialog);
+    public void notifyReminderButtonClicked() {
+        mCreatePlanView.showReminderTimePickerDialog(mPlan.getReminderTime());
     }
 
     public void notifyCreatingNewPlan() {

@@ -37,8 +37,8 @@ public class TypeMarkColorPickerDialogFragment extends DialogFragment {
     TextView mColorNameText;
     @BindView(R.id.grid_type_mark_color)
     GridView mTypeMarkColorGrid;
-    @BindView(R.id.ic_picker_switcher)
-    ImageView mPickerSwitcherIcon;
+    @BindView(R.id.btn_picker_switcher)
+    ImageView mPickerSwitcherButton;
     @BindView(R.id.picker_color)
     LobsterPicker mColorPicker;
     @BindView(R.id.slider_shade)
@@ -52,7 +52,7 @@ public class TypeMarkColorPickerDialogFragment extends DialogFragment {
     private TypeMarkColor mTypeMarkColor;
     private int mPosition = -1;
     private List<TypeMarkColor> mTypeMarkColorList;
-    private OnColorPickedListener mOnColorPickedListener;
+    private OnTypeMarkColorPickedListener mOnTypeMarkColorPickedListener;
 
     public TypeMarkColorPickerDialogFragment() {
         // Required empty public constructor
@@ -137,10 +137,16 @@ public class TypeMarkColorPickerDialogFragment extends DialogFragment {
         });
     }
 
-    @OnClick({R.id.ic_picker_switcher, R.id.btn_cancel, R.id.btn_ok})
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mOnTypeMarkColorPickedListener = null;
+    }
+
+    @OnClick({R.id.btn_picker_switcher, R.id.btn_cancel, R.id.btn_ok})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.ic_picker_switcher:
+            case R.id.btn_picker_switcher:
                 mColorPickerSwitcher.showNext();
                 if (mColorPickerSwitcher.getCurrentView().getId() == R.id.grid_type_mark_color) {
                     //切换到了Grid界面
@@ -151,32 +157,32 @@ public class TypeMarkColorPickerDialogFragment extends DialogFragment {
                         mTypeMarkColor.setColor(mDefaultColor);
                     }
                     mColorNameText.setText(mTypeMarkColor.getColorName());
-                    mPickerSwitcherIcon.setImageResource(R.drawable.ic_palette_black_24dp);
+                    mPickerSwitcherButton.setImageResource(R.drawable.ic_palette_black_24dp);
                 } else {
                     //切换到了Picker界面
                     String colorHex = Util.parseColor(mColorPicker.getColor());
                     mTypeMarkColor.setColor(colorHex);
                     mColorNameText.setText(colorHex);
-                    mPickerSwitcherIcon.setImageResource(R.drawable.ic_apps_black_24dp);
+                    mPickerSwitcherButton.setImageResource(R.drawable.ic_apps_black_24dp);
                 }
                 break;
             case R.id.btn_cancel:
                 getDialog().dismiss();
                 break;
             case R.id.btn_ok:
-                if (mOnColorPickedListener != null) {
-                    mOnColorPickedListener.onColorPicked(mTypeMarkColor);
+                if (mOnTypeMarkColorPickedListener != null) {
+                    mOnTypeMarkColorPickedListener.onTypeMarkColorPicked(mTypeMarkColor);
                 }
                 getDialog().dismiss();
                 break;
         }
     }
 
-    public interface OnColorPickedListener {
-        void onColorPicked(TypeMarkColor typeMarkColor);
+    public interface OnTypeMarkColorPickedListener {
+        void onTypeMarkColorPicked(TypeMarkColor typeMarkColor);
     }
 
-    public void setOnColorPickedListener(OnColorPickedListener listener) {
-        mOnColorPickedListener = listener;
+    public void setOnTypeMarkColorPickedListener(OnTypeMarkColorPickedListener listener) {
+        mOnTypeMarkColorPickedListener = listener;
     }
 }

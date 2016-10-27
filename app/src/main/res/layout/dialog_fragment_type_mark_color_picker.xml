@@ -84,7 +84,7 @@
         style="?android:attr/buttonBarStyle">
 
         <ImageView
-            android:id="@+id/ic_picker_switcher"
+            android:id="@+id/btn_picker_switcher"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"

@@ -13,10 +13,6 @@ import android.widget.FrameLayout;
 
 import com.zack.enderplan.R;
 
-/**
- * A {@link DialogFragment} that includes an {@link EditText}.
- * @author Zack
- */
 public class EditorDialogFragment extends DialogFragment {
 
     private static final String ARG_TITLE_TEXT = "title_text";
@@ -77,6 +73,12 @@ public class EditorDialogFragment extends DialogFragment {
                 })
                 .setNegativeButton(R.string.button_cancel, null)
                 .create();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mOnPositiveButtonClickListener = null;
     }
 
     public interface OnPositiveButtonClickListener {

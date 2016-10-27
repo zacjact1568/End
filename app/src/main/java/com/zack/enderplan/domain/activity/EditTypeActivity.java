@@ -126,9 +126,9 @@ public class EditTypeActivity extends BaseActivity implements EditTypeView {
     @Override
     public void showTypeMarkColorPickerDialog(String defaultColor) {
         TypeMarkColorPickerDialogFragment fragment = TypeMarkColorPickerDialogFragment.newInstance(defaultColor);
-        fragment.setOnColorPickedListener(new TypeMarkColorPickerDialogFragment.OnColorPickedListener() {
+        fragment.setOnTypeMarkColorPickedListener(new TypeMarkColorPickerDialogFragment.OnTypeMarkColorPickedListener() {
             @Override
-            public void onColorPicked(TypeMarkColor typeMarkColor) {
+            public void onTypeMarkColorPicked(TypeMarkColor typeMarkColor) {
                 mEditTypePresenter.notifyTypeMarkColorSelected(typeMarkColor);
             }
         });

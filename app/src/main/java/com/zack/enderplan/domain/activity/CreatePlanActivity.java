@@ -1,6 +1,7 @@
 package com.zack.enderplan.domain.activity;
 
 import android.animation.Animator;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
@@ -17,21 +18,17 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.domain.fragment.CalendarDialogFragment;
 import com.zack.enderplan.domain.fragment.DateTimePickerDialogFragment;
 import com.zack.enderplan.interactor.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.interactor.presenter.CreatePlanPresenter;
 import com.zack.enderplan.domain.view.CreatePlanView;
 
+import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class CreatePlanActivity extends BaseActivity
-        implements CreatePlanView, CalendarDialogFragment.OnDateChangedListener,
-        DateTimePickerDialogFragment.OnDateTimeChangedListener {
-
-    private static final String LOG_TAG = "CreatePlanActivity";
+public class CreatePlanActivity extends BaseActivity implements CreatePlanView {
 
     @BindView(R.id.button_save)
     ImageView mSaveButton;
@@ -50,13 +47,15 @@ public class CreatePlanActivity extends BaseActivity
     @BindView(R.id.circular_reveal_layout)
     LinearLayout mCircularRevealLayout;
 
+    @BindColor(R.color.colorAccent)
+    int mAccentColor;
+    @BindColor(R.color.grey)
+    int mGreyColor;
+
     private CreatePlanPresenter mCreatePlanPresenter;
 
     private static final int FAB_COORDINATE_IN_DP = 44;
     private static final int CR_ANIM_DURATION = 400;
-
-    private static final String TAG_DEADLINE = "deadline";
-    private static final String TAG_REMINDER = "reminder";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,30 +85,6 @@ public class CreatePlanActivity extends BaseActivity
     protected void onDestroy() {
         super.onDestroy();
         mCreatePlanPresenter.detachView();
-    }
-
-    @Override
-    public void onDateSelected(long newDateInMillis) {
-        mCreatePlanPresenter.notifyDeadlineChanged(newDateInMillis);
-        mDeadlineMark.setImageResource(R.drawable.ic_schedule_color_accent_24dp);
-    }
-
-    @Override
-    public void onDateRemoved() {
-        mCreatePlanPresenter.notifyDeadlineChanged(0);
-        mDeadlineMark.setImageResource(R.drawable.ic_schedule_grey600_24dp);
-    }
-
-    @Override
-    public void onDateTimeSelected(long newTimeInMillis) {
-        mCreatePlanPresenter.notifyReminderTimeChanged(newTimeInMillis);
-        mReminderMark.setImageResource(R.drawable.ic_notifications_color_accent_24dp);
-    }
-
-    @Override
-    public void onDateTimeRemoved() {
-        mCreatePlanPresenter.notifyReminderTimeChanged(0);
-        mReminderMark.setImageResource(R.drawable.ic_notifications_none_grey600_24dp);
     }
 
     //显示键盘
@@ -188,10 +163,10 @@ public class CreatePlanActivity extends BaseActivity
                 mCreatePlanPresenter.notifyStarStatusChanged();
                 break;
             case R.id.deadline_mark:
-                mCreatePlanPresenter.createDeadlineDialog();
+                mCreatePlanPresenter.notifyDeadlineButtonClicked();
                 break;
             case R.id.reminder_mark:
-                mCreatePlanPresenter.createReminderDialog();
+                mCreatePlanPresenter.notifyReminderButtonClicked();
                 break;
         }
     }
@@ -233,17 +208,34 @@ public class CreatePlanActivity extends BaseActivity
 
     @Override
     public void onStarStatusChanged(boolean isStarred) {
-        mStarMark.setImageResource(isStarred ? R.drawable.ic_star_color_accent_24dp :
-                R.drawable.ic_star_outline_grey600_24dp);
+        mStarMark.setImageResource(isStarred ? R.drawable.ic_star_black_24dp : R.drawable.ic_star_border_black_24dp);
+        mStarMark.setImageTintList(ColorStateList.valueOf(isStarred ? mAccentColor : mGreyColor));
     }
 
     @Override
-    public void onCreateDeadlineDialog(CalendarDialogFragment deadlineDialog) {
-        deadlineDialog.show(getFragmentManager(), TAG_DEADLINE);
+    public void showDeadlinePickerDialog(long defaultDeadline) {
+        DateTimePickerDialogFragment fragment = DateTimePickerDialogFragment.newInstance(defaultDeadline);
+        fragment.setOnDateTimePickedListener(new DateTimePickerDialogFragment.OnDateTimePickedListener() {
+            @Override
+            public void onDateTimePicked(long timeInMillis) {
+                mCreatePlanPresenter.notifyDeadlineChanged(timeInMillis);
+                mDeadlineMark.setImageTintList(ColorStateList.valueOf(timeInMillis == 0 ? mGreyColor : mAccentColor));
+            }
+        });
+        fragment.show(getSupportFragmentManager(), "deadline");
     }
 
     @Override
-    public void onCreateReminderDialog(DateTimePickerDialogFragment reminderDialog) {
-        reminderDialog.show(getFragmentManager(), TAG_REMINDER);
+    public void showReminderTimePickerDialog(long defaultReminderTime) {
+        DateTimePickerDialogFragment fragment = DateTimePickerDialogFragment.newInstance(defaultReminderTime);
+        fragment.setOnDateTimePickedListener(new DateTimePickerDialogFragment.OnDateTimePickedListener() {
+            @Override
+            public void onDateTimePicked(long timeInMillis) {
+                mCreatePlanPresenter.notifyReminderTimeChanged(timeInMillis);
+                mReminderMark.setImageResource(timeInMillis == 0 ? R.drawable.ic_notifications_none_black_24dp : R.drawable.ic_notifications_black_24dp);
+                mReminderMark.setImageTintList(ColorStateList.valueOf(timeInMillis == 0 ? mGreyColor : mAccentColor));
+            }
+        });
+        fragment.show(getSupportFragmentManager(), "reminder");
     }
 }

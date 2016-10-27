@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
-import com.zack.enderplan.domain.fragment.CalendarDialogFragment;
 import com.zack.enderplan.domain.fragment.DateTimePickerDialogFragment;
 import com.zack.enderplan.domain.fragment.EditorDialogFragment;
 import com.zack.enderplan.interactor.adapter.SimpleTypeAdapter;
@@ -29,11 +28,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class PlanDetailActivity extends BaseActivity
-        implements PlanDetailView, CalendarDialogFragment.OnDateChangedListener,
-        DateTimePickerDialogFragment.OnDateTimeChangedListener {
-
-    private static final String LOG_TAG = "PlanDetailActivity";
+public class PlanDetailActivity extends BaseActivity implements PlanDetailView {
 
     @BindView(R.id.text_content)
     TextView contentText;
@@ -63,9 +58,6 @@ public class PlanDetailActivity extends BaseActivity
 
     private PlanDetailPresenter planDetailPresenter;
     private boolean flag = true;
-
-    private static final String TAG_DEADLINE = "deadline";
-    private static final String TAG_REMINDER = "reminder";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,13 +191,27 @@ public class PlanDetailActivity extends BaseActivity
     }
 
     @Override
-    public void showDeadlineDialog(long deadline) {
-        CalendarDialogFragment.newInstance(deadline).show(getFragmentManager(), TAG_DEADLINE);
+    public void showDeadlinePickerDialog(long defaultDeadline) {
+        DateTimePickerDialogFragment fragment = DateTimePickerDialogFragment.newInstance(defaultDeadline);
+        fragment.setOnDateTimePickedListener(new DateTimePickerDialogFragment.OnDateTimePickedListener() {
+            @Override
+            public void onDateTimePicked(long timeInMillis) {
+                planDetailPresenter.notifyDeadlineChanged(timeInMillis);
+            }
+        });
+        fragment.show(getSupportFragmentManager(), "deadline");
     }
 
     @Override
-    public void showReminderTimeDialog(long reminderTime) {
-        DateTimePickerDialogFragment.newInstance(reminderTime).show(getFragmentManager(), TAG_REMINDER);
+    public void showReminderTimePickerDialog(long defaultReminderTime) {
+        DateTimePickerDialogFragment fragment = DateTimePickerDialogFragment.newInstance(defaultReminderTime);
+        fragment.setOnDateTimePickedListener(new DateTimePickerDialogFragment.OnDateTimePickedListener() {
+            @Override
+            public void onDateTimePicked(long timeInMillis) {
+                planDetailPresenter.notifyReminderTimeChanged(timeInMillis);
+            }
+        });
+        fragment.show(getSupportFragmentManager(), "reminder");
     }
 
     @Override
@@ -239,26 +245,6 @@ public class PlanDetailActivity extends BaseActivity
     @Override
     public void exitPlanDetail() {
         finish();
-    }
-
-    @Override
-    public void onDateSelected(long newDateInMillis) {
-        planDetailPresenter.notifyDeadlineChanged(newDateInMillis);
-    }
-
-    @Override
-    public void onDateRemoved() {
-        planDetailPresenter.notifyDeadlineRemoved();
-    }
-
-    @Override
-    public void onDateTimeSelected(long newTimeInMillis) {
-        planDetailPresenter.notifyReminderTimeChanged(newTimeInMillis);
-    }
-
-    @Override
-    public void onDateTimeRemoved() {
-        planDetailPresenter.notifyReminderRemoved();
     }
 
     @OnClick({R.id.item_view_deadline, R.id.item_view_reminder, R.id.fab, R.id.btn_switch_plan_status})
