@@ -7,13 +7,13 @@ import android.text.format.DateFormat;
 import com.zack.enderplan.R;
 import com.zack.enderplan.App;
 import com.zack.enderplan.event.PlanDeletedEvent;
+import com.zack.enderplan.interactor.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.model.bean.FormattedPlan;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.event.RemindedEvent;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.domain.view.PlanDetailView;
-import com.zack.enderplan.interactor.adapter.TypeSpinnerAdapter;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -59,7 +59,7 @@ public class PlanDetailPresenter extends BasePresenter implements Presenter<Plan
                 DateFormat.format(dateFormatStr, plan.getDeadline()).toString(),
                 DateFormat.format(dateTimeFormatStr, plan.getReminderTime()).toString(),
                 plan.isCompleted()
-        ), new TypeSpinnerAdapter(dataManager.getTypeList()));
+        ), new SimpleTypeAdapter(dataManager.getTypeList(), SimpleTypeAdapter.STYLE_SPINNER));
     }
 
     public void notifyViewClicked(int viewId) {

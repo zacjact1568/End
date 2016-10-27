@@ -3,7 +3,6 @@ package com.zack.enderplan.domain.activity;
 import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -23,7 +22,6 @@ import android.widget.Toast;
 import com.zack.enderplan.R;
 import com.zack.enderplan.domain.fragment.MyPlansFragment;
 import com.zack.enderplan.domain.fragment.AllTypesFragment;
-import com.zack.enderplan.domain.fragment.CreateTypeDialogFragment;
 import com.zack.enderplan.interactor.presenter.HomePresenter;
 import com.zack.enderplan.domain.view.HomeView;
 

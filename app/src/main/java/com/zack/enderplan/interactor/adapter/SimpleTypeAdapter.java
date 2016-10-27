@@ -1,7 +1,7 @@
 package com.zack.enderplan.interactor.adapter;
 
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
+import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,17 +13,31 @@ import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.widget.CircleColorView;
 
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TypeSpinnerAdapter extends BaseAdapter {
+public class SimpleTypeAdapter extends BaseAdapter {
+
+    public static final int STYLE_SPINNER = 0;
+    public static final int STYLE_DIALOG = 1;
 
     private List<Type> typeList;
+    @LayoutRes
+    private int mLayoutResId;
 
-    public TypeSpinnerAdapter(List<Type> typeList) {
+    public SimpleTypeAdapter(List<Type> typeList, int style) {
         this.typeList = typeList;
+        switch (style) {
+            case STYLE_SPINNER:
+                mLayoutResId = R.layout.item_type_spinner_style;
+                break;
+            case STYLE_DIALOG:
+                mLayoutResId = R.layout.item_type_dialog_style;
+                break;
+            default:
+                throw new IllegalArgumentException("No such adapter style found: " + style);
+        }
     }
 
     @Override
@@ -47,7 +61,7 @@ public class TypeSpinnerAdapter extends BaseAdapter {
         View view;
         ViewHolder viewHolder;
         if (convertView == null) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_type_spinner, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(mLayoutResId, parent, false);
             viewHolder = new ViewHolder(view);
             view.setTag(viewHolder);
         } else {

@@ -149,6 +149,34 @@ public class DataManager {
         return -1;
     }
 
+    /** 获取指定类型全部计划的位置 */
+    public List<Integer> getPlanLocationListOfOneType(String typeCode) {
+        List<Integer> planLocationList = new ArrayList<>();
+        for (int i = 0; i < getPlanCount(); i++) {
+            if (getPlan(i).getTypeCode().equals(typeCode)) {
+                planLocationList.add(i);
+            }
+        }
+        return planLocationList;
+    }
+
+    /** 将一个类型中的所有计划迁移到另一个类型 */
+    public void migratePlan(String fromTypeCode, String toTypeCode) {
+        if (fromTypeCode.equals(toTypeCode)) return;
+        for (int i = 0; i < getPlanCount(); i++) {
+            if (getPlan(i).getTypeCode().equals(fromTypeCode)) {
+                notifyTypeOfPlanChanged(i, fromTypeCode, toTypeCode);
+            }
+        }
+    }
+
+    /** 将fromLocationList提供的位置上的计划迁移到另一个类型 */
+    public void migratePlan(List<Integer> fromLocationList, String toTypeCode) {
+        for (int fromLocation : fromLocationList) {
+            notifyTypeOfPlanChanged(fromLocation, getPlan(fromLocation).getTypeCode(), toTypeCode);
+        }
+    }
+
     /** 创建计划 (Inserted at the beginning of planList) */
     public void notifyPlanCreated(Plan newPlan) {
         notifyPlanCreated(0, newPlan);
@@ -188,6 +216,17 @@ public class DataManager {
         removeFromPlanList(location);
         //更新数据库
         mDatabaseManager.deletePlan(plan.getPlanCode());
+    }
+
+    //TODO notify***全部改为动宾形式
+    /** 删除某类型的全部计划 */
+    public void deletePlanOfOneType(String typeCode) {
+        for (int i = 0; i < getPlanCount(); i++) {
+            if (getPlan(i).getTypeCode().equals(typeCode)) {
+                notifyPlanDeleted(i);
+                i--;
+            }
+        }
     }
 
     /** 编辑计划内容 */
@@ -267,6 +306,17 @@ public class DataManager {
 
     //获取typeList
     public List<Type> getTypeList() {
+        return typeList;
+    }
+
+    /** 获取一个新的typeList，不包含指定的type */
+    public List<Type> getTypeList(String exclude) {
+        List<Type> typeList = new ArrayList<>();
+        for (Type type : this.typeList) {//TODO 去掉this
+            if (!type.getTypeCode().equals(exclude)) {
+                typeList.add(type);
+            }
+        }
         return typeList;
     }
 
@@ -352,6 +402,8 @@ public class DataManager {
     /** 删除类型 */
     public void notifyTypeDeleted(int location) {
         Type type = getType(location);
+        //删除对应的计划
+        deletePlanOfOneType(type.getTypeCode());
         removeFromTypeList(location);
         mTypeCodeAndTypeMarkMap.remove(type.getTypeCode());
         mDatabaseManager.deleteType(type.getTypeCode());
@@ -423,6 +475,27 @@ public class DataManager {
             }
         }
         return singleTypeUcPlanLocations;
+    }
+
+    /** 判断某类型是否有对应的计划 */
+    public boolean isPlanOfOneTypeExists(String typeCode) {
+        for (Plan plan : planList) {
+            if (plan.getTypeCode().equals(typeCode)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** 获取某类型的计划数量 */
+    public int getPlanCountOfOneType(String typeCode) {
+        int count = 0;
+        for (Plan plan : planList) {
+            if (plan.getTypeCode().equals(typeCode)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     //****************TypeName & TypeMark****************

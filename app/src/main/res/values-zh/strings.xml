@@ -57,8 +57,7 @@
     <string name="title_activity_reminder">EnderPlan提醒</string>
     <string name="action_all_types">所有类型</string>
     <string name="type_name_hint">你的新类型的名称</string>
-    <string name="title_dialog_type_not_empty">无法删除</string>
-    <string name="msg_dialog_type_not_empty">我们发现有一些计划属于你刚才想要删除的那个类型。\n\n注意：我们是不会管那些已经完成的计划的。</string>
+    <string name="msg_dialog_type_not_empty">有一些计划属于此类型，你可以将它们移动到另一个类型，删除它们，或者取消。</string>
     <string name="pref_title_theme">主题</string>
     <string name="pref_title_night_mode">夜间模式</string>
     <string name="hint_content_fast">快速创建一个新计划</string>
@@ -92,7 +91,7 @@
     <string name="title_activity_type_detail">类型详情</string>
     <string name="toast_type_not_empty">类型非空，不能删除</string>
     <string name="name_type_mark_shared_element_transition">类型标记共享元素转换</string>
-    <string name="msg_dialog_delete_type">此类型将被删除。</string>
+    <string name="msg_dialog_delete_type">此类型和与之相关的所有计划将被删除。</string>
     <string name="action_save">保存</string>
     <string name="title_activity_create_type">创建类型</string>
     <string name="title_activity_edit_type">编辑类型</string>
@@ -117,4 +116,15 @@
     <string name="text_new_type_name">新类型</string>
     <string name="text_empty_type_name">（空）</string>
     <string name="title_name">名称</string>
+    <string name="title_dialog_type_not_empty">类型非空</string>
+    <string name="btn_dialog_move_and_delete">移动并删除</string>
+    <string name="button_delete">删除</string>
+    <string name="button_move">移动</string>
+    <string name="msg_dialog_migrate_plan_pt1">此类型的所有计划都将被移动到</string>
+    <string name="msg_dialog_migrate_plan_pt2">，然后此类型将被删除。</string>
+    <string name="title_dialog_move_plan_pt1">移动</string>
+    <string name="title_dialog_move_plan_pt2_pl">个计划到</string>
+    <string name="title_dialog_move_plan_pt2_sg">个计划到</string>
+    <string name="msg_dialog_last_type">这是最后一个类型。</string>
+    <string name="title_dialog_last_type">不能删除</string>
 </resources>

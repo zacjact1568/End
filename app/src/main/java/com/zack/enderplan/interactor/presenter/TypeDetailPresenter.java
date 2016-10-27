@@ -3,11 +3,12 @@ package com.zack.enderplan.interactor.presenter;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.App;
 import com.zack.enderplan.event.TypeDeletedEvent;
+import com.zack.enderplan.event.TypeDetailChangedEvent;
+import com.zack.enderplan.interactor.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.bean.Type;
@@ -15,7 +16,6 @@ import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDeletedEvent;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.model.DataManager;
-import com.zack.enderplan.utility.LogUtil;
 import com.zack.enderplan.utility.Util;
 import com.zack.enderplan.domain.view.TypeDetailView;
 import com.zack.enderplan.interactor.adapter.PlanSingleTypeAdapter;
@@ -35,6 +35,7 @@ public class TypeDetailPresenter extends BasePresenter implements Presenter<Type
     private DataManager dataManager;
     private PlanSingleTypeAdapter planSingleTypeAdapter;
     private List<Plan> singleTypeUcPlanList;
+    private List<Type> mOtherTypeList;
     private int mPosition;
     private Type type;
     private EventBus mEventBus;
@@ -52,6 +53,8 @@ public class TypeDetailPresenter extends BasePresenter implements Presenter<Type
 
         singleTypeUcPlanList = dataManager.getSingleTypeUcPlanList(type.getTypeCode());
         planSingleTypeAdapter = new PlanSingleTypeAdapter(singleTypeUcPlanList);
+
+        mOtherTypeList = dataManager.getTypeList(type.getTypeCode());
 
         Context context = App.getGlobalContext();
         noneUcPlan = context.getResources().getString(R.string.uc_plan_count_of_each_type_none);
@@ -182,15 +185,52 @@ public class TypeDetailPresenter extends BasePresenter implements Presenter<Type
         typeDetailView.enterEditType(mPosition);
     }
 
-    public void notifyTypeDeletionButtonClicked() {
-        if (dataManager.isUcPlanOfOneTypeExists(type.getTypeCode())) {
-            typeDetailView.showToast(R.string.toast_type_not_empty);
+    public void notifyTypeDeletionButtonClicked(boolean deletePlan) {
+        if (dataManager.getTypeCount() == 1) {
+            //如果只剩一个类型，禁止删除
+            typeDetailView.onDetectedDeletingLastType();
+            return;
+        }
+        if (!deletePlan && dataManager.isPlanOfOneTypeExists(type.getTypeCode())) {
+            //如果不删除类型连带的计划，且检测到类型有连带的计划，弹移动计划到其他类型的对话框
+            typeDetailView.onDetectedTypeNotEmpty();
+            //typeDetailView.showToast(R.string.toast_type_not_empty);
         } else {
-            typeDetailView.showDeletionConfirmationDialog(type.getTypeName());
+            //如果决定要删除连带的计划，或检测到类型没有连带的计划，直接弹删除确认对话框
+            typeDetailView.showTypeDeletionConfirmationDialog(type.getTypeName());
         }
     }
 
-    public void notifyDeletingType() {
+    public void notifyMovePlanButtonClicked() {
+        typeDetailView.showMovePlanDialog(
+                dataManager.getPlanCountOfOneType(type.getTypeCode()),
+                new SimpleTypeAdapter(mOtherTypeList, SimpleTypeAdapter.STYLE_DIALOG)
+        );
+    }
+
+    public void notifyTypeItemInMovePlanDialogClicked(int position) {
+        Type toType = mOtherTypeList.get(position);
+        typeDetailView.showPlanMigrationConfirmationDialog(type.getTypeName(), toType.getTypeName(), toType.getTypeCode());
+    }
+
+    /**
+     * 通知model删除类型
+     * @param migration 是否将与此类型有关的计划迁移到另一类型
+     * @param toTypeCode 要迁移到的类型代码
+     */
+    public void notifyDeletingType(boolean migration, String toTypeCode) {
+        if (migration) {
+            List<Integer> planPosList = dataManager.getPlanLocationListOfOneType(type.getTypeCode());
+            dataManager.migratePlan(planPosList, toTypeCode);
+            for (int position : planPosList) {
+                mEventBus.post(new PlanDetailChangedEvent(
+                        getPresenterName(),
+                        dataManager.getPlan(position).getPlanCode(),
+                        position,
+                        PlanDetailChangedEvent.FIELD_TYPE_OF_PLAN
+                ));
+            }
+        }
         dataManager.notifyTypeDeleted(mPosition);
         mEventBus.post(new TypeDeletedEvent(getPresenterName(), type.getTypeCode(), mPosition, type));
         typeDetailView.exitTypeDetail();
@@ -220,6 +260,22 @@ public class TypeDetailPresenter extends BasePresenter implements Presenter<Type
             }
         }
         return -1;
+    }
+
+    @Subscribe
+    public void onTypeDetailChanged(TypeDetailChangedEvent event) {
+        if (!type.getTypeCode().equals(event.getTypeCode()) || event.getEventSource().equals(getPresenterName())) return;
+        switch (event.getChangedField()) {
+            case TypeDetailChangedEvent.FIELD_TYPE_NAME:
+                typeDetailView.onTypeNameChanged(type.getTypeName(), type.getTypeName().substring(0, 1));
+                break;
+            case TypeDetailChangedEvent.FIELD_TYPE_MARK_COLOR:
+                typeDetailView.onTypeMarkColorChanged(Color.parseColor(type.getTypeMarkColor()));
+                break;
+            case TypeDetailChangedEvent.FIELD_TYPE_MARK_PATTERN:
+                //TODO pattern
+                break;
+        }
     }
 
     @Subscribe

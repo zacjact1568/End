@@ -2,7 +2,6 @@ package com.zack.enderplan.domain.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
-import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,9 +25,10 @@ import android.widget.Toast;
 import com.zack.enderplan.R;
 import com.zack.enderplan.domain.view.TypeDetailView;
 import com.zack.enderplan.interactor.adapter.PlanSingleTypeAdapter;
+import com.zack.enderplan.interactor.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.interactor.presenter.TypeDetailPresenter;
 import com.zack.enderplan.model.bean.FormattedType;
-import com.zack.enderplan.utility.LogUtil;
+import com.zack.enderplan.utility.Util;
 import com.zack.enderplan.widget.CircleColorView;
 
 import butterknife.BindView;
@@ -88,7 +88,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailView {
                 break;
             case R.id.action_delete:
                 //TODO 可能需要收起软键盘
-                typeDetailPresenter.notifyTypeDeletionButtonClicked();
+                typeDetailPresenter.notifyTypeDeletionButtonClicked(false);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -147,6 +147,17 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailView {
         ucPlanList.setHasFixedSize(true);
         ucPlanList.setAdapter(planSingleTypeAdapter);
         new ItemTouchHelper(new SingleTypeUcPlanListItemTouchCallback()).attachToRecyclerView(ucPlanList);
+    }
+
+    @Override
+    public void onTypeNameChanged(String typeName, String firstChar) {
+        typeMarkIcon.setInnerText(firstChar);
+        typeNameText.setText(typeName);
+    }
+
+    @Override
+    public void onTypeMarkColorChanged(int colorInt) {
+        typeMarkIcon.setFillColor(colorInt);
     }
 
     @Override
@@ -216,14 +227,72 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailView {
     }
 
     @Override
-    public void showDeletionConfirmationDialog(String typeName) {
+    public void onDetectedDeletingLastType() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.title_dialog_last_type)
+                .setMessage(R.string.msg_dialog_last_type)
+                .setPositiveButton(R.string.button_ok, null)
+                .show();
+    }
+
+    @Override
+    public void onDetectedTypeNotEmpty() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.title_dialog_type_not_empty)
+                .setMessage(Util.addBoldStyle(getString(R.string.msg_dialog_type_not_empty), new String[]{getString(R.string.button_move), getString(R.string.button_delete), getString(R.string.button_cancel)}))
+                .setPositiveButton(R.string.button_move, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        typeDetailPresenter.notifyMovePlanButtonClicked();
+                    }
+                })
+                .setNeutralButton(R.string.button_delete, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        typeDetailPresenter.notifyTypeDeletionButtonClicked(true);
+                    }
+                })
+                .setNegativeButton(R.string.button_cancel, null)
+                .show();
+    }
+
+    @Override
+    public void showMovePlanDialog(int planCount, SimpleTypeAdapter simpleTypeAdapter) {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.title_dialog_move_plan_pt1) + " " + planCount + " " + getString(planCount > 1 ? R.string.title_dialog_move_plan_pt2_pl : R.string.title_dialog_move_plan_pt2_sg))
+                .setAdapter(simpleTypeAdapter, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        typeDetailPresenter.notifyTypeItemInMovePlanDialogClicked(which);
+                    }
+                })
+                .show();
+    }
+
+    @Override
+    public void showTypeDeletionConfirmationDialog(String typeName) {
         new AlertDialog.Builder(this)
                 .setTitle(typeName)
                 .setMessage(R.string.msg_dialog_delete_type)
-                .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.button_delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        typeDetailPresenter.notifyDeletingType();
+                        typeDetailPresenter.notifyDeletingType(false, null);
+                    }
+                })
+                .setNegativeButton(R.string.button_cancel, null)
+                .show();
+    }
+
+    @Override
+    public void showPlanMigrationConfirmationDialog(String fromTypeName, String toTypeName, final String toTypeCode) {
+        new AlertDialog.Builder(this)
+                .setTitle(fromTypeName)
+                .setMessage(Util.addBoldStyle(getString(R.string.msg_dialog_migrate_plan_pt1) + " " + toTypeName + getString(R.string.msg_dialog_migrate_plan_pt2), new String[]{toTypeName}))
+                .setPositiveButton(R.string.btn_dialog_move_and_delete, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        typeDetailPresenter.notifyDeletingType(true, toTypeCode);
                     }
                 })
                 .setNegativeButton(R.string.button_cancel, null)

@@ -1,8 +1,8 @@
 package com.zack.enderplan.domain.fragment;
 
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -130,6 +130,17 @@ public class MyPlansFragment extends Fragment implements MyPlansView {
         @Override
         public float getSwipeThreshold(RecyclerView.ViewHolder viewHolder) {
             return .7f;
+        }
+
+        @Override
+        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+                                float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+                float alpha = 1 - Math.abs(dX) / (float) viewHolder.itemView.getWidth();
+                viewHolder.itemView.setAlpha(alpha);
+                viewHolder.itemView.setTranslationX(dX);
+            }
         }
     }
 }

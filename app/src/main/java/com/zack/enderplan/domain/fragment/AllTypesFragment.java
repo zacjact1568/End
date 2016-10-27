@@ -1,9 +1,7 @@
 package com.zack.enderplan.domain.fragment;
 
 import android.app.ActivityOptions;
-import android.app.AlertDialog;
 import android.content.Intent;
-import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.domain.activity.PlanDetailActivity;
 import com.zack.enderplan.domain.activity.TypeDetailActivity;
 import com.zack.enderplan.domain.view.AllTypesView;
 import com.zack.enderplan.interactor.adapter.TypeAdapter;
@@ -96,22 +93,12 @@ public class AllTypesFragment extends Fragment implements AllTypesView {
         getActivity().startActivity(intent, options.toBundle());
     }
 
-    @Override
-    public void onShowPlanCountOfOneTypeExistsDialog() {
-        new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.title_dialog_type_not_empty)
-                .setMessage(R.string.msg_dialog_type_not_empty)
-                .setPositiveButton(R.string.button_ok, null)
-                .show();
-    }
-
     private class TypeListItemTouchCallback extends ItemTouchHelper.Callback {
 
         @Override
         public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
             int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-            int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
-            return makeMovementFlags(dragFlags, swipeFlags);
+            return makeMovementFlags(dragFlags, 0);
         }
 
         @Override
@@ -122,23 +109,7 @@ public class AllTypesFragment extends Fragment implements AllTypesView {
 
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-            mAllTypesPresenter.notifyTypeDeleted(viewHolder.getLayoutPosition());
-        }
 
-        @Override
-        public float getSwipeThreshold(RecyclerView.ViewHolder viewHolder) {
-            return .7f;
-        }
-
-        @Override
-        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
-                                float dX, float dY, int actionState, boolean isCurrentlyActive) {
-            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-            if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-                float alpha = 1 - Math.abs(dX) / (float) viewHolder.itemView.getWidth();
-                viewHolder.itemView.setAlpha(alpha);
-                viewHolder.itemView.setTranslationX(dX);
-            }
         }
     }
 }

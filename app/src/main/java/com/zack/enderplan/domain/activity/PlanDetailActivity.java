@@ -2,7 +2,6 @@ package com.zack.enderplan.domain.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
@@ -10,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -21,9 +19,9 @@ import com.zack.enderplan.R;
 import com.zack.enderplan.domain.fragment.CalendarDialogFragment;
 import com.zack.enderplan.domain.fragment.DateTimePickerDialogFragment;
 import com.zack.enderplan.domain.fragment.EditorDialogFragment;
+import com.zack.enderplan.interactor.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.interactor.presenter.PlanDetailPresenter;
 import com.zack.enderplan.domain.view.PlanDetailView;
-import com.zack.enderplan.interactor.adapter.TypeSpinnerAdapter;
 import com.zack.enderplan.model.bean.FormattedPlan;
 
 import butterknife.BindColor;
@@ -95,7 +93,7 @@ public class PlanDetailActivity extends BaseActivity
     }
 
     @Override
-    public void showInitialView(FormattedPlan formattedPlan, TypeSpinnerAdapter typeSpinnerAdapter) {
+    public void showInitialView(FormattedPlan formattedPlan, SimpleTypeAdapter simpleTypeAdapter) {
 
         setContentView(R.layout.activity_plan_detail);
         ButterKnife.bind(this);
@@ -110,7 +108,7 @@ public class PlanDetailActivity extends BaseActivity
             starMark.setVisibility(View.VISIBLE);
         }
 
-        spinner.setAdapter(typeSpinnerAdapter);
+        spinner.setAdapter(simpleTypeAdapter);
         spinner.setSelection(formattedPlan.getSpinnerPos());
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

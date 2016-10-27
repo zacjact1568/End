@@ -19,7 +19,7 @@ import android.widget.Spinner;
 import com.zack.enderplan.R;
 import com.zack.enderplan.domain.fragment.CalendarDialogFragment;
 import com.zack.enderplan.domain.fragment.DateTimePickerDialogFragment;
-import com.zack.enderplan.interactor.adapter.TypeSpinnerAdapter;
+import com.zack.enderplan.interactor.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.interactor.presenter.CreatePlanPresenter;
 import com.zack.enderplan.domain.view.CreatePlanView;
 
@@ -197,7 +197,7 @@ public class CreatePlanActivity extends BaseActivity
     }
 
     @Override
-    public void showInitialView(TypeSpinnerAdapter typeSpinnerAdapter) {
+    public void showInitialView(SimpleTypeAdapter simpleTypeAdapter) {
         mContentEditor.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -216,7 +216,7 @@ public class CreatePlanActivity extends BaseActivity
             }
         });
 
-        mSpinner.setAdapter(typeSpinnerAdapter);
+        mSpinner.setAdapter(simpleTypeAdapter);
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

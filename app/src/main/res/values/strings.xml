@@ -13,6 +13,8 @@
     <string name="button_cancel">Cancel</string>
     <string name="button_create">Create</string>
     <string name="button_remove">Remove</string>
+    <string name="button_delete">Delete</string>
+    <string name="button_move">Move</string>
 
     <string name="title_deadline">Deadline</string>
     <string name="title_reminder">Reminder</string>
@@ -76,9 +78,7 @@
     <string name="uc_plan_count_of_each_type_one">1 plan uncompleted</string>
     <string name="uc_plan_count_of_each_type_multi">plans uncompleted</string>
     <string name="type_name_hint">The name of your new type</string>
-    <string name="title_dialog_type_not_empty">Cannot delete</string>
-    <string name="msg_dialog_type_not_empty">Some uncompleted plans are found attached to the type you want to delete just now.\n\nNOTE: We will ignore those plans that has been completed.</string>
-    
+
     <!--CreatePlanActivity-->
     <string name="title_activity_create_plan">Plan Creation</string>
 
@@ -104,12 +104,22 @@
     <string name="title_activity_type_detail">Type Detail</string>
     <string name="name_type_mark_shared_element_transition">Type mark shared element transition</string>
     <string name="toast_type_not_empty">Cannot delete, type is not empty</string>
-    <string name="msg_dialog_delete_type">This type will be deleted.</string>
+    <string name="msg_dialog_delete_type">This type and all of its plans will be deleted.</string>
     <string name="hint_content_fast">Fast create a new plan</string>
     <string name="show_c_plans">Show completed plans</string>
     <string name="toast_create_plan_failed">Content can\'t be empty</string>
     <string name="toast_create_plan_success">Create successfully</string>
     <string name="title_dialog_content_editor">Content Editor</string>
+    <string name="title_dialog_type_not_empty">Type Is Not Empty</string>
+    <string name="msg_dialog_type_not_empty">There are some plans belong to this type, you can MOVE them to another type, DELETE them all, or CANCEL.</string>
+    <string name="title_dialog_move_plan_pt1">Move</string>
+    <string name="title_dialog_move_plan_pt2_sg">Plan To</string>
+    <string name="title_dialog_move_plan_pt2_pl">Plans To</string>
+    <string name="msg_dialog_migrate_plan_pt1">All the plans belong to this type will be moved to</string>
+    <string name="msg_dialog_migrate_plan_pt2">, then this type will be deleted.</string>
+    <string name="btn_dialog_move_and_delete">Move And Delete</string>
+    <string name="title_dialog_last_type">Cannot Delete</string>
+    <string name="msg_dialog_last_type">This is the last type.</string>
 
     <!--CreateTypeActivity-->
     <string name="title_activity_create_type">Type Creation</string>

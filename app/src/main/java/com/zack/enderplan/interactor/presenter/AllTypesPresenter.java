@@ -4,7 +4,6 @@ import android.view.View;
 
 import com.zack.enderplan.event.TypeDeletedEvent;
 import com.zack.enderplan.model.bean.Plan;
-import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.event.DataLoadedEvent;
 import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDeletedEvent;
@@ -14,7 +13,6 @@ import com.zack.enderplan.event.TypeDetailChangedEvent;
 import com.zack.enderplan.interactor.adapter.TypeAdapter;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.domain.view.AllTypesView;
-import com.zack.enderplan.utility.Util;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -63,30 +61,6 @@ public class AllTypesPresenter extends BasePresenter implements Presenter<AllTyp
         mTypeAdapter.notifyItemMoved(fromPosition, toPosition);
     }
 
-    public void notifyTypeDeleted(int position) {
-        Type type = mDataManager.getType(position);
-
-        if (mDataManager.isUcPlanOfOneTypeExists(type.getTypeCode())) {
-            //Some uc plans belong to this type, do fake deleting
-            mDataManager.removeFromTypeList(position);
-            mTypeAdapter.notifyItemRemoved(position);
-
-            //弹提示有未完成的计划属于该类型的dialog
-            mAllTypesView.onShowPlanCountOfOneTypeExistsDialog();
-
-            mDataManager.addToTypeList(position, type);
-            mTypeAdapter.notifyItemInserted(position);
-        } else {
-            //真正的删除
-            mDataManager.notifyTypeDeleted(position);
-            mTypeAdapter.notifyItemRemoved(position);
-
-            Util.makeShortVibrate();
-
-            mEventBus.post(new TypeDeletedEvent(getPresenterName(), type.getTypeCode(), position, type));
-        }
-    }
-
     @Subscribe
     public void onDataLoaded(DataLoadedEvent event) {
         mTypeAdapter.notifyDataSetChanged();
@@ -110,6 +84,11 @@ public class AllTypesPresenter extends BasePresenter implements Presenter<AllTyp
     public void onTypeDetailChanged(TypeDetailChangedEvent event) {
         if (event.getEventSource().equals(getPresenterName())) return;
         mTypeAdapter.notifyItemChanged(event.getPosition());
+    }
+
+    @Subscribe
+    public void onTypeDeleted(TypeDeletedEvent event) {
+        mTypeAdapter.notifyItemRemoved(event.getPosition());
     }
 
     @Subscribe

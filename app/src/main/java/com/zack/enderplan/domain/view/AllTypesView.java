@@ -10,6 +10,4 @@ public interface AllTypesView {
     void showInitialView(TypeAdapter typeAdapter);
 
     void onTypeItemClicked(int position, View typeItem);
-
-    void onShowPlanCountOfOneTypeExistsDialog();
 }

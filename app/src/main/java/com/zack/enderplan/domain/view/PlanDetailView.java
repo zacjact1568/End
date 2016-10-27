@@ -1,11 +1,11 @@
 package com.zack.enderplan.domain.view;
 
-import com.zack.enderplan.interactor.adapter.TypeSpinnerAdapter;
+import com.zack.enderplan.interactor.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.model.bean.FormattedPlan;
 
 public interface PlanDetailView {
 
-    void showInitialView(FormattedPlan formattedPlan, TypeSpinnerAdapter typeSpinnerAdapter);
+    void showInitialView(FormattedPlan formattedPlan, SimpleTypeAdapter simpleTypeAdapter);
 
     void showPlanDeletionDialog(String content);
 

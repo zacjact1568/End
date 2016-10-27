@@ -3,11 +3,11 @@ package com.zack.enderplan.interactor.presenter;
 import com.zack.enderplan.domain.fragment.CalendarDialogFragment;
 import com.zack.enderplan.domain.fragment.DateTimePickerDialogFragment;
 import com.zack.enderplan.event.PlanCreatedEvent;
+import com.zack.enderplan.interactor.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.utility.Util;
 import com.zack.enderplan.domain.view.CreatePlanView;
-import com.zack.enderplan.interactor.adapter.TypeSpinnerAdapter;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -34,7 +34,7 @@ public class CreatePlanPresenter extends BasePresenter implements Presenter<Crea
     }
 
     public void setInitialView() {
-        mCreatePlanView.showInitialView(new TypeSpinnerAdapter(mDataManager.getTypeList()));
+        mCreatePlanView.showInitialView(new SimpleTypeAdapter(mDataManager.getTypeList(), SimpleTypeAdapter.STYLE_SPINNER));
     }
 
     public void notifyContentChanged(String newContent) {
