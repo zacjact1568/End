@@ -10,9 +10,11 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
+import android.view.View;
 
 import com.zack.enderplan.App;
 
+import java.lang.reflect.Method;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -92,5 +94,26 @@ public class Util {
 
     public static String makeColor() {
         return String.format("#FF%s%s%s", makeColorChannel(), makeColorChannel(), makeColorChannel());
+    }
+
+    /**
+     * 通过反射获取未绘制控件的高<br>
+     * Reference: https://my.oschina.net/u/269663/blog/388980
+     * @param view 要获取高的控件
+     * @return 控件的高
+     */
+    public static int getViewHeight(View view) {
+        try {
+            Method method = view.getClass().getDeclaredMethod("onMeasure", int.class, int.class);
+            method.setAccessible(true);
+            method.invoke(
+                    view,
+                    View.MeasureSpec.makeMeasureSpec(((View) view.getParent()).getMeasuredWidth(), View.MeasureSpec.AT_MOST),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return view.getMeasuredHeight();
     }
 }

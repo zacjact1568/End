@@ -1,71 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="8dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".domain.activity.PlanDetailActivity"
     tools:showIn="@layout/activity_plan_detail">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/other_info"
-        android:textColor="?attr/colorPrimary"
-        android:textSize="16sp"
-        android:layout_margin="16dp"/>
-
-    <Spinner
-        android:id="@+id/spinner"
+    <LinearLayout
+        android:id="@+id/layout_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="16dp"/>
+        android:orientation="vertical">
 
-    <include layout="@layout/divider"/>
+        <TextView
+            android:id="@+id/text_content_collapsed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:gravity="start"
+            android:padding="16dp"
+            tools:text="Buy Joanne on iTunes"
+            tools:background="@color/colorPrimaryLight"/>
 
-    <include layout="@layout/plan_optional_item_deadline"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/other_info"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="16sp"
+            android:layout_margin="16dp"/>
 
-    <include layout="@layout/divider"/>
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"/>
 
-    <include layout="@layout/plan_optional_item_reminder"/>
+        <include layout="@layout/divider"/>
 
-    <include layout="@layout/divider"/>
+        <RelativeLayout
+            android:id="@+id/layout_deadline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
 
-    <TextView
-        android:id="@+id/btn_switch_plan_status"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="?attr/colorAccent"
-        android:background="?android:attr/selectableItemBackground"
-        android:clickable="true"
-        android:gravity="center"
-        android:padding="16dp"
-        tools:text="Complete"/>
+            <ImageView
+                android:id="@+id/ic_deadline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_schedule_grey600_24dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"/>
 
-    <include layout="@layout/divider"/>
+            <TextView
+                android:id="@+id/text_deadline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_deadline"
+                android:textSize="16sp"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@id/ic_deadline"
+                android:layout_marginStart="@dimen/image_text_spacing"/>
 
-    <!--<android.support.v7.widget.CardView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginTop="@dimen/card_view_outer_margin">-->
+            <TextView
+                android:id="@+id/text_deadline_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:layout_below="@id/text_deadline"
+                android:layout_alignStart="@id/text_deadline"
+                tools:text="@string/dscpt_unsettled"/>
 
-        <!--<ScrollView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content">-->
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_chevron_right_grey600_24dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"/>
 
-            <!--<FrameLayout-->
-                <!--android:id="@+id/frame_layout"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"/>-->
+        </RelativeLayout>
 
-        <!--</ScrollView>-->
+        <include layout="@layout/divider"/>
 
-    <!--</android.support.v7.widget.CardView>-->
+        <RelativeLayout
+            android:id="@+id/layout_reminder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
 
-</LinearLayout>
+            <ImageView
+                android:id="@+id/ic_reminder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_notifications_none_grey600_24dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"/>
+
+            <TextView
+                android:id="@+id/text_reminder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_reminder"
+                android:textSize="16sp"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@id/ic_reminder"
+                android:layout_marginStart="@dimen/image_text_spacing"/>
+
+            <TextView
+                android:id="@+id/text_reminder_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:layout_below="@id/text_reminder"
+                android:layout_alignStart="@id/text_reminder"
+                tools:text="@string/dscpt_unsettled"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_chevron_right_grey600_24dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"/>
+
+        </RelativeLayout>
+
+        <include layout="@layout/divider"/>
+
+        <TextView
+            android:id="@+id/btn_switch_plan_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorAccent"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:gravity="center"
+            android:padding="12dp"
+            tools:text="Complete"/>
+
+        <include layout="@layout/divider"/>
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

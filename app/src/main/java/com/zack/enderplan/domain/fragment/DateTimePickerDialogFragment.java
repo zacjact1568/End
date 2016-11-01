@@ -108,20 +108,20 @@ public class DateTimePickerDialogFragment extends DialogFragment {
         onDateTimePickedListener = null;
     }
 
-    @OnClick({R.id.btn_picker_switcher, R.id.btn_ok, R.id.btn_cancel})
+    @OnClick({R.id.btn_picker_switcher, R.id.btn_select, R.id.btn_remove})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_picker_switcher:
                 mDateTimePickerSwitcher.showNext();
                 mPickerSwitcherButton.setText(mDateTimePickerSwitcher.getCurrentView().getId() == R.id.picker_time ? R.string.text_date_picker_switcher : R.string.text_time_picker_switcher);
                 break;
-            case R.id.btn_ok:
+            case R.id.btn_select:
                 getDialog().dismiss();
                 if (onDateTimePickedListener != null) {
                     onDateTimePickedListener.onDateTimePicked(calendar.getTimeInMillis());
                 }
                 break;
-            case R.id.btn_cancel:
+            case R.id.btn_remove:
                 getDialog().dismiss();
                 if (onDateTimePickedListener != null) {
                     onDateTimePickedListener.onDateTimePicked(0);

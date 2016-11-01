@@ -4,6 +4,15 @@
     tools:context=".domain.activity.PlanDetailActivity">
 
     <item
+        android:id="@+id/action_star"
+        android:title="@string/action_star"
+        android:orderInCategory="80"
+        android:visible="false"
+        app:showAsAction="ifRoom"
+        tools:icon="@drawable/ic_star_border_white_24dp"
+        tools:visible="true"/>
+
+    <item
         android:id="@+id/action_edit"
         android:title="@string/action_edit"
         android:icon="@drawable/ic_edit_white_24dp"

@@ -143,7 +143,7 @@ public class TypeMarkColorPickerDialogFragment extends DialogFragment {
         mOnTypeMarkColorPickedListener = null;
     }
 
-    @OnClick({R.id.btn_picker_switcher, R.id.btn_cancel, R.id.btn_ok})
+    @OnClick({R.id.btn_picker_switcher, R.id.btn_cancel, R.id.btn_select})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_picker_switcher:
@@ -169,7 +169,7 @@ public class TypeMarkColorPickerDialogFragment extends DialogFragment {
             case R.id.btn_cancel:
                 getDialog().dismiss();
                 break;
-            case R.id.btn_ok:
+            case R.id.btn_select:
                 if (mOnTypeMarkColorPickedListener != null) {
                     mOnTypeMarkColorPickedListener.onTypeMarkColorPicked(mTypeMarkColor);
                 }

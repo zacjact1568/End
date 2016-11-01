@@ -51,9 +51,8 @@
     <string name="date_time_format_short">yyyy/MM/dd E kk:mm</string>
     <string name="other_info">类型、截止时间和提醒</string>
     <string name="prompt_empty_content">看起来你想保存空内容？</string>
-    <string name="title_dialog_delete_plan">你确定吗？</string>
-    <string name="msg_dialog_delete_plan_pt1">计划“</string>
-    <string name="msg_dialog_delete_plan_pt2">”将会被立即删除。</string>
+    <string name="title_dialog_delete_plan">删除计划</string>
+    <string name="msg_dialog_delete_plan_pt1">以下计划将被删除：</string>
     <string name="title_activity_reminder">EnderPlan提醒</string>
     <string name="action_all_types">所有类型</string>
     <string name="type_name_hint">你的新类型的名称</string>
@@ -127,4 +126,6 @@
     <string name="title_dialog_move_plan_pt2_sg">个计划到</string>
     <string name="msg_dialog_last_type">这是最后一个类型。</string>
     <string name="title_dialog_last_type">不能删除</string>
+    <string name="button_select">选择</string>
+    <string name="action_star">星标</string>
 </resources>

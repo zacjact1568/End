@@ -8,6 +8,7 @@
     <string name="action_edit">Edit</string>
     <string name="action_delete">Delete</string>
     <string name="action_save">Save</string>
+    <string name="action_star">Star</string>
 
     <string name="button_ok">OK</string>
     <string name="button_cancel">Cancel</string>
@@ -15,6 +16,7 @@
     <string name="button_remove">Remove</string>
     <string name="button_delete">Delete</string>
     <string name="button_move">Move</string>
+    <string name="button_select">Select</string>
 
     <string name="title_deadline">Deadline</string>
     <string name="title_reminder">Reminder</string>
@@ -89,9 +91,8 @@
     <string name="text_make_plan_uc">Make it uncompleted</string>
     <string name="edit_content_hint">Change your plan content here</string>
     <string name="prompt_empty_content">It seems that you want to save a empty content?</string>
-    <string name="title_dialog_delete_plan">Are you sure?</string>
-    <string name="msg_dialog_delete_plan_pt1">The plan \"</string>
-    <string name="msg_dialog_delete_plan_pt2">\" will be deleted immediately.</string>
+    <string name="title_dialog_delete_plan">Delete Plan</string>
+    <string name="msg_dialog_delete_plan_pt1">The following plan will be deleted:</string>
     <string name="edit_plan">Edit plan</string>
     <string name="change">Change</string>
     <string name="save">Save</string>

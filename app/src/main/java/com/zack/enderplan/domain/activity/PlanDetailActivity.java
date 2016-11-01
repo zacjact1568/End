@@ -2,14 +2,20 @@ package com.zack.enderplan.domain.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,16 +36,26 @@ import butterknife.OnClick;
 
 public class PlanDetailActivity extends BaseActivity implements PlanDetailView {
 
+    @BindView(R.id.layout_app_bar)
+    AppBarLayout mAppBarLayout;
+    @BindView(R.id.bg_toolbar)
+    ImageView mToolbarBackground;
+    @BindView(R.id.layout_header)
+    RelativeLayout mHeaderLayout;
     @BindView(R.id.text_content)
     TextView contentText;
-    @BindView(R.id.star_mark)
-    ImageView starMark;
-    @BindView(R.id.deadline_mark)
-    ImageView deadlineMark;
-    @BindView(R.id.reminder_mark)
-    ImageView reminderMark;
+    @BindView(R.id.ic_star)
+    ImageView starIcon;
+    @BindView(R.id.ic_deadline)
+    ImageView deadlineIcon;
+    @BindView(R.id.ic_reminder)
+    ImageView reminderIcon;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.layout_content)
+    LinearLayout mContentLayout;
+    @BindView(R.id.text_content_collapsed)
+    TextView mContentCollapsedText;
     @BindView(R.id.spinner)
     Spinner spinner;
     @BindView(R.id.text_deadline_description)
@@ -55,9 +71,15 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailView {
     int primaryColor;
     @BindColor(android.R.color.tertiary_text_light)
     int lightTextColor;
+    @BindColor(R.color.colorAccent)
+    int mAccentColor;
+    @BindColor(R.color.grey_600)
+    int mGrey600Color;
+    @BindColor(R.color.colorPrimaryLight)
+    int mPrimaryLightColor;
 
     private PlanDetailPresenter planDetailPresenter;
-    private boolean flag = true;
+    private MenuItem mStarMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,13 +97,33 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailView {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_plan_detail, menu);
+        mStarMenuItem = menu.findItem(R.id.action_star);
+        planDetailPresenter.notifyMenuCreated();
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        planDetailPresenter.notifyMenuItemSelected(item.getItemId());
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+            case R.id.action_star:
+                planDetailPresenter.notifyStarStatusChanged();
+                break;
+            case R.id.action_edit:
+                planDetailPresenter.notifyContentEditingButtonClicked();
+                break;
+            case R.id.action_delete:
+                planDetailPresenter.notifyPlanDeletionButtonClicked();
+                break;
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        planDetailPresenter.notifyBackPressed();
     }
 
     @Override
@@ -93,23 +135,35 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailView {
         setSupportActionBar(toolbar);
         setupActionBar();
 
-        contentText.setText(formattedPlan.getContent());
+        mAppBarLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                planDetailPresenter.notifyPreDrawingAppBar(mAppBarLayout.getTotalScrollRange());
+                mAppBarLayout.getViewTreeObserver().removeOnPreDrawListener(this);
+                return false;
+            }
+        });
 
-        if (formattedPlan.isStarred()) {
-            fab.setImageResource(R.drawable.ic_star_color_accent_24dp);
-            starMark.setVisibility(View.VISIBLE);
-        }
+        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                planDetailPresenter.notifyAppBarScrolled(verticalOffset);
+            }
+        });
+
+        mContentCollapsedText.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                planDetailPresenter.notifyPreDrawingContentCollapsedText(mContentCollapsedText.getHeight());
+                mContentCollapsedText.getViewTreeObserver().removeOnPreDrawListener(this);
+                return false;
+            }
+        });
 
         spinner.setAdapter(simpleTypeAdapter);
-        spinner.setSelection(formattedPlan.getSpinnerPos());
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (flag) {
-                    //防止重复执行
-                    flag = false;
-                    return;
-                }
                 planDetailPresenter.notifyTypeCodeChanged(position);
             }
 
@@ -119,28 +173,37 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailView {
             }
         });
 
-        if (formattedPlan.getDeadline() == null) {
-            deadlineMark.setVisibility(View.VISIBLE);
-            deadlineDescriptionText.setText(formattedPlan.getDeadline());
-            deadlineDescriptionText.setTextColor(primaryColor);
-        }
+        onContentChanged(formattedPlan.getContent());
+        onStarStatusChanged(formattedPlan.isStarred());
+        onTypeOfPlanChanged(formattedPlan.getSpinnerPos());
+        onDeadlineChanged(formattedPlan.isHasDeadline(), formattedPlan.getDeadline());
+        onReminderTimeChanged(formattedPlan.isHasReminder(), formattedPlan.getReminderTime());
+        onPlanStatusChanged(formattedPlan.isCompleted());
+    }
 
-        if (formattedPlan.getReminderTime() == null) {
-            reminderMark.setVisibility(View.VISIBLE);
-            reminderDescriptionText.setText(formattedPlan.getReminderTime());
-            reminderDescriptionText.setTextColor(primaryColor);
-        }
+    @Override
+    public void updateStarMenuItem(boolean isStarred) {
+        if (mStarMenuItem == null) return;
+        mStarMenuItem.setIcon(isStarred ? R.drawable.ic_star_white_24dp : R.drawable.ic_star_border_white_24dp);
+    }
 
-        toolbar.setBackgroundResource(formattedPlan.isCompleted() ? R.drawable.bg_c_plan_detail : R.drawable.bg_uc_plan_detail);
+    @Override
+    public void onAppBarScrolled(float headerLayoutAlpha, float contentLayoutTransY) {
+        mHeaderLayout.setAlpha(headerLayoutAlpha);
+        mContentLayout.setTranslationY(contentLayoutTransY);
+    }
 
-        switchPlanStatusButton.setText(formattedPlan.isCompleted() ? R.string.text_make_plan_uc : R.string.text_make_plan_c);
+    @Override
+    public void updateToolbar(String title, boolean isStarMenuItemVisible) {
+        toolbar.setTitle(title);
+        mStarMenuItem.setVisible(isStarMenuItemVisible);
     }
 
     @Override
     public void showPlanDeletionDialog(String content) {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.title_dialog_delete_plan)
-                .setMessage(getResources().getString(R.string.msg_dialog_delete_plan_pt1) + content + getResources().getString(R.string.msg_dialog_delete_plan_pt2))
+                .setMessage(getString(R.string.msg_dialog_delete_plan_pt1) + "\n" + content)
                 .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -153,7 +216,8 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailView {
 
     @Override
     public void onPlanStatusChanged(boolean isCompleted) {
-        toolbar.setBackgroundResource(isCompleted ? R.drawable.bg_c_plan_detail : R.drawable.bg_uc_plan_detail);
+        mToolbarBackground.setImageResource(isCompleted ? R.drawable.bg_c_plan_detail : R.drawable.bg_uc_plan_detail);
+        mContentCollapsedText.setBackgroundColor(isCompleted ? Color.LTGRAY : mPrimaryLightColor);
         switchPlanStatusButton.setText(isCompleted ? R.string.text_make_plan_uc : R.string.text_make_plan_c);
     }
 
@@ -170,19 +234,16 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailView {
     }
 
     @Override
-    public void onContentEditedSuccessfully(String newContent) {
+    public void onContentChanged(String newContent) {
         contentText.setText(newContent);
-    }
-
-    @Override
-    public void onContentEditedAbortively() {
-        Toast.makeText(this, R.string.toast_empty_content, Toast.LENGTH_SHORT).show();
+        mContentCollapsedText.setText(newContent);
     }
 
     @Override
     public void onStarStatusChanged(boolean isStarred) {
-        fab.setImageResource(isStarred ? R.drawable.ic_star_color_accent_24dp : R.drawable.ic_star_grey600_24dp);
-        starMark.setVisibility(isStarred ? View.VISIBLE : View.GONE);
+        updateStarMenuItem(isStarred);
+        starIcon.setVisibility(isStarred ? View.VISIBLE : View.GONE);
+        fab.setImageTintList(ColorStateList.valueOf(isStarred ? mAccentColor : mGrey600Color));
     }
 
     @Override
@@ -215,31 +276,32 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailView {
     }
 
     @Override
-    public void onDeadlineSelected(String newDeadlineText) {
-        deadlineMark.setVisibility(View.VISIBLE);
-        deadlineDescriptionText.setText(newDeadlineText);
-        deadlineDescriptionText.setTextColor(primaryColor);
+    public void onDeadlineChanged(boolean hasDeadline, String newDeadline) {
+        deadlineIcon.setVisibility(hasDeadline ? View.VISIBLE : View.GONE);
+        deadlineDescriptionText.setText(newDeadline);
+        deadlineDescriptionText.setTextColor(hasDeadline ? primaryColor : lightTextColor);
     }
 
     @Override
-    public void onDeadlineRemoved() {
-        deadlineMark.setVisibility(View.GONE);
-        deadlineDescriptionText.setText(R.string.dscpt_unsettled);
-        deadlineDescriptionText.setTextColor(lightTextColor);
+    public void onReminderTimeChanged(boolean hasReminder, String newReminderTime) {
+        reminderIcon.setVisibility(hasReminder ? View.VISIBLE : View.GONE);
+        reminderDescriptionText.setText(newReminderTime);
+        reminderDescriptionText.setTextColor(hasReminder ? primaryColor : lightTextColor);
     }
 
     @Override
-    public void onReminderTimeSelected(String newReminderTimeText) {
-        reminderMark.setVisibility(View.VISIBLE);
-        reminderDescriptionText.setText(newReminderTimeText);
-        reminderDescriptionText.setTextColor(primaryColor);
+    public void backToTop() {
+        mAppBarLayout.setExpanded(true);
     }
 
     @Override
-    public void onReminderRemoved() {
-        reminderMark.setVisibility(View.GONE);
-        reminderDescriptionText.setText(R.string.dscpt_unsettled);
-        reminderDescriptionText.setTextColor(lightTextColor);
+    public void pressBack() {
+        super.onBackPressed();
+    }
+
+    @Override
+    public void showToast(int msgResId) {
+        Toast.makeText(this, msgResId, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -247,8 +309,21 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailView {
         finish();
     }
 
-    @OnClick({R.id.item_view_deadline, R.id.item_view_reminder, R.id.fab, R.id.btn_switch_plan_status})
+    @OnClick({R.id.layout_deadline, R.id.layout_reminder, R.id.fab, R.id.btn_switch_plan_status})
     public void onClick(View view) {
-        planDetailPresenter.notifyViewClicked(view.getId());
+        switch (view.getId()) {
+            case R.id.layout_deadline:
+                planDetailPresenter.notifyDeadlineItemClicked();
+                break;
+            case R.id.layout_reminder:
+                planDetailPresenter.notifyReminderItemClicked();
+                break;
+            case R.id.fab:
+                planDetailPresenter.notifyStarStatusChanged();
+                break;
+            case R.id.btn_switch_plan_status:
+                planDetailPresenter.notifyPlanStatusChanged();
+                break;
+        }
     }
 }

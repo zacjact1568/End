@@ -6,16 +6,20 @@ public class FormattedPlan {
     private String content;
     private boolean isStarred;
     private int spinnerPos;
+    private boolean hasDeadline;
     private String deadline;
+    private boolean hasReminder;
     private String reminderTime;
     private boolean isCompleted;
 
-    public FormattedPlan(String content, boolean isStarred, int spinnerPos, String deadline,
-                         String reminderTime, boolean isCompleted) {
+    public FormattedPlan(String content, boolean isStarred, int spinnerPos, boolean hasDeadline,
+                         String deadline, boolean hasReminder, String reminderTime, boolean isCompleted) {
         this.content = content;
         this.isStarred = isStarred;
         this.spinnerPos = spinnerPos;
+        this.hasDeadline = hasDeadline;
         this.deadline = deadline;
+        this.hasReminder = hasReminder;
         this.reminderTime = reminderTime;
         this.isCompleted = isCompleted;
     }
@@ -44,12 +48,28 @@ public class FormattedPlan {
         this.spinnerPos = spinnerPos;
     }
 
+    public boolean isHasDeadline() {
+        return hasDeadline;
+    }
+
+    public void setHasDeadline(boolean hasDeadline) {
+        this.hasDeadline = hasDeadline;
+    }
+
     public String getDeadline() {
         return deadline;
     }
 
     public void setDeadline(String deadline) {
         this.deadline = deadline;
+    }
+
+    public boolean isHasReminder() {
+        return hasReminder;
+    }
+
+    public void setHasReminder(boolean hasReminder) {
+        this.hasReminder = hasReminder;
     }
 
     public String getReminderTime() {
