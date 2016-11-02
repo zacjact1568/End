@@ -1,5 +1,11 @@
 package com.zack.enderplan.interactor.presenter;
 
+import android.content.Context;
+import android.text.TextUtils;
+import android.text.format.DateFormat;
+
+import com.zack.enderplan.App;
+import com.zack.enderplan.R;
 import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.interactor.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.model.bean.Plan;
@@ -14,11 +20,16 @@ public class CreatePlanPresenter extends BasePresenter implements Presenter<Crea
     private CreatePlanView mCreatePlanView;
     private DataManager mDataManager;
     private Plan mPlan;
+    private String mDateTimeFormatStr, mClickToSetDscpt;
 
     public CreatePlanPresenter(CreatePlanView createPlanView) {
         attachView(createPlanView);
         mDataManager = DataManager.getInstance();
         mPlan = new Plan(Util.makeCode());
+
+        Context context = App.getGlobalContext();
+        mDateTimeFormatStr = context.getString(R.string.date_time_format);
+        mClickToSetDscpt = context.getString(R.string.dscpt_click_to_set);
     }
 
     @Override
@@ -35,20 +46,25 @@ public class CreatePlanPresenter extends BasePresenter implements Presenter<Crea
         mCreatePlanView.showInitialView(new SimpleTypeAdapter(mDataManager.getTypeList(), SimpleTypeAdapter.STYLE_SPINNER));
     }
 
-    public void notifyContentChanged(String newContent) {
-        mPlan.setContent(newContent);
+    public void notifyContentChanged(String content) {
+        mPlan.setContent(content);
+        mCreatePlanView.onContentChanged(!TextUtils.isEmpty(content));
     }
 
-    public void notifyTypeCodeChanged(int posInSpinner) {
-        mPlan.setTypeCode(mDataManager.getType(posInSpinner).getTypeCode());
+    public void notifyTypeCodeChanged(int spinnerPos) {
+        mPlan.setTypeCode(mDataManager.getType(spinnerPos).getTypeCode());
     }
 
-    public void notifyDeadlineChanged(long newDeadline) {
-        mPlan.setDeadline(newDeadline);
+    public void notifyDeadlineChanged(long deadline) {
+        if (mPlan.getDeadline() == deadline) return;
+        mPlan.setDeadline(deadline);
+        mCreatePlanView.onDeadlineChanged(deadline != 0, formatDateTime(deadline));
     }
 
-    public void notifyReminderTimeChanged(long newReminderTime) {
-        mPlan.setReminderTime(newReminderTime);
+    public void notifyReminderTimeChanged(long reminderTime) {
+        if (mPlan.getReminderTime() == reminderTime) return;
+        mPlan.setReminderTime(reminderTime);
+        mCreatePlanView.onReminderTimeChanged(reminderTime != 0, formatDateTime(reminderTime));
     }
 
     public void notifyStarStatusChanged() {
@@ -59,17 +75,36 @@ public class CreatePlanPresenter extends BasePresenter implements Presenter<Crea
         mCreatePlanView.onStarStatusChanged(!isStarred);
     }
 
-    public void notifyDeadlineButtonClicked() {
+    //TODO 以后都用这种形式，即notifySetting***，更换控件就不用改方法名了
+    public void notifySettingDeadline() {
         mCreatePlanView.showDeadlinePickerDialog(mPlan.getDeadline());
     }
 
-    public void notifyReminderButtonClicked() {
+    public void notifySettingReminder() {
         mCreatePlanView.showReminderTimePickerDialog(mPlan.getReminderTime());
     }
 
-    public void notifyCreatingNewPlan() {
+    public void notifyCreatingPlan() {
         mPlan.setCreationTime(System.currentTimeMillis());
         mDataManager.notifyPlanCreated(mPlan);
-        EventBus.getDefault().post(new PlanCreatedEvent(getPresenterName(), mPlan.getPlanCode(), mDataManager.getRecentlyCreatedPlanLocation()));
+        EventBus.getDefault().post(new PlanCreatedEvent(
+                getPresenterName(),
+                mPlan.getPlanCode(),
+                mDataManager.getRecentlyCreatedPlanLocation()
+        ));
+        mCreatePlanView.exitCreatePlan();
+    }
+
+    public void notifyPlanCreationCanceled() {
+        //TODO 判断是否已编辑过
+        mCreatePlanView.exitCreatePlan();
+    }
+
+    private String formatDateTime(long timeInMillis) {
+        if (timeInMillis == 0) {
+            return mClickToSetDscpt;
+        } else {
+            return DateFormat.format(mDateTimeFormatStr, timeInMillis).toString();
+        }
     }
 }

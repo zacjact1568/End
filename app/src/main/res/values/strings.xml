@@ -18,6 +18,7 @@
     <string name="button_move">Move</string>
     <string name="button_select">Select</string>
 
+    <string name="title_star">Star</string>
     <string name="title_deadline">Deadline</string>
     <string name="title_reminder">Reminder</string>
     <string name="title_name">Name</string>
@@ -25,6 +26,7 @@
     <string name="title_pattern">Pattern</string>
 
     <string name="dscpt_unsettled">Unsettled</string>
+    <string name="dscpt_click_to_set">Click to set</string>
 
     <string name="date_format">E, MMM dd, yyyy</string>
     <string name="date_time_format">E, MMM dd, yyyy kk:mm</string>

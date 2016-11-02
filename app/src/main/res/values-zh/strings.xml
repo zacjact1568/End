@@ -128,4 +128,6 @@
     <string name="title_dialog_last_type">不能删除</string>
     <string name="button_select">选择</string>
     <string name="action_star">星标</string>
+    <string name="title_star">星标</string>
+    <string name="dscpt_click_to_set">点按来设置</string>
 </resources>

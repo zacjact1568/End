@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".domain.activity.CreatePlanActivity">
+
+    <item
+        android:id="@+id/action_star"
+        android:title="@string/action_star"
+        android:icon="@drawable/ic_star_border_white_24dp"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom"/>
+
+</menu>

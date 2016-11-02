@@ -1,21 +1,21 @@
 package com.zack.enderplan.domain.activity;
 
-import android.animation.Animator;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.domain.fragment.DateTimePickerDialogFragment;
@@ -30,54 +30,38 @@ import butterknife.OnClick;
 
 public class CreatePlanActivity extends BaseActivity implements CreatePlanView {
 
-    @BindView(R.id.button_save)
-    ImageView mSaveButton;
+    @BindView(R.id.layout_circular_reveal)
+    LinearLayout mCircularRevealLayout;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
     @BindView(R.id.editor_content)
     EditText mContentEditor;
     @BindView(R.id.spinner)
     Spinner mSpinner;
-    @BindView(R.id.star_mark)
-    ImageView mStarMark;
-    @BindView(R.id.deadline_mark)
-    ImageView mDeadlineMark;
-    @BindView(R.id.reminder_mark)
-    ImageView mReminderMark;
-    @BindView(R.id.card_view)
-    CardView mCardView;
-    @BindView(R.id.circular_reveal_layout)
-    LinearLayout mCircularRevealLayout;
+    @BindView(R.id.text_deadline)
+    TextView mDeadlineText;
+    @BindView(R.id.text_reminder)
+    TextView mReminderText;
+    @BindView(R.id.btn_create)
+    TextView mCreateButton;
 
     @BindColor(R.color.colorAccent)
     int mAccentColor;
     @BindColor(R.color.grey)
     int mGreyColor;
+    @BindColor(R.color.colorPrimary)
+    int mPrimaryColor;
+    @BindColor(android.R.color.tertiary_text_light)
+    int mLightTextColor;
 
     private CreatePlanPresenter mCreatePlanPresenter;
-
-    private static final int FAB_COORDINATE_IN_DP = 44;
-    private static final int CR_ANIM_DURATION = 400;
+    private MenuItem mStarMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        overridePendingTransition(0, 0);
-        setContentView(R.layout.activity_create_plan);
-        ButterKnife.bind(this);
-
-        if (savedInstanceState == null) {
-            mCardView.setVisibility(View.INVISIBLE);
-            mCircularRevealLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    mCircularRevealLayout.getViewTreeObserver().removeOnPreDrawListener(this);
-                    makeCircularRevealAnimation(true);
-                    return false;
-                }
-            });
-        }
 
         mCreatePlanPresenter = new CreatePlanPresenter(this);
-
         mCreatePlanPresenter.setInitialView();
     }
 
@@ -85,6 +69,191 @@ public class CreatePlanActivity extends BaseActivity implements CreatePlanView {
     protected void onDestroy() {
         super.onDestroy();
         mCreatePlanPresenter.detachView();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_create_plan, menu);
+        mStarMenuItem = menu.findItem(R.id.action_star);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+            case R.id.action_star:
+                mCreatePlanPresenter.notifyStarStatusChanged();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void showInitialView(SimpleTypeAdapter simpleTypeAdapter) {
+        overridePendingTransition(0, 0);
+        setContentView(R.layout.activity_create_plan);
+        ButterKnife.bind(this);
+
+        //TODO if (savedInstanceState == null)
+        mCircularRevealLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                //TODO typeDetailActivity里，把removeListener放在最前
+                mCircularRevealLayout.getViewTreeObserver().removeOnPreDrawListener(this);
+                playCircularRevealAnimation();
+                return false;
+            }
+        });
+
+        setSupportActionBar(mToolbar);
+        setupActionBar();
+
+        mContentEditor.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mCreatePlanPresenter.notifyContentChanged(s.toString());
+            }
+        });
+
+        mSpinner.setAdapter(simpleTypeAdapter);
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mCreatePlanPresenter.notifyTypeCodeChanged(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        //不能在xml中设置
+        mCreateButton.setClickable(false);
+    }
+
+    @Override
+    public void onContentChanged(boolean isValid) {
+        mCreateButton.setClickable(isValid);
+        mCreateButton.setBackgroundTintList(ColorStateList.valueOf(isValid ? mAccentColor : mGreyColor));
+    }
+
+    @Override
+    public void onStarStatusChanged(boolean isStarred) {
+        mStarMenuItem.setIcon(isStarred ? R.drawable.ic_star_white_24dp : R.drawable.ic_star_border_white_24dp);
+    }
+
+    @Override
+    public void showDeadlinePickerDialog(long defaultDeadline) {
+        DateTimePickerDialogFragment fragment = DateTimePickerDialogFragment.newInstance(defaultDeadline);
+        fragment.setOnDateTimePickedListener(new DateTimePickerDialogFragment.OnDateTimePickedListener() {
+            @Override
+            public void onDateTimePicked(long timeInMillis) {
+                mCreatePlanPresenter.notifyDeadlineChanged(timeInMillis);
+            }
+        });
+        fragment.show(getSupportFragmentManager(), "deadline");
+    }
+
+    @Override
+    public void onDeadlineChanged(boolean hasDeadline, String deadline) {
+        mDeadlineText.setText(deadline);
+        mDeadlineText.setTextColor(hasDeadline ? mPrimaryColor : mLightTextColor);
+    }
+
+    @Override
+    public void showReminderTimePickerDialog(long defaultReminderTime) {
+        DateTimePickerDialogFragment fragment = DateTimePickerDialogFragment.newInstance(defaultReminderTime);
+        fragment.setOnDateTimePickedListener(new DateTimePickerDialogFragment.OnDateTimePickedListener() {
+            @Override
+            public void onDateTimePicked(long timeInMillis) {
+                mCreatePlanPresenter.notifyReminderTimeChanged(timeInMillis);
+            }
+        });
+        fragment.show(getSupportFragmentManager(), "reminder");
+    }
+
+    @Override
+    public void onReminderTimeChanged(boolean hasReminder, String reminderTime) {
+        mReminderText.setText(reminderTime);
+        mReminderText.setTextColor(hasReminder ? mPrimaryColor : mLightTextColor);
+    }
+
+    @Override
+    public void exitCreatePlan() {
+        finish();
+    }
+
+    @OnClick({R.id.layout_deadline, R.id.layout_reminder, R.id.btn_create, R.id.btn_cancel})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.layout_deadline:
+                mCreatePlanPresenter.notifySettingDeadline();
+                break;
+            case R.id.layout_reminder:
+                mCreatePlanPresenter.notifySettingReminder();
+                break;
+            case R.id.btn_create:
+                mCreatePlanPresenter.notifyCreatingPlan();
+                break;
+            case R.id.btn_cancel:
+                mCreatePlanPresenter.notifyPlanCreationCanceled();
+                break;
+        }
+    }
+
+    private void playCircularRevealAnimation() {
+        int fabCoordinateInPx = (int) (44 * getResources().getDisplayMetrics().density + 0.5f);
+        int centerX = mCircularRevealLayout.getWidth() - fabCoordinateInPx;
+        int centerY = mCircularRevealLayout.getHeight() - fabCoordinateInPx;
+
+        ViewAnimationUtils.createCircularReveal(mCircularRevealLayout, centerX, centerY, 0, (float) Math.hypot(centerX, centerY))
+                .setDuration(400)
+                .start();
+                /*.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        if (!isEnterAnim) {
+                            //TODO 有bug，若键盘显示，CR动画最终收回的位置与fab不对应
+                            hideInputMethodForContentEditor();
+                        }
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        if (isEnterAnim) {
+                            mCardView.setVisibility(View.VISIBLE);
+                            showInputMethodForContentEditor();
+                        } else {
+                            mCircularRevealLayout.setVisibility(View.INVISIBLE);
+                            finish();
+                            overridePendingTransition(0, 0);
+                        }
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                })*/
     }
 
     //显示键盘
@@ -101,141 +270,5 @@ public class CreatePlanActivity extends BaseActivity implements CreatePlanView {
         if (manager.isActive(mContentEditor)) {
             manager.hideSoftInputFromWindow(mContentEditor.getWindowToken(), 0);
         }
-    }
-
-    //圆形Reveal动画
-    private void makeCircularRevealAnimation(final boolean isEnterAnim) {
-        float scale = getResources().getDisplayMetrics().density;
-        int fabCoordinateInPx = (int) (FAB_COORDINATE_IN_DP * scale + 0.5f);
-        int centerX = mCircularRevealLayout.getWidth() - fabCoordinateInPx;
-        int centerY = mCircularRevealLayout.getHeight() - fabCoordinateInPx;
-        float radius = (float) Math.hypot(centerX, centerY);
-        float startRadius = isEnterAnim ? 0 : radius;
-        float endRadius = isEnterAnim ? radius : 0;
-
-        Animator circularRevealAnim = ViewAnimationUtils.createCircularReveal(mCircularRevealLayout, centerX, centerY, startRadius, endRadius);
-        circularRevealAnim.setDuration(CR_ANIM_DURATION);
-        circularRevealAnim.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                if (!isEnterAnim) {
-                    //TODO 有bug，若键盘显示，CR动画最终收回的位置与fab不对应
-                    hideInputMethodForContentEditor();
-                }
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (isEnterAnim) {
-                    mCardView.setVisibility(View.VISIBLE);
-                    showInputMethodForContentEditor();
-                } else {
-                    mCircularRevealLayout.setVisibility(View.INVISIBLE);
-                    finish();
-                    overridePendingTransition(0, 0);
-                }
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-        circularRevealAnim.start();
-    }
-
-    @OnClick({R.id.button_cancel, R.id.button_save, R.id.star_mark, R.id.deadline_mark, R.id.reminder_mark})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.button_cancel:
-                makeCircularRevealAnimation(false);
-                break;
-            case R.id.button_save:
-                mCreatePlanPresenter.notifyCreatingNewPlan();
-                makeCircularRevealAnimation(false);
-                break;
-            case R.id.star_mark:
-                mCreatePlanPresenter.notifyStarStatusChanged();
-                break;
-            case R.id.deadline_mark:
-                mCreatePlanPresenter.notifyDeadlineButtonClicked();
-                break;
-            case R.id.reminder_mark:
-                mCreatePlanPresenter.notifyReminderButtonClicked();
-                break;
-        }
-    }
-
-    @Override
-    public void showInitialView(SimpleTypeAdapter simpleTypeAdapter) {
-        mContentEditor.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                mCreatePlanPresenter.notifyContentChanged(s.toString());
-                mSaveButton.setVisibility(TextUtils.isEmpty(s.toString()) ? View.INVISIBLE : View.VISIBLE);
-            }
-        });
-
-        mSpinner.setAdapter(simpleTypeAdapter);
-        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                hideInputMethodForContentEditor();
-                mCreatePlanPresenter.notifyTypeCodeChanged(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-    }
-
-    @Override
-    public void onStarStatusChanged(boolean isStarred) {
-        mStarMark.setImageResource(isStarred ? R.drawable.ic_star_black_24dp : R.drawable.ic_star_border_black_24dp);
-        mStarMark.setImageTintList(ColorStateList.valueOf(isStarred ? mAccentColor : mGreyColor));
-    }
-
-    @Override
-    public void showDeadlinePickerDialog(long defaultDeadline) {
-        DateTimePickerDialogFragment fragment = DateTimePickerDialogFragment.newInstance(defaultDeadline);
-        fragment.setOnDateTimePickedListener(new DateTimePickerDialogFragment.OnDateTimePickedListener() {
-            @Override
-            public void onDateTimePicked(long timeInMillis) {
-                mCreatePlanPresenter.notifyDeadlineChanged(timeInMillis);
-                mDeadlineMark.setImageTintList(ColorStateList.valueOf(timeInMillis == 0 ? mGreyColor : mAccentColor));
-            }
-        });
-        fragment.show(getSupportFragmentManager(), "deadline");
-    }
-
-    @Override
-    public void showReminderTimePickerDialog(long defaultReminderTime) {
-        DateTimePickerDialogFragment fragment = DateTimePickerDialogFragment.newInstance(defaultReminderTime);
-        fragment.setOnDateTimePickedListener(new DateTimePickerDialogFragment.OnDateTimePickedListener() {
-            @Override
-            public void onDateTimePicked(long timeInMillis) {
-                mCreatePlanPresenter.notifyReminderTimeChanged(timeInMillis);
-                mReminderMark.setImageResource(timeInMillis == 0 ? R.drawable.ic_notifications_none_black_24dp : R.drawable.ic_notifications_black_24dp);
-                mReminderMark.setImageTintList(ColorStateList.valueOf(timeInMillis == 0 ? mGreyColor : mAccentColor));
-            }
-        });
-        fragment.show(getSupportFragmentManager(), "reminder");
     }
 }
