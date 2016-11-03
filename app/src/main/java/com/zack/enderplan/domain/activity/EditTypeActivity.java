@@ -1,12 +1,10 @@
 package com.zack.enderplan.domain.activity;
 
 import android.os.Bundle;
-import android.support.annotation.StringRes;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +16,7 @@ import com.zack.enderplan.domain.view.EditTypeView;
 import com.zack.enderplan.interactor.presenter.EditTypePresenter;
 import com.zack.enderplan.model.bean.TypeMarkColor;
 import com.zack.enderplan.widget.CircleColorView;
+import com.zack.enderplan.widget.ItemView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,20 +26,14 @@ public class EditTypeActivity extends BaseActivity implements EditTypeView {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @BindView(R.id.ic_type_mark_preview)
-    CircleColorView mTypeMarkPreviewIcon;
-    @BindView(R.id.text_type_name_preview)
-    TextView mTypeNamePreviewText;
+    @BindView(R.id.ic_type_mark)
+    CircleColorView mTypeMarkIcon;
     @BindView(R.id.text_type_name)
     TextView mTypeNameText;
-    @BindView(R.id.text_type_mark_color_name)
-    TextView mTypeMarkColorNameText;
-    @BindView(R.id.ic_type_mark_color)
-    CircleColorView mTypeMarkColorIcon;
-    @BindView(R.id.text_type_mark_pattern_name)
-    TextView mTypeMarkPatternNameText;
-    @BindView(R.id.ic_type_mark_pattern)
-    ImageView mTypeMarkPatternIcon;
+    @BindView(R.id.item_type_name)
+    ItemView mTypeNameItem;
+    @BindView(R.id.item_type_mark_color)
+    ItemView mTypeMarkColorItem;
 
     private EditTypePresenter mEditTypePresenter;
 
@@ -85,16 +78,14 @@ public class EditTypeActivity extends BaseActivity implements EditTypeView {
         setSupportActionBar(mToolbar);
         setupActionBar();
 
-        mTypeMarkPreviewIcon.setFillColor(typeMarkColorInt);
-        mTypeMarkPreviewIcon.setInnerText(firstChar);
-
-        mTypeNamePreviewText.setText(typeName);
+        mTypeMarkIcon.setFillColor(typeMarkColorInt);
+        mTypeMarkIcon.setInnerText(firstChar);
 
         mTypeNameText.setText(typeName);
 
-        mTypeMarkColorNameText.setText(typeMarkColorName);
+        mTypeNameItem.setDescriptionText(typeName);
 
-        mTypeMarkColorIcon.setFillColor(typeMarkColorInt);
+        mTypeMarkColorItem.setDescriptionText(typeMarkColorName);
     }
 
     @Override
@@ -111,16 +102,15 @@ public class EditTypeActivity extends BaseActivity implements EditTypeView {
 
     @Override
     public void onTypeNameChanged(String typeName, String firstChar) {
-        mTypeMarkPreviewIcon.setInnerText(firstChar);
-        mTypeNamePreviewText.setText(typeName);
+        mTypeMarkIcon.setInnerText(firstChar);
         mTypeNameText.setText(typeName);
+        mTypeNameItem.setDescriptionText(typeName);
     }
 
     @Override
     public void onTypeMarkColorChanged(int colorInt, String colorName) {
-        mTypeMarkPreviewIcon.setFillColor(colorInt);
-        mTypeMarkColorNameText.setText(colorName);
-        mTypeMarkColorIcon.setFillColor(colorInt);
+        mTypeMarkIcon.setFillColor(colorInt);
+        mTypeMarkColorItem.setDescriptionText(colorName);
     }
 
     @Override
@@ -140,16 +130,16 @@ public class EditTypeActivity extends BaseActivity implements EditTypeView {
         Toast.makeText(this, msgResId, Toast.LENGTH_SHORT).show();
     }
 
-    @OnClick({R.id.layout_type_name, R.id.layout_type_mark_color, R.id.layout_type_mark_pattern})
+    @OnClick({R.id.item_type_name, R.id.item_type_mark_color, R.id.item_type_mark_pattern})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.layout_type_name:
-                mEditTypePresenter.notifyTypeNameItemClicked();
+            case R.id.item_type_name:
+                mEditTypePresenter.notifySettingTypeName();
                 break;
-            case R.id.layout_type_mark_color:
-                mEditTypePresenter.notifyTypeMarkColorItemClicked();
+            case R.id.item_type_mark_color:
+                mEditTypePresenter.notifySettingTypeMarkColor();
                 break;
-            case R.id.layout_type_mark_pattern:
+            case R.id.item_type_mark_pattern:
                 //TODO pattern
                 break;
         }

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -44,8 +46,8 @@
 
     </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/layout_deadline"
+    <com.zack.enderplan.widget.ItemView
+        android:id="@+id/item_deadline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -53,54 +55,13 @@
         android:layout_marginEnd="16dp"
         android:background="@drawable/bg_ripple_rounded_rectangle"
         android:clickable="true"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:elevation="2dp">
+        android:elevation="2dp"
+        app:iconImageSrc="@drawable/ic_schedule_black_24dp"
+        app:titleText="@string/title_deadline"
+        app:descriptionText="@string/dscpt_click_to_set"/>
 
-        <ImageView
-            android:id="@+id/ic_deadline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_schedule_black_24dp"
-            android:tint="@color/grey_600"
-            android:layout_centerVertical="true"
-            android:layout_alignParentStart="true"/>
-
-        <!--TODO create_type中的后缀改成title-->
-
-        <TextView
-            android:id="@+id/text_deadline_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_deadline"
-            android:textSize="16sp"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@id/ic_deadline"
-            android:layout_marginStart="@dimen/image_text_spacing"/>
-
-        <TextView
-            android:id="@+id/text_deadline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/dscpt_click_to_set"
-            android:textSize="12sp"
-            android:layout_below="@id/text_deadline_title"
-            android:layout_alignStart="@id/text_deadline_title"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_chevron_right_black_24dp"
-            android:tint="@color/grey_600"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"/>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/layout_reminder"
+    <com.zack.enderplan.widget.ItemView
+        android:id="@+id/item_reminder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -108,49 +69,10 @@
         android:layout_marginEnd="16dp"
         android:background="@drawable/bg_ripple_rounded_rectangle"
         android:clickable="true"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:elevation="2dp">
-
-        <ImageView
-            android:id="@+id/ic_reminder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_notifications_none_black_24dp"
-            android:tint="@color/grey_600"
-            android:layout_centerVertical="true"
-            android:layout_alignParentStart="true"/>
-
-        <TextView
-            android:id="@+id/text_reminder_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_reminder"
-            android:textSize="16sp"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@id/ic_reminder"
-            android:layout_marginStart="@dimen/image_text_spacing"/>
-
-        <TextView
-            android:id="@+id/text_reminder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/dscpt_click_to_set"
-            android:textSize="12sp"
-            android:layout_below="@id/text_reminder_title"
-            android:layout_alignStart="@id/text_reminder_title"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_chevron_right_black_24dp"
-            android:tint="@color/grey_600"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"/>
-
-    </RelativeLayout>
+        android:elevation="2dp"
+        app:iconImageSrc="@drawable/ic_notifications_none_black_24dp"
+        app:titleText="@string/title_reminder"
+        app:descriptionText="@string/dscpt_click_to_set"/>
 
     <LinearLayout
         android:layout_width="match_parent"

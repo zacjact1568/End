@@ -119,6 +119,8 @@
             android:maxLines="1"
             android:imeOptions="actionDone"
             android:background="@drawable/bg_rounded_rectangle"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             android:paddingStart="8dp"
             android:paddingEnd="28dp"/>
 

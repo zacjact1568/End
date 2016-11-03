@@ -59,7 +59,7 @@ public class CreateTypePresenter extends BasePresenter implements Presenter<Crea
         }
     }
 
-    public void notifyTypeMarkColorLayoutClicked() {
+    public void notifySettingTypeMarkColor() {
         mCreateTypeView.showTypeMarkColorPickerDialog(mType.getTypeMarkColor());
     }
 

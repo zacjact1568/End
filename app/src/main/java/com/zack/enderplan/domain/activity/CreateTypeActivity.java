@@ -1,7 +1,6 @@
 package com.zack.enderplan.domain.activity;
 
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -9,11 +8,12 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +23,7 @@ import com.zack.enderplan.domain.view.CreateTypeView;
 import com.zack.enderplan.interactor.presenter.CreateTypePresenter;
 import com.zack.enderplan.model.bean.TypeMarkColor;
 import com.zack.enderplan.widget.CircleColorView;
+import com.zack.enderplan.widget.ItemView;
 
 import butterknife.BindColor;
 import butterknife.BindView;
@@ -41,12 +42,8 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeView {
     TextView mTypeNameText;
     @BindView(R.id.editor_type_name)
     EditText mTypeNameEditor;
-    @BindView(R.id.layout_type_mark_color)
-    RelativeLayout mTypeMarkColorLayout;
-    @BindView(R.id.text_type_mark_color_name)
-    TextView mTypeMarkColorNameText;
-    @BindView(R.id.ic_type_mark_color)
-    CircleColorView mTypeMarkColorIcon;
+    @BindView(R.id.item_type_mark_color)
+    ItemView mTypeMarkColorItem;
     @BindView(R.id.btn_create)
     TextView mCreateButton;
 
@@ -60,8 +57,6 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //TODO CR动画
 
         mCreateTypePresenter = new CreateTypePresenter(this);
         mCreateTypePresenter.setInitialView();
@@ -95,8 +90,19 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeView {
 
     @Override
     public void showInitialView(int typeMarkColorInt, String firstChar, String typeName, String typeMarkColorName) {
+        overridePendingTransition(0, 0);
         setContentView(R.layout.activity_create_type);
         ButterKnife.bind(this);
+
+        //TODO if (savedInstanceState == null)
+        mCircularRevealLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                mCircularRevealLayout.getViewTreeObserver().removeOnPreDrawListener(this);
+                playCircularRevealAnimation();
+                return false;
+            }
+        });
 
         setSupportActionBar(mToolbar);
         setupActionBar();
@@ -124,16 +130,13 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeView {
             }
         });
 
-        mTypeMarkColorNameText.setText(typeMarkColorName);
-
-        mTypeMarkColorIcon.setFillColor(typeMarkColorInt);
+        mTypeMarkColorItem.setDescriptionText(typeMarkColorName);
     }
 
     @Override
     public void onTypeMarkColorChanged(int colorInt, String colorName) {
         mTypeMarkIcon.setFillColor(colorInt);
-        mTypeMarkColorNameText.setText(colorName);
-        mTypeMarkColorIcon.setFillColor(colorInt);
+        mTypeMarkColorItem.setDescriptionText(colorName);
     }
 
     @Override
@@ -164,7 +167,7 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeView {
                 mTypeNameEditor.startAnimation(shakeAnim);
                 break;
             case "type_mark_color":
-                mTypeMarkColorLayout.startAnimation(shakeAnim);
+                mTypeMarkColorItem.startAnimation(shakeAnim);
                 break;
             case "type_mark_pattern":
                 //TODO pattern
@@ -182,13 +185,13 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeView {
         finish();
     }
 
-    @OnClick({R.id.layout_type_mark_color, R.id.layout_type_mark_pattern, R.id.btn_create, R.id.btn_cancel})
+    @OnClick({R.id.item_type_mark_color, R.id.item_type_mark_pattern, R.id.btn_create, R.id.btn_cancel})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.layout_type_mark_color:
-                mCreateTypePresenter.notifyTypeMarkColorLayoutClicked();
+            case R.id.item_type_mark_color:
+                mCreateTypePresenter.notifySettingTypeMarkColor();
                 break;
-            case R.id.layout_type_mark_pattern:
+            case R.id.item_type_mark_pattern:
                 //TODO pattern
                 break;
             case R.id.btn_create:
@@ -198,5 +201,15 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeView {
                 mCreateTypePresenter.notifyCancelButtonClicked();
                 break;
         }
+    }
+
+    private void playCircularRevealAnimation() {
+        int fabCoordinateInPx = (int) (44 * getResources().getDisplayMetrics().density + 0.5f);
+        int centerX = mCircularRevealLayout.getWidth() - fabCoordinateInPx;
+        int centerY = mCircularRevealLayout.getHeight() - fabCoordinateInPx;
+
+        ViewAnimationUtils.createCircularReveal(mCircularRevealLayout, centerX, centerY, 0, (float) Math.hypot(centerX, centerY))
+                .setDuration(400)
+                .start();
     }
 }

@@ -14,4 +14,13 @@
         <attr name="checked" format="boolean"/>
     </declare-styleable>
 
+    <!--TODO 去掉_符号-->
+
+    <declare-styleable name="ItemView">
+        <attr name="iconImageSrc" format="reference"/>
+        <attr name="titleText" format="string"/>
+        <attr name="descriptionText" format="string"/>
+        <attr name="descriptionTextActive" format="boolean"/>
+    </declare-styleable>
+
 </resources>

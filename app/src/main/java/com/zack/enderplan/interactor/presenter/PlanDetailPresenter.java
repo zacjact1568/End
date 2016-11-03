@@ -178,11 +178,11 @@ public class PlanDetailPresenter extends BasePresenter implements Presenter<Plan
         postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_PLAN_STATUS);
     }
 
-    public void notifyDeadlineItemClicked() {
+    public void notifySettingDeadline() {
         planDetailView.showDeadlinePickerDialog(plan.getDeadline());
     }
 
-    public void notifyReminderItemClicked() {
+    public void notifySettingReminder() {
         planDetailView.showReminderTimePickerDialog(plan.getReminderTime());
     }
 

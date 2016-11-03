@@ -22,6 +22,7 @@ import com.zack.enderplan.domain.fragment.DateTimePickerDialogFragment;
 import com.zack.enderplan.interactor.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.interactor.presenter.CreatePlanPresenter;
 import com.zack.enderplan.domain.view.CreatePlanView;
+import com.zack.enderplan.widget.ItemView;
 
 import butterknife.BindColor;
 import butterknife.BindView;
@@ -38,10 +39,10 @@ public class CreatePlanActivity extends BaseActivity implements CreatePlanView {
     EditText mContentEditor;
     @BindView(R.id.spinner)
     Spinner mSpinner;
-    @BindView(R.id.text_deadline)
-    TextView mDeadlineText;
-    @BindView(R.id.text_reminder)
-    TextView mReminderText;
+    @BindView(R.id.item_deadline)
+    ItemView mDeadlineItem;
+    @BindView(R.id.item_reminder)
+    ItemView mReminderItem;
     @BindView(R.id.btn_create)
     TextView mCreateButton;
 
@@ -49,10 +50,6 @@ public class CreatePlanActivity extends BaseActivity implements CreatePlanView {
     int mAccentColor;
     @BindColor(R.color.grey)
     int mGreyColor;
-    @BindColor(R.color.colorPrimary)
-    int mPrimaryColor;
-    @BindColor(android.R.color.tertiary_text_light)
-    int mLightTextColor;
 
     private CreatePlanPresenter mCreatePlanPresenter;
     private MenuItem mStarMenuItem;
@@ -170,8 +167,7 @@ public class CreatePlanActivity extends BaseActivity implements CreatePlanView {
 
     @Override
     public void onDeadlineChanged(boolean hasDeadline, String deadline) {
-        mDeadlineText.setText(deadline);
-        mDeadlineText.setTextColor(hasDeadline ? mPrimaryColor : mLightTextColor);
+        mDeadlineItem.setDescriptionText(deadline, hasDeadline);
     }
 
     @Override
@@ -188,8 +184,7 @@ public class CreatePlanActivity extends BaseActivity implements CreatePlanView {
 
     @Override
     public void onReminderTimeChanged(boolean hasReminder, String reminderTime) {
-        mReminderText.setText(reminderTime);
-        mReminderText.setTextColor(hasReminder ? mPrimaryColor : mLightTextColor);
+        mReminderItem.setDescriptionText(reminderTime, hasReminder);
     }
 
     @Override
@@ -197,13 +192,13 @@ public class CreatePlanActivity extends BaseActivity implements CreatePlanView {
         finish();
     }
 
-    @OnClick({R.id.layout_deadline, R.id.layout_reminder, R.id.btn_create, R.id.btn_cancel})
+    @OnClick({R.id.item_deadline, R.id.item_reminder, R.id.btn_create, R.id.btn_cancel})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.layout_deadline:
+            case R.id.item_deadline:
                 mCreatePlanPresenter.notifySettingDeadline();
                 break;
-            case R.id.layout_reminder:
+            case R.id.item_reminder:
                 mCreatePlanPresenter.notifySettingReminder();
                 break;
             case R.id.btn_create:

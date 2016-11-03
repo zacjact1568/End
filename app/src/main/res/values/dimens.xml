@@ -23,8 +23,8 @@
     <dimen name="plan_optional_item_inner_margin">16dp</dimen>
 
     <dimen name="button_corners_radius">2dp</dimen>
-    <dimen name="button_horizontal_inner_margin">16dp</dimen>
-    <dimen name="button_vertical_inner_margin">8dp</dimen>
+    <dimen name="button_horizontal_padding">4dp</dimen>
+    <dimen name="button_vertical_padding">8dp</dimen>
     <dimen name="button_elevation">4dp</dimen>
 
     <dimen name="dialog_title_text_size">20sp</dimen>

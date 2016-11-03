@@ -49,11 +49,11 @@ public class EditTypePresenter extends BasePresenter implements Presenter<EditTy
         );
     }
 
-    public void notifyTypeNameItemClicked() {
+    public void notifySettingTypeName() {
         mEditTypeView.showTypeNameEditorDialog(mType.getTypeName());
     }
 
-    public void notifyTypeMarkColorItemClicked() {
+    public void notifySettingTypeMarkColor() {
         mEditTypeView.showTypeMarkColorPickerDialog(mType.getTypeMarkColor());
     }
 
