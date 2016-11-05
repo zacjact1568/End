@@ -23,6 +23,7 @@ public class MyPlansPresenter extends BasePresenter implements Presenter<MyPlans
     private DataManager mDataManager;
     private PlanAdapter mPlanAdapter;
     private EventBus mEventBus;
+    private boolean mViewVisible;
 
     public MyPlansPresenter(MyPlansView myPlansView) {
         mEventBus = EventBus.getDefault();
@@ -52,6 +53,10 @@ public class MyPlansPresenter extends BasePresenter implements Presenter<MyPlans
         mDataManager.loadFromDatabase();
     }
 
+    public void notifySwitchingViewVisibility(boolean isVisible) {
+        mViewVisible = isVisible;
+    }
+
     public void notifyPlanItemClicked(int position) {
         mMyPlansView.onPlanItemClicked(position);
     }
@@ -61,18 +66,24 @@ public class MyPlansPresenter extends BasePresenter implements Presenter<MyPlans
         mPlanAdapter.notifyItemChanged(position);
     }
 
-    //滑动删除时（可以撤销）
-    public void notifyPlanDeleted(int position) {
+    public void notifyDeletingPlan(int position) {
+
+        Util.makeShortVibrate();
 
         //必须先把要删除计划的引用拿到
         Plan plan = mDataManager.getPlan(position);
 
         mDataManager.notifyPlanDeleted(position);
         mPlanAdapter.notifyItemRemoved(position);
-
-        Util.makeShortVibrate();
+        mMyPlansView.onPlanDeleted(plan, position, mViewVisible);
 
         mEventBus.post(new PlanDeletedEvent(getPresenterName(), plan.getPlanCode(), position, plan));
+    }
+
+    public void notifyCreatingPlan(Plan newPlan, int position) {
+        mDataManager.notifyPlanCreated(position, newPlan);
+        mPlanAdapter.notifyItemInserted(position);
+        mEventBus.post(new PlanCreatedEvent(getPresenterName(), newPlan.getPlanCode(), position));
     }
 
     public void notifyPlanStatusChanged(int position) {
@@ -109,7 +120,7 @@ public class MyPlansPresenter extends BasePresenter implements Presenter<MyPlans
 
     @Subscribe
     public void onTypeDetailChanged(TypeDetailChangedEvent event) {
-        List<Integer> singleTypeUcPlanPosList = mDataManager.getSingleTypeUcPlanLocations(event.getTypeCode());
+        List<Integer> singleTypeUcPlanPosList = mDataManager.getPlanLocationListOfOneType(event.getTypeCode());
         for (int position : singleTypeUcPlanPosList) {
             //所有属于这个类型的计划都需要刷新
             mPlanAdapter.notifyItemChanged(position);

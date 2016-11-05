@@ -104,7 +104,7 @@ public class PlanDetailPresenter extends BasePresenter implements Presenter<Plan
 
         if ((headerAlpha == 0 || mLastHeaderAlpha == 0) && headerAlpha != mLastHeaderAlpha) {
             //刚退出透明状态或刚进入透明状态
-            planDetailView.updateToolbar(headerAlpha == 0 ? mTitleCollapsedStr : " ", headerAlpha == 0);
+            planDetailView.onAppBarScrolledToCriticalPoint(headerAlpha == 0 ? mTitleCollapsedStr : " ", headerAlpha == 0);
             mLastHeaderAlpha = headerAlpha;
         }
 

@@ -2,31 +2,30 @@ package com.zack.enderplan.domain.view;
 
 import android.support.annotation.StringRes;
 
-import com.zack.enderplan.interactor.adapter.PlanSingleTypeAdapter;
+import com.zack.enderplan.interactor.adapter.SingleTypePlanAdapter;
 import com.zack.enderplan.interactor.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.model.bean.FormattedType;
+import com.zack.enderplan.model.bean.Plan;
 
 public interface TypeDetailView {
 
-    void showInitialView(FormattedType formattedType, PlanSingleTypeAdapter planSingleTypeAdapter);
+    void showInitialView(FormattedType formattedType, SingleTypePlanAdapter singleTypePlanAdapter);
 
     void onTypeNameChanged(String typeName, String firstChar);
 
     void onTypeMarkColorChanged(int colorInt);
 
-    void onPlanCreationSuccess(String ucPlanCountStr);
-
-    void onPlanCreationFailed();
+    void onPlanCreated();
 
     void onUcPlanCountChanged(String ucPlanCountStr);
 
+    void onPlanDeleted(Plan deletedPlan, int position, int planListPos, boolean shouldShowSnackbar);
+
     void onPlanItemClicked(int posInPlanList);
 
-    void changeHeaderOpacity(float alpha);
+    void onAppBarScrolled(float headerLayoutAlpha);
 
-    void changeTitle(String title);
-
-    void changeEditorVisibility(boolean isVisible);
+    void onAppBarScrolledToCriticalPoint(String toolbarTitle, float editorLayoutTransY);
 
     void backToTop();
 

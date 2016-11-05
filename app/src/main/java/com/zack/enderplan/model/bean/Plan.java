@@ -124,8 +124,20 @@ public class Plan implements Parcelable {
         this.reminderTime = reminderTime;
     }
 
+    public boolean hasDeadline() {
+        return deadline != 0;
+    }
+
     public boolean isCompleted() {
         return completionTime != 0;
+    }
+
+    public boolean isStarred() {
+        return starStatus == PLAN_STAR_STATUS_STARRED;
+    }
+
+    public boolean hasReminder() {
+        return reminderTime != 0;
     }
 
     @Override

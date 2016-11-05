@@ -59,15 +59,11 @@
     <string name="msg_dialog_type_not_empty">有一些计划属于此类型，你可以将它们移动到另一个类型，删除它们，或者取消。</string>
     <string name="pref_title_theme">主题</string>
     <string name="pref_title_night_mode">夜间模式</string>
-    <string name="hint_content_fast">快速创建一个新计划</string>
     <string name="show_c_plans">显示已完成的计划</string>
     <string name="toast_create_plan_failed">内容不能为空</string>
     <string name="toast_create_plan_success">创建成功</string>
     <string name="text_make_plan_c">完成</string>
     <string name="text_make_plan_uc">未完成</string>
-    <string name="uc_plan_count_of_each_type_multi">个计划未完成</string>
-    <string name="uc_plan_count_of_each_type_none">没有未完成的计划</string>
-    <string name="uc_plan_count_of_each_type_one">1 个计划未完成</string>
     <string name="developer">开发者</string>
     <string name="me">\@全杰是也</string>
     <string name="plan_uc_multi">个任务未完成</string>
@@ -130,4 +126,11 @@
     <string name="action_star">星标</string>
     <string name="title_star">星标</string>
     <string name="dscpt_click_to_set">点按来设置</string>
+    <string name="hint_editor_content_format">在“%s”中创建一个计划</string>
+    <string name="text_uc_plan_count_multi_format">%d个计划未完成</string>
+    <string name="text_uc_plan_count_none">没有未完成的计划</string>
+    <string name="text_uc_plan_count_one">1个计划未完成</string>
+    <string name="button_undo">撤销</string>
+    <string name="snackbar_delete_format">“%s”已删除</string>
+    <string name="snackbar_create_format">“%s”已创建</string>
 </resources>

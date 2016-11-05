@@ -191,8 +191,8 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailView {
     }
 
     @Override
-    public void updateToolbar(String title, boolean isStarMenuItemVisible) {
-        toolbar.setTitle(title);
+    public void onAppBarScrolledToCriticalPoint(String toolbarTitle, boolean isStarMenuItemVisible) {
+        toolbar.setTitle(toolbarTitle);
         mStarMenuItem.setVisible(isStarMenuItemVisible);
     }
 

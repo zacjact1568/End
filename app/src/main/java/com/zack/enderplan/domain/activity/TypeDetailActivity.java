@@ -1,12 +1,12 @@
 package com.zack.enderplan.domain.activity;
 
-import android.animation.Animator;
-import android.animation.AnimatorInflater;
+import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +15,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -24,13 +25,16 @@ import android.widget.Toast;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.domain.view.TypeDetailView;
-import com.zack.enderplan.interactor.adapter.PlanSingleTypeAdapter;
+import com.zack.enderplan.interactor.adapter.SingleTypePlanAdapter;
 import com.zack.enderplan.interactor.adapter.SimpleTypeAdapter;
+import com.zack.enderplan.interactor.callback.PlanItemTouchCallback;
 import com.zack.enderplan.interactor.presenter.TypeDetailPresenter;
 import com.zack.enderplan.model.bean.FormattedType;
+import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.utility.Util;
 import com.zack.enderplan.widget.CircleColorView;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -51,10 +55,15 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailView {
     TextView ucPlanCountText;
     @BindView(R.id.editor_content)
     EditText contentEditor;
-    @BindView(R.id.list_uc_plan)
-    RecyclerView ucPlanList;
+    @BindView(R.id.list_plan)
+    RecyclerView mPlanList;
     @BindView(R.id.layout_editor)
     FrameLayout mEditorLayout;
+
+    @BindString(R.string.hint_editor_content_format)
+    String mContentEditorHintFormat;
+    @BindString(R.string.snackbar_delete_format)
+    String mSnackbarDeleteFormat;
 
     private TypeDetailPresenter typeDetailPresenter;
     
@@ -63,6 +72,18 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailView {
         super.onCreate(savedInstanceState);
         typeDetailPresenter = new TypeDetailPresenter(this, getIntent().getIntExtra("position", -1));
         typeDetailPresenter.setInitialView();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        typeDetailPresenter.notifySwitchingViewVisibility(true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        typeDetailPresenter.notifySwitchingViewVisibility(false);
     }
 
     @Override
@@ -100,59 +121,92 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailView {
     }
 
     @Override
-    public void showInitialView(FormattedType formattedType, PlanSingleTypeAdapter planSingleTypeAdapter) {
+    public void showInitialView(FormattedType formattedType, SingleTypePlanAdapter singleTypePlanAdapter) {
         setContentView(R.layout.activity_type_detail);
         ButterKnife.bind(this);
-
-        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                typeDetailPresenter.notifyAppBarScrolled(verticalOffset, appBarLayout.getTotalScrollRange());
-            }
-        });
 
         setSupportActionBar(toolbar);
         setupActionBar();
 
-        typeMarkIcon.setFillColor(formattedType.getTypeMarkColorInt());
-        typeMarkIcon.setInnerText(formattedType.getFirstChar());
-        typeNameText.setText(formattedType.getTypeName());
-        ucPlanCountText.setText(formattedType.getUcPlanCountStr());
-
-        contentEditor.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mAppBarLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    typeDetailPresenter.notifyPlanCreation(v.getText().toString());
-                }
+            public boolean onPreDraw() {
+                mAppBarLayout.getViewTreeObserver().removeOnPreDrawListener(this);
+                typeDetailPresenter.notifyPreDrawingAppBar(mAppBarLayout.getTotalScrollRange());
                 return false;
             }
         });
 
-        planSingleTypeAdapter.setOnPlanItemClickListener(new PlanSingleTypeAdapter.OnPlanItemClickListener() {
+        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                typeDetailPresenter.notifyAppBarScrolled(verticalOffset);
+            }
+        });
+
+        contentEditor.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                contentEditor.getViewTreeObserver().removeOnPreDrawListener(this);
+                typeDetailPresenter.notifyPreDrawingContentEditorLayout(contentEditor.getHeight());
+                return false;
+            }
+        });
+
+        singleTypePlanAdapter.setOnPlanItemClickListener(new SingleTypePlanAdapter.OnPlanItemClickListener() {
             @Override
             public void onPlanItemClick(int position) {
                 typeDetailPresenter.notifyPlanItemClicked(position);
             }
         });
 
-        planSingleTypeAdapter.setOnStarMarkIconClickListener(new PlanSingleTypeAdapter.OnStarMarkIconClickListener() {
+        singleTypePlanAdapter.setOnStarButtonClickListener(new SingleTypePlanAdapter.OnStarButtonClickListener() {
             @Override
-            public void onStarMarkIconClick(int position) {
+            public void onStarButtonClick(int position) {
                 typeDetailPresenter.notifyPlanStarStatusChanged(position);
             }
         });
 
-        ucPlanList.setLayoutManager(new LinearLayoutManager(this));
-        ucPlanList.setHasFixedSize(true);
-        ucPlanList.setAdapter(planSingleTypeAdapter);
-        new ItemTouchHelper(new SingleTypeUcPlanListItemTouchCallback()).attachToRecyclerView(ucPlanList);
+        mPlanList.setLayoutManager(new LinearLayoutManager(this));
+        mPlanList.setHasFixedSize(true);
+        mPlanList.setAdapter(singleTypePlanAdapter);
+
+        PlanItemTouchCallback planItemTouchCallback = new PlanItemTouchCallback();
+        planItemTouchCallback.setOnItemSwipedListener(new PlanItemTouchCallback.OnItemSwipedListener() {
+            @Override
+            public void onItemSwiped(int position, int direction) {
+                switch (direction) {
+                    case PlanItemTouchCallback.DIR_START:
+                        typeDetailPresenter.notifyDeletingPlan(position);
+                        break;
+                    case PlanItemTouchCallback.DIR_END:
+                        typeDetailPresenter.notifySwitchingPlanStatus(position);
+                        break;
+                }
+            }
+        });
+        new ItemTouchHelper(planItemTouchCallback).attachToRecyclerView(mPlanList);
+
+        contentEditor.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    typeDetailPresenter.notifyCreatingPlan(v.getText().toString());
+                }
+                return false;
+            }
+        });
+
+        onTypeNameChanged(formattedType.getTypeName(), formattedType.getFirstChar());
+        onTypeMarkColorChanged(formattedType.getTypeMarkColorInt());
+        onUcPlanCountChanged(formattedType.getUcPlanCountStr());
     }
 
     @Override
     public void onTypeNameChanged(String typeName, String firstChar) {
         typeMarkIcon.setInnerText(firstChar);
         typeNameText.setText(typeName);
+        contentEditor.setHint(String.format(mContentEditorHintFormat, typeName));
     }
 
     @Override
@@ -161,21 +215,28 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailView {
     }
 
     @Override
-    public void onPlanCreationSuccess(String ucPlanCountStr) {
-        Toast.makeText(this, R.string.toast_create_plan_success, Toast.LENGTH_SHORT).show();
-        ucPlanList.scrollToPosition(0);
-        ucPlanCountText.setText(ucPlanCountStr);
+    public void onPlanCreated() {
+        mPlanList.scrollToPosition(0);
         contentEditor.setText("");
-    }
-
-    @Override
-    public void onPlanCreationFailed() {
-        Toast.makeText(this, R.string.toast_create_plan_failed, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onUcPlanCountChanged(String ucPlanCountStr) {
         ucPlanCountText.setText(ucPlanCountStr);
+    }
+
+    @Override
+    public void onPlanDeleted(final Plan deletedPlan, final int position, final int planListPos, boolean shouldShowSnackbar) {
+        if (shouldShowSnackbar) {
+            Snackbar.make(mPlanList, String.format(mSnackbarDeleteFormat, deletedPlan.getContent()), Snackbar.LENGTH_LONG)
+                    .setAction(R.string.button_undo, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            typeDetailPresenter.notifyCreatingPlan(deletedPlan, position, planListPos);
+                        }
+                    })
+                    .show();
+        }
     }
 
     @Override
@@ -186,27 +247,23 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailView {
     }
 
     @Override
-    public void changeHeaderOpacity(float alpha) {
-        mHeaderLayout.setAlpha(alpha);
+    public void onAppBarScrolled(float headerLayoutAlpha) {
+        mHeaderLayout.setAlpha(headerLayoutAlpha);
     }
 
     @Override
-    public void changeTitle(String title) {
-        toolbar.setTitle(title);
-    }
-
-    @Override
-    public void changeEditorVisibility(boolean isVisible) {
-        Animator animator = AnimatorInflater.loadAnimator(this, isVisible ? R.animator.animator_editor_layout_enter_tda : R.animator.animator_editor_layout_exit_tda);
-        animator.setTarget(mEditorLayout);
-        animator.start();
+    public void onAppBarScrolledToCriticalPoint(String toolbarTitle, float editorLayoutTransY) {
+        toolbar.setTitle(toolbarTitle);
+        ObjectAnimator.ofFloat(mEditorLayout, "translationY", mEditorLayout.getTranslationY(), editorLayoutTransY)
+                .setDuration(200)
+                .start();
     }
 
     @Override
     public void backToTop() {
         mAppBarLayout.setExpanded(true);
         //TODO 滑动到顶部
-        //ucPlanList.scrollToPosition(0);
+        //mPlanList.scrollToPosition(0);
     }
 
     @Override
@@ -310,37 +367,6 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailView {
             case R.id.ic_clear_text:
                 contentEditor.setText("");
                 break;
-        }
-    }
-
-    private class SingleTypeUcPlanListItemTouchCallback extends ItemTouchHelper.Callback {
-
-        @Override
-        public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-            int swipeFlags = ItemTouchHelper.END;
-            return makeMovementFlags(0, swipeFlags);
-        }
-
-        @Override
-        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-            return false;
-        }
-
-        @Override
-        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-            int position = viewHolder.getLayoutPosition();
-            switch (direction) {
-                case ItemTouchHelper.END:
-                    typeDetailPresenter.notifyPlanCompleted(position);
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        @Override
-        public float getSwipeThreshold(RecyclerView.ViewHolder viewHolder) {
-            return .6f;
         }
     }
 }

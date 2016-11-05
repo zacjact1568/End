@@ -149,6 +149,17 @@ public class DataManager {
         return -1;
     }
 
+    /** 获取指定类型的所有计划 */
+    public List<Plan> getSingleTypePlanList(String typeCode) {
+        List<Plan> singleTypePlanList = new ArrayList<>();
+        for (Plan plan : planList) {
+            if (plan.getTypeCode().equals(typeCode)) {
+                singleTypePlanList.add(plan);
+            }
+        }
+        return singleTypePlanList;
+    }
+
     /** 获取指定类型全部计划的位置 */
     public List<Integer> getPlanLocationListOfOneType(String typeCode) {
         List<Integer> planLocationList = new ArrayList<>();
@@ -158,6 +169,27 @@ public class DataManager {
             }
         }
         return planLocationList;
+    }
+
+    /** 判断某类型是否有对应的计划 */
+    public boolean isPlanOfOneTypeExists(String typeCode) {
+        for (Plan plan : planList) {
+            if (plan.getTypeCode().equals(typeCode)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** 获取某类型的计划数量 */
+    public int getPlanCountOfOneType(String typeCode) {
+        int count = 0;
+        for (Plan plan : planList) {
+            if (plan.getTypeCode().equals(typeCode)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     /** 将一个类型中的所有计划迁移到另一个类型 */
@@ -446,58 +478,6 @@ public class DataManager {
         }
     }
 
-    //****************PlanList & TypeList****************
-
-    /** 获取单个类型的所有未完成的计划 */
-    public List<Plan> getSingleTypeUcPlanList(String typeCode) {
-        List<Plan> singleTypeUcPlanList = new ArrayList<>();
-        for (Plan plan : planList) {
-            if (plan.isCompleted()) {
-                break;
-            }
-            if (plan.getTypeCode().equals(typeCode)) {
-                singleTypeUcPlanList.add(plan);
-            }
-        }
-        return singleTypeUcPlanList;
-    }
-
-    /** 获取某类型所有未完成计划在PlanList中的序号（更新所有计划列表时使用）*/
-    public List<Integer> getSingleTypeUcPlanLocations(String typeCode) {
-        List<Integer> singleTypeUcPlanLocations = new ArrayList<>();
-        for (int i = 0; i < getPlanCount(); i++) {
-            Plan plan = getPlan(i);
-            if (plan.getCompletionTime() != 0) {
-                break;
-            }
-            if (plan.getTypeCode().equals(typeCode)) {
-                singleTypeUcPlanLocations.add(i);
-            }
-        }
-        return singleTypeUcPlanLocations;
-    }
-
-    /** 判断某类型是否有对应的计划 */
-    public boolean isPlanOfOneTypeExists(String typeCode) {
-        for (Plan plan : planList) {
-            if (plan.getTypeCode().equals(typeCode)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /** 获取某类型的计划数量 */
-    public int getPlanCountOfOneType(String typeCode) {
-        int count = 0;
-        for (Plan plan : planList) {
-            if (plan.getTypeCode().equals(typeCode)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
     //****************TypeName & TypeMark****************
 
     /** 判断给定类型名称是否已使用过 */
@@ -602,6 +582,11 @@ public class DataManager {
     /** 获取每个类型未完成计划的数量 */
     public Map<String, Integer> getUcPlanCountOfEachTypeMap() {
         return ucPlanCountOfEachTypeMap;
+    }
+
+    /** 获取指定类型未完成计划的数量 */
+    public int getUcPlanCountOfOneType(String typeCode) {
+        return ucPlanCountOfEachTypeMap.get(typeCode);
     }
 
     /** 更新每个类型未完成计划的数量（添加或删除计划时）*/

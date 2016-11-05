@@ -18,8 +18,4 @@ public interface HomeView {
     void exitHome();
 
     void showToast(@StringRes int msgResId);
-
-    void showSnackbar(String msg);
-
-    void showSnackbar(String msg, @StringRes int actionResId, View.OnClickListener actionListener);
 }

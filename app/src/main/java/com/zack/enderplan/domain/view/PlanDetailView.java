@@ -13,7 +13,7 @@ public interface PlanDetailView {
 
     void onAppBarScrolled(float headerLayoutAlpha, float contentLayoutTransY);
 
-    void updateToolbar(String title, boolean isStarMenuItemVisible);
+    void onAppBarScrolledToCriticalPoint(String toolbarTitle, boolean isStarMenuItemVisible);
 
     void showPlanDeletionDialog(String content);
 

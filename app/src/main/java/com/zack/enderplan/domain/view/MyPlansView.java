@@ -8,4 +8,6 @@ public interface MyPlansView {
     void showInitialView(PlanAdapter planAdapter);
 
     void onPlanItemClicked(int position);
+
+    void onPlanDeleted(Plan deletedPlan, int position, boolean shouldShowSnackbar);
 }

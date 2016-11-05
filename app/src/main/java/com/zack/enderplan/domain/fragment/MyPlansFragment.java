@@ -1,11 +1,10 @@
 package com.zack.enderplan.domain.fragment;
 
 import android.content.Intent;
-import android.graphics.Canvas;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,26 +12,27 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.domain.activity.HomeActivity;
 import com.zack.enderplan.domain.activity.PlanDetailActivity;
 import com.zack.enderplan.domain.view.MyPlansView;
 import com.zack.enderplan.interactor.adapter.PlanAdapter;
+import com.zack.enderplan.interactor.callback.PlanItemTouchCallback;
 import com.zack.enderplan.interactor.presenter.MyPlansPresenter;
 import com.zack.enderplan.model.bean.Plan;
-import com.zack.enderplan.utility.Util;
 import com.zack.enderplan.widget.EnhancedRecyclerView;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MyPlansFragment extends Fragment implements MyPlansView {
 
-    private static final String LOG_TAG = "MyPlansFragment";
-
-    @BindView(R.id.list_my_plans)
-    EnhancedRecyclerView mMyPlansList;
+    @BindView(R.id.list_plan)
+    EnhancedRecyclerView mPlanList;
     @BindView(R.id.text_empty_view)
     TextView mEmptyViewText;
+
+    @BindString(R.string.snackbar_delete_format)
+    String mSnackbarDeleteFormat;
 
     private MyPlansPresenter mMyPlansPresenter;
 
@@ -63,6 +63,18 @@ public class MyPlansFragment extends Fragment implements MyPlansView {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mMyPlansPresenter.notifySwitchingViewVisibility(true);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mMyPlansPresenter.notifySwitchingViewVisibility(false);
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mMyPlansPresenter.detachView();
@@ -85,11 +97,26 @@ public class MyPlansFragment extends Fragment implements MyPlansView {
         });
 
         //初始化RecyclerView
-        mMyPlansList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mMyPlansList.setHasFixedSize(true);
-        mMyPlansList.setEmptyView(mEmptyViewText);
-        mMyPlansList.setAdapter(planAdapter);
-        new ItemTouchHelper(new PlanListItemTouchCallback()).attachToRecyclerView(mMyPlansList);
+        mPlanList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mPlanList.setHasFixedSize(true);
+        mPlanList.setEmptyView(mEmptyViewText);
+        mPlanList.setAdapter(planAdapter);
+
+        PlanItemTouchCallback planItemTouchCallback = new PlanItemTouchCallback();
+        planItemTouchCallback.setOnItemSwipedListener(new PlanItemTouchCallback.OnItemSwipedListener() {
+            @Override
+            public void onItemSwiped(int position, int direction) {
+                switch (direction) {
+                    case PlanItemTouchCallback.DIR_START:
+                        mMyPlansPresenter.notifyDeletingPlan(position);
+                        break;
+                    case PlanItemTouchCallback.DIR_END:
+                        mMyPlansPresenter.notifyPlanStatusChanged(position);
+                        break;
+                }
+            }
+        });
+        new ItemTouchHelper(planItemTouchCallback).attachToRecyclerView(mPlanList);
     }
 
     @Override
@@ -99,48 +126,17 @@ public class MyPlansFragment extends Fragment implements MyPlansView {
         getActivity().startActivity(intent);
     }
 
-    private class PlanListItemTouchCallback extends ItemTouchHelper.Callback {
-
-        @Override
-        public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-            int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
-            return makeMovementFlags(0, swipeFlags);
-        }
-
-        @Override
-        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-            return false;
-        }
-
-        @Override
-        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-            int position = viewHolder.getLayoutPosition();
-            switch (direction) {
-                case ItemTouchHelper.START:
-                    mMyPlansPresenter.notifyPlanDeleted(position);
-                    break;
-                case ItemTouchHelper.END:
-                    mMyPlansPresenter.notifyPlanStatusChanged(position);
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        @Override
-        public float getSwipeThreshold(RecyclerView.ViewHolder viewHolder) {
-            return .7f;
-        }
-
-        @Override
-        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
-                                float dX, float dY, int actionState, boolean isCurrentlyActive) {
-            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-            if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-                float alpha = 1 - Math.abs(dX) / (float) viewHolder.itemView.getWidth();
-                viewHolder.itemView.setAlpha(alpha);
-                viewHolder.itemView.setTranslationX(dX);
-            }
+    @Override
+    public void onPlanDeleted(final Plan deletedPlan, final int position, boolean shouldShowSnackbar) {
+        if (shouldShowSnackbar) {
+            Snackbar.make(mPlanList, String.format(mSnackbarDeleteFormat, deletedPlan.getContent()), Snackbar.LENGTH_LONG)
+                    .setAction(R.string.button_undo, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mMyPlansPresenter.notifyCreatingPlan(deletedPlan, position);
+                        }
+                    })
+                    .show();
         }
     }
 }
