@@ -31,7 +31,7 @@ public interface TypeDetailView {
 
     void pressBack();
 
-    void enterEditType(int position);
+    void enterEditType(int position, boolean shouldPlaySharedElementTransition);
 
     void showToast(@StringRes int msgResId);
 

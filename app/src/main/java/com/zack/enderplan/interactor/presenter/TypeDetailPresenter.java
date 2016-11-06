@@ -239,7 +239,7 @@ public class TypeDetailPresenter extends BasePresenter implements Presenter<Type
     }
 
     public void notifyTypeEditingButtonClicked() {
-        typeDetailView.enterEditType(mPosition);
+        typeDetailView.enterEditType(mPosition, mAppBarState == APP_BAR_STATE_EXPANDED);
     }
 
     public void notifyTypeDeletionButtonClicked(boolean deletePlan) {

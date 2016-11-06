@@ -1,6 +1,7 @@
 package com.zack.enderplan.domain.activity;
 
 import android.animation.ObjectAnimator;
+import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -64,6 +65,8 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailView {
     String mContentEditorHintFormat;
     @BindString(R.string.snackbar_delete_format)
     String mSnackbarDeleteFormat;
+    @BindString(R.string.name_type_mark_shared_element_transition)
+    String mTypeMarkSetName;
 
     private TypeDetailPresenter typeDetailPresenter;
     
@@ -243,7 +246,8 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailView {
     public void onPlanItemClicked(int posInPlanList) {
         Intent intent = new Intent(this, PlanDetailActivity.class);
         intent.putExtra("position", posInPlanList);
-        startActivity(intent);
+        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
+        startActivity(intent, options.toBundle());
     }
 
     @Override
@@ -272,10 +276,16 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailView {
     }
 
     @Override
-    public void enterEditType(int position) {
+    public void enterEditType(int position, boolean shouldPlaySharedElementTransition) {
         Intent intent = new Intent(this, EditTypeActivity.class);
         intent.putExtra("position", position);
-        startActivity(intent);
+        ActivityOptions options;
+        if (shouldPlaySharedElementTransition) {
+            options = ActivityOptions.makeSceneTransitionAnimation(this, typeMarkIcon, mTypeMarkSetName);
+        } else {
+            options = ActivityOptions.makeSceneTransitionAnimation(this);
+        }
+        startActivity(intent, options.toBundle());
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.zack.enderplan.domain.fragment;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -123,7 +124,8 @@ public class MyPlansFragment extends Fragment implements MyPlansView {
     public void onPlanItemClicked(int position) {
         Intent intent = new Intent(getActivity(), PlanDetailActivity.class);
         intent.putExtra("position", position);
-        getActivity().startActivity(intent);
+        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity());
+        getActivity().startActivity(intent, options.toBundle());
     }
 
     @Override

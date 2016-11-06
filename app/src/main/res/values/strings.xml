@@ -41,6 +41,8 @@
     <string name="snackbar_create_format">\"%s\" has been created</string>
     <string name="snackbar_delete_format">\"%s\" has been deleted</string>
 
+    <string name="name_type_mark_shared_element_transition">Type mark shared element transition</string>
+
     <!--HomeActivity-->
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -111,7 +113,6 @@
 
     <!--TypeDetailActivity-->
     <string name="title_activity_type_detail">Type Detail</string>
-    <string name="name_type_mark_shared_element_transition">Type mark shared element transition</string>
     <string name="toast_type_not_empty">Cannot delete, type is not empty</string>
     <string name="msg_dialog_delete_type">This type and all of its plans will be deleted.</string>
     <string name="hint_editor_content_format">Create a plan in \"%s\"</string>
