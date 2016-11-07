@@ -60,7 +60,7 @@
         android:visibility="invisible"
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
-        app:fill_color="@color/colorAccent"
+        app:fillColor="@color/colorAccent"
         tools:visibility="visible"/>
 
     <!--<FrameLayout-->

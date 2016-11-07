@@ -1,14 +1,17 @@
 package com.zack.enderplan.interactor.presenter;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.text.TextUtils;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
+import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.model.bean.TypeMarkColor;
 import com.zack.enderplan.event.TypeCreatedEvent;
 import com.zack.enderplan.model.DataManager;
+import com.zack.enderplan.model.bean.TypeMarkPattern;
 import com.zack.enderplan.utility.Util;
 import com.zack.enderplan.domain.view.CreateTypeView;
 
@@ -19,16 +22,17 @@ public class CreateTypePresenter extends BasePresenter implements Presenter<Crea
     private CreateTypeView mCreateTypeView;
     private DataManager mDataManager;
     private Type mType;
-    private String mDefaultTypeName, mEmptyTypeName;
+    private String mEmptyTypeName;
 
     public CreateTypePresenter(CreateTypeView createTypeView) {
         attachView(createTypeView);
         mDataManager = DataManager.getInstance();
-        mDefaultTypeName = App.getGlobalContext().getString(R.string.text_new_type_name);
-        mEmptyTypeName = App.getGlobalContext().getString(R.string.text_empty_type_name);
+        Context context = App.getGlobalContext();
         mType = new Type(Util.makeCode(), mDataManager.getTypeCount());
-        mType.setTypeName(mDefaultTypeName);
+        mType.setTypeName(context.getString(R.string.text_new_type_name));
         mType.setTypeMarkColor(mDataManager.getRandomTypeMarkColor());
+
+        mEmptyTypeName = context.getString(R.string.text_empty_type_name);
     }
 
     @Override
@@ -42,12 +46,12 @@ public class CreateTypePresenter extends BasePresenter implements Presenter<Crea
     }
 
     public void setInitialView() {
-        mCreateTypeView.showInitialView(
+        mCreateTypeView.showInitialView(new FormattedType(
                 Color.parseColor(mType.getTypeMarkColor()),
-                mDefaultTypeName.substring(0, 1),
-                mDefaultTypeName,
-                mDataManager.getTypeMarkColorName(mType.getTypeMarkColor())
-        );
+                mDataManager.getTypeMarkColorName(mType.getTypeMarkColor()),
+                mType.getTypeName(),
+                mType.getTypeName().substring(0, 1)
+        ));
     }
 
     public void notifyTypeNameTextChanged(String typeName) {
@@ -69,13 +73,27 @@ public class CreateTypePresenter extends BasePresenter implements Presenter<Crea
         mCreateTypeView.onTypeMarkColorChanged(Color.parseColor(colorHex), typeMarkColor.getColorName());
     }
 
+    public void notifySettingTypeMarkPattern() {
+        mCreateTypeView.showTypeMarkPatternPickerDialog(mType.getTypeMarkPattern());
+    }
+
+    public void notifyTypeMarkPatternSelected(TypeMarkPattern typeMarkPattern) {
+        boolean hasPattern = typeMarkPattern != null;
+        String patternFn = hasPattern ? typeMarkPattern.getPatternFn() : null;
+        mType.setTypeMarkPattern(patternFn);
+        mCreateTypeView.onTypeMarkPatternChanged(
+                hasPattern,
+                Util.getDrawableResourceId(patternFn),
+                hasPattern ? typeMarkPattern.getPatternName() : null
+        );
+    }
+
     public void notifyCreateButtonClicked() {
-        //TODO 后续：只要color和pattern的组合唯一就ok
         if (mDataManager.isTypeNameUsed(mType.getTypeName())) {
             mCreateTypeView.playShakeAnimation("type_name");
             mCreateTypeView.showToast(R.string.toast_type_name_exists);
-        } else if (mDataManager.isTypeMarkColorUsed(mType.getTypeMarkColor())) {
-            mCreateTypeView.playShakeAnimation("type_mark_color");
+        } else if (mDataManager.isTypeMarkUsed(mType.getTypeMarkColor(), mType.getTypeMarkPattern())) {
+            mCreateTypeView.playShakeAnimation("type_mark");
             mCreateTypeView.showToast(R.string.toast_type_mark_exists);
         } else {
             mDataManager.notifyTypeCreated(mType);

@@ -10,6 +10,7 @@ import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.model.bean.TypeMark;
 import com.zack.enderplan.model.bean.TypeMarkColor;
+import com.zack.enderplan.model.bean.TypeMarkPattern;
 import com.zack.enderplan.utility.Util;
 
 import java.util.ArrayList;
@@ -282,7 +283,7 @@ public class DatabaseManager {
         return reminderTimeMap;
     }
 
-    //*****************TypeMark*****************
+    //*****************TypeMarkColor*****************
 
     public List<TypeMarkColor> loadTypeMarkColor() {
         SQLiteDatabase typeMarkDB = SQLiteDatabase.openDatabase(App.getGlobalContext().getDatabasePath(DB_TYPE_MARK).getPath(), null, SQLiteDatabase.OPEN_READONLY);
@@ -313,5 +314,38 @@ public class DatabaseManager {
         cursor.close();
         typeMarkDB.close();
         return typeMarkColorName;
+    }
+
+    //*****************TypeMarkPattern*****************
+
+    public List<TypeMarkPattern> loadTypeMarkPattern() {
+        SQLiteDatabase typeMarkDB = SQLiteDatabase.openDatabase(App.getGlobalContext().getDatabasePath(DB_TYPE_MARK).getPath(), null, SQLiteDatabase.OPEN_READONLY);
+        List<TypeMarkPattern> typeMarkPatternList = new ArrayList<>();
+        boolean shouldUseChinese = Util.getPreferredLocale().equals(Locale.SIMPLIFIED_CHINESE);
+        Cursor cursor = typeMarkDB.rawQuery("select * from pattern", null);
+        if (cursor.moveToFirst()) {
+            do {
+                typeMarkPatternList.add(new TypeMarkPattern(
+                        cursor.getString(cursor.getColumnIndex("pattern_fn")),
+                        cursor.getString(cursor.getColumnIndex(shouldUseChinese ? "pattern_zh" : "pattern_en"))
+                ));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        typeMarkDB.close();
+        return typeMarkPatternList;
+    }
+
+    public String queryTypeMarkPatternNameByTypeMarkPatternFn(String typeMarkPatternFn) {
+        SQLiteDatabase typeMarkDB = SQLiteDatabase.openDatabase(App.getGlobalContext().getDatabasePath(DB_TYPE_MARK).getPath(), null, SQLiteDatabase.OPEN_READONLY);
+        String columnName = Util.getPreferredLocale().equals(Locale.SIMPLIFIED_CHINESE) ? "pattern_zh" : "pattern_en";
+        Cursor cursor = typeMarkDB.rawQuery("select " + columnName + " from pattern where pattern_fn = ?", new String[]{typeMarkPatternFn});
+        String typeMarkPatternName = null;
+        if (cursor.moveToFirst()) {
+            typeMarkPatternName = cursor.getString(cursor.getColumnIndex(columnName));
+        }
+        cursor.close();
+        typeMarkDB.close();
+        return typeMarkPatternName;
     }
 }

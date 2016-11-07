@@ -2,11 +2,11 @@ package com.zack.enderplan.model.bean;
 
 public class TypeMark {
 
-    private String colorHex, patternId;
+    private String colorHex, patternFn;
 
-    public TypeMark(String colorHex, String patternId) {
+    public TypeMark(String colorHex, String patternFn) {
         this.colorHex = colorHex;
-        this.patternId = patternId;
+        this.patternFn = patternFn;
     }
 
     public String getColorHex() {
@@ -17,11 +17,11 @@ public class TypeMark {
         this.colorHex = colorHex;
     }
 
-    public String getPatternId() {
-        return patternId;
+    public String getPatternFn() {
+        return patternFn;
     }
 
-    public void setPatternId(String patternId) {
-        this.patternId = patternId;
+    public void setPatternFn(String patternFn) {
+        this.patternFn = patternFn;
     }
 }

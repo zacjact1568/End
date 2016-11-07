@@ -116,4 +116,21 @@ public class Util {
         }
         return view.getMeasuredHeight();
     }
+
+    /**
+     * 通过资源文件名获取drawable资源id，如果name为null，返回0（0是非法资源id）
+     * @param name 资源文件名
+     * @return 资源id
+     */
+    public static int getDrawableResourceId(String name) {
+        //0 is an invalid resource id
+        if (name == null) return 0;
+        Context context = App.getGlobalContext();
+        return context.getResources().getIdentifier(name, "drawable", context.getPackageName());
+    }
+
+    /** 比较两个对象是否相等（两个都可为null）*/
+    public static boolean isObjectEqual(Object obj0, Object obj1) {
+        return (obj0 == null && obj1 == null) || (obj0 != null && obj0.equals(obj1));
+    }
 }

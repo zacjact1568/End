@@ -184,4 +184,8 @@
     <!--TypeMarkColorPickerDialogFragment-->
     <string name="title_dialog_fragment_type_mark_color_picker">Color Picker</string>
 
+    <!--TypeMarkPatternPickerDialogFragment-->
+    <string name="title_dialog_fragment_type_mark_pattern_picker">Pattern Picker</string>
+    <string name="btn_dialog_select_none">Select None</string>
+
 </resources>

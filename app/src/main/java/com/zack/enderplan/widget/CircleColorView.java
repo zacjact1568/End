@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
@@ -21,6 +20,7 @@ public class CircleColorView extends View {
     private String mInnerText;
     private int mInnerTextColor;
     private Drawable mInnerIcon;
+    private int mInnerIconTintColor;
 
     private Paint mPaint;
     private TextPaint mTextPaint;
@@ -62,12 +62,13 @@ public class CircleColorView extends View {
     /** 加载自定义的属性 */
     private void loadAttrs(AttributeSet attrs, int defStyle) {
         TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.CircleColorView, defStyle, 0);
-        mFillColor = ta.getColor(R.styleable.CircleColorView_fill_color, Color.BLACK);
-        mEdgeWidth = ta.getDimension(R.styleable.CircleColorView_edge_width, 0f);
-        mEdgeColor = ta.getColor(R.styleable.CircleColorView_edge_color, Color.WHITE);
-        mInnerText = ta.getString(R.styleable.CircleColorView_inner_text);
-        mInnerTextColor = ta.getColor(R.styleable.CircleColorView_inner_text_color, Color.WHITE);
-        mInnerIcon = ta.getDrawable(R.styleable.CircleColorView_inner_icon);
+        mFillColor = ta.getColor(R.styleable.CircleColorView_fillColor, Color.BLACK);
+        mEdgeWidth = ta.getDimension(R.styleable.CircleColorView_edgeWidth, 0f);
+        mEdgeColor = ta.getColor(R.styleable.CircleColorView_edgeColor, Color.WHITE);
+        mInnerText = ta.getString(R.styleable.CircleColorView_innerText);
+        mInnerTextColor = ta.getColor(R.styleable.CircleColorView_innerTextColor, Color.WHITE);
+        mInnerIcon = ta.getDrawable(R.styleable.CircleColorView_innerIcon);
+        mInnerIconTintColor = ta.getColor(R.styleable.CircleColorView_innerIconTintColor, Color.WHITE);
         ta.recycle();
     }
 
@@ -126,13 +127,14 @@ public class CircleColorView extends View {
     private void drawIcon(Canvas canvas) {
         if (mInnerIcon == null) return;
 
-        float radius = mDiameter / 2f;
+        float radius = mDiameter / 4f;
         mInnerIcon.setBounds(
                 (int) (mCenterX - radius),
                 (int) (mCenterY - radius),
                 (int) (mCenterX + radius),
                 (int) (mCenterY + radius)
         );
+        mInnerIcon.setTint(mInnerIconTintColor);
         mInnerIcon.draw(canvas);
     }
 
@@ -142,15 +144,23 @@ public class CircleColorView extends View {
         invalidate();
     }
 
-    public void setInnerText(@NonNull String innerText) {
+    public void setInnerText(String innerText) {
         if (innerText.equals(mInnerText)) return;
         mInnerText = innerText;
         invalidate();
     }
 
-    public void setInnerIcon(@NonNull Drawable innerIcon) {
-        if (innerIcon.equals(mInnerIcon)) return;
+    public void setInnerIcon(Drawable innerIcon) {
+        if (innerIcon != null && innerIcon.equals(mInnerIcon)) return;
         mInnerIcon = innerIcon;
         invalidate();
+    }
+
+    public void setInnerIconTintColor(int innerIconTintColor) {
+        if (innerIconTintColor == mInnerIconTintColor) return;
+        mInnerIconTintColor = innerIconTintColor;
+        if (mInnerIcon != null) {
+            mInnerIcon.setTint(mInnerIconTintColor);
+        }
     }
 }

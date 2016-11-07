@@ -79,10 +79,11 @@ public class TypeDetailPresenter extends BasePresenter implements Presenter<Type
     public void setInitialView() {
         typeDetailView.showInitialView(new FormattedType(
                 Color.parseColor(type.getTypeMarkColor()),
-                type.getTypeName().substring(0, 1),
+                type.getTypeMarkPattern() != null,
+                Util.getDrawableResourceId(type.getTypeMarkPattern()),
                 type.getTypeName(),
-                getUcPlanCountStr(type.getTypeCode())
-        ), mSingleTypePlanAdapter);
+                type.getTypeName().substring(0, 1)
+        ), getUcPlanCountStr(type.getTypeCode()), mSingleTypePlanAdapter);
     }
 
     public void notifyPreDrawingAppBar(int appBarMaxRange) {
@@ -330,7 +331,7 @@ public class TypeDetailPresenter extends BasePresenter implements Presenter<Type
                 typeDetailView.onTypeMarkColorChanged(Color.parseColor(type.getTypeMarkColor()));
                 break;
             case TypeDetailChangedEvent.FIELD_TYPE_MARK_PATTERN:
-                //TODO pattern
+                typeDetailView.onTypeMarkPatternChanged(type.getTypeMarkPattern() != null, Util.getDrawableResourceId(type.getTypeMarkPattern()));
                 break;
         }
     }

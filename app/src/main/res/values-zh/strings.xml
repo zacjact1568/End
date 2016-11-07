@@ -133,4 +133,6 @@
     <string name="button_undo">撤销</string>
     <string name="snackbar_delete_format">“%s”已删除</string>
     <string name="snackbar_create_format">“%s”已创建</string>
+    <string name="title_dialog_fragment_type_mark_pattern_picker">选择图案</string>
+    <string name="btn_dialog_select_none">全部不选</string>
 </resources>

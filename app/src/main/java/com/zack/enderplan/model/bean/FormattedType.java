@@ -3,15 +3,46 @@ package com.zack.enderplan.model.bean;
 public class FormattedType {
 
     private int typeMarkColorInt;
-    private String firstChar;
+    private String typeMarkColorName;
+    private boolean hasTypeMarkPattern;
+    private int typeMarkPatternResId;
+    private String typeMarkPatternName;
     private String typeName;
-    private String ucPlanCountStr;
+    private String firstChar;
 
-    public FormattedType(int typeMarkColorInt, String firstChar, String typeName, String ucPlanCountStr) {
+    /** 编辑类型时使用 */
+    public FormattedType(int typeMarkColorInt, String typeMarkColorName, boolean hasTypeMarkPattern,
+                         int typeMarkPatternResId, String typeMarkPatternName, String typeName, String firstChar) {
         this.typeMarkColorInt = typeMarkColorInt;
-        this.firstChar = firstChar;
+        this.typeMarkColorName = typeMarkColorName;
+        this.hasTypeMarkPattern = hasTypeMarkPattern;
+        this.typeMarkPatternResId = typeMarkPatternResId;
+        this.typeMarkPatternName = typeMarkPatternName;
         this.typeName = typeName;
-        this.ucPlanCountStr = ucPlanCountStr;
+        this.firstChar = firstChar;
+    }
+
+    /** 显示类型详情时使用 */
+    public FormattedType(int typeMarkColorInt, boolean hasTypeMarkPattern, int typeMarkPatternResId,
+                         String typeName, String firstChar) {
+        this.typeMarkColorInt = typeMarkColorInt;
+        this.typeMarkColorName = null;
+        this.hasTypeMarkPattern = hasTypeMarkPattern;
+        this.typeMarkPatternResId = typeMarkPatternResId;
+        this.typeMarkPatternName = null;
+        this.typeName = typeName;
+        this.firstChar = firstChar;
+    }
+
+    /** 创建类型时使用 */
+    public FormattedType(int typeMarkColorInt, String typeMarkColorName, String typeName, String firstChar) {
+        this.typeMarkColorInt = typeMarkColorInt;
+        this.typeMarkColorName = typeMarkColorName;
+        this.hasTypeMarkPattern = false;
+        this.typeMarkPatternResId = -1;
+        this.typeMarkPatternName = null;
+        this.typeName = typeName;
+        this.firstChar = firstChar;
     }
 
     public int getTypeMarkColorInt() {
@@ -22,12 +53,36 @@ public class FormattedType {
         this.typeMarkColorInt = typeMarkColorInt;
     }
 
-    public String getFirstChar() {
-        return firstChar;
+    public String getTypeMarkColorName() {
+        return typeMarkColorName;
     }
 
-    public void setFirstChar(String firstChar) {
-        this.firstChar = firstChar;
+    public void setTypeMarkColorName(String typeMarkColorName) {
+        this.typeMarkColorName = typeMarkColorName;
+    }
+
+    public boolean isHasTypeMarkPattern() {
+        return hasTypeMarkPattern;
+    }
+
+    public void setHasTypeMarkPattern(boolean hasTypeMarkPattern) {
+        this.hasTypeMarkPattern = hasTypeMarkPattern;
+    }
+
+    public int getTypeMarkPatternResId() {
+        return typeMarkPatternResId;
+    }
+
+    public void setTypeMarkPatternResId(int typeMarkPatternResId) {
+        this.typeMarkPatternResId = typeMarkPatternResId;
+    }
+
+    public String getTypeMarkPatternName() {
+        return typeMarkPatternName;
+    }
+
+    public void setTypeMarkPatternName(String typeMarkPatternName) {
+        this.typeMarkPatternName = typeMarkPatternName;
     }
 
     public String getTypeName() {
@@ -38,11 +93,11 @@ public class FormattedType {
         this.typeName = typeName;
     }
 
-    public String getUcPlanCountStr() {
-        return ucPlanCountStr;
+    public String getFirstChar() {
+        return firstChar;
     }
 
-    public void setUcPlanCountStr(String ucPlanCountStr) {
-        this.ucPlanCountStr = ucPlanCountStr;
+    public void setFirstChar(String firstChar) {
+        this.firstChar = firstChar;
     }
 }

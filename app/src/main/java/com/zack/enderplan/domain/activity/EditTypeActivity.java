@@ -12,12 +12,16 @@ import com.zack.enderplan.App;
 import com.zack.enderplan.R;
 import com.zack.enderplan.domain.fragment.TypeMarkColorPickerDialogFragment;
 import com.zack.enderplan.domain.fragment.EditorDialogFragment;
+import com.zack.enderplan.domain.fragment.TypeMarkPatternPickerDialogFragment;
 import com.zack.enderplan.domain.view.EditTypeView;
 import com.zack.enderplan.interactor.presenter.EditTypePresenter;
+import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.TypeMarkColor;
+import com.zack.enderplan.model.bean.TypeMarkPattern;
 import com.zack.enderplan.widget.CircleColorView;
 import com.zack.enderplan.widget.ItemView;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -34,6 +38,11 @@ public class EditTypeActivity extends BaseActivity implements EditTypeView {
     ItemView mTypeNameItem;
     @BindView(R.id.item_type_mark_color)
     ItemView mTypeMarkColorItem;
+    @BindView(R.id.item_type_mark_pattern)
+    ItemView mTypeMarkPatternItem;
+
+    @BindString(R.string.dscpt_unsettled)
+    String mUnsettledDscpt;
 
     private EditTypePresenter mEditTypePresenter;
 
@@ -71,21 +80,16 @@ public class EditTypeActivity extends BaseActivity implements EditTypeView {
     }
 
     @Override
-    public void showInitialView(int typeMarkColorInt, String firstChar, String typeName, String typeMarkColorName) {
+    public void showInitialView(FormattedType formattedType) {
         setContentView(R.layout.activity_edit_type);
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
         setupActionBar();
 
-        mTypeMarkIcon.setFillColor(typeMarkColorInt);
-        mTypeMarkIcon.setInnerText(firstChar);
-
-        mTypeNameText.setText(typeName);
-
-        mTypeNameItem.setDescriptionText(typeName);
-
-        mTypeMarkColorItem.setDescriptionText(typeMarkColorName);
+        onTypeNameChanged(formattedType.getTypeName(), formattedType.getFirstChar());
+        onTypeMarkColorChanged(formattedType.getTypeMarkColorInt(), formattedType.getTypeMarkColorName());
+        onTypeMarkPatternChanged(formattedType.isHasTypeMarkPattern(), formattedType.getTypeMarkPatternResId(), formattedType.getTypeMarkPatternName());
     }
 
     @Override
@@ -114,6 +118,12 @@ public class EditTypeActivity extends BaseActivity implements EditTypeView {
     }
 
     @Override
+    public void onTypeMarkPatternChanged(boolean hasPattern, int patternResId, String patternName) {
+        mTypeMarkIcon.setInnerIcon(hasPattern ? getDrawable(patternResId) : null);
+        mTypeMarkPatternItem.setDescriptionText(hasPattern ? patternName : mUnsettledDscpt);
+    }
+
+    @Override
     public void showTypeMarkColorPickerDialog(String defaultColor) {
         TypeMarkColorPickerDialogFragment fragment = TypeMarkColorPickerDialogFragment.newInstance(defaultColor);
         fragment.setOnTypeMarkColorPickedListener(new TypeMarkColorPickerDialogFragment.OnTypeMarkColorPickedListener() {
@@ -123,6 +133,18 @@ public class EditTypeActivity extends BaseActivity implements EditTypeView {
             }
         });
         fragment.show(getSupportFragmentManager(), "type_mark_color_picker");
+    }
+
+    @Override
+    public void showTypeMarkPatternPickerDialog(String defaultPattern) {
+        TypeMarkPatternPickerDialogFragment fragment = TypeMarkPatternPickerDialogFragment.newInstance(defaultPattern);
+        fragment.setOnTypeMarkPatternPickedListener(new TypeMarkPatternPickerDialogFragment.OnTypeMarkPatternPickedListener() {
+            @Override
+            public void onTypeMarkPatternPicked(TypeMarkPattern typeMarkPattern) {
+                mEditTypePresenter.notifyTypeMarkPatternSelected(typeMarkPattern);
+            }
+        });
+        fragment.show(getSupportFragmentManager(), "type_mark_pattern_picker");
     }
 
     @Override
@@ -140,7 +162,7 @@ public class EditTypeActivity extends BaseActivity implements EditTypeView {
                 mEditTypePresenter.notifySettingTypeMarkColor();
                 break;
             case R.id.item_type_mark_pattern:
-                //TODO pattern
+                mEditTypePresenter.notifySettingTypeMarkPattern();
                 break;
         }
     }

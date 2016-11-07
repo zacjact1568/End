@@ -5,14 +5,15 @@ import android.text.TextUtils;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.event.TypeDetailChangedEvent;
+import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.domain.view.EditTypeView;
 import com.zack.enderplan.model.bean.TypeMarkColor;
+import com.zack.enderplan.model.bean.TypeMarkPattern;
+import com.zack.enderplan.utility.Util;
 
 import org.greenrobot.eventbus.EventBus;
-
-import java.util.List;
 
 public class EditTypePresenter extends BasePresenter implements Presenter<EditTypeView> {
 
@@ -41,12 +42,15 @@ public class EditTypePresenter extends BasePresenter implements Presenter<EditTy
     }
 
     public void setInitialView() {
-        mEditTypeView.showInitialView(
+        mEditTypeView.showInitialView(new FormattedType(
                 Color.parseColor(mType.getTypeMarkColor()),
-                mType.getTypeName().substring(0, 1),
+                mDataManager.getTypeMarkColorName(mType.getTypeMarkColor()),
+                mType.getTypeMarkPattern() != null,
+                Util.getDrawableResourceId(mType.getTypeMarkPattern()),
+                mDataManager.getTypeMarkPatternName(mType.getTypeMarkPattern()),
                 mType.getTypeName(),
-                mDataManager.getTypeMarkColorName(mType.getTypeMarkColor())
-        );
+                mType.getTypeName().substring(0, 1)
+        ));
     }
 
     public void notifySettingTypeName() {
@@ -55,6 +59,10 @@ public class EditTypePresenter extends BasePresenter implements Presenter<EditTy
 
     public void notifySettingTypeMarkColor() {
         mEditTypeView.showTypeMarkColorPickerDialog(mType.getTypeMarkColor());
+    }
+
+    public void notifySettingTypeMarkPattern() {
+        mEditTypeView.showTypeMarkPatternPickerDialog(mType.getTypeMarkPattern());
     }
 
     public void notifyUpdatingTypeName(String newTypeName) {
@@ -71,12 +79,30 @@ public class EditTypePresenter extends BasePresenter implements Presenter<EditTy
 
     public void notifyTypeMarkColorSelected(TypeMarkColor typeMarkColor) {
         String colorHex = typeMarkColor.getColorHex();
-        if (!mType.getTypeMarkColor().equals(colorHex) && mDataManager.isTypeMarkColorUsed(colorHex)) {
+        if (mType.getTypeMarkColor().equals(colorHex)) return;
+        if (mDataManager.isTypeMarkUsed(colorHex, mType.getTypeMarkPattern())) {
             mEditTypeView.showToast(R.string.toast_type_mark_exists);
         } else {
             mDataManager.notifyUpdatingTypeMarkColor(mPosition, colorHex);
             mEditTypeView.onTypeMarkColorChanged(Color.parseColor(colorHex), typeMarkColor.getColorName());
             postTypeDetailChangedEvent(TypeDetailChangedEvent.FIELD_TYPE_MARK_COLOR);
+        }
+    }
+
+    public void notifyTypeMarkPatternSelected(TypeMarkPattern typeMarkPattern) {
+        boolean hasPattern = typeMarkPattern != null;
+        String patternFn = hasPattern ? typeMarkPattern.getPatternFn() : null;
+        if (Util.isObjectEqual(mType.getTypeMarkPattern(), patternFn)) return;
+        if (mDataManager.isTypeMarkUsed(mType.getTypeMarkColor(), patternFn)) {
+            mEditTypeView.showToast(R.string.toast_type_mark_exists);
+        } else {
+            mDataManager.notifyUpdatingTypeMarkPattern(mPosition, patternFn);
+            mEditTypeView.onTypeMarkPatternChanged(
+                    hasPattern,
+                    Util.getDrawableResourceId(patternFn),
+                    hasPattern ? typeMarkPattern.getPatternName() : null
+            );
+            postTypeDetailChangedEvent(TypeDetailChangedEvent.FIELD_TYPE_MARK_PATTERN);
         }
     }
 

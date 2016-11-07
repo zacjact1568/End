@@ -7,8 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.zack.enderplan.App;
 import com.zack.enderplan.R;
 import com.zack.enderplan.model.bean.Type;
+import com.zack.enderplan.utility.Util;
 import com.zack.enderplan.widget.CircleColorView;
 
 import java.util.List;
@@ -39,6 +41,7 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
         Type type = typeList.get(position);
 
         holder.typeMarkIcon.setFillColor(Color.parseColor(type.getTypeMarkColor()));
+        holder.typeMarkIcon.setInnerIcon(type.getTypeMarkPattern() == null ? null : App.getGlobalContext().getDrawable(Util.getDrawableResourceId(type.getTypeMarkPattern())));
         holder.typeMarkIcon.setInnerText(type.getTypeName().substring(0, 1));
         holder.typeNameText.setText(type.getTypeName());
 

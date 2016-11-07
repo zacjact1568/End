@@ -124,7 +124,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailView {
     }
 
     @Override
-    public void showInitialView(FormattedType formattedType, SingleTypePlanAdapter singleTypePlanAdapter) {
+    public void showInitialView(FormattedType formattedType, String ucPlanCountStr, SingleTypePlanAdapter singleTypePlanAdapter) {
         setContentView(R.layout.activity_type_detail);
         ButterKnife.bind(this);
 
@@ -202,7 +202,8 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailView {
 
         onTypeNameChanged(formattedType.getTypeName(), formattedType.getFirstChar());
         onTypeMarkColorChanged(formattedType.getTypeMarkColorInt());
-        onUcPlanCountChanged(formattedType.getUcPlanCountStr());
+        onTypeMarkPatternChanged(formattedType.isHasTypeMarkPattern(), formattedType.getTypeMarkPatternResId());
+        onUcPlanCountChanged(ucPlanCountStr);
     }
 
     @Override
@@ -215,6 +216,11 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailView {
     @Override
     public void onTypeMarkColorChanged(int colorInt) {
         typeMarkIcon.setFillColor(colorInt);
+    }
+
+    @Override
+    public void onTypeMarkPatternChanged(boolean hasPattern, int patternResId) {
+        typeMarkIcon.setInnerIcon(hasPattern ? getDrawable(patternResId) : null);
     }
 
     @Override

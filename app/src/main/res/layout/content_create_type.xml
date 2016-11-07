@@ -14,7 +14,7 @@
         android:layout_height="56dp"
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
-        app:edge_width="1dp"/>
+        app:edgeWidth="1dp"/>
 
     <TextView
         android:id="@+id/text_type_name"

@@ -55,8 +55,8 @@
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:transitionName="@string/name_type_mark_shared_element_transition"
-                    app:edge_color="@android:color/white"
-                    app:edge_width="1dp"/>
+                    app:edgeColor="@android:color/white"
+                    app:edgeWidth="1dp"/>
 
                 <TextView
                     android:id="@+id/text_type_name"

@@ -2,26 +2,28 @@ package com.zack.enderplan.model.bean;
 
 public class TypeMarkPattern {
 
-    private String patternId, patternName;
+    private String patternFn;
+    private String patternName;
 
-    public TypeMarkPattern(String patternId, String patternName) {
-        this.patternId = patternId;
-        this.patternName = patternName;
+    public TypeMarkPattern(String patternFn, String patternName) {
+        setPattern(patternFn, patternName);
     }
 
-    public String getPatternId() {
-        return patternId;
+    public TypeMarkPattern() {
+        this.patternFn = null;
+        this.patternName = null;
     }
 
-    public void setPatternId(String patternId) {
-        this.patternId = patternId;
+    public String getPatternFn() {
+        return patternFn;
     }
 
     public String getPatternName() {
         return patternName;
     }
 
-    public void setPatternName(String patternName) {
+    public void setPattern(String patternFn, String patternName) {
+        this.patternFn = patternFn;
         this.patternName = patternName;
     }
 }

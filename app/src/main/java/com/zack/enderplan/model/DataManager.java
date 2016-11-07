@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 
 import com.zack.enderplan.model.bean.TypeMark;
 import com.zack.enderplan.model.bean.TypeMarkColor;
+import com.zack.enderplan.model.bean.TypeMarkPattern;
 import com.zack.enderplan.utility.ReminderManager;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.bean.Type;
@@ -460,7 +461,7 @@ public class DataManager {
     public void notifyUpdatingTypeMarkPattern(int location, String newTypeMarkPattern) {
         Type type = getType(location);
         type.setTypeMarkPattern(newTypeMarkPattern);
-        mTypeCodeAndTypeMarkMap.get(type.getTypeCode()).setPatternId(newTypeMarkPattern);
+        mTypeCodeAndTypeMarkMap.get(type.getTypeCode()).setPatternFn(newTypeMarkPattern);
         mDatabaseManager.updateTypeMarkPattern(type.getTypeCode(), newTypeMarkPattern);
     }
 
@@ -490,10 +491,20 @@ public class DataManager {
         return false;
     }
 
+    /** 判断给定类型是否已使用过 */
+    public boolean isTypeMarkUsed(String typeMarkColor, String typeMarkPattern) {
+        for (Type type : typeList) {
+            if (Util.isObjectEqual(type.getTypeMarkPattern(), typeMarkPattern) && type.getTypeMarkColor().equals(typeMarkColor)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /** 判断给定类型颜色是否已使用过 */
     public boolean isTypeMarkColorUsed(String typeMarkColor) {
-        for (int i = 0; i < getTypeCount(); i++) {
-            if (getType(i).getTypeMarkColor().equals(typeMarkColor)) {
+        for (Type type : typeList) {
+            if (type.getTypeMarkColor().equals(typeMarkColor)) {
                 return true;
             }
         }
@@ -502,8 +513,8 @@ public class DataManager {
 
     /** 判断给定类型图案是否已使用过 */
     public boolean isTypeMarkPatternUsed(String typeMarkPattern) {
-        for (int i = 0; i < getTypeCount(); i++) {
-            if (getType(i).getTypeMarkPattern().equals(typeMarkPattern)) {
+        for (Type type : typeList) {
+            if (Util.isObjectEqual(type.getTypeMarkPattern(), typeMarkPattern)) {
                 return true;
             }
         }
@@ -513,6 +524,11 @@ public class DataManager {
     /** 获取全部TypeMark颜色 */
     public List<TypeMarkColor> getTypeMarkColorList() {
         return mDatabaseManager.loadTypeMarkColor();
+    }
+
+    /** 获取全部TypeMark图案 */
+    public List<TypeMarkPattern> getTypeMarkPatternList() {
+        return mDatabaseManager.loadTypeMarkPattern();
     }
 
     /** 获取可用的TypeMark颜色（添加类型时使用）*/
@@ -546,6 +562,11 @@ public class DataManager {
     public String getTypeMarkColorName(String colorHex) {
         String colorName = mDatabaseManager.queryTypeMarkColorNameByTypeMarkColorHex(colorHex);
         return colorName == null ? colorHex : colorName;
+    }
+
+    /** 数据库获取图案名称 */
+    public String getTypeMarkPatternName(String patternFn) {
+        return patternFn == null ? null : mDatabaseManager.queryTypeMarkPatternNameByTypeMarkPatternFn(patternFn);
     }
 
     /** 获取一个随机的TypeMark颜色 */

@@ -1,12 +1,12 @@
 package com.zack.enderplan.widget;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
+import android.graphics.Color;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.Checkable;
+import android.widget.ImageView;
 
 import com.zack.enderplan.R;
 
@@ -14,10 +14,10 @@ import com.zack.enderplan.R;
  * A custom view that can be set as checked or unchecked.
  * @author Zack
  */
-public class CheckView extends View implements Checkable {
+public class CheckView extends ImageView implements Checkable {
 
-    private Drawable mCheckIcon;
-    private boolean mChecked = false;
+    private int mCheckedColor, mUncheckedColor;
+    private boolean mChecked;
 
     public CheckView(Context context) {
         super(context);
@@ -36,38 +36,23 @@ public class CheckView extends View implements Checkable {
 
     private void init(AttributeSet attrs, int defStyle) {
         loadAttrs(attrs, defStyle);
-        setVisibility(mChecked ? VISIBLE : INVISIBLE);
+        setImageTintList(ColorStateList.valueOf(mChecked ? mCheckedColor : mUncheckedColor));
     }
 
     /** 加载自定义的属性 */
     private void loadAttrs(AttributeSet attrs, int defStyle) {
         TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.CheckView, defStyle, 0);
-        mCheckIcon = ta.getDrawable(R.styleable.CheckView_check_icon);
-        mChecked = ta.getBoolean(R.styleable.CheckView_checked, mChecked);
+        mCheckedColor = ta.getColor(R.styleable.CheckView_checkedColor, Color.WHITE);
+        mUncheckedColor = ta.getColor(R.styleable.CheckView_uncheckedColor, Color.TRANSPARENT);
+        mChecked = ta.getBoolean(R.styleable.CheckView_checked, false);
         ta.recycle();
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
-        int paddingLeft = getPaddingLeft();
-        int paddingTop = getPaddingTop();
-
-        int contentWidth = getWidth() - paddingLeft - getPaddingRight();
-        int contentHeight = getHeight() - paddingTop - getPaddingBottom();
-
-        if (mCheckIcon != null) {
-            mCheckIcon.setBounds(paddingLeft, paddingTop, paddingLeft + contentWidth, paddingTop + contentHeight);
-            mCheckIcon.draw(canvas);
-        }
     }
 
     @Override
     public void setChecked(boolean checked) {
         if (checked != mChecked) {
             mChecked = checked;
-            setVisibility(mChecked ? VISIBLE : INVISIBLE);
+            setImageTintList(ColorStateList.valueOf(mChecked ? mCheckedColor : mUncheckedColor));
         }
     }
 

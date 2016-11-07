@@ -1,5 +1,6 @@
 package com.zack.enderplan.domain.view;
 
+import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 
 import com.zack.enderplan.interactor.adapter.SingleTypePlanAdapter;
@@ -9,11 +10,13 @@ import com.zack.enderplan.model.bean.Plan;
 
 public interface TypeDetailView {
 
-    void showInitialView(FormattedType formattedType, SingleTypePlanAdapter singleTypePlanAdapter);
+    void showInitialView(FormattedType formattedType, String ucPlanCountStr, SingleTypePlanAdapter singleTypePlanAdapter);
 
     void onTypeNameChanged(String typeName, String firstChar);
 
     void onTypeMarkColorChanged(int colorInt);
+
+    void onTypeMarkPatternChanged(boolean hasPattern, @DrawableRes int patternResId);
 
     void onPlanCreated();
 
