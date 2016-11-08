@@ -40,7 +40,7 @@ public class TypeDetailPresenter extends BasePresenter implements Presenter<Type
     private Type type;
     private EventBus mEventBus;
     private String mNoneUcPlanCountStr, mOneUcPlanCountStr, mMultiUcPlanCountFmtStr;
-    private int mAppBarMaxRange, mContentEditorLayoutHeight;
+    private int mAppBarMaxRange, mEditorLayoutHeight;
     private float mLastHeaderAlpha = 1f;
     private int mAppBarState = APP_BAR_STATE_EXPANDED;
     private boolean mViewVisible;
@@ -90,8 +90,8 @@ public class TypeDetailPresenter extends BasePresenter implements Presenter<Type
         mAppBarMaxRange = appBarMaxRange;
     }
 
-    public void notifyPreDrawingContentEditorLayout(int contentEditorLayoutHeight) {
-        mContentEditorLayoutHeight = contentEditorLayoutHeight;
+    public void notifyPreDrawingEditorLayout(int editorLayoutHeight) {
+        mEditorLayoutHeight = editorLayoutHeight;
     }
 
     public void notifySwitchingViewVisibility(boolean isVisible) {
@@ -100,7 +100,7 @@ public class TypeDetailPresenter extends BasePresenter implements Presenter<Type
 
     public void notifyAppBarScrolled(int offset) {
 
-        if (mAppBarMaxRange == 0 || mContentEditorLayoutHeight == 0) return;
+        if (mAppBarMaxRange == 0 || mEditorLayoutHeight == 0) return;
 
         int absOffset = Math.abs(offset);
         float headerAlpha = 1f - absOffset * 1.3f / mAppBarMaxRange;
@@ -110,7 +110,7 @@ public class TypeDetailPresenter extends BasePresenter implements Presenter<Type
             //刚退出透明状态或刚进入透明状态（即临界点）
             typeDetailView.onAppBarScrolledToCriticalPoint(
                     headerAlpha == 0 ? type.getTypeName() : " ",
-                    headerAlpha > 0 ? 0f : mContentEditorLayoutHeight
+                    headerAlpha > 0 ? 0f : mEditorLayoutHeight
             );
             mLastHeaderAlpha = headerAlpha;
         }

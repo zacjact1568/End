@@ -147,11 +147,11 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailView {
             }
         });
 
-        contentEditor.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+        mEditorLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
-                contentEditor.getViewTreeObserver().removeOnPreDrawListener(this);
-                typeDetailPresenter.notifyPreDrawingContentEditorLayout(contentEditor.getHeight());
+                mEditorLayout.getViewTreeObserver().removeOnPreDrawListener(this);
+                typeDetailPresenter.notifyPreDrawingEditorLayout(mEditorLayout.getHeight());
                 return false;
             }
         });

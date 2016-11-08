@@ -84,6 +84,7 @@ public class TypeMarkColorPickerDialogFragment extends DialogFragment {
             if (typeMarkColor.getColorHex().equals(mDefaultColor)) {
                 mPosition = i;
                 mTypeMarkColor.setColor(typeMarkColor.getColorHex(), typeMarkColor.getColorName());
+                break;
             }
             if (i == mTypeMarkColorList.size() - 1) {
                 //未在TypeMarkColorList中找到

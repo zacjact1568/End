@@ -63,7 +63,7 @@ public class TypeMarkPatternPickerDialogFragment extends DialogFragment {
                 if (typeMarkPattern.getPatternFn().equals(defaultPattern)) {
                     mPosition = i;
                     mTypeMarkPattern.setPattern(typeMarkPattern.getPatternFn(), typeMarkPattern.getPatternName());
-                    break;//TODO color也要加
+                    break;
                 }
             }
         }

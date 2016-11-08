@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.utility.Util;
 
 public class CircleColorView extends View {
 
@@ -145,22 +146,17 @@ public class CircleColorView extends View {
     }
 
     public void setInnerText(String innerText) {
-        if (innerText.equals(mInnerText)) return;
+        if (Util.isObjectEqual(innerText, mInnerText)) return;
         mInnerText = innerText;
         invalidate();
     }
 
     public void setInnerIcon(Drawable innerIcon) {
-        if (innerIcon != null && innerIcon.equals(mInnerIcon)) return;
+        if (Util.isObjectEqual(innerIcon, mInnerIcon)) return;
         mInnerIcon = innerIcon;
-        invalidate();
-    }
-
-    public void setInnerIconTintColor(int innerIconTintColor) {
-        if (innerIconTintColor == mInnerIconTintColor) return;
-        mInnerIconTintColor = innerIconTintColor;
         if (mInnerIcon != null) {
             mInnerIcon.setTint(mInnerIconTintColor);
         }
+        invalidate();
     }
 }
