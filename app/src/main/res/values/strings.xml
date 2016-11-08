@@ -168,10 +168,15 @@
     <string name="hint_first_plan_content">Enter your first plan</string>
 
     <!--Default types-->
-    <string name="to_do">To-Do</string>
-    <string name="study">Study</string>
-    <string name="work">Work</string>
-    <string name="family">Family</string>
+    <string name="def_type_1">To-Do</string>
+    <string name="def_type_2">Study</string>
+    <string name="def_type_3">Work</string>
+    <string name="def_type_4">Family</string>
+
+    <!--Default plans-->
+    <string name="def_plan_1">Click to see the detail of this plan</string>
+    <string name="def_plan_2">Slide left to delete this plan</string>
+    <string name="def_plan_3">Slide right to complete this plan</string>
 
     <!--Reminder-->
     <string name="notification_ticker">One of your plan hit its deadline</string>

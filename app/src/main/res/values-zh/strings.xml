@@ -11,9 +11,6 @@
     <string name="type">类型</string>
     <string name="action_search">搜索</string>
     <string name="action_about">关于</string>
-    <string name="family">家庭</string>
-    <string name="study">学习</string>
-    <string name="work">工作</string>
     <string name="created_prompt">已成功创建</string>
     <string name="more_info">更多信息</string>
     <string name="edit_plan">编辑计划</string>
@@ -30,7 +27,6 @@
     <string name="notification_ticker">你有一个任务到期</string>
     <string name="title_notification_content">Ender计划的提醒</string>
     <string name="more_settings">更多设置</string>
-    <string name="to_do">待办事项</string>
     <string name="content_error_empty">忘记这个了？</string>
     <string name="message_deadline_overdue_dialog">天了噜，你设置的截止时间貌似已经过期了</string>
     <string name="pos_button_deadline_overdue_dialog">好吧，我再改改</string>
@@ -135,4 +131,11 @@
     <string name="snackbar_create_format">“%s”已创建</string>
     <string name="title_dialog_fragment_type_mark_pattern_picker">选择图案</string>
     <string name="btn_dialog_select_none">全部不选</string>
+    <string name="def_type_4">家庭</string>
+    <string name="def_type_2">学习</string>
+    <string name="def_type_1">待办事项</string>
+    <string name="def_type_3">工作</string>
+    <string name="def_plan_2">左滑删除计划</string>
+    <string name="def_plan_3">右滑完成计划</string>
+    <string name="def_plan_1">点击查看计划详情</string>
 </resources>

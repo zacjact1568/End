@@ -10,6 +10,7 @@ import com.zack.enderplan.R;
 import com.zack.enderplan.domain.view.FirstPlanView;
 import com.zack.enderplan.event.GuideEndedEvent;
 import com.zack.enderplan.event.PlanCreatedEvent;
+import com.zack.enderplan.event.TypeCreatedEvent;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.bean.Type;
@@ -22,13 +23,11 @@ public class FirstPlanPresenter extends BasePresenter implements Presenter<First
     private FirstPlanView mFirstPlanView;
     private DataManager mDataManager;
     private EventBus mEventBus;
-    private Plan mPlan;
 
     public FirstPlanPresenter(FirstPlanView firstPlanView) {
         attachView(firstPlanView);
         mDataManager = DataManager.getInstance();
         mEventBus = EventBus.getDefault();
-        mPlan = new Plan(Util.makeCode());
     }
 
     @Override
@@ -49,12 +48,13 @@ public class FirstPlanPresenter extends BasePresenter implements Presenter<First
         if (!TextUtils.isEmpty(content)) {
             addDefaultTypes();
             addDefaultPlans();
-            mPlan.setContent(content);
-            mPlan.setTypeCode(mDataManager.getType(0).getTypeCode());
-            mPlan.setCreationTime(System.currentTimeMillis());
-            mDataManager.notifyPlanCreated(mPlan);
+            Plan plan = new Plan(Util.makeCode());
+            plan.setContent(content);
+            plan.setTypeCode(mDataManager.getType(0).getTypeCode());
+            plan.setCreationTime(System.currentTimeMillis());
+            mDataManager.notifyPlanCreated(plan);
             mFirstPlanView.onFirstPlanCreated();
-            mEventBus.post(new PlanCreatedEvent(getPresenterName(), mPlan.getPlanCode(), mDataManager.getRecentlyCreatedPlanLocation()));
+            mEventBus.post(new PlanCreatedEvent(getPresenterName(), plan.getPlanCode(), mDataManager.getRecentlyCreatedPlanLocation()));
         } else {
             mFirstPlanView.onDetectedEmptyContent();
         }
@@ -67,22 +67,35 @@ public class FirstPlanPresenter extends BasePresenter implements Presenter<First
 
     /** 添加预置的几个type */
     private void addDefaultTypes() {
-        int[] typeNameResIds = {R.string.to_do, R.string.family, R.string.work, R.string.study};
-        int[] typeMarkResIds = {R.color.indigo, R.color.red, R.color.orange, R.color.green};
+        int[] nameResIds = {R.string.def_type_1, R.string.def_type_2, R.string.def_type_3, R.string.def_type_4};
+        int[] colorResIds = {R.color.indigo, R.color.red, R.color.orange, R.color.green};
+        String[] patternFns = {"ic_computer_black_24dp", "ic_home_black_24dp", "ic_work_black_24dp", "ic_school_black_24dp"};
         Context context = App.getGlobalContext();
         for (int i = 0; i < 4; i++) {
-            mDataManager.notifyTypeCreated(new Type(
+            Type type = new Type(
                     Util.makeCode(),
-                    context.getResources().getString(typeNameResIds[i]),
-                    Util.parseColor(ContextCompat.getColor(context, typeMarkResIds[i])),
-                    null,//TODO default pattern
+                    context.getString(nameResIds[i]),
+                    Util.parseColor(ContextCompat.getColor(context, colorResIds[i])),
+                    patternFns[i],
                     i
-            ));
+            );
+            mDataManager.notifyTypeCreated(type);
+            mEventBus.post(new TypeCreatedEvent(getPresenterName(), type.getTypeCode(), mDataManager.getRecentlyCreatedTypeLocation()));
         }
     }
 
     /** 添加预置的几个plan */
     private void addDefaultPlans() {
-        //TODO add default plans (as guides)
+        int[] contentResIds = {R.string.def_plan_1, R.string.def_plan_2, R.string.def_plan_3};
+        Context context = App.getGlobalContext();
+        String defaultTypeCode = mDataManager.getType(0).getTypeCode();
+        for (int i = 0; i < 3; i++) {
+            Plan plan = new Plan(Util.makeCode());
+            plan.setContent(context.getString(contentResIds[i]));
+            plan.setTypeCode(defaultTypeCode);
+            plan.setCreationTime(System.currentTimeMillis());
+            mDataManager.notifyPlanCreated(plan);
+            mEventBus.post(new PlanCreatedEvent(getPresenterName(), plan.getPlanCode(), mDataManager.getRecentlyCreatedPlanLocation()));
+        }
     }
 }
