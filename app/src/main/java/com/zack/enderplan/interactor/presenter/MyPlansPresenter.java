@@ -5,7 +5,6 @@ import com.zack.enderplan.event.DataLoadedEvent;
 import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDeletedEvent;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
-import com.zack.enderplan.event.RemindedEvent;
 import com.zack.enderplan.event.TypeDetailChangedEvent;
 import com.zack.enderplan.interactor.adapter.PlanAdapter;
 import com.zack.enderplan.model.DataManager;
@@ -143,10 +142,5 @@ public class MyPlansPresenter extends BasePresenter implements Presenter<MyPlans
     public void onPlanDeleted(PlanDeletedEvent event) {
         if (event.getEventSource().equals(getPresenterName())) return;
         mPlanAdapter.notifyItemRemoved(event.getPosition());
-    }
-
-    @Subscribe
-    public void onReminded(RemindedEvent event) {
-        mPlanAdapter.notifyItemChanged(event.getPosition());
     }
 }

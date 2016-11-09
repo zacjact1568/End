@@ -11,7 +11,6 @@ import com.zack.enderplan.interactor.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.model.bean.FormattedPlan;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
-import com.zack.enderplan.event.RemindedEvent;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.domain.view.PlanDetailView;
 
@@ -209,17 +208,6 @@ public class PlanDetailPresenter extends BasePresenter implements Presenter<Plan
             return mUnsettledDscpt;
         } else {
             return DateFormat.format(dateTimeFormatStr, timeInMillis).toString();
-        }
-    }
-
-    @Subscribe
-    public void onReminded(RemindedEvent event) {
-        if (plan.getPlanCode().equals(event.getPlanCode())) {
-            //是当前计划的提醒
-            planDetailView.onReminderTimeChanged(false, mUnsettledDscpt);
-
-            //plan.setReminderTime(0)这一句其实放在这里也可以，只是不知道AllPlansPresenter中的订阅和这个订阅谁先执行
-            //如果plan.setReminderTime(0)这一句放在这里，且AllPlansPresenter中的订阅先执行，那么AllPlansList将得不到刷新
         }
     }
 

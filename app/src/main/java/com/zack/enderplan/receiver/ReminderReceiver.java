@@ -8,9 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.database.DatabaseManager;
-import com.zack.enderplan.event.RemindedEvent;
 import com.zack.enderplan.model.DataManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -49,14 +49,7 @@ public class ReminderReceiver extends BroadcastReceiver {
             int position = dataManager.getPlanLocationInPlanList(planCode);
             dataManager.getPlan(position).setReminderTime(0);
             //通知界面更新（NOTE：如果app已退出，但进程还没被杀，仍然会发出通知）
-            EventBus.getDefault().post(new RemindedEvent(getClass().getSimpleName(), planCode, position));
+            EventBus.getDefault().post(new PlanDetailChangedEvent(getClass().getSimpleName(), planCode, position, PlanDetailChangedEvent.FIELD_REMINDER_TIME));
         }
-
-        /*Intent remindedIntent = new Intent("com.zack.enderplan.ACTION_REMINDED");
-        remindedIntent.putExtra("plan_code", planCode);
-        remindedIntent.setPackage(context.getPackageName());
-        context.sendOrderedBroadcast(remindedIntent, null);*/
-        /*LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
-        localBroadcastManager.sendBroadcast(remindedIntent);*/
     }
 }
