@@ -80,13 +80,16 @@ public class SettingsActivity extends BaseActivity {
                     Configuration config = getResources().getConfiguration();
                     switch (languageValue) {
                         case "en":
-                            config.locale = Locale.ENGLISH;
+                            config.setLocale(Locale.ENGLISH);
                             break;
-                        case "zh":
-                            config.locale = Locale.CHINESE;
+                        case "zh_cn":
+                            config.setLocale(Locale.SIMPLIFIED_CHINESE);
+                            break;
+                        case "zh_tw":
+                            config.setLocale(Locale.TRADITIONAL_CHINESE);
                             break;
                         default:
-                            config.locale = Locale.getDefault();
+                            config.setLocale(Locale.getDefault());
                             break;
                     }
                     getResources().updateConfiguration(config, null);

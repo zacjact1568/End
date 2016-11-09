@@ -288,13 +288,13 @@ public class DatabaseManager {
     public List<TypeMarkColor> loadTypeMarkColor() {
         SQLiteDatabase typeMarkDB = SQLiteDatabase.openDatabase(App.getGlobalContext().getDatabasePath(DB_TYPE_MARK).getPath(), null, SQLiteDatabase.OPEN_READONLY);
         List<TypeMarkColor> typeMarkColorList = new ArrayList<>();
-        boolean shouldUseChinese = Util.getPreferredLocale().equals(Locale.SIMPLIFIED_CHINESE);
+        String colorNameColumnName = String.format("color_%s", getColumnNameSuffixByLocale());
         Cursor cursor = typeMarkDB.rawQuery("select * from color", null);
         if (cursor.moveToFirst()) {
             do {
                 typeMarkColorList.add(new TypeMarkColor(
                         cursor.getString(cursor.getColumnIndex("color_hex")),
-                        cursor.getString(cursor.getColumnIndex(shouldUseChinese ? "color_zh" : "color_en"))
+                        cursor.getString(cursor.getColumnIndex(colorNameColumnName))
                 ));
             } while (cursor.moveToNext());
         }
@@ -305,11 +305,11 @@ public class DatabaseManager {
 
     public String queryTypeMarkColorNameByTypeMarkColorHex(String typeMarkColorHex) {
         SQLiteDatabase typeMarkDB = SQLiteDatabase.openDatabase(App.getGlobalContext().getDatabasePath(DB_TYPE_MARK).getPath(), null, SQLiteDatabase.OPEN_READONLY);
-        String columnName = Util.getPreferredLocale().equals(Locale.SIMPLIFIED_CHINESE) ? "color_zh" : "color_en";
-        Cursor cursor = typeMarkDB.rawQuery("select " + columnName + " from color where color_hex = ?", new String[]{typeMarkColorHex});
+        String colorNameColumnName = String.format("color_%s", getColumnNameSuffixByLocale());
+        Cursor cursor = typeMarkDB.rawQuery("select " + colorNameColumnName + " from color where color_hex = ?", new String[]{typeMarkColorHex});
         String typeMarkColorName = null;
         if (cursor.moveToFirst()) {
-            typeMarkColorName = cursor.getString(cursor.getColumnIndex(columnName));
+            typeMarkColorName = cursor.getString(cursor.getColumnIndex(colorNameColumnName));
         }
         cursor.close();
         typeMarkDB.close();
@@ -321,13 +321,13 @@ public class DatabaseManager {
     public List<TypeMarkPattern> loadTypeMarkPattern() {
         SQLiteDatabase typeMarkDB = SQLiteDatabase.openDatabase(App.getGlobalContext().getDatabasePath(DB_TYPE_MARK).getPath(), null, SQLiteDatabase.OPEN_READONLY);
         List<TypeMarkPattern> typeMarkPatternList = new ArrayList<>();
-        boolean shouldUseChinese = Util.getPreferredLocale().equals(Locale.SIMPLIFIED_CHINESE);
+        String patternNameColumnName = String.format("pattern_%s", getColumnNameSuffixByLocale());
         Cursor cursor = typeMarkDB.rawQuery("select * from pattern", null);
         if (cursor.moveToFirst()) {
             do {
                 typeMarkPatternList.add(new TypeMarkPattern(
                         cursor.getString(cursor.getColumnIndex("pattern_fn")),
-                        cursor.getString(cursor.getColumnIndex(shouldUseChinese ? "pattern_zh" : "pattern_en"))
+                        cursor.getString(cursor.getColumnIndex(patternNameColumnName))
                 ));
             } while (cursor.moveToNext());
         }
@@ -338,14 +338,27 @@ public class DatabaseManager {
 
     public String queryTypeMarkPatternNameByTypeMarkPatternFn(String typeMarkPatternFn) {
         SQLiteDatabase typeMarkDB = SQLiteDatabase.openDatabase(App.getGlobalContext().getDatabasePath(DB_TYPE_MARK).getPath(), null, SQLiteDatabase.OPEN_READONLY);
-        String columnName = Util.getPreferredLocale().equals(Locale.SIMPLIFIED_CHINESE) ? "pattern_zh" : "pattern_en";
-        Cursor cursor = typeMarkDB.rawQuery("select " + columnName + " from pattern where pattern_fn = ?", new String[]{typeMarkPatternFn});
+        String patternNameColumnName = String.format("pattern_%s", getColumnNameSuffixByLocale());
+        Cursor cursor = typeMarkDB.rawQuery("select " + patternNameColumnName + " from pattern where pattern_fn = ?", new String[]{typeMarkPatternFn});
         String typeMarkPatternName = null;
         if (cursor.moveToFirst()) {
-            typeMarkPatternName = cursor.getString(cursor.getColumnIndex(columnName));
+            typeMarkPatternName = cursor.getString(cursor.getColumnIndex(patternNameColumnName));
         }
         cursor.close();
         typeMarkDB.close();
         return typeMarkPatternName;
+    }
+
+    //*****************Others*****************
+
+    private String getColumnNameSuffixByLocale() {
+        Locale preferredLocale = Util.getPreferredLocale();
+        if (preferredLocale.equals(Locale.SIMPLIFIED_CHINESE)) {
+            return "zh_cn";
+        } else if (preferredLocale.equals(Locale.TRADITIONAL_CHINESE)) {
+            return "zh_tw";
+        } else {
+            return "en";
+        }
     }
 }

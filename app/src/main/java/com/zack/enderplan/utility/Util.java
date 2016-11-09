@@ -72,18 +72,27 @@ public class Util {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.N;
     }
 
+    /**
+     * 获取首选的语言
+     * @return ENGLISH、SIMPLIFIED_CHINESE、TRADITIONAL_CHINESE三者其一
+     */
     public static Locale getPreferredLocale() {
         Configuration config = App.getGlobalContext().getResources().getConfiguration();
-        if (isVersionBelowNougat()) {
-            return config.locale.equals(Locale.SIMPLIFIED_CHINESE) ? Locale.SIMPLIFIED_CHINESE : Locale.ENGLISH;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            Locale locale = config.locale;
+            if (locale.equals(Locale.ENGLISH) || locale.equals(Locale.SIMPLIFIED_CHINESE) || locale.equals(Locale.TRADITIONAL_CHINESE)) {
+                return locale;
+            }
+        } else {
+            LocaleList localeList = config.getLocales();
+            for (int i = 0; i < localeList.size(); i++) {
+                Locale locale = localeList.get(i);
+                if (locale.equals(Locale.ENGLISH) || locale.equals(Locale.SIMPLIFIED_CHINESE) || locale.equals(Locale.TRADITIONAL_CHINESE)) {
+                    return locale;
+                }
+            }
         }
-        //For Android 7.0
-        LocaleList localeList = config.getLocales();
-        for (int i = 0; i < localeList.size(); i++) {
-            Locale locale = localeList.get(i);
-            if (!locale.equals(Locale.SIMPLIFIED_CHINESE) && !locale.equals(Locale.ENGLISH)) continue;
-            return locale;
-        }
+        //其他语言，默认英语
         return Locale.ENGLISH;
     }
 

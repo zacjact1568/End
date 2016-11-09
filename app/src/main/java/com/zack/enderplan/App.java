@@ -17,8 +17,6 @@ import java.util.Locale;
 
 public class App extends Application {
 
-    private static final String LOG_TAG = "App";
-
     private static final int BUFFER_SIZE = 400000;
 
     private static Context globalContext;
@@ -74,7 +72,6 @@ public class App extends Application {
         }
     }
 
-    //TODO SIMPLIFIED_CHINESE, getLocale()
     private void initLocale(String value) {
         if (value.equals("def")) {
             return;
@@ -82,10 +79,13 @@ public class App extends Application {
         Configuration config = getResources().getConfiguration();
         switch (value) {
             case "en":
-                config.locale = Locale.ENGLISH;
+                config.setLocale(Locale.ENGLISH);
                 break;
-            case "zh":
-                config.locale = Locale.CHINESE;
+            case "zh_cn":
+                config.setLocale(Locale.SIMPLIFIED_CHINESE);
+                break;
+            case "zh_tw":
+                config.setLocale(Locale.TRADITIONAL_CHINESE);
                 break;
             default:
                 break;
