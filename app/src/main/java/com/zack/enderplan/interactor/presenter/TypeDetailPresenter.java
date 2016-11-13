@@ -23,6 +23,7 @@ import com.zack.enderplan.domain.view.TypeDetailView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.Collections;
 import java.util.List;
 
 public class TypeDetailPresenter extends BasePresenter implements Presenter<TypeDetailView> {
@@ -237,6 +238,17 @@ public class TypeDetailPresenter extends BasePresenter implements Presenter<Type
                 plan.isCompleted() ? dataManager.getUcPlanCount() : 0,
                 PlanDetailChangedEvent.FIELD_PLAN_STATUS
         ));
+    }
+
+    public void notifyPlanSequenceChanged(int fromPosition, int toPosition) {
+        int fromPlanListPos = dataManager.getPlanLocationInPlanList(singleTypePlanList.get(fromPosition).getPlanCode());
+        int toPlanListPos = dataManager.getPlanLocationInPlanList(singleTypePlanList.get(toPosition).getPlanCode());
+        if (fromPlanListPos < dataManager.getUcPlanCount() != toPlanListPos < dataManager.getUcPlanCount()) return;
+        //更新全局列表
+        dataManager.swapPlansInPlanList(fromPlanListPos, toPlanListPos);
+        //更新此列表
+        Collections.swap(singleTypePlanList, fromPosition, toPosition);
+        mSingleTypePlanAdapter.notifyItemMoved(fromPosition, toPosition);
     }
 
     public void notifyTypeEditingButtonClicked() {

@@ -125,6 +125,30 @@ public class DataManager {
         planList.remove(location);
     }
 
+    /** 交换计划列表中的两个元素（只能在两个相同完成状态的计划之间交换）*/
+    public void swapPlansInPlanList(int oneLocation, int anotherLocation) {
+        Plan onePlan = getPlan(oneLocation);
+        Plan anotherPlan = getPlan(anotherLocation);
+        if (onePlan.isCompleted() && anotherPlan.isCompleted()) {
+            //完成->完成，交换completion time
+            long oneCompletionTime = onePlan.getCompletionTime();
+            onePlan.setCompletionTime(anotherPlan.getCompletionTime());
+            anotherPlan.setCompletionTime(oneCompletionTime);
+            mDatabaseManager.updateCompletionTime(onePlan.getPlanCode(), onePlan.getCompletionTime());
+            mDatabaseManager.updateCompletionTime(anotherPlan.getPlanCode(), anotherPlan.getCompletionTime());
+        } else if (!onePlan.isCompleted() && !anotherPlan.isCompleted()) {
+            //未完成->未完成，交换creation time
+            long oneCreationTime = onePlan.getCreationTime();
+            onePlan.setCreationTime(anotherPlan.getCreationTime());
+            anotherPlan.setCreationTime(oneCreationTime);
+            mDatabaseManager.updateCreationTime(onePlan.getPlanCode(), onePlan.getCreationTime());
+            mDatabaseManager.updateCreationTime(anotherPlan.getPlanCode(), anotherPlan.getCreationTime());
+        } else {
+            return;
+        }
+        Collections.swap(planList, oneLocation, anotherLocation);
+    }
+
     /** 获取最近创建的计划位置 */
     public int getRecentlyCreatedPlanLocation() {
         return 0;
@@ -388,6 +412,13 @@ public class DataManager {
 
     /** 交换类型列表中的两个元素 */
     public void swapTypesInTypeList(int oneLocation, int anotherLocation) {
+        Type oneType = getType(oneLocation);
+        Type anotherType = getType(anotherLocation);
+        int oneTypeSequence = oneType.getTypeSequence();
+        oneType.setTypeSequence(anotherType.getTypeSequence());
+        anotherType.setTypeSequence(oneTypeSequence);
+        mDatabaseManager.updateTypeSequence(oneType.getTypeCode(), oneType.getTypeSequence());
+        mDatabaseManager.updateTypeSequence(anotherType.getTypeCode(), anotherType.getTypeSequence());
         Collections.swap(typeList, oneLocation, anotherLocation);
     }
 

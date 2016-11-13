@@ -10,16 +10,21 @@ public class PlanItemTouchCallback extends ItemTouchHelper.Callback {
     public static final int DIR_END = 1;
 
     private OnItemSwipedListener mOnItemSwipedListener;
+    private OnItemMovedListener mOnItemMovedListener;
 
     @Override
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+        int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
         int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
-        return makeMovementFlags(0, swipeFlags);
+        return makeMovementFlags(dragFlags, swipeFlags);
     }
 
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-        return false;
+        if (mOnItemMovedListener != null) {
+            mOnItemMovedListener.onItemMoved(viewHolder.getLayoutPosition(), target.getLayoutPosition());
+        }
+        return true;
     }
 
     @Override
@@ -63,5 +68,13 @@ public class PlanItemTouchCallback extends ItemTouchHelper.Callback {
 
     public void setOnItemSwipedListener(OnItemSwipedListener listener) {
         mOnItemSwipedListener = listener;
+    }
+
+    public interface OnItemMovedListener {
+        void onItemMoved(int fromPosition, int toPosition);
+    }
+
+    public void setOnItemMovedListener(OnItemMovedListener listener) {
+        mOnItemMovedListener = listener;
     }
 }

@@ -47,11 +47,6 @@ public class AllTypesPresenter extends BasePresenter implements Presenter<AllTyp
         mAllTypesView.showInitialView(mTypeAdapter);
     }
 
-    //储存类型列表的排序
-    public void syncWithDatabase() {
-        mDataManager.notifyTypeSequenceRearranged();
-    }
-
     public void notifyTypeItemClicked(int position, View typeItem) {
         mAllTypesView.onTypeItemClicked(position, typeItem);
     }

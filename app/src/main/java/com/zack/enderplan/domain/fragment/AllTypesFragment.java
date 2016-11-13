@@ -15,6 +15,7 @@ import com.zack.enderplan.R;
 import com.zack.enderplan.domain.activity.TypeDetailActivity;
 import com.zack.enderplan.domain.view.AllTypesView;
 import com.zack.enderplan.interactor.adapter.TypeAdapter;
+import com.zack.enderplan.interactor.callback.TypeItemTouchCallback;
 import com.zack.enderplan.interactor.presenter.AllTypesPresenter;
 
 import butterknife.BindView;
@@ -54,12 +55,6 @@ public class AllTypesFragment extends Fragment implements AllTypesView {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        mAllTypesPresenter.syncWithDatabase();
-    }
-
-    @Override
     public void onDetach() {
         super.onDetach();
         mAllTypesPresenter.detachView();
@@ -78,7 +73,15 @@ public class AllTypesFragment extends Fragment implements AllTypesView {
         mAllTypesList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAllTypesList.setHasFixedSize(true);
         mAllTypesList.setAdapter(typeAdapter);
-        new ItemTouchHelper(new TypeListItemTouchCallback()).attachToRecyclerView(mAllTypesList);
+
+        TypeItemTouchCallback typeItemTouchCallback = new TypeItemTouchCallback();
+        typeItemTouchCallback.setOnItemMovedListener(new TypeItemTouchCallback.OnItemMovedListener() {
+            @Override
+            public void onItemMoved(int fromPosition, int toPosition) {
+                mAllTypesPresenter.notifyTypeSequenceChanged(fromPosition, toPosition);
+            }
+        });
+        new ItemTouchHelper(typeItemTouchCallback).attachToRecyclerView(mAllTypesList);
     }
 
     @Override
@@ -91,25 +94,5 @@ public class AllTypesFragment extends Fragment implements AllTypesView {
                 getResources().getString(R.string.name_type_mark_shared_element_transition)
         );
         getActivity().startActivity(intent, options.toBundle());
-    }
-
-    private class TypeListItemTouchCallback extends ItemTouchHelper.Callback {
-
-        @Override
-        public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-            int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-            return makeMovementFlags(dragFlags, 0);
-        }
-
-        @Override
-        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-            mAllTypesPresenter.notifyTypeSequenceChanged(viewHolder.getLayoutPosition(), target.getLayoutPosition());
-            return true;
-        }
-
-        @Override
-        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-
-        }
     }
 }

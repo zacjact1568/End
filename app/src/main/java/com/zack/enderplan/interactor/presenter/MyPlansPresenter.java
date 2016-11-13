@@ -104,6 +104,13 @@ public class MyPlansPresenter extends BasePresenter implements Presenter<MyPlans
         mEventBus.post(new PlanDetailChangedEvent(getPresenterName(), plan.getPlanCode(), newPosition, PlanDetailChangedEvent.FIELD_PLAN_STATUS));
     }
 
+    public void notifyPlanSequenceChanged(int fromPosition, int toPosition) {
+        if (fromPosition < mDataManager.getUcPlanCount() != toPosition < mDataManager.getUcPlanCount()) return;
+        //只能移动到相同完成状态的计划位置处
+        mDataManager.swapPlansInPlanList(fromPosition, toPosition);
+        mPlanAdapter.notifyItemMoved(fromPosition, toPosition);
+    }
+
     @Subscribe
     public void onDataLoaded(DataLoadedEvent event) {
         mPlanAdapter.notifyDataSetChanged();

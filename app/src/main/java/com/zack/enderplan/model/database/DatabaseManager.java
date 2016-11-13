@@ -231,6 +231,18 @@ public class DatabaseManager {
         updatePlan(planCode, values);
     }
 
+    public void updateCreationTime(String planCode, long creationTime) {
+        ContentValues values = new ContentValues();
+        values.put(DB_STR_CREATION_TIME, creationTime);
+        updatePlan(planCode, values);
+    }
+
+    public void updateCompletionTime(String planCode, long completionTime) {
+        ContentValues values = new ContentValues();
+        values.put(DB_STR_COMPLETION_TIME, completionTime);
+        updatePlan(planCode, values);
+    }
+
     public void deletePlan(String planCode) {
         database.delete(DB_STR_PLAN, DB_STR_PLAN_CODE + " = ?", new String[]{planCode});
     }

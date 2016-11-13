@@ -117,6 +117,12 @@ public class MyPlansFragment extends Fragment implements MyPlansView {
                 }
             }
         });
+        planItemTouchCallback.setOnItemMovedListener(new PlanItemTouchCallback.OnItemMovedListener() {
+            @Override
+            public void onItemMoved(int fromPosition, int toPosition) {
+                mMyPlansPresenter.notifyPlanSequenceChanged(fromPosition, toPosition);
+            }
+        });
         new ItemTouchHelper(planItemTouchCallback).attachToRecyclerView(mPlanList);
     }
 

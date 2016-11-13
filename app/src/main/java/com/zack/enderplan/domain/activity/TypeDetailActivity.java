@@ -188,6 +188,12 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailView {
                 }
             }
         });
+        planItemTouchCallback.setOnItemMovedListener(new PlanItemTouchCallback.OnItemMovedListener() {
+            @Override
+            public void onItemMoved(int fromPosition, int toPosition) {
+                typeDetailPresenter.notifyPlanSequenceChanged(fromPosition, toPosition);
+            }
+        });
         new ItemTouchHelper(planItemTouchCallback).attachToRecyclerView(mPlanList);
 
         contentEditor.setOnEditorActionListener(new TextView.OnEditorActionListener() {
