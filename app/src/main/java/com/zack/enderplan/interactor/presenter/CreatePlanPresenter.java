@@ -85,14 +85,18 @@ public class CreatePlanPresenter extends BasePresenter implements Presenter<Crea
     }
 
     public void notifyCreatingPlan() {
-        mPlan.setCreationTime(System.currentTimeMillis());
-        mDataManager.notifyPlanCreated(mPlan);
-        EventBus.getDefault().post(new PlanCreatedEvent(
-                getPresenterName(),
-                mPlan.getPlanCode(),
-                mDataManager.getRecentlyCreatedPlanLocation()
-        ));
-        mCreatePlanView.exitCreatePlan();
+        if (TextUtils.isEmpty(mPlan.getContent())) {
+            mCreatePlanView.onDetectedEmptyContent();
+        } else {
+            mPlan.setCreationTime(System.currentTimeMillis());
+            mDataManager.notifyPlanCreated(mPlan);
+            EventBus.getDefault().post(new PlanCreatedEvent(
+                    getPresenterName(),
+                    mPlan.getPlanCode(),
+                    mDataManager.getRecentlyCreatedPlanLocation()
+            ));
+            mCreatePlanView.exitCreatePlan();
+        }
     }
 
     public void notifyPlanCreationCanceled() {

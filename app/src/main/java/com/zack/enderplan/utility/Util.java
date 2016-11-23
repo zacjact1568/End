@@ -11,6 +11,8 @@ import android.text.Spanned;
 import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import com.zack.enderplan.App;
 
@@ -141,5 +143,19 @@ public class Util {
     /** 比较两个对象是否相等（两个都可为null）*/
     public static boolean isObjectEqual(Object obj0, Object obj1) {
         return (obj0 == null && obj1 == null) || (obj0 != null && obj0.equals(obj1));
+    }
+
+    /** 为给定的editor显示软键盘 */
+    public static void showSoftInput(EditText editor) {
+        if (!editor.hasFocus()) return;
+        ((InputMethodManager) App.getGlobalContext().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(editor, 0);
+    }
+
+    /** 为给定的editor隐藏软键盘 */
+    public static void hideSoftInput(EditText editor) {
+        InputMethodManager manager = (InputMethodManager) App.getGlobalContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (manager.isActive(editor)) {
+            manager.hideSoftInputFromWindow(editor.getWindowToken(), 0);
+        }
     }
 }

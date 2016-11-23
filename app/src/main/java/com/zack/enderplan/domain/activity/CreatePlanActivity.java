@@ -1,7 +1,9 @@
 package com.zack.enderplan.domain.activity;
 
+import android.animation.Animator;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,19 +11,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.inputmethod.InputMethodManager;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.domain.fragment.DateTimePickerDialogFragment;
 import com.zack.enderplan.interactor.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.interactor.presenter.CreatePlanPresenter;
 import com.zack.enderplan.domain.view.CreatePlanView;
+import com.zack.enderplan.utility.Util;
 import com.zack.enderplan.widget.ItemView;
 
 import butterknife.BindColor;
@@ -35,6 +40,8 @@ public class CreatePlanActivity extends BaseActivity implements CreatePlanView {
     LinearLayout mCircularRevealLayout;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.layout_create)
+    LinearLayout mCreateLayout;
     @BindView(R.id.editor_content)
     EditText mContentEditor;
     @BindView(R.id.spinner)
@@ -43,8 +50,8 @@ public class CreatePlanActivity extends BaseActivity implements CreatePlanView {
     ItemView mDeadlineItem;
     @BindView(R.id.item_reminder)
     ItemView mReminderItem;
-    @BindView(R.id.btn_create)
-    TextView mCreateButton;
+    @BindView(R.id.fab_create)
+    FloatingActionButton mCreateFab;
 
     @BindColor(R.color.colorAccent)
     int mAccentColor;
@@ -79,13 +86,19 @@ public class CreatePlanActivity extends BaseActivity implements CreatePlanView {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                mCreatePlanPresenter.notifyPlanCreationCanceled();
                 break;
             case R.id.action_star:
                 mCreatePlanPresenter.notifyStarStatusChanged();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        mCreatePlanPresenter.notifyPlanCreationCanceled();
     }
 
     @Override
@@ -100,6 +113,7 @@ public class CreatePlanActivity extends BaseActivity implements CreatePlanView {
             public boolean onPreDraw() {
                 //TODO typeDetailActivity里，把removeListener放在最前
                 mCircularRevealLayout.getViewTreeObserver().removeOnPreDrawListener(this);
+                placeCreateFab();
                 playCircularRevealAnimation();
                 return false;
             }
@@ -137,15 +151,11 @@ public class CreatePlanActivity extends BaseActivity implements CreatePlanView {
 
             }
         });
-
-        //不能在xml中设置
-        mCreateButton.setClickable(false);
     }
 
     @Override
     public void onContentChanged(boolean isValid) {
-        mCreateButton.setClickable(isValid);
-        mCreateButton.setBackgroundTintList(ColorStateList.valueOf(isValid ? mAccentColor : mGreyColor));
+        mCreateFab.setBackgroundTintList(ColorStateList.valueOf(isValid ? mAccentColor : mGreyColor));
     }
 
     @Override
@@ -188,11 +198,17 @@ public class CreatePlanActivity extends BaseActivity implements CreatePlanView {
     }
 
     @Override
+    public void onDetectedEmptyContent() {
+        Toast.makeText(this, R.string.toast_empty_content, Toast.LENGTH_SHORT).show();
+        mCreateFab.startAnimation(AnimationUtils.loadAnimation(this, R.anim.anim_shake_cpa));
+    }
+
+    @Override
     public void exitCreatePlan() {
         finish();
     }
 
-    @OnClick({R.id.item_deadline, R.id.item_reminder, R.id.btn_create, R.id.btn_cancel})
+    @OnClick({R.id.item_deadline, R.id.item_reminder, R.id.fab_create})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.item_deadline:
@@ -201,13 +217,21 @@ public class CreatePlanActivity extends BaseActivity implements CreatePlanView {
             case R.id.item_reminder:
                 mCreatePlanPresenter.notifySettingReminder();
                 break;
-            case R.id.btn_create:
+            case R.id.fab_create:
                 mCreatePlanPresenter.notifyCreatingPlan();
                 break;
-            case R.id.btn_cancel:
-                mCreatePlanPresenter.notifyPlanCreationCanceled();
-                break;
         }
+    }
+
+    private void placeCreateFab() {
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(
+                mCreateFab.getLeft(),
+                mCreateLayout.getBottom() - mCreateFab.getHeight() / 2,
+                0,
+                0
+        );
+        mCreateFab.setLayoutParams(params);
     }
 
     private void playCircularRevealAnimation() {
@@ -215,9 +239,30 @@ public class CreatePlanActivity extends BaseActivity implements CreatePlanView {
         int centerX = mCircularRevealLayout.getWidth() - fabCoordinateInPx;
         int centerY = mCircularRevealLayout.getHeight() - fabCoordinateInPx;
 
-        ViewAnimationUtils.createCircularReveal(mCircularRevealLayout, centerX, centerY, 0, (float) Math.hypot(centerX, centerY))
-                .setDuration(400)
-                .start();
+        Animator anim = ViewAnimationUtils.createCircularReveal(mCircularRevealLayout, centerX, centerY, 0, (float) Math.hypot(centerX, centerY));
+        anim.setDuration(400);
+        anim.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                Util.showSoftInput(mContentEditor);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        anim.start();
                 /*.addListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {
@@ -249,21 +294,5 @@ public class CreatePlanActivity extends BaseActivity implements CreatePlanView {
 
                     }
                 })*/
-    }
-
-    //显示键盘
-    private void showInputMethodForContentEditor() {
-        InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        if (mContentEditor.hasFocus()) {
-            manager.showSoftInput(mContentEditor, 0);
-        }
-    }
-
-    //隐藏键盘
-    private void hideInputMethodForContentEditor() {
-        InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        if (manager.isActive(mContentEditor)) {
-            manager.hideSoftInputFromWindow(mContentEditor.getWindowToken(), 0);
-        }
     }
 }

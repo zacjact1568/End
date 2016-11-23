@@ -18,5 +18,7 @@ public interface CreatePlanView {
 
     void onReminderTimeChanged(boolean hasReminder, String reminderTime);
 
+    void onDetectedEmptyContent();
+
     void exitCreatePlan();
 }

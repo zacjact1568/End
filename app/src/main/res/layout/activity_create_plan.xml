@@ -5,7 +5,7 @@
     android:id="@+id/layout_circular_reveal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@drawable/bg_create_plan"
     android:orientation="vertical"
     tools:context=".domain.activity.CreatePlanActivity">
 

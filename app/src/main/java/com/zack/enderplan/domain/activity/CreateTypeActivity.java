@@ -1,6 +1,6 @@
 package com.zack.enderplan.domain.activity;
 
-import android.content.res.ColorStateList;
+import android.animation.Animator;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -25,6 +25,7 @@ import com.zack.enderplan.interactor.presenter.CreateTypePresenter;
 import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.TypeMarkColor;
 import com.zack.enderplan.model.bean.TypeMarkPattern;
+import com.zack.enderplan.utility.Util;
 import com.zack.enderplan.widget.CircleColorView;
 import com.zack.enderplan.widget.ItemView;
 
@@ -50,8 +51,6 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeView {
     ItemView mTypeMarkColorItem;
     @BindView(R.id.item_type_mark_pattern)
     ItemView mTypeMarkPatternItem;
-    @BindView(R.id.btn_create)
-    TextView mCreateButton;
 
     @BindColor(R.color.colorAccent)
     int mAccentColor;
@@ -62,6 +61,7 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeView {
     String mClickToSetDscpt;
 
     private CreateTypePresenter mCreateTypePresenter;
+    private MenuItem mCreateMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,14 +79,19 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeView {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_create_type, menu);
+        mCreateMenuItem = menu.findItem(R.id.action_create);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                mCreateTypePresenter.notifyCancelButtonClicked();
+                break;
+            case R.id.action_create:
+                mCreateTypePresenter.notifyCreateButtonClicked();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -94,7 +99,8 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeView {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        //super.onBackPressed();
+        mCreateTypePresenter.notifyCancelButtonClicked();
     }
 
     @Override
@@ -154,8 +160,9 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeView {
     public void onTypeNameChanged(String typeName, String firstChar, boolean isValid) {
         mTypeNameText.setText(typeName);
         mTypeMarkIcon.setInnerText(firstChar);
-        mCreateButton.setClickable(isValid);
-        mCreateButton.setBackgroundTintList(ColorStateList.valueOf(isValid ? mAccentColor : mGreyColor));
+        if (mCreateMenuItem != null) {
+            mCreateMenuItem.setVisible(isValid);
+        }
     }
 
     @Override
@@ -211,7 +218,7 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeView {
         finish();
     }
 
-    @OnClick({R.id.item_type_mark_color, R.id.item_type_mark_pattern, R.id.btn_create, R.id.btn_cancel})
+    @OnClick({R.id.item_type_mark_color, R.id.item_type_mark_pattern})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.item_type_mark_color:
@@ -219,12 +226,6 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeView {
                 break;
             case R.id.item_type_mark_pattern:
                 mCreateTypePresenter.notifySettingTypeMarkPattern();
-                break;
-            case R.id.btn_create:
-                mCreateTypePresenter.notifyCreateButtonClicked();
-                break;
-            case R.id.btn_cancel:
-                mCreateTypePresenter.notifyCancelButtonClicked();
                 break;
         }
     }
@@ -234,8 +235,29 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeView {
         int centerX = mCircularRevealLayout.getWidth() - fabCoordinateInPx;
         int centerY = mCircularRevealLayout.getHeight() - fabCoordinateInPx;
 
-        ViewAnimationUtils.createCircularReveal(mCircularRevealLayout, centerX, centerY, 0, (float) Math.hypot(centerX, centerY))
-                .setDuration(400)
-                .start();
+        Animator anim = ViewAnimationUtils.createCircularReveal(mCircularRevealLayout, centerX, centerY, 0, (float) Math.hypot(centerX, centerY));
+        anim.setDuration(400);
+        anim.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                Util.showSoftInput(mTypeNameEditor);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        anim.start();
     }
 }
