@@ -4,43 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#FFEEEEEE"
     android:orientation="vertical"
     tools:context=".domain.fragment.TypeMarkColorPickerDialogFragment">
 
-    <LinearLayout
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@android:color/white"
+        android:text="@string/title_dialog_fragment_type_mark_color_picker"
+        android:textSize="@dimen/dialog_title_text_size"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:background="@color/colorPrimary"
         android:gravity="center"
-        android:orientation="vertical"
-        android:padding="12dp"
-        android:elevation="4dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_dialog_fragment_type_mark_color_picker"
-            android:textSize="@dimen/dialog_title_text_size"
-            android:textStyle="bold"
-            android:textColor="@color/colorPrimary"/>
-
-        <TextView
-            android:id="@+id/text_color_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            tools:text="Indigo"/>
-
-    </LinearLayout>
+        android:padding="16dp"
+        android:elevation="2dp"/>
 
     <ViewSwitcher
         android:id="@+id/switcher_color_picker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inAnimation="@android:anim/fade_in"
-        android:outAnimation="@android:anim/fade_out">
+        android:layout_marginTop="12dp"
+        android:inAnimation="@android:anim/slide_in_left"
+        android:outAnimation="@android:anim/slide_out_right">
 
         <GridView
             android:id="@+id/grid_type_mark_color"
@@ -57,20 +42,31 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:gravity="center"
-            android:orientation="vertical"
-            android:padding="12dp">
+            android:orientation="vertical">
 
-            <com.larswerkman.lobsterpicker.LobsterPicker
-                android:id="@+id/picker_color"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+            <com.zack.enderplan.widget.CircleColorView
+                android:id="@+id/ic_type_mark_color"
+                android:layout_width="40dp"
+                android:layout_height="40dp"/>
 
-            <com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider
-                android:id="@+id/slider_shade"
+            <TextView
+                android:id="@+id/text_type_mark_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"/>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="12dp"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:typeface="monospace"
+                tools:text="#FF543B4A"/>
+
+            <!--不要设置ColorPicker的任何layout属性，因为运行时动态设置LayoutParams的时候会清空这些属性-->
+            <com.zack.enderplan.widget.ColorPicker
+                android:id="@+id/picker_type_mark_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
 
@@ -79,37 +75,30 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"
+        android:layout_margin="12dp"
         style="?android:attr/buttonBarStyle">
 
-        <ImageView
+        <Button
             android:id="@+id/btn_picker_switcher"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="20dp"
-            android:src="@drawable/ic_palette_black_24dp"
-            android:tint="@color/colorPrimary"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:clickable="true"/>
+            android:text="@string/btn_custom"
+            android:textColor="@color/colorPrimary"
+            style="?android:attr/buttonBarButtonStyle"/>
 
-        <TextView
+        <Button
             android:id="@+id/btn_select"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="12dp"
             android:text="@string/button_select"
             android:textColor="@color/colorPrimary"
             style="?android:attr/buttonBarButtonStyle"/>
 
-        <TextView
+        <Button
             android:id="@+id/btn_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_toStartOf="@id/btn_select"
             android:layout_marginEnd="4dp"
             android:text="@string/button_cancel"

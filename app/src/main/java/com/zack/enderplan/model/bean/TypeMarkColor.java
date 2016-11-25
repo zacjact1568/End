@@ -9,26 +9,19 @@ public class TypeMarkColor {
         this.colorName = colorName;
     }
 
-    public TypeMarkColor() {
-        this.colorHex = null;
-        this.colorName = null;
-    }
-
     public String getColorHex() {
         return colorHex;
+    }
+
+    public void setColorHex(String colorHex) {
+        this.colorHex = colorHex;
     }
 
     public String getColorName() {
         return colorName;
     }
 
-    public void setColor(String colorHex, String colorName) {
-        this.colorHex = colorHex;
+    public void setColorName(String colorName) {
         this.colorName = colorName;
-    }
-
-    public void setColor(String colorHex) {
-        this.colorHex = colorHex;
-        this.colorName = colorHex;
     }
 }

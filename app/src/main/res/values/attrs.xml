@@ -23,4 +23,8 @@
         <attr name="descriptionTextActive" format="boolean"/>
     </declare-styleable>
 
+    <declare-styleable name="ColorPicker">
+        <attr name="defaultColor" format="color"/>
+    </declare-styleable>
+
 </resources>

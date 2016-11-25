@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:columnCount="3">
+
+    <TextView
+        android:layout_columnWeight="1"
+        android:gravity="center"
+        android:text="@string/text_abbr_alpha"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+    <SeekBar
+        android:id="@+id/bar_alpha"
+        android:layout_columnWeight="5"
+        android:layout_gravity="center_vertical"
+        android:max="99"
+        android:progressTint="@color/colorPrimary"
+        android:thumbTint="@color/colorPrimary"/>
+
+    <TextView
+        android:id="@+id/text_alpha"
+        android:layout_columnWeight="1"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:typeface="monospace"
+        tools:text="FF"/>
+
+    <TextView
+        android:layout_columnWeight="1"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="@string/text_abbr_red"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+    <SeekBar
+        android:id="@+id/bar_red"
+        android:layout_columnWeight="5"
+        android:layout_marginTop="8dp"
+        android:layout_gravity="center_vertical"
+        android:max="255"
+        android:progressTint="@color/colorPrimary"
+        android:thumbTint="@color/colorPrimary"/>
+
+    <TextView
+        android:id="@+id/text_red"
+        android:layout_columnWeight="1"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:typeface="monospace"
+        tools:text="54"/>
+
+    <TextView
+        android:layout_columnWeight="1"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="@string/text_abbr_green"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+    <SeekBar
+        android:id="@+id/bar_green"
+        android:layout_columnWeight="5"
+        android:layout_marginTop="8dp"
+        android:layout_gravity="center_vertical"
+        android:max="255"
+        android:progressTint="@color/colorPrimary"
+        android:thumbTint="@color/colorPrimary"/>
+
+    <TextView
+        android:id="@+id/text_green"
+        android:layout_columnWeight="1"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:typeface="monospace"
+        tools:text="3B"/>
+
+    <TextView
+        android:layout_columnWeight="1"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="@string/text_abbr_blue"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+    <SeekBar
+        android:id="@+id/bar_blue"
+        android:layout_columnWeight="5"
+        android:layout_marginTop="8dp"
+        android:layout_gravity="center_vertical"
+        android:max="255"
+        android:progressTint="@color/colorPrimary"
+        android:thumbTint="@color/colorPrimary"/>
+
+    <TextView
+        android:id="@+id/text_blue"
+        android:layout_columnWeight="1"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:typeface="monospace"
+        tools:text="5A"/>
+
+</GridLayout>

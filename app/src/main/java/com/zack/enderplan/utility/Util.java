@@ -98,13 +98,34 @@ public class Util {
         return Locale.ENGLISH;
     }
 
-    public static String makeColorChannel() {
-        String channel = Integer.toHexString((int) Math.floor(Math.random() * 256)).toUpperCase();
+    public static int makeRandom(int min, int max) {
+        return (int) Math.floor(Math.random() * (max - min + 1) + min);
+    }
+
+    public static String parseColorChannel(int channelInt) {
+        String channel = Integer.toHexString(channelInt).toUpperCase();
         return channel.length() == 1 ? "0" + channel : channel;
     }
 
+    public static String[] parseColorChannels(int colorInt) {
+        String color = parseColor(colorInt);
+        return new String[]{
+                color.substring(1, 2),
+                color.substring(3, 4),
+                color.substring(5, 6),
+                color.substring(7, 8)
+        };
+    }
+
     public static String makeColor() {
-        return String.format("#FF%s%s%s", makeColorChannel(), makeColorChannel(), makeColorChannel());
+        StringBuilder color = new StringBuilder("#");
+        //限制透明度
+        color.append(parseColorChannel(makeRandom(156, 255)));
+        //RGB颜色
+        for (int i = 0; i < 3; i++) {
+            color.append(parseColorChannel(makeRandom(0, 255)));
+        }
+        return color.toString();
     }
 
     /**

@@ -139,4 +139,6 @@
     <string name="def_plan_3">右滑完成計劃</string>
     <string name="def_plan_1">點擊查看計劃詳情</string>
     <string name="action_create">創建</string>
+    <string name="btn_custom">自定義</string>
+    <string name="btn_preset">預置</string>
 </resources>

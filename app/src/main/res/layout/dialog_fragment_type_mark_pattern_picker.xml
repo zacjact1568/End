@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context=".domain.fragment.TypeMarkColorPickerDialogFragment">
+    tools:context=".domain.fragment.TypeMarkPatternPickerDialogFragment">
 
     <TextView
         android:layout_width="match_parent"
@@ -13,11 +13,11 @@
         android:text="@string/title_dialog_fragment_type_mark_pattern_picker"
         android:textSize="@dimen/dialog_title_text_size"
         android:textStyle="bold"
-        android:textColor="@color/colorPrimary"
-        android:background="@android:color/white"
+        android:textColor="@android:color/white"
+        android:background="@color/colorPrimary"
         android:gravity="center"
         android:padding="16dp"
-        android:elevation="4dp"/>
+        android:elevation="2dp"/>
 
     <GridView
         android:id="@+id/grid_type_mark_pattern"

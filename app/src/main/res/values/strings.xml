@@ -189,9 +189,17 @@
 
     <!--TypeMarkColorPickerDialogFragment-->
     <string name="title_dialog_fragment_type_mark_color_picker">Color Picker</string>
+    <string name="btn_custom">Custom</string>
+    <string name="btn_preset">Preset</string>
 
     <!--TypeMarkPatternPickerDialogFragment-->
     <string name="title_dialog_fragment_type_mark_pattern_picker">Pattern Picker</string>
     <string name="btn_dialog_select_none">Select None</string>
+
+    <!--ColorPicker-->
+    <string name="text_abbr_alpha" translatable="false">A</string>
+    <string name="text_abbr_red" translatable="false">R</string>
+    <string name="text_abbr_green" translatable="false">G</string>
+    <string name="text_abbr_blue" translatable="false">B</string>
 
 </resources>
