@@ -54,16 +54,32 @@
 
     </style>
 
-    <style name="AppTheme.TransparentStatusBar">
+    <style name="AppTheme.Transparent">
+
+    </style>
+
+    <!--仅有StatusBar透明-->
+    <style name="AppTheme.Transparent.StatusBar">
 
         <item name="android:statusBarColor">@android:color/transparent</item>
 
     </style>
 
-    <style name="AppTheme.Transparent">
+    <!--仅有Window透明-->
+    <style name="AppTheme.Transparent.Window">
 
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
+
+    </style>
+
+    <!--StatusBar/Window/NavigationBar都透明-->
+    <style name="AppTheme.Transparent.All">
+
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
 
     </style>
 

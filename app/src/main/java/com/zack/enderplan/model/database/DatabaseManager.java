@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.zack.enderplan.App;
+import com.zack.enderplan.model.bean.Data;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.model.bean.TypeMark;
@@ -18,6 +19,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class DatabaseManager {
 
@@ -55,6 +63,24 @@ public class DatabaseManager {
         return ourInstance;
     }
 
+    //*****************Data********************
+
+    public void loadDataAsync(final DataLoadedCallback callback) {
+        Observable<Data> observable = Observable.create(new ObservableOnSubscribe<Data>() {
+            @Override
+            public void subscribe(ObservableEmitter<Data> e) throws Exception {
+                e.onNext(new Data(loadPlan(), loadType()));
+            }
+        });
+        observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+        observable.subscribe(new Consumer<Data>() {
+            @Override
+            public void accept(Data data) throws Exception {
+                callback.onDataLoaded(data.getPlanList(), data.getTypeList());
+            }
+        });
+    }
+
     //*****************Type********************
 
     public void saveType(Type type) {
@@ -85,6 +111,22 @@ public class DatabaseManager {
         }
         cursor.close();
         return typeList;
+    }
+
+    public void loadTypeAsync(final TypeLoadedCallback callback) {
+        Observable<List<Type>> observable = Observable.create(new ObservableOnSubscribe<List<Type>>() {
+            @Override
+            public void subscribe(ObservableEmitter<List<Type>> e) throws Exception {
+                e.onNext(loadType());
+            }
+        });
+        observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+        observable.subscribe(new Consumer<List<Type>>() {
+            @Override
+            public void accept(List<Type> typeList) throws Exception {
+                callback.onTypeLoaded(typeList);
+            }
+        });
     }
 
     public TypeMark queryTypeMarkByTypeCode(String typeCode) {
@@ -188,6 +230,22 @@ public class DatabaseManager {
         }
         cursor.close();
         return planList;
+    }
+
+    public void loadPlanAsync(final PlanLoadedCallback callback) {
+        Observable<List<Plan>> observable = Observable.create(new ObservableOnSubscribe<List<Plan>>() {
+            @Override
+            public void subscribe(ObservableEmitter<List<Plan>> e) throws Exception {
+                e.onNext(loadPlan());
+            }
+        });
+        observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+        observable.subscribe(new Consumer<List<Plan>>() {
+            @Override
+            public void accept(List<Plan> planList) throws Exception {
+                callback.onPlanLoaded(planList);
+            }
+        });
     }
 
     public void updatePlan(String planCode, ContentValues values) {
@@ -372,5 +430,17 @@ public class DatabaseManager {
         } else {
             return "en";
         }
+    }
+
+    public interface DataLoadedCallback {
+        void onDataLoaded(List<Plan> planList, List<Type> typeList);
+    }
+
+    public interface TypeLoadedCallback {
+        void onTypeLoaded(List<Type> typeList);
+    }
+
+    public interface PlanLoadedCallback {
+        void onPlanLoaded(List<Plan> planList);
     }
 }

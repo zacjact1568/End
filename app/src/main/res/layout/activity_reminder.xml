@@ -1,87 +1,204 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
     android:orientation="vertical"
     tools:context=".domain.activity.ReminderActivity">
 
-    <android.support.v7.widget.CardView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="0dp">
+        android:background="@color/colorPrimary"
+        android:padding="16dp">
 
-        <LinearLayout
-            android:id="@+id/layout_title"
+        <TextView
+            android:id="@+id/text_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@android:color/white"
+            android:maxLines="2"
+            android:ellipsize="end"
+            tools:text="Buy Joanne on iTunes"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_content"
+            android:text="@string/dscpt_reminder"
+            android:textSize="12sp"
+            android:textColor="@color/colorPrimaryLight"/>
+
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_notifications_black_24dp"
+            android:tint="@android:color/white"/>
+
+    </RelativeLayout>
+
+    <ViewAnimator
+        android:id="@+id/switcher_delay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/colorBackground"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:inAnimation="@android:anim/slide_in_left"
+        android:outAnimation="@android:anim/slide_out_right">
+
+        <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="20dp"
-            tools:background="@color/indigo">
+            android:layout_gravity="center"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:columnCount="3">
 
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@drawable/ic_notifications_white_24dp"
-                android:layout_gravity="center"/>
+            <com.zack.enderplan.widget.CircleColorView
+                android:id="@+id/btn_delay"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_columnWeight="1"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                app:fillColor="@color/colorAccent"
+                app:innerIcon="@drawable/ic_snooze_black_24dp"/>
+
+            <com.zack.enderplan.widget.CircleColorView
+                android:id="@+id/btn_detail"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_columnWeight="1"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                app:fillColor="@color/colorAccent"
+                app:innerIcon="@drawable/ic_info_outline_black_24dp"/>
+
+            <com.zack.enderplan.widget.CircleColorView
+                android:id="@+id/btn_complete"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_columnWeight="1"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                app:fillColor="@color/colorAccent"
+                app:innerIcon="@drawable/ic_check_black_24dp"/>
 
             <TextView
-                android:id="@+id/text_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/dialog_title_text_size"
-                android:textColor="@android:color/white"
-                android:maxLines="3"
-                android:ellipsize="end"
-                android:layout_gravity="center"
-                android:layout_marginStart="@dimen/image_text_spacing"
-                tools:text="Buy MacBook Pro"/>
+                android:layout_columnWeight="1"
+                android:layout_marginTop="4dp"
+                android:text="@string/text_delay"
+                android:textSize="12sp"
+                android:ems="5"
+                android:gravity="center"/>
 
-        </LinearLayout>
+            <TextView
+                android:layout_columnWeight="1"
+                android:layout_marginTop="4dp"
+                android:text="@string/text_detail"
+                android:textSize="12sp"
+                android:ems="5"
+                android:gravity="center"/>
 
-    </android.support.v7.widget.CardView>
+            <TextView
+                android:layout_columnWeight="1"
+                android:layout_marginTop="4dp"
+                android:text="@string/text_complete"
+                android:textSize="12sp"
+                android:ems="5"
+                android:gravity="center"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_margin="20dp">
+        </GridLayout>
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/btn_delay_reminder"
-            android:layout_width="@dimen/fab_size"
-            android:layout_height="@dimen/fab_size"
-            android:src="@drawable/ic_snooze_white_24dp"
-            android:clickable="true"
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            app:backgroundTint="@color/red_300"
-            app:elevation="0dp"
-            app:pressedTranslationZ="0dp"/>
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:columnCount="4">
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/btn_cancel_reminder"
-            android:layout_width="@dimen/fab_size"
-            android:layout_height="@dimen/fab_size"
-            android:src="@drawable/ic_notifications_off_white_24dp"
-            android:clickable="true"
-            android:layout_gravity="center"
-            android:layout_marginStart="@dimen/fab_spacing"
-            app:backgroundTint="@color/blue_400"
-            app:elevation="0dp"
-            app:pressedTranslationZ="0dp"/>
+            <com.zack.enderplan.widget.CircleColorView
+                android:id="@+id/btn_back"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_columnWeight="1"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                app:fillColor="@color/colorAccent"
+                app:innerIcon="@drawable/ic_arrow_back_black_24dp"/>
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/btn_complete_plan"
-            android:layout_width="@dimen/fab_size"
-            android:layout_height="@dimen/fab_size"
-            android:src="@drawable/ic_check_white_24dp"
-            android:clickable="true"
-            android:layout_gravity="center"
-            android:layout_marginStart="@dimen/fab_spacing"
-            app:backgroundTint="@color/green_200"
-            app:elevation="0dp"
-            app:pressedTranslationZ="0dp"/>
+            <com.zack.enderplan.widget.CircleColorView
+                android:id="@+id/btn_1_hour"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_columnWeight="1"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                app:fillColor="@color/colorAccent"
+                app:innerText="1h"/>
 
-    </LinearLayout>
+            <com.zack.enderplan.widget.CircleColorView
+                android:id="@+id/btn_tomorrow"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_columnWeight="1"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                app:fillColor="@color/colorAccent"
+                app:innerText="1d"/>
+
+            <com.zack.enderplan.widget.CircleColorView
+                android:id="@+id/btn_more"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_columnWeight="1"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                app:fillColor="@color/colorAccent"
+                app:innerIcon="@drawable/ic_more_horiz_black_24dp"/>
+
+            <TextView
+                android:layout_columnWeight="1"
+                android:layout_marginTop="4dp"
+                android:text="@string/text_back"
+                android:textSize="12sp"
+                android:ems="3"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_columnWeight="1"
+                android:layout_marginTop="4dp"
+                android:text="@string/text_1_hour"
+                android:textSize="12sp"
+                android:ems="3"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_columnWeight="1"
+                android:layout_marginTop="4dp"
+                android:text="@string/text_tomorrow"
+                android:textSize="12sp"
+                android:ems="3"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_columnWeight="1"
+                android:layout_marginTop="4dp"
+                android:text="@string/text_more"
+                android:textSize="12sp"
+                android:ems="3"
+                android:gravity="center"/>
+
+        </GridLayout>
+
+    </ViewAnimator>
 
 </LinearLayout>

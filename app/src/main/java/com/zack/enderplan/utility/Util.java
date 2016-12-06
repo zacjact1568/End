@@ -1,6 +1,9 @@
 package com.zack.enderplan.utility;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -15,6 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.zack.enderplan.App;
+import com.zack.enderplan.receiver.ReminderReceiver;
 
 import java.lang.reflect.Method;
 import java.util.Locale;
@@ -177,6 +181,28 @@ public class Util {
         InputMethodManager manager = (InputMethodManager) App.getGlobalContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (manager.isActive(editor)) {
             manager.hideSoftInputFromWindow(editor.getWindowToken(), 0);
+        }
+    }
+
+    /**
+     * 设定reminder
+     * @param planCode 用来区分各个reminder
+     * @param timeInMillis Reminder触发的时间，若为0则取消定时器
+     */
+    public static void setReminder(String planCode, long timeInMillis) {
+        Context context = App.getGlobalContext();
+        Intent intent = new Intent(context, ReminderReceiver.class);
+        //相当于只有下面这条语句才能区分不同的PendingIntent，也就是code才能区分，如果code相同，那么extra也会被无视
+        intent.setAction("com.zack.enderplan.ACTION_REMINDER_PLAN_" + planCode);
+        intent.setPackage(context.getPackageName());
+        intent.putExtra("plan_code", planCode);
+        //此处FLAG_UPDATE_CURRENT真的很有用，修改过plan后再set，通知内容也会被替换成新的plan.content了，也就不需要cancel后再set了
+        PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (timeInMillis != 0) {
+            manager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pi);
+        } else {
+            manager.cancel(pi);
         }
     }
 }

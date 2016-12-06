@@ -141,4 +141,16 @@
     <string name="action_create">创建</string>
     <string name="btn_custom">自定义</string>
     <string name="btn_preset">预置</string>
+    <string name="text_1_hour">1小时</string>
+    <string name="text_back">返回</string>
+    <string name="text_complete">完成</string>
+    <string name="text_delay">延迟</string>
+    <string name="text_detail">详细</string>
+    <string name="text_more">更多</string>
+    <string name="dscpt_reminder">Ender计划的提醒</string>
+    <string name="text_tomorrow">明天</string>
+    <string name="toast_delay_1_hour">在1小时后</string>
+    <string name="toast_delay_more">在%s</string>
+    <string name="toast_delay_tomorrow">在明天</string>
+    <string name="toast_reminder_delayed_format">我将会%s提醒你</string>
 </resources>

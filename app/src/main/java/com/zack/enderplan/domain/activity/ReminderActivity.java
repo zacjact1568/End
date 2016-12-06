@@ -1,19 +1,15 @@
 package com.zack.enderplan.domain.activity;
 
 import android.app.NotificationManager;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
-import android.support.annotation.DrawableRes;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.Window;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewAnimator;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.model.bean.Plan;
+import com.zack.enderplan.domain.fragment.DateTimePickerDialogFragment;
 import com.zack.enderplan.interactor.presenter.ReminderPresenter;
 import com.zack.enderplan.domain.view.ReminderView;
 
@@ -21,73 +17,94 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ReminderActivity extends AppCompatActivity implements ReminderView {
+public class ReminderActivity extends BaseActivity implements ReminderView {
 
     @BindView(R.id.text_content)
-    TextView contentText;
-    @BindView(R.id.layout_title)
-    LinearLayout titleLayout;
-    @BindView(R.id.btn_delay_reminder)
-    FloatingActionButton delayReminderButton;
-    @BindView(R.id.btn_cancel_reminder)
-    FloatingActionButton cancelReminderButton;
-    @BindView(R.id.btn_complete_plan)
-    FloatingActionButton completePlanButton;
+    TextView mContentText;
+    @BindView(R.id.switcher_delay)
+    ViewAnimator mDelaySwitcher;
 
-    private ReminderPresenter reminderPresenter;
+    private ReminderPresenter mReminderPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_reminder);
-        ButterKnife.bind(this);
 
-        Plan plan = getIntent().getParcelableExtra("plan_detail");
+        Intent intent = getIntent();
+        String planCode = intent.getStringExtra("plan_code");
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.cancel(plan.getPlanCode(), 0);
+        notificationManager.cancel(planCode, 0);
 
-        reminderPresenter = new ReminderPresenter(this, plan);
+        mReminderPresenter = new ReminderPresenter(this, intent.getIntExtra("position", -1), planCode);
 
-        reminderPresenter.setInitialView();
+        mReminderPresenter.setInitialView();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        reminderPresenter.detachView();
-    }
-
-    @OnClick({R.id.btn_delay_reminder, R.id.btn_cancel_reminder, R.id.btn_complete_plan})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_delay_reminder:
-                reminderPresenter.notifyReminderDelayed();
-                break;
-            case R.id.btn_cancel_reminder:
-                reminderPresenter.notifyReminderCanceled();
-                break;
-            case R.id.btn_complete_plan:
-                reminderPresenter.notifyPlanCompleted();
-                break;
-        }
+        mReminderPresenter.detachView();
     }
 
     @Override
-    public void showInitialView(String content, int headerColorInt, int typeMarkPtnResId) {
-        contentText.setText(content);
-        //TODO title->header
-        titleLayout.setBackgroundColor(headerColorInt);
+    public void showInitialView(String content) {
+        setContentView(R.layout.activity_reminder);
+        ButterKnife.bind(this);
+
+        mContentText.setText(content);
     }
 
     @Override
-    public void showToast(int msgResId) {
-        Toast.makeText(this, msgResId, Toast.LENGTH_SHORT).show();
+    public void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void enterPlanDetail(int position) {
+        //TODO 可能会有两个PlanDetailActivity，修改launchMode
+        Intent intent = new Intent(this, PlanDetailActivity.class);
+        intent.putExtra("position", position);
+        startActivity(intent);
     }
 
     @Override
     public void exitReminder() {
         finish();
+    }
+
+    @OnClick({R.id.btn_delay, R.id.btn_detail, R.id.btn_complete, R.id.btn_back, R.id.btn_1_hour, R.id.btn_tomorrow, R.id.btn_more})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_delay:
+                mDelaySwitcher.showNext();
+                break;
+            case R.id.btn_detail:
+                mReminderPresenter.notifyEnteringPlanDetail();
+                break;
+            case R.id.btn_complete:
+                mReminderPresenter.notifyPlanCompleted();
+                break;
+            case R.id.btn_back:
+                mDelaySwitcher.showPrevious();
+                break;
+            case R.id.btn_1_hour:
+                mReminderPresenter.notifyDelayingReminder("1_hour");
+                break;
+            case R.id.btn_tomorrow:
+                mReminderPresenter.notifyDelayingReminder("tomorrow");
+                break;
+            case R.id.btn_more:
+                //TODO 修改DateTimePickerDialogFragment，显示当前时间不传0
+                DateTimePickerDialogFragment fragment = DateTimePickerDialogFragment.newInstance(0);
+                fragment.setOnDateTimePickedListener(new DateTimePickerDialogFragment.OnDateTimePickedListener() {
+                    @Override
+                    public void onDateTimePicked(long timeInMillis) {
+                        mReminderPresenter.notifyUpdatingReminderTime(timeInMillis);
+                    }
+                });
+                fragment.show(getSupportFragmentManager(), "reminder");
+                break;
+        }
     }
 }

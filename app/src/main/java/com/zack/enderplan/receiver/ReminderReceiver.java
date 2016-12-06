@@ -20,36 +20,43 @@ public class ReminderReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        String planCode = intent.getStringExtra("plan_code");
+        //直接从数据库获取plan（若通过DataManager获取，可能需要异步加载，而在receiver中不要做异步操作）
+        DatabaseManager databaseManager = DatabaseManager.getInstance();
+        Plan plan = databaseManager.queryPlan(intent.getStringExtra("plan_code"));
+        databaseManager.updateReminderTime(plan.getPlanCode(), 0);
 
-        DatabaseManager dManager = DatabaseManager.getInstance();
         DataManager dataManager = DataManager.getInstance();
+        int position = -1;
+        if (dataManager.isDataLoaded()) {
+            //若DataManager中的数据已加载完成
+            position = dataManager.getPlanLocationInPlanList(plan.getPlanCode());
+            dataManager.getPlan(position).setReminderTime(0);
+            //发出事件（NOTE：如果app已退出，但进程还没被杀，仍然会发出）
+            EventBus.getDefault().post(new PlanDetailChangedEvent(
+                    getClass().getSimpleName(),
+                    plan.getPlanCode(),
+                    position,
+                    PlanDetailChangedEvent.FIELD_REMINDER_TIME
+            ));
+        }
 
-        Plan plan = dManager.queryPlan(planCode);
+        showNotification(context, plan.getPlanCode(), position, plan.getContent());
+    }
 
-        Intent reminderIntent = new Intent("com.zack.enderplan.ACTION_REMINDER");
-        reminderIntent.putExtra("plan_detail", plan);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, reminderIntent, PendingIntent.FLAG_ONE_SHOT);
-
-        NotificationManager nManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+    private void showNotification(Context context, String planCode, int position, String content) {
+        Intent intent = new Intent("com.zack.enderplan.ACTION_REMINDER");
+        //plan_code总是有效的，position可能无效（-1），但优先考虑position
+        intent.putExtra("plan_code", planCode);
+        intent.putExtra("position", position);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = new Notification.Builder(context)
                 .setSmallIcon(R.drawable.ic_check_box_white_24dp)
                 .setContentTitle(context.getResources().getString(R.string.title_notification_content))
-                .setContentText(plan.getContent())
+                .setContentText(content)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setContentIntent(pendingIntent)
                 .build();
-        nManager.notify(planCode, 0, notification);
-
-        //数据库存储
-        dManager.updateReminderTime(planCode, 0);
-
-        if (dataManager.getDataStatus() == DataManager.STATUS_DATA_LOADED) {
-            //此时数据已加载完成，可以通过DataManager访问到数据
-            int position = dataManager.getPlanLocationInPlanList(planCode);
-            dataManager.getPlan(position).setReminderTime(0);
-            //通知界面更新（NOTE：如果app已退出，但进程还没被杀，仍然会发出通知）
-            EventBus.getDefault().post(new PlanDetailChangedEvent(getClass().getSimpleName(), planCode, position, PlanDetailChangedEvent.FIELD_REMINDER_TIME));
-        }
+        manager.notify(planCode, 0, notification);
     }
 }

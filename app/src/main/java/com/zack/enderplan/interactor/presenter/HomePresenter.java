@@ -26,8 +26,6 @@ public class HomePresenter extends BasePresenter implements Presenter<HomeView> 
         attachView(homeView);
         mDataManager = DataManager.getInstance();
         mPreferenceHelper = PreferenceHelper.getInstance();
-
-        mDataManager.initDataStruct();
     }
 
     @Override

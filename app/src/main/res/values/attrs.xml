@@ -27,4 +27,8 @@
         <attr name="defaultColor" format="color"/>
     </declare-styleable>
 
+    <declare-styleable name="EnhancedNumberPicker">
+        <attr name="dividerColor" format="color"/>
+    </declare-styleable>
+
 </resources>

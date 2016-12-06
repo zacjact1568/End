@@ -47,9 +47,6 @@ public class MyPlansPresenter extends BasePresenter implements Presenter<MyPlans
         mPlanAdapter = new PlanAdapter(mDataManager.getPlanList(), mDataManager.getTypeCodeAndTypeMarkMap());
 
         mMyPlansView.showInitialView(mPlanAdapter);
-
-        //开始从数据库加载数据
-        mDataManager.loadFromDatabase();
     }
 
     public void notifySwitchingViewVisibility(boolean isVisible) {

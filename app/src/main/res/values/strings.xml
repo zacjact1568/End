@@ -144,6 +144,18 @@
 
     <!--ReminderActivity-->
     <string name="title_activity_reminder">Reminder</string>
+    <string name="dscpt_reminder">EnderPlan Reminder</string>
+    <string name="text_delay">Delay</string>
+    <string name="text_detail">Detail</string>
+    <string name="text_complete">Complete</string>
+    <string name="text_back">Back</string>
+    <string name="text_1_hour">1 hour</string>
+    <string name="text_tomorrow">Tomorrow</string>
+    <string name="text_more">More</string>
+    <string name="toast_delay_1_hour">1 hour later</string>
+    <string name="toast_delay_tomorrow">tomorrow</string>
+    <string name="toast_delay_more">at %s</string>
+    <string name="toast_reminder_delayed_format">I will remind you %s</string>
     <string name="toast_reminder_delayed_5min">I will notify you 5 minutes later</string>
     <string name="toast_reminder_canceled">Reminder has been canceled</string>
     <string name="toast_plan_completed">Plan has been marked as completed</string>
@@ -189,17 +201,12 @@
 
     <!--TypeMarkColorPickerDialogFragment-->
     <string name="title_dialog_fragment_type_mark_color_picker">Color Picker</string>
+    <!--TODO 改成button-->
     <string name="btn_custom">Custom</string>
     <string name="btn_preset">Preset</string>
 
     <!--TypeMarkPatternPickerDialogFragment-->
     <string name="title_dialog_fragment_type_mark_pattern_picker">Pattern Picker</string>
     <string name="btn_dialog_select_none">Select None</string>
-
-    <!--ColorPicker-->
-    <string name="text_abbr_alpha" translatable="false">A</string>
-    <string name="text_abbr_red" translatable="false">R</string>
-    <string name="text_abbr_green" translatable="false">G</string>
-    <string name="text_abbr_blue" translatable="false">B</string>
 
 </resources>
