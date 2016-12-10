@@ -62,12 +62,7 @@
             android:name=".domain.activity.ReminderActivity"
             android:label="@string/title_activity_reminder"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent.All">
-            <intent-filter>
-                <action android:name="com.zack.enderplan.ACTION_REMINDER" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/AppTheme.Transparent.All"/>
         <activity
             android:name=".domain.activity.GuideActivity"
             android:label="@string/title_activity_welcome"

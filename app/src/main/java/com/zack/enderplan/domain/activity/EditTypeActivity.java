@@ -1,5 +1,8 @@
 package com.zack.enderplan.domain.activity;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -18,6 +21,7 @@ import com.zack.enderplan.interactor.presenter.EditTypePresenter;
 import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.TypeMarkColor;
 import com.zack.enderplan.model.bean.TypeMarkPattern;
+import com.zack.enderplan.utility.Constant;
 import com.zack.enderplan.widget.CircleColorView;
 import com.zack.enderplan.widget.ItemView;
 
@@ -45,6 +49,18 @@ public class EditTypeActivity extends BaseActivity implements EditTypeView {
     String mUnsettledDscpt;
 
     private EditTypePresenter mEditTypePresenter;
+
+    public static void start(Activity activity, int position, boolean sharedElementTransition, View sharedElement, String sharedElementName) {
+        Intent intent = new Intent(activity, EditTypeActivity.class);
+        intent.putExtra(Constant.POSITION, position);
+        ActivityOptions options;
+        if (sharedElementTransition) {
+            options = ActivityOptions.makeSceneTransitionAnimation(activity, sharedElement, sharedElementName);
+        } else {
+            options = ActivityOptions.makeSceneTransitionAnimation(activity);
+        }
+        activity.startActivity(intent, options.toBundle());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

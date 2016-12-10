@@ -1,5 +1,6 @@
 package com.zack.enderplan.domain.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -16,6 +17,10 @@ import com.zack.enderplan.model.preference.PreferenceHelper;
 import java.util.Locale;
 
 public class SettingsActivity extends BaseActivity {
+
+    public static void start(Context context) {
+        context.startActivity(new Intent(context, SettingsActivity.class));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,13 +1,17 @@
 package com.zack.enderplan.domain.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.utility.Constant;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -19,6 +23,10 @@ public class AboutActivity extends BaseActivity {
     Toolbar toolbar;
     @BindView(R.id.text_version_name)
     TextView versionNameText;
+
+    public static void start(Context context) {
+        context.startActivity(new Intent(context, AboutActivity.class));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +66,10 @@ public class AboutActivity extends BaseActivity {
 
     @OnClick(R.id.fab)
     public void onClick() {
-        //TODO 发送email
+        //TODO 测试邮件发送
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:"));
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{Constant.DEVELOPER_EMAIL});
+        startActivity(intent);
     }
 }

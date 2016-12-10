@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.domain.activity.ReminderActivity;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.database.DatabaseManager;
@@ -44,18 +45,13 @@ public class ReminderReceiver extends BroadcastReceiver {
     }
 
     private void showNotification(Context context, String planCode, int position, String content) {
-        Intent intent = new Intent("com.zack.enderplan.ACTION_REMINDER");
-        //plan_code总是有效的，position可能无效（-1），但优先考虑position
-        intent.putExtra("plan_code", planCode);
-        intent.putExtra("position", position);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = new Notification.Builder(context)
                 .setSmallIcon(R.drawable.ic_check_box_white_24dp)
                 .setContentTitle(context.getResources().getString(R.string.title_notification_content))
                 .setContentText(content)
                 .setDefaults(Notification.DEFAULT_ALL)
-                .setContentIntent(pendingIntent)
+                .setContentIntent(ReminderActivity.getPendingIntentForStart(context, planCode, position))
                 .build();
         manager.notify(planCode, 0, notification);
     }

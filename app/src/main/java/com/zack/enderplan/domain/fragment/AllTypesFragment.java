@@ -86,13 +86,11 @@ public class AllTypesFragment extends Fragment implements AllTypesView {
 
     @Override
     public void onTypeItemClicked(int position, View typeItem) {
-        Intent intent = new Intent(getActivity(), TypeDetailActivity.class);
-        intent.putExtra("position", position);
-        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
+        TypeDetailActivity.start(
                 getActivity(),
+                position,
                 typeItem.findViewById(R.id.ic_type_mark),
                 getResources().getString(R.string.name_type_mark_shared_element_transition)
         );
-        getActivity().startActivity(intent, options.toBundle());
     }
 }

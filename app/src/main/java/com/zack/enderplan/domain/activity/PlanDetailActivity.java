@@ -1,7 +1,10 @@
 package com.zack.enderplan.domain.activity;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -28,6 +31,7 @@ import com.zack.enderplan.interactor.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.interactor.presenter.PlanDetailPresenter;
 import com.zack.enderplan.domain.view.PlanDetailView;
 import com.zack.enderplan.model.bean.FormattedPlan;
+import com.zack.enderplan.utility.Constant;
 import com.zack.enderplan.widget.ItemView;
 
 import butterknife.BindColor;
@@ -78,10 +82,16 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailView {
     private PlanDetailPresenter planDetailPresenter;
     private MenuItem mStarMenuItem;
 
+    public static void start(Activity activity, int position, boolean transition) {
+        Intent intent = new Intent(activity, PlanDetailActivity.class);
+        intent.putExtra(Constant.POSITION, position);
+        activity.startActivity(intent, transition ? ActivityOptions.makeSceneTransitionAnimation(activity).toBundle() : null);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        planDetailPresenter = new PlanDetailPresenter(this, getIntent().getIntExtra("position", 0));
+        planDetailPresenter = new PlanDetailPresenter(this, getIntent().getIntExtra(Constant.POSITION, -1));
         planDetailPresenter.setInitialView();
     }
 

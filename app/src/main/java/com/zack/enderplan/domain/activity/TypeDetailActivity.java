@@ -1,6 +1,7 @@
 package com.zack.enderplan.domain.activity;
 
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -32,6 +33,7 @@ import com.zack.enderplan.interactor.callback.PlanItemTouchCallback;
 import com.zack.enderplan.interactor.presenter.TypeDetailPresenter;
 import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.Plan;
+import com.zack.enderplan.utility.Constant;
 import com.zack.enderplan.utility.Util;
 import com.zack.enderplan.widget.CircleColorView;
 
@@ -69,11 +71,18 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailView {
     String mTypeMarkSetName;
 
     private TypeDetailPresenter typeDetailPresenter;
-    
+
+    public static void start(Activity activity, int position, View sharedElement, String sharedElementName) {
+        Intent intent = new Intent(activity, TypeDetailActivity.class);
+        intent.putExtra(Constant.POSITION, position);
+        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity, sharedElement, sharedElementName);
+        activity.startActivity(intent, options.toBundle());
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        typeDetailPresenter = new TypeDetailPresenter(this, getIntent().getIntExtra("position", -1));
+        typeDetailPresenter = new TypeDetailPresenter(this, getIntent().getIntExtra(Constant.POSITION, -1));
         typeDetailPresenter.setInitialView();
     }
 
@@ -256,10 +265,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailView {
 
     @Override
     public void onPlanItemClicked(int posInPlanList) {
-        Intent intent = new Intent(this, PlanDetailActivity.class);
-        intent.putExtra("position", posInPlanList);
-        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
-        startActivity(intent, options.toBundle());
+        PlanDetailActivity.start(this, posInPlanList, true);
     }
 
     @Override
@@ -289,15 +295,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailView {
 
     @Override
     public void enterEditType(int position, boolean shouldPlaySharedElementTransition) {
-        Intent intent = new Intent(this, EditTypeActivity.class);
-        intent.putExtra("position", position);
-        ActivityOptions options;
-        if (shouldPlaySharedElementTransition) {
-            options = ActivityOptions.makeSceneTransitionAnimation(this, typeMarkIcon, mTypeMarkSetName);
-        } else {
-            options = ActivityOptions.makeSceneTransitionAnimation(this);
-        }
-        startActivity(intent, options.toBundle());
+        EditTypeActivity.start(this, position, shouldPlaySharedElementTransition, typeMarkIcon, mTypeMarkSetName);
     }
 
     @Override

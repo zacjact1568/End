@@ -1,5 +1,7 @@
 package com.zack.enderplan.domain.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -10,9 +12,11 @@ import com.zack.enderplan.interactor.presenter.GuidePresenter;
 
 public class GuideActivity extends BaseActivity implements GuideView {
 
-    private static final String LOG_TAG = "GuideActivity";
-
     private GuidePresenter mGuidePresenter;
+
+    public static void start(Context context) {
+        context.startActivity(new Intent(context, GuideActivity.class));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

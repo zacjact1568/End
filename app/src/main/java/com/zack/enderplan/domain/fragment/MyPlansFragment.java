@@ -128,10 +128,7 @@ public class MyPlansFragment extends Fragment implements MyPlansView {
 
     @Override
     public void onPlanItemClicked(int position) {
-        Intent intent = new Intent(getActivity(), PlanDetailActivity.class);
-        intent.putExtra("position", position);
-        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity());
-        getActivity().startActivity(intent, options.toBundle());
+        PlanDetailActivity.start(getActivity(), position, true);
     }
 
     @Override

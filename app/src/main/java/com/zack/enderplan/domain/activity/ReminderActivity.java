@@ -1,6 +1,8 @@
 package com.zack.enderplan.domain.activity;
 
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +14,7 @@ import com.zack.enderplan.R;
 import com.zack.enderplan.domain.fragment.DateTimePickerDialogFragment;
 import com.zack.enderplan.interactor.presenter.ReminderPresenter;
 import com.zack.enderplan.domain.view.ReminderView;
+import com.zack.enderplan.utility.Constant;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,17 +29,24 @@ public class ReminderActivity extends BaseActivity implements ReminderView {
 
     private ReminderPresenter mReminderPresenter;
 
+    public static PendingIntent getPendingIntentForStart(Context context, String planCode, int position) {
+        Intent intent = new Intent(context, ReminderActivity.class);
+        //plan_code总是有效的，position可能无效（-1），但优先考虑position
+        intent.putExtra(Constant.PLAN_CODE, planCode);
+        intent.putExtra(Constant.POSITION, position);
+        return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        String planCode = intent.getStringExtra("plan_code");
+        String planCode = intent.getStringExtra(Constant.PLAN_CODE);
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.cancel(planCode, 0);
+        ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(planCode, 0);
 
-        mReminderPresenter = new ReminderPresenter(this, intent.getIntExtra("position", -1), planCode);
+        mReminderPresenter = new ReminderPresenter(this, intent.getIntExtra(Constant.POSITION, -1), planCode);
 
         mReminderPresenter.setInitialView();
     }
@@ -62,10 +72,8 @@ public class ReminderActivity extends BaseActivity implements ReminderView {
 
     @Override
     public void enterPlanDetail(int position) {
-        //TODO 可能会有两个PlanDetailActivity，修改launchMode
-        Intent intent = new Intent(this, PlanDetailActivity.class);
-        intent.putExtra("position", position);
-        startActivity(intent);
+        //可能会有两个PlanDetailActivity同时存在
+        PlanDetailActivity.start(this, position, false);
     }
 
     @Override

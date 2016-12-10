@@ -97,12 +97,10 @@ public class HomeActivity extends BaseActivity implements HomeView,
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_settings:
-                Intent intentSettings = new Intent(this, SettingsActivity.class);
-                startActivity(intentSettings);
+                SettingsActivity.start(this);
                 break;
             case R.id.action_about:
-                Intent intentAbout = new Intent(this, AboutActivity.class);
-                startActivity(intentAbout);
+                AboutActivity.start(this);
                 break;
             default:
                 break;
@@ -196,8 +194,7 @@ public class HomeActivity extends BaseActivity implements HomeView,
 
     @Override
     public void showGuide() {
-        Intent intent = new Intent(this, GuideActivity.class);
-        startActivity(intent);
+        GuideActivity.start(this);
     }
 
     @Override
@@ -215,11 +212,11 @@ public class HomeActivity extends BaseActivity implements HomeView,
         switch (view.getId()) {
             case R.id.fab:
                 //TODO 优化点击后事件的选择
-                boolean isOnRootFragment = getSupportFragmentManager().findFragmentByTag(TAG_ALL_TYPES) == null;
-                Intent intent = new Intent(this, isOnRootFragment ? CreatePlanActivity.class : CreateTypeActivity.class);
-                startActivity(intent);
-                //CreateTypeDialogFragment dialog = new CreateTypeDialogFragment();
-                //dialog.show(getFragmentManager(), "create_type");
+                if (getSupportFragmentManager().findFragmentByTag(TAG_ALL_TYPES) == null) {
+                    CreatePlanActivity.start(this);
+                } else {
+                    CreateTypeActivity.start(this);
+                }
                 break;
         }
     }

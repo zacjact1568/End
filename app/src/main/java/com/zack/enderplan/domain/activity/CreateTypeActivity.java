@@ -1,6 +1,8 @@
 package com.zack.enderplan.domain.activity;
 
 import android.animation.Animator;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -62,6 +64,10 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeView {
 
     private CreateTypePresenter mCreateTypePresenter;
     private MenuItem mCreateMenuItem;
+
+    public static void start(Context context) {
+        context.startActivity(new Intent(context, CreateTypeActivity.class));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

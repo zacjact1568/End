@@ -1,6 +1,8 @@
 package com.zack.enderplan.domain.activity;
 
 import android.animation.Animator;
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -60,6 +62,10 @@ public class CreatePlanActivity extends BaseActivity implements CreatePlanView {
 
     private CreatePlanPresenter mCreatePlanPresenter;
     private MenuItem mStarMenuItem;
+
+    public static void start(Context context) {
+        context.startActivity(new Intent(context, CreatePlanActivity.class));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
