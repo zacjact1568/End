@@ -3,49 +3,54 @@ package com.zack.enderplan.model.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Locale;
+import com.zack.enderplan.common.Constant;
 
 public class Plan implements Parcelable {
 
-    public static final int PLAN_STAR_STATUS_NOT_STARRED = 0;
-    public static final int PLAN_STAR_STATUS_STARRED = 1;
+    private static final int PLAN_STAR_STATUS_NOT_STARRED = 0;
+    private static final int PLAN_STAR_STATUS_STARRED = 1;
 
-    private String planCode, content, typeCode;
-    private long creationTime, deadline, completionTime, reminderTime;
-    private int starStatus;
+    private String mPlanCode;
+    private String mContent;
+    private String mTypeCode;
+    private long mCreationTime;
+    private long mDeadline;
+    private long mCompletionTime;
+    private int mStarStatus;
+    private long mReminderTime;
 
     public Plan(String planCode) {
-        this.planCode = planCode;
-        this.content = null;
-        this.typeCode = null;
-        this.creationTime = 0;
-        this.deadline = 0;
-        this.completionTime = 0;
-        this.starStatus = PLAN_STAR_STATUS_NOT_STARRED;
-        this.reminderTime = 0;
+        this.mPlanCode = planCode;
+        this.mContent = null;
+        this.mTypeCode = null;
+        this.mCreationTime = Constant.TIME_UNDEFINED;
+        this.mDeadline = Constant.TIME_UNDEFINED;
+        this.mCompletionTime = Constant.TIME_UNDEFINED;
+        this.mStarStatus = PLAN_STAR_STATUS_NOT_STARRED;
+        this.mReminderTime = Constant.TIME_UNDEFINED;
     }
 
     public Plan(String planCode, String content, String typeCode, long creationTime, long deadline,
                 long completionTime, int starStatus, long reminderTime) {
-        this.planCode = planCode;
-        this.content = content;
-        this.typeCode = typeCode;
-        this.creationTime = creationTime;
-        this.deadline = deadline;
-        this.completionTime = completionTime;
-        this.starStatus = starStatus;
-        this.reminderTime = reminderTime;
+        this.mPlanCode = planCode;
+        this.mContent = content;
+        this.mTypeCode = typeCode;
+        this.mCreationTime = creationTime;
+        this.mDeadline = deadline;
+        this.mCompletionTime = completionTime;
+        this.mStarStatus = starStatus;
+        this.mReminderTime = reminderTime;
     }
 
     protected Plan(Parcel in) {
-        planCode = in.readString();
-        content = in.readString();
-        typeCode = in.readString();
-        creationTime = in.readLong();
-        deadline = in.readLong();
-        completionTime = in.readLong();
-        starStatus = in.readInt();
-        reminderTime = in.readLong();
+        mPlanCode = in.readString();
+        mContent = in.readString();
+        mTypeCode = in.readString();
+        mCreationTime = in.readLong();
+        mDeadline = in.readLong();
+        mCompletionTime = in.readLong();
+        mStarStatus = in.readInt();
+        mReminderTime = in.readLong();
     }
 
     public static final Creator<Plan> CREATOR = new Creator<Plan>() {
@@ -61,83 +66,87 @@ public class Plan implements Parcelable {
     };
 
     public String getPlanCode() {
-        return planCode;
+        return mPlanCode;
     }
 
     public void setPlanCode(String planCode) {
-        this.planCode = planCode;
+        this.mPlanCode = planCode;
     }
 
     public String getContent() {
-        return content;
+        return mContent;
     }
 
     public void setContent(String content) {
-        this.content = content;
+        this.mContent = content;
     }
 
     public String getTypeCode() {
-        return typeCode;
+        return mTypeCode;
     }
 
     public void setTypeCode(String typeCode) {
-        this.typeCode = typeCode;
+        this.mTypeCode = typeCode;
     }
 
     public long getCreationTime() {
-        return creationTime;
+        return mCreationTime;
     }
 
     public void setCreationTime(long creationTime) {
-        this.creationTime = creationTime;
+        this.mCreationTime = creationTime;
     }
 
     public long getDeadline() {
-        return deadline;
+        return mDeadline;
     }
 
     public void setDeadline(long deadline) {
-        this.deadline = deadline;
+        this.mDeadline = deadline;
     }
 
     public long getCompletionTime() {
-        return completionTime;
+        return mCompletionTime;
     }
 
     public void setCompletionTime(long completionTime) {
-        this.completionTime = completionTime;
+        this.mCompletionTime = completionTime;
     }
 
     public int getStarStatus() {
-        return starStatus;
+        return mStarStatus;
     }
 
     public void setStarStatus(int starStatus) {
-        this.starStatus = starStatus;
+        this.mStarStatus = starStatus;
     }
 
     public long getReminderTime() {
-        return reminderTime;
+        return mReminderTime;
     }
 
     public void setReminderTime(long reminderTime) {
-        this.reminderTime = reminderTime;
+        this.mReminderTime = reminderTime;
     }
 
     public boolean hasDeadline() {
-        return deadline != 0;
+        return mDeadline != Constant.TIME_UNDEFINED;
     }
 
     public boolean isCompleted() {
-        return completionTime != 0;
+        return mCompletionTime != Constant.TIME_UNDEFINED;
     }
 
     public boolean isStarred() {
-        return starStatus == PLAN_STAR_STATUS_STARRED;
+        return mStarStatus == PLAN_STAR_STATUS_STARRED;
     }
 
     public boolean hasReminder() {
-        return reminderTime != 0;
+        return mReminderTime != Constant.TIME_UNDEFINED;
+    }
+
+    public void invertStarStatus() {
+        setStarStatus(isStarred() ? PLAN_STAR_STATUS_NOT_STARRED : PLAN_STAR_STATUS_STARRED);
     }
 
     @Override
@@ -147,13 +156,13 @@ public class Plan implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(planCode);
-        dest.writeString(content);
-        dest.writeString(typeCode);
-        dest.writeLong(creationTime);
-        dest.writeLong(deadline);
-        dest.writeLong(completionTime);
-        dest.writeInt(starStatus);
-        dest.writeLong(reminderTime);
+        dest.writeString(mPlanCode);
+        dest.writeString(mContent);
+        dest.writeString(mTypeCode);
+        dest.writeLong(mCreationTime);
+        dest.writeLong(mDeadline);
+        dest.writeLong(mCompletionTime);
+        dest.writeInt(mStarStatus);
+        dest.writeLong(mReminderTime);
     }
 }

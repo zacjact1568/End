@@ -13,6 +13,7 @@ import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.domain.view.PlanDetailView;
+import com.zack.enderplan.common.Constant;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -61,18 +62,18 @@ public class PlanDetailPresenter extends BasePresenter implements Presenter<Plan
     public void setInitialView() {
         planDetailView.showInitialView(new FormattedPlan(
                 plan.getContent(),
-                plan.getStarStatus() == Plan.PLAN_STAR_STATUS_STARRED,
+                plan.isStarred(),
                 dataManager.getTypeLocationInTypeList(plan.getTypeCode()),
-                plan.getDeadline() != 0,
+                plan.hasDeadline(),
                 formatDateTime(plan.getDeadline()),
-                plan.getReminderTime() != 0,
+                plan.hasReminder(),
                 formatDateTime(plan.getReminderTime()),
                 plan.isCompleted()
         ), new SimpleTypeAdapter(dataManager.getTypeList(), SimpleTypeAdapter.STYLE_SPINNER));
     }
 
     public void notifyMenuCreated() {
-        planDetailView.updateStarMenuItem(plan.getStarStatus() == Plan.PLAN_STAR_STATUS_STARRED);
+        planDetailView.updateStarMenuItem(plan.isStarred());
     }
 
     public void notifyPreDrawingAppBar(int appBarMaxRange) {
@@ -157,22 +158,22 @@ public class PlanDetailPresenter extends BasePresenter implements Presenter<Plan
 
     public void notifyStarStatusChanged() {
         dataManager.notifyStarStatusChanged(position);
-        planDetailView.onStarStatusChanged(plan.getStarStatus() == Plan.PLAN_STAR_STATUS_STARRED);
+        planDetailView.onStarStatusChanged(plan.isStarred());
         postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_STAR_STATUS);
     }
 
     public void notifyPlanStatusChanged() {
         //首先检测此计划是否有提醒
-        if (plan.getReminderTime() != 0) {
-            dataManager.notifyReminderTimeChanged(position, 0);
+        if (plan.hasReminder()) {
+            dataManager.notifyReminderTimeChanged(position, Constant.TIME_UNDEFINED);
             planDetailView.onReminderTimeChanged(false, mUnsettledDscpt);
             postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_REMINDER_TIME);
         }
         dataManager.notifyPlanStatusChanged(position);
         //更新位置
-        position = plan.getCompletionTime() != 0 ? dataManager.getUcPlanCount() : 0;
+        position = plan.isCompleted() ? dataManager.getUcPlanCount() : 0;
         //刷新界面
-        planDetailView.onPlanStatusChanged(plan.getCompletionTime() != 0);
+        planDetailView.onPlanStatusChanged(plan.isCompleted());
         //发出事件
         postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_PLAN_STATUS);
     }
@@ -187,15 +188,15 @@ public class PlanDetailPresenter extends BasePresenter implements Presenter<Plan
 
     public void notifyDeadlineChanged(long newDeadline) {
         if (plan.getDeadline() == newDeadline) return;
-        planDetailView.onDeadlineChanged(newDeadline != 0, formatDateTime(newDeadline));
         dataManager.notifyDeadlineChanged(position, newDeadline);
+        planDetailView.onDeadlineChanged(plan.hasDeadline(), formatDateTime(newDeadline));
         postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_DEADLINE);
     }
 
     public void notifyReminderTimeChanged(long newReminderTime) {
         if (plan.getReminderTime() == newReminderTime) return;
-        planDetailView.onReminderTimeChanged(newReminderTime != 0, formatDateTime(newReminderTime));
         dataManager.notifyReminderTimeChanged(position, newReminderTime);
+        planDetailView.onReminderTimeChanged(plan.hasReminder(), formatDateTime(newReminderTime));
         postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_REMINDER_TIME);
     }
 
@@ -204,7 +205,7 @@ public class PlanDetailPresenter extends BasePresenter implements Presenter<Plan
     }
 
     private String formatDateTime(long timeInMillis) {
-        if (timeInMillis == 0) {
+        if (timeInMillis == Constant.TIME_UNDEFINED) {
             return mUnsettledDscpt;
         } else {
             return DateFormat.format(dateTimeFormatStr, timeInMillis).toString();
@@ -224,18 +225,18 @@ public class PlanDetailPresenter extends BasePresenter implements Presenter<Plan
                     break;
                 case PlanDetailChangedEvent.FIELD_PLAN_STATUS:
                     //更新界面
-                    planDetailView.onPlanStatusChanged(plan.getCompletionTime() != 0);
+                    planDetailView.onPlanStatusChanged(plan.isCompleted());
                     //更新position
                     position = event.getPosition();
                     break;
                 case PlanDetailChangedEvent.FIELD_DEADLINE:
-                    planDetailView.onDeadlineChanged(plan.getDeadline() != 0, formatDateTime(plan.getDeadline()));
+                    planDetailView.onDeadlineChanged(plan.hasDeadline(), formatDateTime(plan.getDeadline()));
                     break;
                 case PlanDetailChangedEvent.FIELD_STAR_STATUS:
-                    planDetailView.onStarStatusChanged(plan.getStarStatus() == Plan.PLAN_STAR_STATUS_STARRED);
+                    planDetailView.onStarStatusChanged(plan.isStarred());
                     break;
                 case PlanDetailChangedEvent.FIELD_REMINDER_TIME:
-                    planDetailView.onReminderTimeChanged(plan.getReminderTime() != 0, formatDateTime(plan.getReminderTime()));
+                    planDetailView.onReminderTimeChanged(plan.hasReminder(), formatDateTime(plan.getReminderTime()));
                     break;
             }
         }

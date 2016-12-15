@@ -7,7 +7,8 @@ import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.model.database.DatabaseManager;
 import com.zack.enderplan.event.DataLoadedEvent;
-import com.zack.enderplan.utility.Util;
+import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.common.Util;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -219,7 +220,7 @@ public class DataManager {
     /** 创建计划 (Inserted at a specified location of mPlanList) */
     public void notifyPlanCreated(int location, Plan newPlan) {
         addToPlanList(location, newPlan);
-        if (newPlan.getCompletionTime() == 0) {
+        if (!newPlan.isCompleted()) {
             //说明该计划还未完成
             //更新未完成计划的数量
             updateUcPlanCount(1);
@@ -227,7 +228,7 @@ public class DataManager {
             updateUcPlanCountOfEachTypeMap(newPlan.getTypeCode(), 1);
         }
         //设置提醒
-        if (newPlan.getReminderTime() != 0) {
+        if (newPlan.hasReminder()) {
             //有提醒，需要设置
             Util.setReminder(newPlan.getPlanCode(), newPlan.getReminderTime());
         }
@@ -238,14 +239,14 @@ public class DataManager {
     /** 删除计划 */
     public void notifyPlanDeleted(int location) {
         Plan plan = getPlan(location);
-        if (plan.getCompletionTime() == 0) {
+        if (!plan.isCompleted()) {
             //That means this plan is uncompleted
             updateUcPlanCountOfEachTypeMap(plan.getTypeCode(), -1);
             updateUcPlanCount(-1);
         }
-        if (plan.getReminderTime() != 0) {
+        if (plan.hasReminder()) {
             //This plan has registered a reminder that need to be canceled
-            Util.setReminder(plan.getPlanCode(), 0);
+            Util.setReminder(plan.getPlanCode(), Constant.TIME_UNDEFINED);
         }
         removeFromPlanList(location);
         //更新数据库
@@ -273,7 +274,7 @@ public class DataManager {
     /** 编辑计划类型 */
     public void notifyTypeOfPlanChanged(int location, String oldTypeCode, String newTypeCode) {
         Plan plan = getPlan(location);
-        if (plan.getCompletionTime() == 0) {
+        if (!plan.isCompleted()) {
             //说明此计划还未完成，把此Uc计划的类型改变反映到UcMap
             updateUcPlanCountOfEachTypeMap(oldTypeCode, newTypeCode);
         }
@@ -285,10 +286,8 @@ public class DataManager {
     /** 编辑计划星标状态 */
     public void notifyStarStatusChanged(int location) {
         Plan plan = getPlan(location);
-        int newStarStatus = plan.getStarStatus() == Plan.PLAN_STAR_STATUS_STARRED ?
-                Plan.PLAN_STAR_STATUS_NOT_STARRED : Plan.PLAN_STAR_STATUS_STARRED;
-        plan.setStarStatus(newStarStatus);
-        mDatabaseManager.updateStarStatus(plan.getPlanCode(), newStarStatus);
+        plan.invertStarStatus();
+        mDatabaseManager.updateStarStatus(plan.getPlanCode(), plan.getStarStatus());
     }
 
     /** 编辑计划截止时间 */
@@ -311,7 +310,7 @@ public class DataManager {
         Plan plan = getPlan(location);
 
         //旧的完成状态
-        boolean isCompletedPast = plan.getCompletionTime() != 0;
+        boolean isCompletedPast = plan.isCompleted();
         //更新Maps
         updateUcPlanCountOfEachTypeMap(plan.getTypeCode(), isCompletedPast ? 1 : -1);
         updateUcPlanCount(isCompletedPast ? 1 : -1);
@@ -320,8 +319,8 @@ public class DataManager {
         removeFromPlanList(location);
 
         long currentTimeMillis = System.currentTimeMillis();
-        long newCreationTime = isCompletedPast ? currentTimeMillis : 0;
-        long newCompletionTime = isCompletedPast ? 0 : currentTimeMillis;
+        long newCreationTime = isCompletedPast ? currentTimeMillis : Constant.TIME_UNDEFINED;
+        long newCompletionTime = isCompletedPast ? Constant.TIME_UNDEFINED : currentTimeMillis;
 
         plan.setCreationTime(newCreationTime);
         plan.setCompletionTime(newCompletionTime);

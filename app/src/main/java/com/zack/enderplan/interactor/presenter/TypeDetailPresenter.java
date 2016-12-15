@@ -17,7 +17,7 @@ import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDeletedEvent;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.model.DataManager;
-import com.zack.enderplan.utility.Util;
+import com.zack.enderplan.common.Util;
 import com.zack.enderplan.domain.view.TypeDetailView;
 
 import org.greenrobot.eventbus.EventBus;

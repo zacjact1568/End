@@ -4,24 +4,26 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.zack.enderplan.common.Constant;
+
 public class DatabaseOpenHelper extends SQLiteOpenHelper {
 
-    private static final String CREATE_TABLE_PLAN = "create table plan (" +
-            "plan_code text primary key, " +
-            "content text, " +
-            "type_code text, " +
-            "creation_time integer, " +
-            "deadline integer, " +
-            "completion_time integer, " +
-            "star_status integer, " +
-            "reminder_time integer)";
+    private static final String CREATE_TABLE_PLAN = "create table " + Constant.PLAN + " (" +
+            Constant.PLAN_CODE + " text primary key, " +
+            Constant.CONTENT + " text, " +
+            Constant.TYPE_CODE + " text, " +
+            Constant.CREATION_TIME + " integer, " +
+            Constant.DEADLINE + " integer, " +
+            Constant.COMPLETION_TIME + " integer, " +
+            Constant.STAR_STATUS + " integer, " +
+            Constant.REMINDER_TIME + " integer)";
 
-    private static final String CREATE_TABLE_TYPE = "create table type (" +
-            "type_code text primary key, " +
-            "type_name text, " +
-            "type_mark_color text, " +
-            "type_mark_pattern text, " +
-            "type_sequence integer)";
+    private static final String CREATE_TABLE_TYPE = "create table " + Constant.TYPE + " (" +
+            Constant.TYPE_CODE + " text primary key, " +
+            Constant.TYPE_NAME + " text, " +
+            Constant.TYPE_MARK_COLOR + " text, " +
+            Constant.TYPE_MARK_PATTERN + " text, " +
+            Constant.TYPE_SEQUENCE + " integer)";
 
     public DatabaseOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);

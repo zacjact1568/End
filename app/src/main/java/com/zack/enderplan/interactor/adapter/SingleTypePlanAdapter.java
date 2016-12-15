@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
 import com.zack.enderplan.model.bean.Plan;
-import com.zack.enderplan.utility.Util;
+import com.zack.enderplan.common.Util;
 
 import java.util.List;
 

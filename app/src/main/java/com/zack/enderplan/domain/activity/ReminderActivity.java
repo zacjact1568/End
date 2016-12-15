@@ -14,7 +14,7 @@ import com.zack.enderplan.R;
 import com.zack.enderplan.domain.fragment.DateTimePickerDialogFragment;
 import com.zack.enderplan.interactor.presenter.ReminderPresenter;
 import com.zack.enderplan.domain.view.ReminderView;
-import com.zack.enderplan.utility.Constant;
+import com.zack.enderplan.common.Constant;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -97,21 +97,20 @@ public class ReminderActivity extends BaseActivity implements ReminderView {
                 mDelaySwitcher.showPrevious();
                 break;
             case R.id.btn_1_hour:
-                mReminderPresenter.notifyDelayingReminder("1_hour");
+                mReminderPresenter.notifyDelayingReminder(Constant.ONE_HOUR);
                 break;
             case R.id.btn_tomorrow:
-                mReminderPresenter.notifyDelayingReminder("tomorrow");
+                mReminderPresenter.notifyDelayingReminder(Constant.TOMORROW);
                 break;
             case R.id.btn_more:
-                //TODO 修改DateTimePickerDialogFragment，显示当前时间不传0
-                DateTimePickerDialogFragment fragment = DateTimePickerDialogFragment.newInstance(0);
+                DateTimePickerDialogFragment fragment = DateTimePickerDialogFragment.newInstance(Constant.TIME_UNDEFINED);
                 fragment.setOnDateTimePickedListener(new DateTimePickerDialogFragment.OnDateTimePickedListener() {
                     @Override
                     public void onDateTimePicked(long timeInMillis) {
                         mReminderPresenter.notifyUpdatingReminderTime(timeInMillis);
                     }
                 });
-                fragment.show(getSupportFragmentManager(), "reminder");
+                fragment.show(getSupportFragmentManager(), Constant.REMINDER_TIME);
                 break;
         }
     }

@@ -7,7 +7,7 @@ import android.widget.BaseAdapter;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.model.bean.TypeMarkPattern;
-import com.zack.enderplan.utility.Util;
+import com.zack.enderplan.common.Util;
 import com.zack.enderplan.widget.CheckView;
 
 import java.util.List;

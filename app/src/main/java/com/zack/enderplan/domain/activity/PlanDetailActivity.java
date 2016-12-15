@@ -31,7 +31,7 @@ import com.zack.enderplan.interactor.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.interactor.presenter.PlanDetailPresenter;
 import com.zack.enderplan.domain.view.PlanDetailView;
 import com.zack.enderplan.model.bean.FormattedPlan;
-import com.zack.enderplan.utility.Constant;
+import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.widget.ItemView;
 
 import butterknife.BindColor;
@@ -237,7 +237,7 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailView {
                 planDetailPresenter.notifyContentChanged(editorText);
             }
         });
-        fragment.show(getSupportFragmentManager(), "content_editor");
+        fragment.show(getSupportFragmentManager(), Constant.CONTENT);
     }
 
     @Override
@@ -267,7 +267,7 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailView {
                 planDetailPresenter.notifyDeadlineChanged(timeInMillis);
             }
         });
-        fragment.show(getSupportFragmentManager(), "deadline");
+        fragment.show(getSupportFragmentManager(), Constant.DEADLINE);
     }
 
     @Override
@@ -279,7 +279,7 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailView {
                 planDetailPresenter.notifyReminderTimeChanged(timeInMillis);
             }
         });
-        fragment.show(getSupportFragmentManager(), "reminder");
+        fragment.show(getSupportFragmentManager(), Constant.REMINDER_TIME);
     }
 
     @Override

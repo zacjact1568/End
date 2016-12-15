@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.utility.Constant;
+import com.zack.enderplan.common.Constant;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

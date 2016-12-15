@@ -11,7 +11,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.utility.Util;
+import com.zack.enderplan.common.Util;
 
 public class CircleColorView extends View {
 

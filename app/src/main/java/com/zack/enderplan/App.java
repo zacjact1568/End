@@ -6,8 +6,8 @@ import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatDelegate;
 
-import com.zack.enderplan.model.database.DatabaseManager;
 import com.zack.enderplan.model.preference.PreferenceHelper;
+import com.zack.enderplan.common.Constant;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -50,7 +50,7 @@ public class App extends Application {
 
     /** 初始化类型标记数据库 */
     private void initTypeMarkDB() {
-        File typeMarkDBFile = getDatabasePath(DatabaseManager.DB_TYPE_MARK);
+        File typeMarkDBFile = getDatabasePath(Constant.DB_TYPE_MARK);
         if (typeMarkDBFile.exists()) {
             return;
         }
@@ -73,18 +73,18 @@ public class App extends Application {
     }
 
     private void initLocale(String value) {
-        if (value.equals("def")) {
+        if (value.equals(Constant.DEF)) {
             return;
         }
         Configuration config = getResources().getConfiguration();
         switch (value) {
-            case "en":
+            case Constant.EN:
                 config.setLocale(Locale.ENGLISH);
                 break;
-            case "zh_cn":
+            case Constant.ZH_CN:
                 config.setLocale(Locale.SIMPLIFIED_CHINESE);
                 break;
-            case "zh_tw":
+            case Constant.ZH_TW:
                 config.setLocale(Locale.TRADITIONAL_CHINESE);
                 break;
             default:
@@ -96,16 +96,16 @@ public class App extends Application {
     private void initNightMode(String value) {
         int mode = AppCompatDelegate.MODE_NIGHT_NO;
         switch (value) {
-            case "off":
+            case Constant.OFF:
                 mode = AppCompatDelegate.MODE_NIGHT_NO;
                 break;
-            case "on":
+            case Constant.ON:
                 mode = AppCompatDelegate.MODE_NIGHT_YES;
                 break;
-            case "auto":
+            case Constant.AUTO:
                 mode = AppCompatDelegate.MODE_NIGHT_AUTO;
                 break;
-            case "def":
+            case Constant.DEF:
                 mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
                 break;
             default:

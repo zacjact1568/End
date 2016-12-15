@@ -1,7 +1,5 @@
 package com.zack.enderplan.domain.fragment;
 
-import android.app.ActivityOptions;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;

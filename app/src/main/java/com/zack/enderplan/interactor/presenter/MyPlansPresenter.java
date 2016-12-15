@@ -9,7 +9,7 @@ import com.zack.enderplan.event.TypeDetailChangedEvent;
 import com.zack.enderplan.interactor.adapter.PlanAdapter;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.domain.view.MyPlansView;
-import com.zack.enderplan.utility.Util;
+import com.zack.enderplan.common.Util;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -85,7 +85,7 @@ public class MyPlansPresenter extends BasePresenter implements Presenter<MyPlans
     public void notifyPlanStatusChanged(int position) {
         Plan plan = mDataManager.getPlan(position);
         //首先检测此计划是否有提醒
-        if (plan.getReminderTime() != 0) {
+        if (plan.hasReminder()) {
             mDataManager.notifyReminderTimeChanged(position, 0);
             mPlanAdapter.notifyItemChanged(position);
             mEventBus.post(new PlanDetailChangedEvent(getPresenterName(), plan.getPlanCode(), position, PlanDetailChangedEvent.FIELD_REMINDER_TIME));

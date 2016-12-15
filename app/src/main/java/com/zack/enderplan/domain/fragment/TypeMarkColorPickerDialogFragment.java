@@ -18,7 +18,7 @@ import com.zack.enderplan.R;
 import com.zack.enderplan.interactor.adapter.TypeMarkColorAdapter;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.bean.TypeMarkColor;
-import com.zack.enderplan.utility.Util;
+import com.zack.enderplan.common.Util;
 import com.zack.enderplan.widget.CircleColorView;
 import com.zack.enderplan.widget.ColorPicker;
 

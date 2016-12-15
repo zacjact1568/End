@@ -13,6 +13,7 @@ import android.view.MenuItem;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.model.preference.PreferenceHelper;
+import com.zack.enderplan.common.Constant;
 
 import java.util.Locale;
 
@@ -79,18 +80,18 @@ public class SettingsActivity extends BaseActivity {
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             switch (key) {
                 case PreferenceHelper.KEY_PREF_LANGUAGE:
-                    String languageValue = sharedPreferences.getString(PreferenceHelper.KEY_PREF_LANGUAGE, "");
+                    String languageValue = sharedPreferences.getString(PreferenceHelper.KEY_PREF_LANGUAGE, Constant.DEF);
                     languagePref.setSummary(languagePref.getEntries()[languagePref.findIndexOfValue(languageValue)]);
 
                     Configuration config = getResources().getConfiguration();
                     switch (languageValue) {
-                        case "en":
+                        case Constant.EN:
                             config.setLocale(Locale.ENGLISH);
                             break;
-                        case "zh_cn":
+                        case Constant.ZH_CN:
                             config.setLocale(Locale.SIMPLIFIED_CHINESE);
                             break;
-                        case "zh_tw":
+                        case Constant.ZH_TW:
                             config.setLocale(Locale.TRADITIONAL_CHINESE);
                             break;
                         default:
@@ -105,16 +106,16 @@ public class SettingsActivity extends BaseActivity {
 
                     int mode = AppCompatDelegate.MODE_NIGHT_NO;
                     switch (nightModeValue) {
-                        case "off":
+                        case Constant.OFF:
                             mode = AppCompatDelegate.MODE_NIGHT_NO;
                             break;
-                        case "on":
+                        case Constant.ON:
                             mode = AppCompatDelegate.MODE_NIGHT_YES;
                             break;
-                        case "auto":
+                        case Constant.AUTO:
                             mode = AppCompatDelegate.MODE_NIGHT_AUTO;
                             break;
-                        case "def":
+                        case Constant.DEF:
                             mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
                             break;
                         default:

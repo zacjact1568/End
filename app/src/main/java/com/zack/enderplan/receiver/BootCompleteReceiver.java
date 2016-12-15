@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.zack.enderplan.model.database.DatabaseManager;
-import com.zack.enderplan.utility.Util;
+import com.zack.enderplan.common.Util;
 
 import java.util.Map;
 

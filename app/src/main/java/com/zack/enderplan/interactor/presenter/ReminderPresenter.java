@@ -9,7 +9,8 @@ import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.domain.view.ReminderView;
-import com.zack.enderplan.utility.LogUtil;
+import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.common.LogUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -68,11 +69,11 @@ public class ReminderPresenter extends BasePresenter implements Presenter<Remind
         Calendar calendar = Calendar.getInstance();
         String delayDscpt;
         switch (delay) {
-            case "1_hour":
+            case Constant.ONE_HOUR:
                 calendar.add(Calendar.HOUR, 1);
                 delayDscpt = mDelay1HourStr;
                 break;
-            case "tomorrow":
+            case Constant.TOMORROW:
                 calendar.add(Calendar.DATE, 1);
                 delayDscpt = mDelayTomorrowStr;
                 break;
@@ -83,6 +84,7 @@ public class ReminderPresenter extends BasePresenter implements Presenter<Remind
     }
 
     public void notifyUpdatingReminderTime(long reminderTime) {
+        if (reminderTime == Constant.TIME_UNDEFINED) return;
         updateReminderTime(
                 reminderTime,
                 String.format(mReminderDelayedFormat, String.format(mDelayMoreStr, DateFormat.format(mShortDateTimeFormat, reminderTime).toString()))

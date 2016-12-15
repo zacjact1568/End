@@ -3,6 +3,7 @@ package com.zack.enderplan.domain.activity;
 import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -23,6 +24,7 @@ import com.zack.enderplan.domain.fragment.MyPlansFragment;
 import com.zack.enderplan.domain.fragment.AllTypesFragment;
 import com.zack.enderplan.interactor.presenter.HomePresenter;
 import com.zack.enderplan.domain.view.HomeView;
+import com.zack.enderplan.common.Constant;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,8 +47,6 @@ public class HomeActivity extends BaseActivity implements HomeView,
     private TextView ucPlanCountText;
     private HomePresenter mHomePresenter;
 
-    private static final String TAG_ALL_TYPES = "all_types";
-    private static final String TAG_MY_PLANS = "my_plans";
     private static final int CR_ANIM_DURATION = 300;
 
     @Override
@@ -79,7 +79,7 @@ public class HomeActivity extends BaseActivity implements HomeView,
     public void onBackPressed() {
         mHomePresenter.notifyBackPressed(
                 drawerLayout.isDrawerOpen(GravityCompat.START),
-                getSupportFragmentManager().findFragmentByTag(TAG_ALL_TYPES) == null
+                getSupportFragmentManager().findFragmentByTag(Constant.TYPE) == null
         );
     }
 
@@ -110,7 +110,7 @@ public class HomeActivity extends BaseActivity implements HomeView,
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_my_plans:
                 if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
@@ -118,15 +118,15 @@ public class HomeActivity extends BaseActivity implements HomeView,
                 }
                 break;
             case R.id.nav_all_types:
-                if (getSupportFragmentManager().findFragmentByTag(TAG_ALL_TYPES) == null) {
+                if (getSupportFragmentManager().findFragmentByTag(Constant.TYPE) == null) {
                     makeCircularRevealAnimationOnFab(R.drawable.ic_playlist_add_white_24dp);
                     toolbar.setTitle(R.string.title_fragment_all_types);
                     AllTypesFragment allTypesFragment = new AllTypesFragment();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, allTypesFragment, TAG_ALL_TYPES).addToBackStack(null).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, allTypesFragment, Constant.TYPE).addToBackStack(null).commit();
                     getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
                         @Override
                         public void onBackStackChanged() {
-                            if (getSupportFragmentManager().findFragmentByTag(TAG_ALL_TYPES) == null) {
+                            if (getSupportFragmentManager().findFragmentByTag(Constant.TYPE) == null) {
                                 makeCircularRevealAnimationOnFab(R.drawable.ic_add_white_24dp);
                                 toolbar.setTitle(R.string.title_fragment_my_plans);
                                 navView.setCheckedItem(R.id.nav_my_plans);
@@ -174,7 +174,7 @@ public class HomeActivity extends BaseActivity implements HomeView,
 
         ucPlanCountText.setText(ucPlanCount);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, new MyPlansFragment(), TAG_MY_PLANS).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, new MyPlansFragment(), Constant.PLAN).commit();
     }
 
     @Override
@@ -212,7 +212,7 @@ public class HomeActivity extends BaseActivity implements HomeView,
         switch (view.getId()) {
             case R.id.fab:
                 //TODO 优化点击后事件的选择
-                if (getSupportFragmentManager().findFragmentByTag(TAG_ALL_TYPES) == null) {
+                if (getSupportFragmentManager().findFragmentByTag(Constant.TYPE) == null) {
                     CreatePlanActivity.start(this);
                 } else {
                     CreateTypeActivity.start(this);

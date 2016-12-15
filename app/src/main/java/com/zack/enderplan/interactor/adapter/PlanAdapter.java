@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.zack.enderplan.R;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.bean.TypeMark;
-import com.zack.enderplan.utility.Util;
+import com.zack.enderplan.common.Util;
 import com.zack.enderplan.widget.CircleColorView;
 
 import java.util.List;
@@ -46,12 +46,9 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
         boolean isCompleted = plan.isCompleted();
 
         holder.typeMarkIcon.setFillColor(isCompleted ? Color.GRAY : Color.parseColor(mTypeCodeAndTypeMarkMap.get(plan.getTypeCode()).getColorHex()));
-        holder.contentText.setText(isCompleted ? Util.addStrikethroughSpan(plan.getContent()) :
-                plan.getContent());
-        holder.reminderMark.setVisibility(plan.getReminderTime() == 0 ? View.INVISIBLE : View.VISIBLE);
-        holder.starMark.setImageResource(plan.getStarStatus() == Plan.PLAN_STAR_STATUS_NOT_STARRED ?
-                R.drawable.ic_star_outline_grey600_24dp :
-                R.drawable.ic_star_color_accent_24dp);
+        holder.contentText.setText(isCompleted ? Util.addStrikethroughSpan(plan.getContent()) : plan.getContent());
+        holder.reminderMark.setVisibility(plan.hasReminder() ? View.VISIBLE : View.INVISIBLE);
+        holder.starMark.setImageResource(plan.isStarred() ? R.drawable.ic_star_color_accent_24dp : R.drawable.ic_star_outline_grey600_24dp);
 
         if (onStarMarkIconClickListener != null) {
             holder.starMark.setOnClickListener(new View.OnClickListener() {

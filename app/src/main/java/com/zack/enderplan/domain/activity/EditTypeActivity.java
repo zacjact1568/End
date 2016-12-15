@@ -21,7 +21,7 @@ import com.zack.enderplan.interactor.presenter.EditTypePresenter;
 import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.TypeMarkColor;
 import com.zack.enderplan.model.bean.TypeMarkPattern;
-import com.zack.enderplan.utility.Constant;
+import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.widget.CircleColorView;
 import com.zack.enderplan.widget.ItemView;
 
@@ -65,7 +65,7 @@ public class EditTypeActivity extends BaseActivity implements EditTypeView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mEditTypePresenter = new EditTypePresenter(this, getIntent().getIntExtra("position", -1));
+        mEditTypePresenter = new EditTypePresenter(this, getIntent().getIntExtra(Constant.POSITION, -1));
         mEditTypePresenter.setInitialView();
     }
 
@@ -117,7 +117,7 @@ public class EditTypeActivity extends BaseActivity implements EditTypeView {
                 mEditTypePresenter.notifyUpdatingTypeName(editorText);
             }
         });
-        fragment.show(getSupportFragmentManager(), "type_name_editor");
+        fragment.show(getSupportFragmentManager(), Constant.TYPE_NAME);
     }
 
     @Override
@@ -148,7 +148,7 @@ public class EditTypeActivity extends BaseActivity implements EditTypeView {
                 mEditTypePresenter.notifyTypeMarkColorSelected(typeMarkColor);
             }
         });
-        fragment.show(getSupportFragmentManager(), "type_mark_color_picker");
+        fragment.show(getSupportFragmentManager(), Constant.TYPE_MARK_COLOR);
     }
 
     @Override
@@ -160,7 +160,7 @@ public class EditTypeActivity extends BaseActivity implements EditTypeView {
                 mEditTypePresenter.notifyTypeMarkPatternSelected(typeMarkPattern);
             }
         });
-        fragment.show(getSupportFragmentManager(), "type_mark_pattern_picker");
+        fragment.show(getSupportFragmentManager(), Constant.TYPE_MARK_PATTERN);
     }
 
     @Override

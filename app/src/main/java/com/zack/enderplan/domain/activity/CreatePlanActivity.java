@@ -28,7 +28,8 @@ import com.zack.enderplan.domain.fragment.DateTimePickerDialogFragment;
 import com.zack.enderplan.interactor.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.interactor.presenter.CreatePlanPresenter;
 import com.zack.enderplan.domain.view.CreatePlanView;
-import com.zack.enderplan.utility.Util;
+import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.common.Util;
 import com.zack.enderplan.widget.ItemView;
 
 import butterknife.BindColor;
@@ -178,7 +179,7 @@ public class CreatePlanActivity extends BaseActivity implements CreatePlanView {
                 mCreatePlanPresenter.notifyDeadlineChanged(timeInMillis);
             }
         });
-        fragment.show(getSupportFragmentManager(), "deadline");
+        fragment.show(getSupportFragmentManager(), Constant.DEADLINE);
     }
 
     @Override
@@ -195,7 +196,7 @@ public class CreatePlanActivity extends BaseActivity implements CreatePlanView {
                 mCreatePlanPresenter.notifyReminderTimeChanged(timeInMillis);
             }
         });
-        fragment.show(getSupportFragmentManager(), "reminder");
+        fragment.show(getSupportFragmentManager(), Constant.REMINDER_TIME);
     }
 
     @Override

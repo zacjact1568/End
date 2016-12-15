@@ -10,7 +10,8 @@ import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.interactor.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.DataManager;
-import com.zack.enderplan.utility.Util;
+import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.common.Util;
 import com.zack.enderplan.domain.view.CreatePlanView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -58,21 +59,18 @@ public class CreatePlanPresenter extends BasePresenter implements Presenter<Crea
     public void notifyDeadlineChanged(long deadline) {
         if (mPlan.getDeadline() == deadline) return;
         mPlan.setDeadline(deadline);
-        mCreatePlanView.onDeadlineChanged(deadline != 0, formatDateTime(deadline));
+        mCreatePlanView.onDeadlineChanged(mPlan.hasDeadline(), formatDateTime(deadline));
     }
 
     public void notifyReminderTimeChanged(long reminderTime) {
         if (mPlan.getReminderTime() == reminderTime) return;
         mPlan.setReminderTime(reminderTime);
-        mCreatePlanView.onReminderTimeChanged(reminderTime != 0, formatDateTime(reminderTime));
+        mCreatePlanView.onReminderTimeChanged(mPlan.hasReminder(), formatDateTime(reminderTime));
     }
 
     public void notifyStarStatusChanged() {
-        //isStarred表示点击之前的星标状态
-        boolean isStarred = mPlan.getStarStatus() == Plan.PLAN_STAR_STATUS_STARRED;
-        mPlan.setStarStatus(isStarred ? Plan.PLAN_STAR_STATUS_NOT_STARRED : Plan.PLAN_STAR_STATUS_STARRED);
-        //星标状态变化了
-        mCreatePlanView.onStarStatusChanged(!isStarred);
+        mPlan.invertStarStatus();
+        mCreatePlanView.onStarStatusChanged(mPlan.isStarred());
     }
 
     //TODO 以后都用这种形式，即notifySetting***，更换控件就不用改方法名了
@@ -105,7 +103,7 @@ public class CreatePlanPresenter extends BasePresenter implements Presenter<Crea
     }
 
     private String formatDateTime(long timeInMillis) {
-        if (timeInMillis == 0) {
+        if (timeInMillis == Constant.TIME_UNDEFINED) {
             return mClickToSetDscpt;
         } else {
             return DateFormat.format(mDateTimeFormatStr, timeInMillis).toString();

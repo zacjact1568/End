@@ -33,8 +33,8 @@ import com.zack.enderplan.interactor.callback.PlanItemTouchCallback;
 import com.zack.enderplan.interactor.presenter.TypeDetailPresenter;
 import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.Plan;
-import com.zack.enderplan.utility.Constant;
-import com.zack.enderplan.utility.Util;
+import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.common.Util;
 import com.zack.enderplan.widget.CircleColorView;
 
 import butterknife.BindString;

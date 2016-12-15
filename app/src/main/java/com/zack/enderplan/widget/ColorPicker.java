@@ -9,7 +9,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.utility.Util;
+import com.zack.enderplan.common.Util;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

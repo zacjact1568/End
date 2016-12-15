@@ -27,7 +27,8 @@ import com.zack.enderplan.interactor.presenter.CreateTypePresenter;
 import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.TypeMarkColor;
 import com.zack.enderplan.model.bean.TypeMarkPattern;
-import com.zack.enderplan.utility.Util;
+import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.common.Util;
 import com.zack.enderplan.widget.CircleColorView;
 import com.zack.enderplan.widget.ItemView;
 
@@ -180,7 +181,7 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeView {
                 mCreateTypePresenter.notifyTypeMarkColorSelected(typeMarkColor);
             }
         });
-        fragment.show(getSupportFragmentManager(), "type_mark_color_picker");
+        fragment.show(getSupportFragmentManager(), Constant.TYPE_MARK_COLOR);
     }
 
     @Override
@@ -192,23 +193,23 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeView {
                 mCreateTypePresenter.notifyTypeMarkPatternSelected(typeMarkPattern);
             }
         });
-        fragment.show(getSupportFragmentManager(), "type_mark_pattern_picker");
+        fragment.show(getSupportFragmentManager(), Constant.TYPE_MARK_PATTERN);
     }
 
     @Override
     public void playShakeAnimation(String tag) {
         Animation shakeAnim = AnimationUtils.loadAnimation(this, R.anim.anim_shake_cta);
         switch (tag) {
-            case "type_mark":
+            case Constant.TYPE_MARK:
                 mTypeMarkIcon.startAnimation(shakeAnim);
                 break;
-            case "type_name":
+            case Constant.TYPE_NAME:
                 mTypeNameEditor.startAnimation(shakeAnim);
                 break;
-            case "type_mark_color":
+            case Constant.TYPE_MARK_COLOR:
                 mTypeMarkColorItem.startAnimation(shakeAnim);
                 break;
-            case "type_mark_pattern":
+            case Constant.TYPE_MARK_PATTERN:
                 mTypeMarkPatternItem.startAnimation(shakeAnim);
                 break;
         }

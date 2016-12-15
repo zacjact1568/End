@@ -12,7 +12,8 @@ import com.zack.enderplan.model.bean.TypeMarkColor;
 import com.zack.enderplan.event.TypeCreatedEvent;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.bean.TypeMarkPattern;
-import com.zack.enderplan.utility.Util;
+import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.common.Util;
 import com.zack.enderplan.domain.view.CreateTypeView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -90,10 +91,10 @@ public class CreateTypePresenter extends BasePresenter implements Presenter<Crea
 
     public void notifyCreateButtonClicked() {
         if (mDataManager.isTypeNameUsed(mType.getTypeName())) {
-            mCreateTypeView.playShakeAnimation("type_name");
+            mCreateTypeView.playShakeAnimation(Constant.TYPE_NAME);
             mCreateTypeView.showToast(R.string.toast_type_name_exists);
         } else if (mDataManager.isTypeMarkUsed(mType.getTypeMarkColor(), mType.getTypeMarkPattern())) {
-            mCreateTypeView.playShakeAnimation("type_mark");
+            mCreateTypeView.playShakeAnimation(Constant.TYPE_MARK);
             mCreateTypeView.showToast(R.string.toast_type_mark_exists);
         } else {
             mDataManager.notifyTypeCreated(mType);

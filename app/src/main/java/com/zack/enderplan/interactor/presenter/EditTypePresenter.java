@@ -11,7 +11,7 @@ import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.domain.view.EditTypeView;
 import com.zack.enderplan.model.bean.TypeMarkColor;
 import com.zack.enderplan.model.bean.TypeMarkPattern;
-import com.zack.enderplan.utility.Util;
+import com.zack.enderplan.common.Util;
 
 import org.greenrobot.eventbus.EventBus;
 
