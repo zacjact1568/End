@@ -205,4 +205,8 @@ public class Util {
             manager.cancel(pi);
         }
     }
+
+    public static int convertDpToPx(int dp) {
+        return (int) (dp * App.getGlobalContext().getResources().getDisplayMetrics().density + 0.5f);
+    }
 }

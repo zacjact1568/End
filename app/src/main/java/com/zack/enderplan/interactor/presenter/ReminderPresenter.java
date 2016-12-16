@@ -10,7 +10,7 @@ import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.domain.view.ReminderView;
 import com.zack.enderplan.common.Constant;
-import com.zack.enderplan.common.LogUtil;
+import com.zack.enderplan.common.Logger;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -36,7 +36,7 @@ public class ReminderPresenter extends BasePresenter implements Presenter<Remind
             mPosition = mDataManager.getPlanLocationInPlanList(planCode);
         } else {
             //说明DataManager中的数据到现在还未加载完，只有等通知
-            LogUtil.e("ReminderPresenter", "ERROR POSITION");
+            Logger.e("ReminderPresenter", "ERROR POSITION");
             mPosition = -1;
             //TODO 添加subscriber
         }

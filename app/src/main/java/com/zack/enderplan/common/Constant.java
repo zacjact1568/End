@@ -47,4 +47,14 @@ public class Constant {
 
     public static final String ONE_HOUR = "one_hour";
     public static final String TOMORROW = "tomorrow";
+
+    public static final int COORDINATE_FAB = 44;
+
+    public static final String GUIDE = "guide";
+    public static final String MY_PLANS = "my_plans";
+    public static final String ALL_TYPES = "all_types";
+    public static final String CREATE_PLAN = "create_plan";
+    public static final String CREATE_TYPE = "create_type";
+    public static final String SETTINGS = "settings";
+    public static final String ABOUT = "about";
 }

@@ -1,6 +1,7 @@
 package com.zack.enderplan.interactor.presenter;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.event.DataLoadedEvent;
 import com.zack.enderplan.event.GuideEndedEvent;
 import com.zack.enderplan.event.PlanCreatedEvent;
@@ -19,6 +20,7 @@ public class HomePresenter extends BasePresenter implements Presenter<HomeView> 
     private DataManager mDataManager;
     private PreferenceHelper mPreferenceHelper;
     private EventBus mEventBus;
+    private int mLastListScrollingVariation;
     private long lastBackKeyPressedTime;
 
     public HomePresenter(HomeView homeView) {
@@ -46,16 +48,45 @@ public class HomePresenter extends BasePresenter implements Presenter<HomeView> 
 
     public void notifyStartingUpCompleted() {
         if (mPreferenceHelper.getBooleanPref(PreferenceHelper.KEY_PREF_NEED_GUIDE)) {
-            mHomeView.showGuide();
+            mHomeView.enterActivity(Constant.GUIDE);
         }
+    }
+
+    public void notifyListScrolled(int variation) {
+        if (variation != 0 && mLastListScrollingVariation > 0 == variation < 0) {
+            //滑动经过临界点
+            mHomeView.changeFabVisibility(variation < 0);
+            mLastListScrollingVariation = variation;
+        }
+    }
+
+    public void notifyShowingFragment(String tag, boolean isShowing) {
+        if (isShowing) return;
+        int titleResId, fabResId;
+        switch (tag) {
+            case Constant.MY_PLANS:
+                titleResId = R.string.title_fragment_my_plans;
+                fabResId = R.drawable.ic_add_white_24dp;
+                break;
+            case Constant.ALL_TYPES:
+                titleResId = R.string.title_fragment_all_types;
+                fabResId = R.drawable.ic_playlist_add_white_24dp;
+                break;
+            default:
+                throw new IllegalArgumentException("The argument tag cannot be " + tag);
+        }
+        mHomeView.showFragment(tag, titleResId, fabResId);
     }
 
     public void notifyBackPressed(boolean isDrawerOpen, boolean isOnRootFragment) {
         long currentTime = System.currentTimeMillis();
         if (isDrawerOpen) {
             mHomeView.onCloseDrawer();
-        } else if (!isOnRootFragment || currentTime - lastBackKeyPressedTime < 1500) {
-            //不是在根Fragment（可以直接退出的Fragment）上，或者连续点击间隔在1.5s以内，执行原back键操作
+        } else if (!isOnRootFragment) {
+            //不是在根Fragment（可以直接退出的Fragment）上，回到根Fragment
+            mHomeView.showFragment(Constant.MY_PLANS, R.string.title_fragment_my_plans, R.drawable.ic_add_white_24dp);
+        } else if (currentTime - lastBackKeyPressedTime < 1500) {
+            //连续点击间隔在1.5s以内，执行back键操作
             mHomeView.onPressBackKey();
         } else {
             //否则更新上次点击back键的时间，并显示一个toast

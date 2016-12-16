@@ -242,7 +242,7 @@ public class CreatePlanActivity extends BaseActivity implements CreatePlanView {
     }
 
     private void playCircularRevealAnimation() {
-        int fabCoordinateInPx = (int) (44 * getResources().getDisplayMetrics().density + 0.5f);
+        int fabCoordinateInPx = Util.convertDpToPx(Constant.COORDINATE_FAB);
         int centerX = mCircularRevealLayout.getWidth() - fabCoordinateInPx;
         int centerY = mCircularRevealLayout.getHeight() - fabCoordinateInPx;
 

@@ -2,7 +2,7 @@ package com.zack.enderplan.common;
 
 import android.util.Log;
 
-public class LogUtil {
+public class Logger {
 
     private static final String DEF_TAG = "Default Tag";
 

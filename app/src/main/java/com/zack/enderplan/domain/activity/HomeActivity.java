@@ -1,12 +1,10 @@
 package com.zack.enderplan.domain.activity;
 
-import android.animation.Animator;
-import android.content.Intent;
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -14,12 +12,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.common.Util;
+import com.zack.enderplan.domain.fragment.BaseListFragment;
 import com.zack.enderplan.domain.fragment.MyPlansFragment;
 import com.zack.enderplan.domain.fragment.AllTypesFragment;
 import com.zack.enderplan.interactor.presenter.HomePresenter;
@@ -40,26 +39,18 @@ public class HomeActivity extends BaseActivity implements HomeView,
     @BindView(R.id.fab)
     FloatingActionButton fab;
     @BindView(R.id.nav_view)
-    NavigationView navView;
+    NavigationView mNavigationView;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
 
     private TextView ucPlanCountText;
     private HomePresenter mHomePresenter;
 
-    private static final int CR_ANIM_DURATION = 300;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        ButterKnife.bind(this);
-
-        View navHeaderView = navView.getHeaderView(0);
-        ucPlanCountText = ButterKnife.findById(navHeaderView, R.id.text_uc_plan_count);
 
         mHomePresenter = new HomePresenter(this);
-
         mHomePresenter.setInitialView();
     }
 
@@ -79,7 +70,7 @@ public class HomeActivity extends BaseActivity implements HomeView,
     public void onBackPressed() {
         mHomePresenter.notifyBackPressed(
                 drawerLayout.isDrawerOpen(GravityCompat.START),
-                getSupportFragmentManager().findFragmentByTag(Constant.TYPE) == null
+                isFragmentShowing(Constant.MY_PLANS)
         );
     }
 
@@ -113,36 +104,16 @@ public class HomeActivity extends BaseActivity implements HomeView,
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_my_plans:
-                if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
-                    getSupportFragmentManager().popBackStack();
-                }
+                mHomePresenter.notifyShowingFragment(Constant.MY_PLANS, isFragmentShowing(Constant.MY_PLANS));
                 break;
             case R.id.nav_all_types:
-                if (getSupportFragmentManager().findFragmentByTag(Constant.TYPE) == null) {
-                    makeCircularRevealAnimationOnFab(R.drawable.ic_playlist_add_white_24dp);
-                    toolbar.setTitle(R.string.title_fragment_all_types);
-                    AllTypesFragment allTypesFragment = new AllTypesFragment();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, allTypesFragment, Constant.TYPE).addToBackStack(null).commit();
-                    getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-                        @Override
-                        public void onBackStackChanged() {
-                            if (getSupportFragmentManager().findFragmentByTag(Constant.TYPE) == null) {
-                                makeCircularRevealAnimationOnFab(R.drawable.ic_add_white_24dp);
-                                toolbar.setTitle(R.string.title_fragment_my_plans);
-                                navView.setCheckedItem(R.id.nav_my_plans);
-                                getSupportFragmentManager().removeOnBackStackChangedListener(this);
-                            }
-                        }
-                    });
-                }
+                mHomePresenter.notifyShowingFragment(Constant.ALL_TYPES, isFragmentShowing(Constant.ALL_TYPES));
                 break;
             case R.id.nav_settings:
-                Intent intentSettings = new Intent(this, SettingsActivity.class);
-                startActivity(intentSettings);
+                enterActivity(Constant.SETTINGS);
                 break;
             case R.id.nav_about:
-                Intent intentAbout = new Intent(this, AboutActivity.class);
-                startActivity(intentAbout);
+                enterActivity(Constant.ABOUT);
                 break;
             default:
                 break;
@@ -152,29 +123,24 @@ public class HomeActivity extends BaseActivity implements HomeView,
         return true;
     }
 
-    private void makeCircularRevealAnimationOnFab(int imageRes) {
-        Animator disappearanceAnim = ViewAnimationUtils.createCircularReveal(fab, fab.getWidth() / 2, fab.getHeight() / 2, fab.getWidth() / 2, 0);
-        disappearanceAnim.setDuration(CR_ANIM_DURATION);
-        disappearanceAnim.start();
-        fab.setImageResource(imageRes);
-        Animator appearanceAnim = ViewAnimationUtils.createCircularReveal(fab, fab.getWidth() / 2, fab.getHeight() / 2, 0, fab.getWidth() / 2);
-        appearanceAnim.setDuration(CR_ANIM_DURATION);
-        appearanceAnim.start();
-    }
-
     @Override
     public void showInitialView(String ucPlanCount) {
+        setContentView(R.layout.activity_home);
+        ButterKnife.bind(this);
+
+        ucPlanCountText = ButterKnife.findById(mNavigationView.getHeaderView(0), R.id.text_uc_plan_count);
+
         setSupportActionBar(toolbar);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        navView.setNavigationItemSelectedListener(this);
+        mNavigationView.setNavigationItemSelectedListener(this);
 
         ucPlanCountText.setText(ucPlanCount);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, new MyPlansFragment(), Constant.PLAN).commit();
+        showFragment(Constant.MY_PLANS, R.string.title_fragment_my_plans, R.drawable.ic_add_white_24dp);
     }
 
     @Override
@@ -188,13 +154,59 @@ public class HomeActivity extends BaseActivity implements HomeView,
     }
 
     @Override
+    public void changeFabVisibility(boolean isVisible) {
+        ObjectAnimator.ofFloat(fab, "translationY", fab.getTranslationY(), isVisible ? 0f : Util.convertDpToPx(Constant.COORDINATE_FAB) + fab.getHeight() / 2f)
+                .setDuration(200)
+                .start();
+    }
+
+    @Override
+    public void showFragment(String tag, int titleResId, int fabResId) {
+        BaseListFragment fragment;
+        int navViewCheckedItemId;
+        switch (tag) {
+            case Constant.MY_PLANS:
+                fragment = new MyPlansFragment();
+                navViewCheckedItemId = R.id.nav_my_plans;
+                break;
+            case Constant.ALL_TYPES:
+                fragment = new AllTypesFragment();
+                navViewCheckedItemId = R.id.nav_all_types;
+                break;
+            default:
+                throw new IllegalArgumentException("The argument tag cannot be " + tag);
+        }
+        fragment.setOnListScrolledListener(new BaseListFragment.OnListScrolledListener() {
+            @Override
+            public void onListScrolled(int variation) {
+                mHomePresenter.notifyListScrolled(variation);
+            }
+        });
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, fragment, tag).commit();
+        toolbar.setTitle(titleResId);
+        fab.setImageResource(fabResId);
+        fab.setTranslationY(0f);
+        mNavigationView.setCheckedItem(navViewCheckedItemId);
+    }
+
+    @Override
     public void onPressBackKey() {
         super.onBackPressed();
     }
 
     @Override
-    public void showGuide() {
-        GuideActivity.start(this);
+    public void enterActivity(String tag) {
+        switch (tag) {
+            case Constant.GUIDE:
+                GuideActivity.start(this);
+                break;
+            case Constant.SETTINGS:
+                SettingsActivity.start(this);
+                break;
+            case Constant.ABOUT:
+                AboutActivity.start(this);
+                break;
+        }
     }
 
     @Override
@@ -211,13 +223,16 @@ public class HomeActivity extends BaseActivity implements HomeView,
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fab:
-                //TODO 优化点击后事件的选择
-                if (getSupportFragmentManager().findFragmentByTag(Constant.TYPE) == null) {
+                if (isFragmentShowing(Constant.MY_PLANS)) {
                     CreatePlanActivity.start(this);
                 } else {
                     CreateTypeActivity.start(this);
                 }
                 break;
         }
+    }
+
+    private boolean isFragmentShowing(String tag) {
+        return getSupportFragmentManager().findFragmentByTag(tag) != null;
     }
 }

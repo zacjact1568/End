@@ -1,9 +1,6 @@
 package com.zack.enderplan.domain.fragment;
 
-import android.app.ActivityOptions;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -21,10 +18,10 @@ import com.zack.enderplan.interactor.presenter.AllTypesPresenter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AllTypesFragment extends Fragment implements AllTypesView {
+public class AllTypesFragment extends BaseListFragment implements AllTypesView {
 
     @BindView(R.id.list_all_types)
-    RecyclerView mAllTypesList;
+    RecyclerView mTypeList;
 
     private AllTypesPresenter mAllTypesPresenter;
 
@@ -70,9 +67,15 @@ public class AllTypesFragment extends Fragment implements AllTypesView {
             }
         });
 
-        mAllTypesList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAllTypesList.setHasFixedSize(true);
-        mAllTypesList.setAdapter(typeAdapter);
+        mTypeList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mTypeList.setHasFixedSize(true);
+        mTypeList.setAdapter(typeAdapter);
+        mTypeList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                onListScrolled(dy);
+            }
+        });
 
         TypeItemTouchCallback typeItemTouchCallback = new TypeItemTouchCallback();
         typeItemTouchCallback.setOnItemMovedListener(new TypeItemTouchCallback.OnItemMovedListener() {
@@ -81,7 +84,7 @@ public class AllTypesFragment extends Fragment implements AllTypesView {
                 mAllTypesPresenter.notifyTypeSequenceChanged(fromPosition, toPosition);
             }
         });
-        new ItemTouchHelper(typeItemTouchCallback).attachToRecyclerView(mAllTypesList);
+        new ItemTouchHelper(typeItemTouchCallback).attachToRecyclerView(mTypeList);
     }
 
     @Override

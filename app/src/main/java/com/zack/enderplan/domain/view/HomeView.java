@@ -1,7 +1,7 @@
 package com.zack.enderplan.domain.view;
 
+import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
-import android.view.View;
 
 public interface HomeView {
 
@@ -11,9 +11,13 @@ public interface HomeView {
 
     void onCloseDrawer();
 
+    void changeFabVisibility(boolean isVisible);
+
+    void showFragment(String tag, @StringRes int titleResId, @DrawableRes int fabResId);
+
     void onPressBackKey();
 
-    void showGuide();
+    void enterActivity(String tag);
 
     void exitHome();
 

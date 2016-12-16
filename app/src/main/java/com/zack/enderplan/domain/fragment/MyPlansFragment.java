@@ -2,8 +2,8 @@ package com.zack.enderplan.domain.fragment;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +23,7 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MyPlansFragment extends Fragment implements MyPlansView {
+public class MyPlansFragment extends BaseListFragment implements MyPlansView {
 
     @BindView(R.id.list_plan)
     EnhancedRecyclerView mPlanList;
@@ -95,11 +95,16 @@ public class MyPlansFragment extends Fragment implements MyPlansView {
             }
         });
 
-        //初始化RecyclerView
         mPlanList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mPlanList.setHasFixedSize(true);
         mPlanList.setEmptyView(mEmptyViewText);
         mPlanList.setAdapter(planAdapter);
+        mPlanList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                onListScrolled(dy);
+            }
+        });
 
         PlanItemTouchCallback planItemTouchCallback = new PlanItemTouchCallback();
         planItemTouchCallback.setOnItemSwipedListener(new PlanItemTouchCallback.OnItemSwipedListener() {
