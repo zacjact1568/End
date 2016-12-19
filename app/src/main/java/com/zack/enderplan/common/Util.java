@@ -9,6 +9,8 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.LocaleList;
 import android.os.Vibrator;
+import android.support.annotation.ColorRes;
+import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.StrikethroughSpan;
@@ -208,5 +210,9 @@ public class Util {
 
     public static int convertDpToPx(int dp) {
         return (int) (dp * App.getGlobalContext().getResources().getDisplayMetrics().density + 0.5f);
+    }
+
+    public static int getColor(@ColorRes int resId) {
+        return ContextCompat.getColor(App.getGlobalContext(), resId);
     }
 }

@@ -60,31 +60,13 @@ public class HomePresenter extends BasePresenter implements Presenter<HomeView> 
         }
     }
 
-    public void notifyShowingFragment(String tag, boolean isShowing) {
-        if (isShowing) return;
-        int titleResId, fabResId;
-        switch (tag) {
-            case Constant.MY_PLANS:
-                titleResId = R.string.title_fragment_my_plans;
-                fabResId = R.drawable.ic_add_white_24dp;
-                break;
-            case Constant.ALL_TYPES:
-                titleResId = R.string.title_fragment_all_types;
-                fabResId = R.drawable.ic_playlist_add_white_24dp;
-                break;
-            default:
-                throw new IllegalArgumentException("The argument tag cannot be " + tag);
-        }
-        mHomeView.showFragment(tag, titleResId, fabResId);
-    }
-
     public void notifyBackPressed(boolean isDrawerOpen, boolean isOnRootFragment) {
         long currentTime = System.currentTimeMillis();
         if (isDrawerOpen) {
             mHomeView.onCloseDrawer();
         } else if (!isOnRootFragment) {
             //不是在根Fragment（可以直接退出的Fragment）上，回到根Fragment
-            mHomeView.showFragment(Constant.MY_PLANS, R.string.title_fragment_my_plans, R.drawable.ic_add_white_24dp);
+            mHomeView.showFragment(Constant.MY_PLANS);
         } else if (currentTime - lastBackKeyPressedTime < 1500) {
             //连续点击间隔在1.5s以内，执行back键操作
             mHomeView.onPressBackKey();
@@ -101,7 +83,7 @@ public class HomePresenter extends BasePresenter implements Presenter<HomeView> 
 
     @Subscribe
     public void onDataLoaded(DataLoadedEvent event) {
-        mHomeView.onUcPlanCountUpdated(getUcPlanCount());
+        mHomeView.changeUcPlanCount(getUcPlanCount());
     }
 
     @Subscribe
@@ -109,7 +91,7 @@ public class HomePresenter extends BasePresenter implements Presenter<HomeView> 
         if (event.getEventSource().equals(getPresenterName())) return;
         if (!mDataManager.getPlan(event.getPosition()).isCompleted()) {
             //若创建的是一个未完成的计划，需要更新侧边栏
-            mHomeView.onUcPlanCountUpdated(getUcPlanCount());
+            mHomeView.changeUcPlanCount(getUcPlanCount());
         }
     }
 
@@ -118,7 +100,7 @@ public class HomePresenter extends BasePresenter implements Presenter<HomeView> 
         if (event.getEventSource().equals(getPresenterName())) return;
         if (!event.getDeletedPlan().isCompleted()) {
             //若删除的是一个未完成的计划，需要更新侧边栏
-            mHomeView.onUcPlanCountUpdated(getUcPlanCount());
+            mHomeView.changeUcPlanCount(getUcPlanCount());
         }
     }
 
@@ -126,7 +108,7 @@ public class HomePresenter extends BasePresenter implements Presenter<HomeView> 
     public void onPlanDetailChanged(PlanDetailChangedEvent event) {
         if (event.getEventSource().equals(getPresenterName())) return;
         if (event.getChangedField() == PlanDetailChangedEvent.FIELD_PLAN_STATUS) {
-            mHomeView.onUcPlanCountUpdated(getUcPlanCount());
+            mHomeView.changeUcPlanCount(getUcPlanCount());
         }
     }
 

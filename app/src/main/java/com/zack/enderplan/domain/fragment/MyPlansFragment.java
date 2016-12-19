@@ -82,19 +82,6 @@ public class MyPlansFragment extends BaseListFragment implements MyPlansView {
     @Override
     public void showInitialView(PlanAdapter planAdapter) {
 
-        planAdapter.setOnPlanItemClickListener(new PlanAdapter.OnPlanItemClickListener() {
-            @Override
-            public void onPlanItemClick(int position) {
-                mMyPlansPresenter.notifyPlanItemClicked(position);
-            }
-        });
-        planAdapter.setOnStarMarkIconClickListener(new PlanAdapter.OnStarMarkIconClickListener() {
-            @Override
-            public void onStarMarkIconClick(int position) {
-                mMyPlansPresenter.notifyStarMarkClicked(position);
-            }
-        });
-
         mPlanList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mPlanList.setHasFixedSize(true);
         mPlanList.setEmptyView(mEmptyViewText);

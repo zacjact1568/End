@@ -12,7 +12,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,21 +28,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class HomeActivity extends BaseActivity implements HomeView,
-        NavigationView.OnNavigationItemSelectedListener {
+public class HomeActivity extends BaseActivity implements HomeView {
 
     @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.frame_layout)
-    FrameLayout frameLayout;
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
-    @BindView(R.id.nav_view)
-    NavigationView mNavigationView;
-    @BindView(R.id.drawer_layout)
-    DrawerLayout drawerLayout;
+    Toolbar mToolbar;
+    @BindView(R.id.fab_create)
+    FloatingActionButton mCreateFab;
+    @BindView(R.id.navigator)
+    NavigationView mNavigator;
+    @BindView(R.id.layout_drawer)
+    DrawerLayout mDrawerLayout;
 
-    private TextView ucPlanCountText;
+    private TextView mUcPlanCountText;
     private HomePresenter mHomePresenter;
 
     @Override
@@ -58,6 +54,8 @@ public class HomeActivity extends BaseActivity implements HomeView,
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mHomePresenter.notifyStartingUpCompleted();
+        //如果放到setInitialView中，toolbar的title不会改变
+        showFragment(Constant.MY_PLANS);
     }
 
     @Override
@@ -69,7 +67,7 @@ public class HomeActivity extends BaseActivity implements HomeView,
     @Override
     public void onBackPressed() {
         mHomePresenter.notifyBackPressed(
-                drawerLayout.isDrawerOpen(GravityCompat.START),
+                mDrawerLayout.isDrawerOpen(GravityCompat.START),
                 isFragmentShowing(Constant.MY_PLANS)
         );
     }
@@ -96,31 +94,7 @@ public class HomeActivity extends BaseActivity implements HomeView,
             default:
                 break;
         }
-
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.nav_my_plans:
-                mHomePresenter.notifyShowingFragment(Constant.MY_PLANS, isFragmentShowing(Constant.MY_PLANS));
-                break;
-            case R.id.nav_all_types:
-                mHomePresenter.notifyShowingFragment(Constant.ALL_TYPES, isFragmentShowing(Constant.ALL_TYPES));
-                break;
-            case R.id.nav_settings:
-                enterActivity(Constant.SETTINGS);
-                break;
-            case R.id.nav_about:
-                enterActivity(Constant.ABOUT);
-                break;
-            default:
-                break;
-        }
-
-        drawerLayout.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     @Override
@@ -128,49 +102,74 @@ public class HomeActivity extends BaseActivity implements HomeView,
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
-        ucPlanCountText = ButterKnife.findById(mNavigationView.getHeaderView(0), R.id.text_uc_plan_count);
+        mUcPlanCountText = ButterKnife.findById(mNavigator.getHeaderView(0), R.id.text_uc_plan_count);
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        mNavigationView.setNavigationItemSelectedListener(this);
+        mNavigator.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.nav_my_plans:
+                        showFragment(Constant.MY_PLANS);
+                        break;
+                    case R.id.nav_all_types:
+                        showFragment(Constant.ALL_TYPES);
+                        break;
+                    case R.id.nav_settings:
+                        enterActivity(Constant.SETTINGS);
+                        break;
+                    case R.id.nav_about:
+                        enterActivity(Constant.ABOUT);
+                        break;
+                    default:
+                        break;
+                }
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
 
-        ucPlanCountText.setText(ucPlanCount);
-
-        showFragment(Constant.MY_PLANS, R.string.title_fragment_my_plans, R.drawable.ic_add_white_24dp);
+        mUcPlanCountText.setText(ucPlanCount);
     }
 
     @Override
-    public void onUcPlanCountUpdated(String newUcPlanCount) {
-        ucPlanCountText.setText(newUcPlanCount);
+    public void changeUcPlanCount(String ucPlanCount) {
+        mUcPlanCountText.setText(ucPlanCount);
     }
 
     @Override
     public void onCloseDrawer() {
-        drawerLayout.closeDrawer(GravityCompat.START);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
     }
 
     @Override
     public void changeFabVisibility(boolean isVisible) {
-        ObjectAnimator.ofFloat(fab, "translationY", fab.getTranslationY(), isVisible ? 0f : Util.convertDpToPx(Constant.COORDINATE_FAB) + fab.getHeight() / 2f)
+        ObjectAnimator.ofFloat(mCreateFab, "translationY", mCreateFab.getTranslationY(), isVisible ? 0f : Util.convertDpToPx(Constant.COORDINATE_FAB) + mCreateFab.getHeight() / 2f)
                 .setDuration(200)
                 .start();
     }
 
     @Override
-    public void showFragment(String tag, int titleResId, int fabResId) {
+    public void showFragment(String tag) {
+        if (isFragmentShowing(tag)) return;
         BaseListFragment fragment;
-        int navViewCheckedItemId;
+        int titleResId, fabResId, navViewCheckedItemId;
         switch (tag) {
             case Constant.MY_PLANS:
                 fragment = new MyPlansFragment();
+                titleResId = R.string.title_fragment_my_plans;
+                fabResId = R.drawable.ic_add_white_24dp;
                 navViewCheckedItemId = R.id.nav_my_plans;
                 break;
             case Constant.ALL_TYPES:
                 fragment = new AllTypesFragment();
+                titleResId = R.string.title_fragment_all_types;
+                fabResId = R.drawable.ic_playlist_add_white_24dp;
                 navViewCheckedItemId = R.id.nav_all_types;
                 break;
             default:
@@ -182,11 +181,11 @@ public class HomeActivity extends BaseActivity implements HomeView,
                 mHomePresenter.notifyListScrolled(variation);
             }
         });
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, fragment, tag).commit();
-        toolbar.setTitle(titleResId);
-        fab.setImageResource(fabResId);
-        fab.setTranslationY(0f);
-        mNavigationView.setCheckedItem(navViewCheckedItemId);
+        getSupportFragmentManager().beginTransaction().replace(R.id.layout_fragment, fragment, tag).commit();
+        mToolbar.setTitle(titleResId);
+        mCreateFab.setImageResource(fabResId);
+        mCreateFab.setTranslationY(0f);
+        mNavigator.setCheckedItem(navViewCheckedItemId);
     }
 
     @Override
@@ -219,10 +218,10 @@ public class HomeActivity extends BaseActivity implements HomeView,
         Toast.makeText(this, msgResId, Toast.LENGTH_SHORT).show();
     }
 
-    @OnClick({R.id.fab})
+    @OnClick({R.id.fab_create})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.fab:
+            case R.id.fab_create:
                 if (isFragmentShowing(Constant.MY_PLANS)) {
                     CreatePlanActivity.start(this);
                 } else {

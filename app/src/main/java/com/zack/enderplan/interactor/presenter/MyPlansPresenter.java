@@ -1,5 +1,6 @@
 package com.zack.enderplan.interactor.presenter;
 
+import com.zack.enderplan.common.Logger;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.event.DataLoadedEvent;
 import com.zack.enderplan.event.PlanCreatedEvent;
@@ -44,22 +45,36 @@ public class MyPlansPresenter extends BasePresenter implements Presenter<MyPlans
 
     public void setInitialView() {
         //初始化adapter
-        mPlanAdapter = new PlanAdapter(mDataManager.getPlanList(), mDataManager.getTypeCodeAndTypeMarkMap());
-
+        mPlanAdapter = new PlanAdapter();
+        mPlanAdapter.setOnPlanItemClickListener(new PlanAdapter.OnPlanItemClickListener() {
+            @Override
+            public void onPlanItemClick(int position) {
+                mMyPlansView.onPlanItemClicked(position);
+            }
+        });
+        mPlanAdapter.setOnPlanItemLongClickListener(new PlanAdapter.OnPlanItemLongClickListener() {
+            @Override
+            public void onPlanItemLongClick(int position) {
+                Logger.d("Long click at position" + position);
+            }
+        });
+        mPlanAdapter.setOnStarStatusChangedListener(new PlanAdapter.OnStarStatusChangedListener() {
+            @Override
+            public void onStarStatusChanged(int position) {
+                mDataManager.notifyStarStatusChanged(position);
+                mEventBus.post(new PlanDetailChangedEvent(
+                        getPresenterName(),
+                        mDataManager.getPlan(position).getPlanCode(),
+                        position,
+                        PlanDetailChangedEvent.FIELD_STAR_STATUS
+                ));
+            }
+        });
         mMyPlansView.showInitialView(mPlanAdapter);
     }
 
     public void notifySwitchingViewVisibility(boolean isVisible) {
         mViewVisible = isVisible;
-    }
-
-    public void notifyPlanItemClicked(int position) {
-        mMyPlansView.onPlanItemClicked(position);
-    }
-
-    public void notifyStarMarkClicked(int position) {
-        mDataManager.notifyStarStatusChanged(position);
-        mPlanAdapter.notifyItemChanged(position);
     }
 
     public void notifyDeletingPlan(int position) {

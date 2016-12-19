@@ -1,5 +1,6 @@
 package com.zack.enderplan.interactor.adapter;
 
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,29 +10,28 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.bean.Plan;
-import com.zack.enderplan.model.bean.TypeMark;
 import com.zack.enderplan.common.Util;
 import com.zack.enderplan.widget.CircleColorView;
-
-import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
 
-    private List<Plan> planList;
-    private Map<String, TypeMark> mTypeCodeAndTypeMarkMap;
+    private DataManager mDataManager;
+    private OnPlanItemClickListener mOnPlanItemClickListener;
+    private OnPlanItemLongClickListener mOnPlanItemLongClickListener;
+    private OnStarStatusChangedListener mOnStarStatusChangedListener;
 
-    private OnPlanItemClickListener onPlanItemClickListener;
-    private OnPlanItemLongClickListener onPlanItemLongClickListener;
-    private OnStarMarkIconClickListener onStarMarkIconClickListener;
+    private int mAccentColor, mGrey600Color;
 
-    public PlanAdapter(List<Plan> planList, Map<String, TypeMark> typeCodeAndTypeMarkMap) {
-        this.planList = planList;
-        mTypeCodeAndTypeMarkMap = typeCodeAndTypeMarkMap;
+    public PlanAdapter() {
+        mDataManager = DataManager.getInstance();
+
+        mAccentColor = Util.getColor(R.color.colorAccent);
+        mGrey600Color = Util.getColor(R.color.grey_600);
     }
 
     @Override
@@ -42,37 +42,40 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final Plan plan = planList.get(position);
+        //若position设成final，会有警告，因为回调方法被异步调用时，取到的position可能已经变化了
+        Plan plan = mDataManager.getPlan(position);
         boolean isCompleted = plan.isCompleted();
 
-        holder.typeMarkIcon.setFillColor(isCompleted ? Color.GRAY : Color.parseColor(mTypeCodeAndTypeMarkMap.get(plan.getTypeCode()).getColorHex()));
+        holder.typeMarkIcon.setFillColor(isCompleted ? Color.GRAY : Color.parseColor(mDataManager.getTypeCodeAndTypeMarkMap().get(plan.getTypeCode()).getColorHex()));
         holder.contentText.setText(isCompleted ? Util.addStrikethroughSpan(plan.getContent()) : plan.getContent());
-        holder.reminderMark.setVisibility(plan.hasReminder() ? View.VISIBLE : View.INVISIBLE);
-        holder.starMark.setImageResource(plan.isStarred() ? R.drawable.ic_star_color_accent_24dp : R.drawable.ic_star_outline_grey600_24dp);
-
-        if (onStarMarkIconClickListener != null) {
-            holder.starMark.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onStarMarkIconClickListener.onStarMarkIconClick(holder.getLayoutPosition());
+        holder.reminderIcon.setVisibility(plan.hasReminder() ? View.VISIBLE : View.INVISIBLE);
+        setStarButtonImage(holder.starButton, plan.isStarred());
+        holder.starButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int layoutPosition = holder.getLayoutPosition();
+                if (mOnStarStatusChangedListener != null) {
+                    mOnStarStatusChangedListener.onStarStatusChanged(layoutPosition);
                 }
-            });
-        }
+                //必须放到这里，根据新数据更新界面
+                setStarButtonImage(holder.starButton, mDataManager.getPlan(layoutPosition).isStarred());
+            }
+        });
 
-        if (onPlanItemClickListener != null) {
+        if (mOnPlanItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onPlanItemClickListener.onPlanItemClick(holder.getLayoutPosition());
+                    mOnPlanItemClickListener.onPlanItemClick(holder.getLayoutPosition());
                 }
             });
         }
 
-        if (onPlanItemLongClickListener != null) {
+        if (mOnPlanItemLongClickListener != null) {
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    onPlanItemLongClickListener.onPlanItemLongClick(holder.getLayoutPosition());
+                    mOnPlanItemLongClickListener.onPlanItemLongClick(holder.getLayoutPosition());
                     return true;
                 }
             });
@@ -81,7 +84,12 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return planList.size();
+        return mDataManager.getPlanCount();
+    }
+
+    private void setStarButtonImage(ImageView starButton, boolean isStarred) {
+        starButton.setImageResource(isStarred ? R.drawable.ic_star_black_24dp : R.drawable.ic_star_border_black_24dp);
+        starButton.setImageTintList(ColorStateList.valueOf(isStarred ? mAccentColor : mGrey600Color));
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -89,10 +97,10 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
         CircleColorView typeMarkIcon;
         @BindView(R.id.text_content)
         TextView contentText;
-        @BindView(R.id.reminder_mark)
-        ImageView reminderMark;
-        @BindView(R.id.star_mark)
-        ImageView starMark;
+        @BindView(R.id.ic_reminder)
+        ImageView reminderIcon;
+        @BindView(R.id.btn_star)
+        ImageView starButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -105,7 +113,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
     }
 
     public void setOnPlanItemClickListener(OnPlanItemClickListener listener) {
-        this.onPlanItemClickListener = listener;
+        mOnPlanItemClickListener = listener;
     }
 
     public interface OnPlanItemLongClickListener {
@@ -113,14 +121,14 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
     }
 
     public void setOnPlanItemLongClickListener(OnPlanItemLongClickListener listener) {
-        this.onPlanItemLongClickListener = listener;
+        mOnPlanItemLongClickListener = listener;
     }
 
-    public interface OnStarMarkIconClickListener {
-        void onStarMarkIconClick(int position);
+    public interface OnStarStatusChangedListener {
+        void onStarStatusChanged(int position);
     }
 
-    public void setOnStarMarkIconClickListener(OnStarMarkIconClickListener listener) {
-        this.onStarMarkIconClickListener = listener;
+    public void setOnStarStatusChangedListener(OnStarStatusChangedListener listener) {
+        mOnStarStatusChangedListener = listener;
     }
 }

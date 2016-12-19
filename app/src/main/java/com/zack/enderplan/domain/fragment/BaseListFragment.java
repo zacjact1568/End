@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 
 public abstract class BaseListFragment extends Fragment {
 
-    protected OnListScrolledListener mOnListScrolledListener;
+    private OnListScrolledListener mOnListScrolledListener;
 
     public interface OnListScrolledListener {
         void onListScrolled(int variation);
