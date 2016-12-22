@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:background="@color/colorPrimary"
-    tools:context=".domain.fragment.FirstPlanFragment">
+    tools:context=".view.fragment.FirstPlanFragment">
 
     <ImageView
         android:id="@+id/ic_logo"

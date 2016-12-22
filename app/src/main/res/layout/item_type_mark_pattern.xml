@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.zack.enderplan.widget.CheckableFrameLayout
+<com.zack.enderplan.view.widget.CheckableFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,7 +8,7 @@
     android:background="?android:attr/selectableItemBackgroundBorderless"
     android:padding="12dp">
 
-    <com.zack.enderplan.widget.CheckView
+    <com.zack.enderplan.view.widget.CheckView
         android:id="@+id/ic_pattern"
         android:layout_width="28dp"
         android:layout_height="28dp"
@@ -16,4 +16,4 @@
         app:checkedColor="@color/colorAccent"
         app:uncheckedColor="@color/grey_600"/>
 
-</com.zack.enderplan.widget.CheckableFrameLayout>
+</com.zack.enderplan.view.widget.CheckableFrameLayout>

@@ -7,7 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.domain.activity.ReminderActivity;
+import com.zack.enderplan.view.activity.ReminderActivity;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.database.DatabaseManager;

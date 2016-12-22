@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context=".domain.fragment.DateTimePickerDialogFragment">
+    tools:context=".view.dialog.DateTimePickerDialogFragment">
 
     <ViewSwitcher
         android:id="@+id/switcher_date_time_picker"

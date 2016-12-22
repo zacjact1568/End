@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".domain.activity.CreatePlanActivity"
+    tools:context=".view.activity.CreatePlanActivity"
     tools:showIn="@layout/activity_create_plan">
 
     <LinearLayout
@@ -42,7 +42,7 @@
 
         <include layout="@layout/divider"/>
 
-        <com.zack.enderplan.widget.ItemView
+        <com.zack.enderplan.view.widget.ItemView
             android:id="@+id/item_deadline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
 
         <include layout="@layout/divider"/>
 
-        <com.zack.enderplan.widget.ItemView
+        <com.zack.enderplan.view.widget.ItemView
             android:id="@+id/item_reminder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

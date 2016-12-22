@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.LocaleList;
 import android.os.Vibrator;
 import android.support.annotation.ColorRes;
+import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -214,5 +215,9 @@ public class Util {
 
     public static int getColor(@ColorRes int resId) {
         return ContextCompat.getColor(App.getGlobalContext(), resId);
+    }
+
+    public static String getString(@StringRes int resId) {
+        return App.getGlobalContext().getString(resId);
     }
 }

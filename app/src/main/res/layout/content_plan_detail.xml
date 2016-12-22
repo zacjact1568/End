@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".domain.activity.PlanDetailActivity"
+    tools:context=".view.activity.PlanDetailActivity"
     tools:showIn="@layout/activity_plan_detail">
 
     <LinearLayout
@@ -44,7 +44,7 @@
 
         <include layout="@layout/divider"/>
 
-        <com.zack.enderplan.widget.ItemView
+        <com.zack.enderplan.view.widget.ItemView
             android:id="@+id/item_deadline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
 
         <include layout="@layout/divider"/>
 
-        <com.zack.enderplan.widget.ItemView
+        <com.zack.enderplan.view.widget.ItemView
             android:id="@+id/item_reminder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context=".domain.fragment.TypeMarkColorPickerDialogFragment">
+    tools:context=".view.dialog.TypeMarkColorPickerDialogFragment">
 
     <TextView
         android:layout_width="match_parent"
@@ -46,7 +46,7 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <com.zack.enderplan.widget.CircleColorView
+            <com.zack.enderplan.view.widget.CircleColorView
                 android:id="@+id/ic_type_mark_color"
                 android:layout_width="40dp"
                 android:layout_height="40dp"/>
@@ -63,7 +63,7 @@
                 tools:text="#FF543B4A"/>
 
             <!--不要设置ColorPicker的任何layout属性，因为运行时动态设置LayoutParams的时候会清空这些属性-->
-            <com.zack.enderplan.widget.ColorPicker
+            <com.zack.enderplan.view.widget.ColorPicker
                 android:id="@+id/picker_type_mark_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>

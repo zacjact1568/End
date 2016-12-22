@@ -10,7 +10,7 @@
     android:paddingTop="10dp"
     android:paddingBottom="10dp">
 
-    <com.zack.enderplan.widget.CircleColorView
+    <com.zack.enderplan.view.widget.CircleColorView
         android:id="@+id/ic_type_mark"
         android:layout_width="@dimen/circle_color_view_size"
         android:layout_height="@dimen/circle_color_view_size"/>

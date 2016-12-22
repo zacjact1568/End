@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:gravity="bottom"
     android:orientation="vertical"
-    tools:context=".domain.activity.ReminderActivity">
+    tools:context=".view.activity.ReminderActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -61,7 +61,7 @@
             android:paddingEnd="16dp"
             android:columnCount="3">
 
-            <com.zack.enderplan.widget.CircleColorView
+            <com.zack.enderplan.view.widget.CircleColorView
                 android:id="@+id/btn_delay"
                 android:layout_width="0dp"
                 android:layout_height="52dp"
@@ -71,7 +71,7 @@
                 app:fillColor="@color/colorAccent"
                 app:innerIcon="@drawable/ic_snooze_black_24dp"/>
 
-            <com.zack.enderplan.widget.CircleColorView
+            <com.zack.enderplan.view.widget.CircleColorView
                 android:id="@+id/btn_detail"
                 android:layout_width="0dp"
                 android:layout_height="52dp"
@@ -81,7 +81,7 @@
                 app:fillColor="@color/colorAccent"
                 app:innerIcon="@drawable/ic_info_outline_black_24dp"/>
 
-            <com.zack.enderplan.widget.CircleColorView
+            <com.zack.enderplan.view.widget.CircleColorView
                 android:id="@+id/btn_complete"
                 android:layout_width="0dp"
                 android:layout_height="52dp"
@@ -125,7 +125,7 @@
             android:paddingEnd="16dp"
             android:columnCount="4">
 
-            <com.zack.enderplan.widget.CircleColorView
+            <com.zack.enderplan.view.widget.CircleColorView
                 android:id="@+id/btn_back"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
@@ -135,7 +135,7 @@
                 app:fillColor="@color/colorAccent"
                 app:innerIcon="@drawable/ic_arrow_back_black_24dp"/>
 
-            <com.zack.enderplan.widget.CircleColorView
+            <com.zack.enderplan.view.widget.CircleColorView
                 android:id="@+id/btn_1_hour"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
@@ -145,7 +145,7 @@
                 app:fillColor="@color/colorAccent"
                 app:innerText="1h"/>
 
-            <com.zack.enderplan.widget.CircleColorView
+            <com.zack.enderplan.view.widget.CircleColorView
                 android:id="@+id/btn_tomorrow"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
@@ -155,7 +155,7 @@
                 app:fillColor="@color/colorAccent"
                 app:innerText="1d"/>
 
-            <com.zack.enderplan.widget.CircleColorView
+            <com.zack.enderplan.view.widget.CircleColorView
                 android:id="@+id/btn_more"
                 android:layout_width="0dp"
                 android:layout_height="48dp"

@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".domain.activity.HomeActivity"
+            android:name=".view.activity.HomeActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Transparent.StatusBar">
@@ -24,47 +24,47 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".domain.activity.CreatePlanActivity"
+            android:name=".view.activity.CreatePlanActivity"
             android:label="@string/title_activity_create_plan"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Transparent.Window"/>
         <activity
-            android:name=".domain.activity.PlanDetailActivity"
+            android:name=".view.activity.PlanDetailActivity"
             android:label="@string/title_activity_plan_detail"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Transition.VerticalSlide.TransparentStatusBar"/>
         <activity
-            android:name=".domain.activity.CreateTypeActivity"
+            android:name=".view.activity.CreateTypeActivity"
             android:label="@string/title_activity_create_type"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Transparent.Window"/>
         <activity
-            android:name=".domain.activity.TypeDetailActivity"
+            android:name=".view.activity.TypeDetailActivity"
             android:label="@string/title_activity_type_detail"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Transition.SharedElement.TransparentStatusBar"/>
         <activity
-            android:name=".domain.activity.EditTypeActivity"
+            android:name=".view.activity.EditTypeActivity"
             android:label="@string/title_activity_edit_type"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Transition.SharedElement"/>
         <activity
-            android:name=".domain.activity.SettingsActivity"
+            android:name=".view.activity.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"/>
         <activity
-            android:name=".domain.activity.AboutActivity"
+            android:name=".view.activity.AboutActivity"
             android:label="@string/title_activity_about"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Transparent.StatusBar"/>
         <activity
-            android:name=".domain.activity.ReminderActivity"
+            android:name=".view.activity.ReminderActivity"
             android:label="@string/title_activity_reminder"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Transparent.All"/>
         <activity
-            android:name=".domain.activity.GuideActivity"
+            android:name=".view.activity.GuideActivity"
             android:label="@string/title_activity_welcome"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"/>
