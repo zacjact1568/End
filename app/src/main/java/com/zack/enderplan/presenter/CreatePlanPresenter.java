@@ -50,14 +50,22 @@ public class CreatePlanPresenter extends BasePresenter {
 
     public void notifyDeadlineChanged(long deadline) {
         if (mPlan.getDeadline() == deadline) return;
-        mPlan.setDeadline(deadline);
-        mCreatePlanViewContract.onDeadlineChanged(mPlan.hasDeadline(), formatDateTime(deadline));
+        if (Util.isFutureTime(deadline)) {
+            mPlan.setDeadline(deadline);
+            mCreatePlanViewContract.onDeadlineChanged(mPlan.hasDeadline(), formatDateTime(deadline));
+        } else {
+            mCreatePlanViewContract.showToast(R.string.toast_past_deadline);
+        }
     }
 
     public void notifyReminderTimeChanged(long reminderTime) {
         if (mPlan.getReminderTime() == reminderTime) return;
-        mPlan.setReminderTime(reminderTime);
-        mCreatePlanViewContract.onReminderTimeChanged(mPlan.hasReminder(), formatDateTime(reminderTime));
+        if (Util.isFutureTime(reminderTime)) {
+            mPlan.setReminderTime(reminderTime);
+            mCreatePlanViewContract.onReminderTimeChanged(mPlan.hasReminder(), formatDateTime(reminderTime));
+        } else {
+            mCreatePlanViewContract.showToast(R.string.toast_past_reminder_time);
+        }
     }
 
     public void notifyStarStatusChanged() {

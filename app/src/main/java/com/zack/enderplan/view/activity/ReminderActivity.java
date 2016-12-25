@@ -36,11 +36,11 @@ public class ReminderActivity extends BaseActivity implements ReminderViewContra
     @Inject
     ReminderPresenter mReminderPresenter;
 
-    public static PendingIntent getPendingIntentForStart(Context context, String planCode, int position) {
+    public static PendingIntent getPendingIntentForStart(Context context, String planCode, int planListPosition) {
         Intent intent = new Intent(context, ReminderActivity.class);
         //plan_code总是有效的，position可能无效（-1），但优先考虑position
         intent.putExtra(Constant.PLAN_CODE, planCode);
-        intent.putExtra(Constant.POSITION, position);
+        intent.putExtra(Constant.PLAN_LIST_POSITION, planListPosition);
         return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
     }
 
@@ -56,7 +56,7 @@ public class ReminderActivity extends BaseActivity implements ReminderViewContra
     @Override
     protected void onInjectPresenter() {
         DaggerReminderComponent.builder()
-                .reminderPresenterModule(new ReminderPresenterModule(this, getIntent().getIntExtra(Constant.POSITION, -1), getIntent().getStringExtra(Constant.PLAN_CODE)))
+                .reminderPresenterModule(new ReminderPresenterModule(this, getIntent().getIntExtra(Constant.PLAN_LIST_POSITION, -1), getIntent().getStringExtra(Constant.PLAN_CODE)))
                 .appComponent(App.getAppComponent())
                 .build()
                 .inject(this);

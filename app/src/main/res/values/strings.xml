@@ -44,6 +44,9 @@
 
     <string name="name_type_mark_shared_element_transition">Type mark shared element transition</string>
 
+    <string name="toast_past_deadline">The deadline should be in the future</string>
+    <string name="toast_past_reminder_time">The reminder time should be in the future</string>
+
     <!--HomeActivity-->
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -182,9 +185,9 @@
 
     <!--Default types-->
     <string name="def_type_1">To-Do</string>
-    <string name="def_type_2">Study</string>
+    <string name="def_type_2">Family</string>
     <string name="def_type_3">Work</string>
-    <string name="def_type_4">Family</string>
+    <string name="def_type_4">Study</string>
 
     <!--Default plans-->
     <string name="def_plan_1">Click to see the detail of this plan</string>

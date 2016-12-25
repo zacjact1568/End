@@ -88,9 +88,9 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
 
     private MenuItem mStarMenuItem;
 
-    public static void start(Activity activity, int position, boolean transition) {
+    public static void start(Activity activity, int planListPosition, boolean transition) {
         Intent intent = new Intent(activity, PlanDetailActivity.class);
-        intent.putExtra(Constant.POSITION, position);
+        intent.putExtra(Constant.PLAN_LIST_POSITION, planListPosition);
         activity.startActivity(intent, transition ? ActivityOptions.makeSceneTransitionAnimation(activity).toBundle() : null);
     }
 
@@ -103,7 +103,7 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
     @Override
     protected void onInjectPresenter() {
         DaggerPlanDetailComponent.builder()
-                .planDetailPresenterModule(new PlanDetailPresenterModule(this, getIntent().getIntExtra(Constant.POSITION, -1)))
+                .planDetailPresenterModule(new PlanDetailPresenterModule(this, getIntent().getIntExtra(Constant.PLAN_LIST_POSITION, -1)))
                 .appComponent(App.getAppComponent())
                 .build()
                 .inject(this);
@@ -244,7 +244,7 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
 
     @Override
     public void showContentEditorDialog(String content) {
-        EditorDialogFragment fragment = EditorDialogFragment.newInstance(App.getGlobalContext().getString(R.string.title_dialog_content_editor), content);
+        EditorDialogFragment fragment = EditorDialogFragment.newInstance(App.getContext().getString(R.string.title_dialog_content_editor), content);
         fragment.setOnPositiveButtonClickListener(new EditorDialogFragment.OnPositiveButtonClickListener() {
             @Override
             public void onPositiveButtonClick(String editorText) {

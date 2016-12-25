@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatDelegate;
 import com.zack.enderplan.injector.component.AppComponent;
 import com.zack.enderplan.injector.component.DaggerAppComponent;
 import com.zack.enderplan.injector.module.AppModule;
+import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.preference.PreferenceHelper;
 import com.zack.enderplan.common.Constant;
 
@@ -24,8 +25,6 @@ public class App extends Application {
 
     private static AppComponent mAppComponent;
 
-    private static Context globalContext;
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -33,8 +32,6 @@ public class App extends Application {
         mAppComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(getApplicationContext()))
                 .build();
-
-        globalContext = getApplicationContext();
 
         //设定preferences默认值
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
@@ -48,9 +45,12 @@ public class App extends Application {
         return mAppComponent;
     }
 
-    @Deprecated
-    public static Context getGlobalContext() {
-        return globalContext;
+    public static Context getContext() {
+        return mAppComponent.getContext();
+    }
+
+    public static DataManager getDataManager() {
+        return mAppComponent.getDataManager();
     }
 
     /** 通过Preference中的数据初始化某些设置 */

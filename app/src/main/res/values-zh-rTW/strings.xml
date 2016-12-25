@@ -131,8 +131,7 @@
     <string name="snackbar_create_format">「%s」已創建</string>
     <string name="title_dialog_fragment_type_mark_pattern_picker">選擇圖案</string>
     <string name="btn_dialog_select_none">全部不選</string>
-    <string name="def_type_4">家庭</string>
-    <string name="def_type_2">學習</string>
+    <string name="def_type_4">學習</string>
     <string name="def_type_1">待辦事項</string>
     <string name="def_type_3">工作</string>
     <string name="def_plan_2">左滑刪除計劃</string>
@@ -153,4 +152,5 @@
     <string name="toast_delay_more">在%s</string>
     <string name="toast_delay_tomorrow">在明天</string>
     <string name="toast_reminder_delayed_format">我將會%s提醒你</string>
+    <string name="def_type_2">家庭</string>
 </resources>

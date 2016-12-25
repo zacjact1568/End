@@ -39,7 +39,7 @@ public class DatabaseManager {
     private static DatabaseManager ourInstance = new DatabaseManager();
 
     private DatabaseManager() {
-        Context context = App.getGlobalContext();
+        Context context = App.getContext();
         DatabaseOpenHelper dbHelper = new DatabaseOpenHelper(context, DB_NAME, null, DB_VERSION);
         database = dbHelper.getWritableDatabase();
     }
@@ -309,7 +309,7 @@ public class DatabaseManager {
     //*****************TypeMarkColor*****************
 
     public List<TypeMarkColor> loadTypeMarkColor() {
-        SQLiteDatabase typeMarkDB = SQLiteDatabase.openDatabase(App.getGlobalContext().getDatabasePath(Constant.DB_TYPE_MARK).getPath(), null, SQLiteDatabase.OPEN_READONLY);
+        SQLiteDatabase typeMarkDB = SQLiteDatabase.openDatabase(App.getContext().getDatabasePath(Constant.DB_TYPE_MARK).getPath(), null, SQLiteDatabase.OPEN_READONLY);
         List<TypeMarkColor> typeMarkColorList = new ArrayList<>();
         String colorNameColumnName = String.format(Constant.COLOR_NAME, getColumnNameSuffixByLocale());
         Cursor cursor = typeMarkDB.query(Constant.COLOR, null, null, null, null, null, null);
@@ -327,7 +327,7 @@ public class DatabaseManager {
     }
 
     public String queryTypeMarkColorNameByTypeMarkColorHex(String typeMarkColorHex) {
-        SQLiteDatabase typeMarkDB = SQLiteDatabase.openDatabase(App.getGlobalContext().getDatabasePath(Constant.DB_TYPE_MARK).getPath(), null, SQLiteDatabase.OPEN_READONLY);
+        SQLiteDatabase typeMarkDB = SQLiteDatabase.openDatabase(App.getContext().getDatabasePath(Constant.DB_TYPE_MARK).getPath(), null, SQLiteDatabase.OPEN_READONLY);
         String colorNameColumnName = String.format(Constant.COLOR_NAME, getColumnNameSuffixByLocale());
         Cursor cursor = typeMarkDB.query(Constant.COLOR, new String[]{colorNameColumnName}, Constant.COLOR_HEX + " = ?", new String[]{typeMarkColorHex}, null, null, null);
         String typeMarkColorName = null;
@@ -342,7 +342,7 @@ public class DatabaseManager {
     //*****************TypeMarkPattern*****************
 
     public List<TypeMarkPattern> loadTypeMarkPattern() {
-        SQLiteDatabase typeMarkDB = SQLiteDatabase.openDatabase(App.getGlobalContext().getDatabasePath(Constant.DB_TYPE_MARK).getPath(), null, SQLiteDatabase.OPEN_READONLY);
+        SQLiteDatabase typeMarkDB = SQLiteDatabase.openDatabase(App.getContext().getDatabasePath(Constant.DB_TYPE_MARK).getPath(), null, SQLiteDatabase.OPEN_READONLY);
         List<TypeMarkPattern> typeMarkPatternList = new ArrayList<>();
         String patternNameColumnName = String.format(Constant.PATTERN_NAME, getColumnNameSuffixByLocale());
         Cursor cursor = typeMarkDB.query(Constant.PATTERN, null, null, null, null, null, null);
@@ -360,7 +360,7 @@ public class DatabaseManager {
     }
 
     public String queryTypeMarkPatternNameByTypeMarkPatternFn(String typeMarkPatternFn) {
-        SQLiteDatabase typeMarkDB = SQLiteDatabase.openDatabase(App.getGlobalContext().getDatabasePath(Constant.DB_TYPE_MARK).getPath(), null, SQLiteDatabase.OPEN_READONLY);
+        SQLiteDatabase typeMarkDB = SQLiteDatabase.openDatabase(App.getContext().getDatabasePath(Constant.DB_TYPE_MARK).getPath(), null, SQLiteDatabase.OPEN_READONLY);
         String patternNameColumnName = String.format(Constant.PATTERN_NAME, getColumnNameSuffixByLocale());
         Cursor cursor = typeMarkDB.query(Constant.PATTERN, new String[]{patternNameColumnName}, Constant.PATTERN_FN + " = ?", new String[]{typeMarkPatternFn}, null, null, null);
         String typeMarkPatternName = null;

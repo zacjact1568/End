@@ -73,10 +73,14 @@ public class ReminderPresenter extends BasePresenter {
 
     public void notifyUpdatingReminderTime(long reminderTime) {
         if (reminderTime == Constant.TIME_UNDEFINED) return;
-        updateReminderTime(
-                reminderTime,
-                String.format(Util.getString(R.string.toast_reminder_delayed_format), String.format(Util.getString(R.string.toast_delay_more), DateFormat.format(Util.getString(R.string.date_time_format_short), reminderTime).toString()))
-        );
+        if (Util.isFutureTime(reminderTime)) {
+            updateReminderTime(
+                    reminderTime,
+                    String.format(Util.getString(R.string.toast_reminder_delayed_format), String.format(Util.getString(R.string.toast_delay_more), DateFormat.format(Util.getString(R.string.date_time_format_short), reminderTime).toString()))
+            );
+        } else {
+            mReminderViewContract.showToast(R.string.toast_past_reminder_time);
+        }
     }
 
     private void updateReminderTime(long reminderTime, String toastMsg) {

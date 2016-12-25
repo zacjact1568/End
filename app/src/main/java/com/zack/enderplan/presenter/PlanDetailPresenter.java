@@ -179,18 +179,26 @@ public class PlanDetailPresenter extends BasePresenter {
         mPlanDetailViewContract.showReminderTimePickerDialog(mPlan.getReminderTime());
     }
 
-    public void notifyDeadlineChanged(long newDeadline) {
-        if (mPlan.getDeadline() == newDeadline) return;
-        mDataManager.notifyDeadlineChanged(mPlanListPosition, newDeadline);
-        mPlanDetailViewContract.onDeadlineChanged(mPlan.hasDeadline(), formatDateTime(newDeadline));
-        postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_DEADLINE);
+    public void notifyDeadlineChanged(long deadline) {
+        if (mPlan.getDeadline() == deadline) return;
+        if (Util.isFutureTime(deadline)) {
+            mDataManager.notifyDeadlineChanged(mPlanListPosition, deadline);
+            mPlanDetailViewContract.onDeadlineChanged(mPlan.hasDeadline(), formatDateTime(deadline));
+            postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_DEADLINE);
+        } else {
+            mPlanDetailViewContract.showToast(R.string.toast_past_deadline);
+        }
     }
 
-    public void notifyReminderTimeChanged(long newReminderTime) {
-        if (mPlan.getReminderTime() == newReminderTime) return;
-        mDataManager.notifyReminderTimeChanged(mPlanListPosition, newReminderTime);
-        mPlanDetailViewContract.onReminderTimeChanged(mPlan.hasReminder(), formatDateTime(newReminderTime));
-        postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_REMINDER_TIME);
+    public void notifyReminderTimeChanged(long reminderTime) {
+        if (mPlan.getReminderTime() == reminderTime) return;
+        if (Util.isFutureTime(reminderTime)) {
+            mDataManager.notifyReminderTimeChanged(mPlanListPosition, reminderTime);
+            mPlanDetailViewContract.onReminderTimeChanged(mPlan.hasReminder(), formatDateTime(reminderTime));
+            postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_REMINDER_TIME);
+        } else {
+            mPlanDetailViewContract.showToast(R.string.toast_past_reminder_time);
+        }
     }
 
     private void postPlanDetailChangedEvent(int changedField) {

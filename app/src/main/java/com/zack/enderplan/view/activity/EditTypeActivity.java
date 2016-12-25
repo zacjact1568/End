@@ -56,9 +56,9 @@ public class EditTypeActivity extends BaseActivity implements EditTypeViewContra
     @Inject
     EditTypePresenter mEditTypePresenter;
 
-    public static void start(Activity activity, int position, boolean sharedElementTransition, View sharedElement, String sharedElementName) {
+    public static void start(Activity activity, int typeListPosition, boolean sharedElementTransition, View sharedElement, String sharedElementName) {
         Intent intent = new Intent(activity, EditTypeActivity.class);
-        intent.putExtra(Constant.POSITION, position);
+        intent.putExtra(Constant.TYPE_LIST_POSITION, typeListPosition);
         ActivityOptions options;
         if (sharedElementTransition) {
             options = ActivityOptions.makeSceneTransitionAnimation(activity, sharedElement, sharedElementName);
@@ -77,7 +77,7 @@ public class EditTypeActivity extends BaseActivity implements EditTypeViewContra
     @Override
     protected void onInjectPresenter() {
         DaggerTypeEditComponent.builder()
-                .typeEditPresenterModule(new TypeEditPresenterModule(this, getIntent().getIntExtra(Constant.POSITION, -1)))
+                .typeEditPresenterModule(new TypeEditPresenterModule(this, getIntent().getIntExtra(Constant.TYPE_LIST_POSITION, -1)))
                 .appComponent(App.getAppComponent())
                 .build()
                 .inject(this);
@@ -124,7 +124,7 @@ public class EditTypeActivity extends BaseActivity implements EditTypeViewContra
 
     @Override
     public void showTypeNameEditorDialog(String originalEditorText) {
-        EditorDialogFragment fragment = EditorDialogFragment.newInstance(App.getGlobalContext().getString(R.string.title_dialog_type_name_editor), originalEditorText);
+        EditorDialogFragment fragment = EditorDialogFragment.newInstance(App.getContext().getString(R.string.title_dialog_type_name_editor), originalEditorText);
         fragment.setOnPositiveButtonClickListener(new EditorDialogFragment.OnPositiveButtonClickListener() {
             @Override
             public void onPositiveButtonClick(String editorText) {

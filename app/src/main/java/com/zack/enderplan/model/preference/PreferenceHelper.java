@@ -16,7 +16,7 @@ public class PreferenceHelper {
     private static PreferenceHelper ourInstance = new PreferenceHelper();
 
     private PreferenceHelper() {
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(App.getGlobalContext());
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(App.getContext());
     }
 
     public static PreferenceHelper getInstance() {

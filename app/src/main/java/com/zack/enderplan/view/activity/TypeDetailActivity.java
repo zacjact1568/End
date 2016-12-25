@@ -78,9 +78,9 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     @Inject
     TypeDetailPresenter mTypeDetailPresenter;
 
-    public static void start(Activity activity, int position, View sharedElement, String sharedElementName) {
+    public static void start(Activity activity, int typeListPosition, View sharedElement, String sharedElementName) {
         Intent intent = new Intent(activity, TypeDetailActivity.class);
-        intent.putExtra(Constant.POSITION, position);
+        intent.putExtra(Constant.TYPE_LIST_POSITION, typeListPosition);
         ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity, sharedElement, sharedElementName);
         activity.startActivity(intent, options.toBundle());
     }
@@ -94,7 +94,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     @Override
     protected void onInjectPresenter() {
         DaggerTypeDetailComponent.builder()
-                .typeDetailPresenterModule(new TypeDetailPresenterModule(this, getIntent().getIntExtra(Constant.POSITION, -1)))
+                .typeDetailPresenterModule(new TypeDetailPresenterModule(this, getIntent().getIntExtra(Constant.TYPE_LIST_POSITION, -1)))
                 .appComponent(App.getAppComponent())
                 .build()
                 .inject(this);

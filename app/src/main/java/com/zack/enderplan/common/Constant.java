@@ -9,9 +9,6 @@ public class Constant {
 
     public static final String DB_TYPE_MARK = "type_mark.db";
 
-    @Deprecated
-    public static final String POSITION = "position";
-
     public static final String PLAN_LIST_POSITION = "plan_list_position";
     public static final String TYPE_LIST_POSITION = "type_list_position";
 

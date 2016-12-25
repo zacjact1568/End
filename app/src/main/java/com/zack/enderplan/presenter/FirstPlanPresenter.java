@@ -1,7 +1,6 @@
 package com.zack.enderplan.presenter;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
@@ -69,7 +68,7 @@ public class FirstPlanPresenter extends BasePresenter {
         int[] nameResIds = {R.string.def_type_1, R.string.def_type_2, R.string.def_type_3, R.string.def_type_4};
         int[] colorResIds = {R.color.indigo, R.color.red, R.color.orange, R.color.green};
         String[] patternFns = {"ic_computer_black_24dp", "ic_home_black_24dp", "ic_work_black_24dp", "ic_school_black_24dp"};
-        Context context = App.getGlobalContext();
+        Context context = App.getContext();
         for (int i = 0; i < 4; i++) {
             Type type = new Type(
                     Util.makeCode(),
@@ -86,7 +85,7 @@ public class FirstPlanPresenter extends BasePresenter {
     /** 添加预置的几个plan */
     private void addDefaultPlans() {
         int[] contentResIds = {R.string.def_plan_1, R.string.def_plan_2, R.string.def_plan_3};
-        Context context = App.getGlobalContext();
+        Context context = App.getContext();
         String defaultTypeCode = mDataManager.getType(0).getTypeCode();
         for (int i = 0; i < 3; i++) {
             Plan plan = new Plan(Util.makeCode());

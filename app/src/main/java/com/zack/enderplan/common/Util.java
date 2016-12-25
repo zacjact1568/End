@@ -66,7 +66,7 @@ public class Util {
     }
 
     public static void makeShortVibrate() {
-        Vibrator vibrator = (Vibrator) App.getGlobalContext().getSystemService(Context.VIBRATOR_SERVICE);
+        Vibrator vibrator = (Vibrator) App.getContext().getSystemService(Context.VIBRATOR_SERVICE);
         long[] pattern = {0, 100};
         vibrator.vibrate(pattern, -1);
     }
@@ -86,7 +86,7 @@ public class Util {
      * @return ENGLISH、SIMPLIFIED_CHINESE、TRADITIONAL_CHINESE三者其一
      */
     public static Locale getPreferredLocale() {
-        Configuration config = App.getGlobalContext().getResources().getConfiguration();
+        Configuration config = App.getContext().getResources().getConfiguration();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             Locale locale = config.locale;
             if (locale.equals(Locale.ENGLISH) || locale.equals(Locale.SIMPLIFIED_CHINESE) || locale.equals(Locale.TRADITIONAL_CHINESE)) {
@@ -164,7 +164,7 @@ public class Util {
     public static int getDrawableResourceId(String name) {
         //0 is an invalid resource id
         if (name == null) return 0;
-        Context context = App.getGlobalContext();
+        Context context = App.getContext();
         return context.getResources().getIdentifier(name, "drawable", context.getPackageName());
     }
 
@@ -176,12 +176,12 @@ public class Util {
     /** 为给定的editor显示软键盘 */
     public static void showSoftInput(EditText editor) {
         if (!editor.hasFocus()) return;
-        ((InputMethodManager) App.getGlobalContext().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(editor, 0);
+        ((InputMethodManager) App.getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(editor, 0);
     }
 
     /** 为给定的editor隐藏软键盘 */
     public static void hideSoftInput(EditText editor) {
-        InputMethodManager manager = (InputMethodManager) App.getGlobalContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager manager = (InputMethodManager) App.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (manager.isActive(editor)) {
             manager.hideSoftInputFromWindow(editor.getWindowToken(), 0);
         }
@@ -193,7 +193,7 @@ public class Util {
      * @param timeInMillis Reminder触发的时间，若为Constant.TIME_UNDEFINED则取消定时器
      */
     public static void setReminder(String planCode, long timeInMillis) {
-        Context context = App.getGlobalContext();
+        Context context = App.getContext();
         Intent intent = new Intent(context, ReminderReceiver.class);
         //相当于只有下面这条语句才能区分不同的PendingIntent，也就是code才能区分，如果code相同，那么extra也会被无视
         intent.setAction("com.zack.enderplan.ACTION_REMINDER_PLAN_" + planCode);
@@ -210,14 +210,18 @@ public class Util {
     }
 
     public static int convertDpToPx(int dp) {
-        return (int) (dp * App.getGlobalContext().getResources().getDisplayMetrics().density + 0.5f);
+        return (int) (dp * App.getContext().getResources().getDisplayMetrics().density + 0.5f);
     }
 
     public static int getColor(@ColorRes int resId) {
-        return ContextCompat.getColor(App.getGlobalContext(), resId);
+        return ContextCompat.getColor(App.getContext(), resId);
     }
 
     public static String getString(@StringRes int resId) {
-        return App.getGlobalContext().getString(resId);
+        return App.getContext().getString(resId);
+    }
+
+    public static boolean isFutureTime(long timeInMillis) {
+        return timeInMillis == Constant.TIME_UNDEFINED || timeInMillis > System.currentTimeMillis();
     }
 }

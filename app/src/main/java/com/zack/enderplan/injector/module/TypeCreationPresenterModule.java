@@ -26,7 +26,7 @@ public class TypeCreationPresenterModule {
 
     @Provides
     Type provideType() {
-        DataManager dataManager = App.getAppComponent().getDataManager();
+        DataManager dataManager = App.getDataManager();
         return new Type(
                 Util.makeCode(),
                 Util.getString(R.string.text_new_type_name),

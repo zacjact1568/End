@@ -31,7 +31,7 @@ public class SingleTypePlanAdapter extends RecyclerView.Adapter<SingleTypePlanAd
     public SingleTypePlanAdapter(List<Plan> singleTypePlanList) {
         mSingleTypePlanList = singleTypePlanList;
 
-        Context context = App.getGlobalContext();
+        Context context = App.getContext();
         mAccentColor = ContextCompat.getColor(context, R.color.colorAccent);
         mGrey600Color = ContextCompat.getColor(context, R.color.grey_600);
     }
