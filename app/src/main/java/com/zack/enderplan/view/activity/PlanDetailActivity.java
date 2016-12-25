@@ -25,6 +25,8 @@ import android.widget.Toast;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
+import com.zack.enderplan.injector.component.DaggerPlanDetailComponent;
+import com.zack.enderplan.injector.module.PlanDetailPresenterModule;
 import com.zack.enderplan.view.dialog.DateTimePickerDialogFragment;
 import com.zack.enderplan.view.dialog.EditorDialogFragment;
 import com.zack.enderplan.view.adapter.SimpleTypeAdapter;
@@ -33,6 +35,8 @@ import com.zack.enderplan.view.contract.PlanDetailViewContract;
 import com.zack.enderplan.model.bean.FormattedPlan;
 import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.view.widget.ItemView;
+
+import javax.inject.Inject;
 
 import butterknife.BindColor;
 import butterknife.BindView;
@@ -79,7 +83,9 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
     @BindColor(R.color.colorPrimaryLight)
     int mPrimaryLightColor;
 
-    private PlanDetailPresenter planDetailPresenter;
+    @Inject
+    PlanDetailPresenter planDetailPresenter;
+
     private MenuItem mStarMenuItem;
 
     public static void start(Activity activity, int position, boolean transition) {
@@ -91,14 +97,22 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        planDetailPresenter = new PlanDetailPresenter(this, getIntent().getIntExtra(Constant.POSITION, -1));
-        planDetailPresenter.setInitialView();
+        planDetailPresenter.attach();
+    }
+
+    @Override
+    protected void onInjectPresenter() {
+        DaggerPlanDetailComponent.builder()
+                .planDetailPresenterModule(new PlanDetailPresenterModule(this, getIntent().getIntExtra(Constant.POSITION, -1)))
+                .appComponent(App.getAppComponent())
+                .build()
+                .inject(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        planDetailPresenter.detachView();
+        planDetailPresenter.detach();
     }
 
     @Override

@@ -18,30 +18,29 @@ import com.zack.enderplan.common.Util;
 
 import org.greenrobot.eventbus.EventBus;
 
-public class FirstPlanPresenter extends BasePresenter<FirstPlanViewContract> {
+import javax.inject.Inject;
+
+public class FirstPlanPresenter extends BasePresenter {
 
     private FirstPlanViewContract mFirstPlanViewContract;
     private DataManager mDataManager;
     private EventBus mEventBus;
 
-    public FirstPlanPresenter(FirstPlanViewContract firstPlanViewContract) {
-        attachView(firstPlanViewContract);
-        mDataManager = DataManager.getInstance();
-        mEventBus = EventBus.getDefault();
+    @Inject
+    public FirstPlanPresenter(FirstPlanViewContract firstPlanViewContract, DataManager dataManager, EventBus eventBus) {
+        mFirstPlanViewContract = firstPlanViewContract;
+        mDataManager = dataManager;
+        mEventBus = eventBus;
     }
 
     @Override
-    public void attachView(FirstPlanViewContract viewContract) {
-        mFirstPlanViewContract = viewContract;
+    public void attach() {
+        mFirstPlanViewContract.showInitialView();
     }
 
     @Override
-    public void detachView() {
+    public void detach() {
         mFirstPlanViewContract = null;
-    }
-
-    public void setInitialView(Bundle savedInstanceState) {
-        mFirstPlanViewContract.showInitialView(savedInstanceState == null);
     }
 
     public void notifyEnterButtonClicked(String content) {

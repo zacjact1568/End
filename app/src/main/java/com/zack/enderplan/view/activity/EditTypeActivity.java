@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
+import com.zack.enderplan.injector.component.DaggerTypeEditComponent;
+import com.zack.enderplan.injector.module.TypeEditPresenterModule;
 import com.zack.enderplan.view.dialog.TypeMarkColorPickerDialogFragment;
 import com.zack.enderplan.view.dialog.EditorDialogFragment;
 import com.zack.enderplan.view.dialog.TypeMarkPatternPickerDialogFragment;
@@ -25,6 +27,8 @@ import com.zack.enderplan.model.bean.TypeMarkPattern;
 import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.view.widget.CircleColorView;
 import com.zack.enderplan.view.widget.ItemView;
+
+import javax.inject.Inject;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -49,7 +53,8 @@ public class EditTypeActivity extends BaseActivity implements EditTypeViewContra
     @BindString(R.string.dscpt_unsettled)
     String mUnsettledDscpt;
 
-    private EditTypePresenter mEditTypePresenter;
+    @Inject
+    EditTypePresenter mEditTypePresenter;
 
     public static void start(Activity activity, int position, boolean sharedElementTransition, View sharedElement, String sharedElementName) {
         Intent intent = new Intent(activity, EditTypeActivity.class);
@@ -66,14 +71,22 @@ public class EditTypeActivity extends BaseActivity implements EditTypeViewContra
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mEditTypePresenter = new EditTypePresenter(this, getIntent().getIntExtra(Constant.POSITION, -1));
-        mEditTypePresenter.setInitialView();
+        mEditTypePresenter.attach();
+    }
+
+    @Override
+    protected void onInjectPresenter() {
+        DaggerTypeEditComponent.builder()
+                .typeEditPresenterModule(new TypeEditPresenterModule(this, getIntent().getIntExtra(Constant.POSITION, -1)))
+                .appComponent(App.getAppComponent())
+                .build()
+                .inject(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mEditTypePresenter.detachView();
+        mEditTypePresenter.detach();
     }
 
     @Override

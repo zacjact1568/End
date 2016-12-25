@@ -25,7 +25,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zack.enderplan.App;
 import com.zack.enderplan.R;
+import com.zack.enderplan.injector.component.DaggerTypeDetailComponent;
+import com.zack.enderplan.injector.module.TypeDetailPresenterModule;
 import com.zack.enderplan.view.contract.TypeDetailViewContract;
 import com.zack.enderplan.view.adapter.SingleTypePlanAdapter;
 import com.zack.enderplan.view.adapter.SimpleTypeAdapter;
@@ -36,6 +39,8 @@ import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.common.Util;
 import com.zack.enderplan.view.widget.CircleColorView;
+
+import javax.inject.Inject;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -70,7 +75,8 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     @BindString(R.string.name_type_mark_shared_element_transition)
     String mTypeMarkSetName;
 
-    private TypeDetailPresenter typeDetailPresenter;
+    @Inject
+    TypeDetailPresenter mTypeDetailPresenter;
 
     public static void start(Activity activity, int position, View sharedElement, String sharedElementName) {
         Intent intent = new Intent(activity, TypeDetailActivity.class);
@@ -82,26 +88,34 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        typeDetailPresenter = new TypeDetailPresenter(this, getIntent().getIntExtra(Constant.POSITION, -1));
-        typeDetailPresenter.setInitialView();
+        mTypeDetailPresenter.attach();
+    }
+
+    @Override
+    protected void onInjectPresenter() {
+        DaggerTypeDetailComponent.builder()
+                .typeDetailPresenterModule(new TypeDetailPresenterModule(this, getIntent().getIntExtra(Constant.POSITION, -1)))
+                .appComponent(App.getAppComponent())
+                .build()
+                .inject(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        typeDetailPresenter.notifySwitchingViewVisibility(true);
+        mTypeDetailPresenter.notifySwitchingViewVisibility(true);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        typeDetailPresenter.notifySwitchingViewVisibility(false);
+        mTypeDetailPresenter.notifySwitchingViewVisibility(false);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        typeDetailPresenter.detachView();
+        mTypeDetailPresenter.detach();
     }
 
     @Override
@@ -117,11 +131,11 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
                 finish();
                 break;
             case R.id.action_edit:
-                typeDetailPresenter.notifyTypeEditingButtonClicked();
+                mTypeDetailPresenter.notifyTypeEditingButtonClicked();
                 break;
             case R.id.action_delete:
                 //TODO 可能需要收起软键盘
-                typeDetailPresenter.notifyTypeDeletionButtonClicked(false);
+                mTypeDetailPresenter.notifyTypeDeletionButtonClicked(false);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -129,7 +143,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
 
     @Override
     public void onBackPressed() {
-        typeDetailPresenter.notifyBackPressed();
+        mTypeDetailPresenter.notifyBackPressed();
     }
 
     @Override
@@ -144,7 +158,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
             @Override
             public boolean onPreDraw() {
                 mAppBarLayout.getViewTreeObserver().removeOnPreDrawListener(this);
-                typeDetailPresenter.notifyPreDrawingAppBar(mAppBarLayout.getTotalScrollRange());
+                mTypeDetailPresenter.notifyPreDrawingAppBar(mAppBarLayout.getTotalScrollRange());
                 return false;
             }
         });
@@ -152,7 +166,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
         mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                typeDetailPresenter.notifyAppBarScrolled(verticalOffset);
+                mTypeDetailPresenter.notifyAppBarScrolled(verticalOffset);
             }
         });
 
@@ -160,7 +174,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
             @Override
             public boolean onPreDraw() {
                 mEditorLayout.getViewTreeObserver().removeOnPreDrawListener(this);
-                typeDetailPresenter.notifyPreDrawingEditorLayout(mEditorLayout.getHeight());
+                mTypeDetailPresenter.notifyPreDrawingEditorLayout(mEditorLayout.getHeight());
                 return false;
             }
         });
@@ -168,14 +182,14 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
         singleTypePlanAdapter.setOnPlanItemClickListener(new SingleTypePlanAdapter.OnPlanItemClickListener() {
             @Override
             public void onPlanItemClick(int position) {
-                typeDetailPresenter.notifyPlanItemClicked(position);
+                mTypeDetailPresenter.notifyPlanItemClicked(position);
             }
         });
 
         singleTypePlanAdapter.setOnStarButtonClickListener(new SingleTypePlanAdapter.OnStarButtonClickListener() {
             @Override
             public void onStarButtonClick(int position) {
-                typeDetailPresenter.notifyPlanStarStatusChanged(position);
+                mTypeDetailPresenter.notifyPlanStarStatusChanged(position);
             }
         });
 
@@ -189,10 +203,10 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
             public void onItemSwiped(int position, int direction) {
                 switch (direction) {
                     case PlanItemTouchCallback.DIR_START:
-                        typeDetailPresenter.notifyDeletingPlan(position);
+                        mTypeDetailPresenter.notifyDeletingPlan(position);
                         break;
                     case PlanItemTouchCallback.DIR_END:
-                        typeDetailPresenter.notifySwitchingPlanStatus(position);
+                        mTypeDetailPresenter.notifySwitchingPlanStatus(position);
                         break;
                 }
             }
@@ -200,7 +214,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
         planItemTouchCallback.setOnItemMovedListener(new PlanItemTouchCallback.OnItemMovedListener() {
             @Override
             public void onItemMoved(int fromPosition, int toPosition) {
-                typeDetailPresenter.notifyPlanSequenceChanged(fromPosition, toPosition);
+                mTypeDetailPresenter.notifyPlanSequenceChanged(fromPosition, toPosition);
             }
         });
         new ItemTouchHelper(planItemTouchCallback).attachToRecyclerView(mPlanList);
@@ -209,7 +223,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    typeDetailPresenter.notifyCreatingPlan(v.getText().toString());
+                    mTypeDetailPresenter.notifyCreatingPlan(v.getText().toString());
                 }
                 return false;
             }
@@ -256,7 +270,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
                     .setAction(R.string.button_undo, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            typeDetailPresenter.notifyCreatingPlan(deletedPlan, position, planListPos);
+                            mTypeDetailPresenter.notifyCreatingPlan(deletedPlan, position, planListPos);
                         }
                     })
                     .show();
@@ -325,13 +339,13 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
                 .setPositiveButton(R.string.button_move, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        typeDetailPresenter.notifyMovePlanButtonClicked();
+                        mTypeDetailPresenter.notifyMovePlanButtonClicked();
                     }
                 })
                 .setNeutralButton(R.string.button_delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        typeDetailPresenter.notifyTypeDeletionButtonClicked(true);
+                        mTypeDetailPresenter.notifyTypeDeletionButtonClicked(true);
                     }
                 })
                 .setNegativeButton(R.string.button_cancel, null)
@@ -345,7 +359,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
                 .setAdapter(simpleTypeAdapter, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        typeDetailPresenter.notifyTypeItemInMovePlanDialogClicked(which);
+                        mTypeDetailPresenter.notifyTypeItemInMovePlanDialogClicked(which);
                     }
                 })
                 .show();
@@ -359,7 +373,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
                 .setPositiveButton(R.string.button_delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        typeDetailPresenter.notifyDeletingType(false, null);
+                        mTypeDetailPresenter.notifyDeletingType(false, null);
                     }
                 })
                 .setNegativeButton(R.string.button_cancel, null)
@@ -374,7 +388,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
                 .setPositiveButton(R.string.btn_dialog_move_and_delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        typeDetailPresenter.notifyDeletingType(true, toTypeCode);
+                        mTypeDetailPresenter.notifyDeletingType(true, toTypeCode);
                     }
                 })
                 .setNegativeButton(R.string.button_cancel, null)

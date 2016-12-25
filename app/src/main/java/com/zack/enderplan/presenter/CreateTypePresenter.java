@@ -16,37 +16,34 @@ import com.zack.enderplan.view.contract.CreateTypeViewContract;
 
 import org.greenrobot.eventbus.EventBus;
 
-public class CreateTypePresenter extends BasePresenter<CreateTypeViewContract> {
+import javax.inject.Inject;
+
+public class CreateTypePresenter extends BasePresenter {
 
     private CreateTypeViewContract mCreateTypeViewContract;
     private DataManager mDataManager;
     private Type mType;
 
-    public CreateTypePresenter(CreateTypeViewContract createTypeViewContract) {
-        attachView(createTypeViewContract);
-        mDataManager = DataManager.getInstance();
-        mType = new Type(Util.makeCode(), mDataManager.getTypeCount());
-        mType.setTypeName(Util.getString(R.string.text_new_type_name));
-        mType.setTypeMarkColor(mDataManager.getRandomTypeMarkColor());
+    @Inject
+    public CreateTypePresenter(CreateTypeViewContract createTypeViewContract, Type type, DataManager dataManager) {
+        mCreateTypeViewContract = createTypeViewContract;
+        mType = type;
+        mDataManager = dataManager;
     }
 
     @Override
-    public void attachView(CreateTypeViewContract viewContract) {
-        mCreateTypeViewContract = viewContract;
-    }
-
-    @Override
-    public void detachView() {
-        mCreateTypeViewContract = null;
-    }
-
-    public void setInitialView() {
+    public void attach() {
         mCreateTypeViewContract.showInitialView(new FormattedType(
                 Color.parseColor(mType.getTypeMarkColor()),
                 mDataManager.getTypeMarkColorName(mType.getTypeMarkColor()),
                 mType.getTypeName(),
                 mType.getTypeName().substring(0, 1)
         ));
+    }
+
+    @Override
+    public void detach() {
+        mCreateTypeViewContract = null;
     }
 
     public void notifyTypeNameTextChanged(String typeName) {

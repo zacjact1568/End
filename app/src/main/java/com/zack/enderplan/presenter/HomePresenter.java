@@ -14,7 +14,9 @@ import com.zack.enderplan.view.contract.HomeViewContract;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-public class HomePresenter extends BasePresenter<HomeViewContract> {
+import javax.inject.Inject;
+
+public class HomePresenter extends BasePresenter {
 
     private HomeViewContract mHomeViewContract;
     private DataManager mDataManager;
@@ -23,27 +25,24 @@ public class HomePresenter extends BasePresenter<HomeViewContract> {
     private int mLastListScrollingVariation;
     private long mLastBackKeyPressedTime;
 
-    public HomePresenter(HomeViewContract homeViewContract) {
-        mEventBus = EventBus.getDefault();
-        attachView(homeViewContract);
-        mDataManager = DataManager.getInstance();
-        mPreferenceHelper = PreferenceHelper.getInstance();
+    @Inject
+    public HomePresenter(HomeViewContract homeViewContract, DataManager dataManager, PreferenceHelper preferenceHelper, EventBus eventBus) {
+        mHomeViewContract = homeViewContract;
+        mDataManager = dataManager;
+        mPreferenceHelper = preferenceHelper;
+        mEventBus = eventBus;
     }
 
     @Override
-    public void attachView(HomeViewContract viewContract) {
-        mHomeViewContract = viewContract;
+    public void attach() {
         mEventBus.register(this);
+        mHomeViewContract.showInitialView(getUcPlanCount());
     }
 
     @Override
-    public void detachView() {
+    public void detach() {
         mHomeViewContract = null;
         mEventBus.unregister(this);
-    }
-
-    public void setInitialView() {
-        mHomeViewContract.showInitialView(getUcPlanCount());
     }
 
     public void notifyStartingUpCompleted() {

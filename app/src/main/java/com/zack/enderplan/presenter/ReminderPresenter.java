@@ -9,50 +9,48 @@ import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.view.contract.ReminderViewContract;
 import com.zack.enderplan.common.Constant;
-import com.zack.enderplan.common.Logger;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.Calendar;
 
-public class ReminderPresenter extends BasePresenter<ReminderViewContract> {
+import javax.inject.Inject;
+
+public class ReminderPresenter extends BasePresenter {
 
     private ReminderViewContract mReminderViewContract;
-    private int mPosition;
+    private int mPlanListPosition;
     private Plan mPlan;
     private DataManager mDataManager;
 
-    public ReminderPresenter(ReminderViewContract reminderViewContract, int position, String planCode) {
-        attachView(reminderViewContract);
-        mDataManager = DataManager.getInstance();
+    @Inject
+    public ReminderPresenter(ReminderViewContract reminderViewContract, int planListPosition, String planCode, DataManager dataManager) {
+        mReminderViewContract = reminderViewContract;
+        mDataManager = dataManager;
 
-        if (position != -1) {
+        if (planListPosition != -1) {
             //说明DataManager中的数据在ReminderReceiver的时候就已经加载完，直接取plan
-            mPosition = position;
+            mPlanListPosition = planListPosition;
         } else if (mDataManager.isDataLoaded()) {
             //说明DataManager中的数据在ReminderReceiver的时候还未加载完，但是现在已经加载完了（显示通知到点击通知之间）
-            mPosition = mDataManager.getPlanLocationInPlanList(planCode);
+            mPlanListPosition = mDataManager.getPlanLocationInPlanList(planCode);
         } else {
             //说明DataManager中的数据到现在还未加载完，只有等通知
-            Logger.e("ReminderPresenter", "ERROR POSITION");
-            mPosition = -1;
-            //TODO 添加subscriber
+            //TODO 添加向view的回调，不关闭通知，否则在这里关闭通知，以下的throw语句是临时的
+            throw new IllegalStateException("The data loading in DataManager hasn't completed yet");
         }
-        mPlan = mDataManager.getPlan(mPosition);
+
+        mPlan = mDataManager.getPlan(mPlanListPosition);
     }
 
     @Override
-    public void attachView(ReminderViewContract viewContract) {
-        mReminderViewContract = viewContract;
-    }
-
-    @Override
-    public void detachView() {
-        mReminderViewContract = null;
-    }
-
-    public void setInitialView() {
+    public void attach() {
         mReminderViewContract.showInitialView(mPlan.getContent());
+    }
+
+    @Override
+    public void detach() {
+        mReminderViewContract = null;
     }
 
     public void notifyDelayingReminder(String delay) {
@@ -82,11 +80,11 @@ public class ReminderPresenter extends BasePresenter<ReminderViewContract> {
     }
 
     private void updateReminderTime(long reminderTime, String toastMsg) {
-        mDataManager.notifyReminderTimeChanged(mPosition, reminderTime);
+        mDataManager.notifyReminderTimeChanged(mPlanListPosition, reminderTime);
         EventBus.getDefault().post(new PlanDetailChangedEvent(
                 getPresenterName(),
                 mPlan.getPlanCode(),
-                mPosition,
+                mPlanListPosition,
                 PlanDetailChangedEvent.FIELD_REMINDER_TIME
         ));
         mReminderViewContract.showToast(toastMsg);
@@ -95,12 +93,12 @@ public class ReminderPresenter extends BasePresenter<ReminderViewContract> {
 
     public void notifyPlanCompleted() {
         //不需要检测是否有reminder，因为这里一定是没有reminder的
-        mDataManager.notifyPlanStatusChanged(mPosition);
-        mPosition = mPlan.isCompleted() ? mDataManager.getUcPlanCount() : 0;
+        mDataManager.notifyPlanStatusChanged(mPlanListPosition);
+        mPlanListPosition = mPlan.isCompleted() ? mDataManager.getUcPlanCount() : 0;
         EventBus.getDefault().post(new PlanDetailChangedEvent(
                 getPresenterName(),
                 mPlan.getPlanCode(),
-                mPosition,
+                mPlanListPosition,
                 PlanDetailChangedEvent.FIELD_PLAN_STATUS
         ));
         mReminderViewContract.showToast(Util.getString(R.string.toast_plan_completed));
@@ -108,7 +106,7 @@ public class ReminderPresenter extends BasePresenter<ReminderViewContract> {
     }
 
     public void notifyEnteringPlanDetail() {
-        mReminderViewContract.enterPlanDetail(mPosition);
+        mReminderViewContract.enterPlanDetail(mPlanListPosition);
         mReminderViewContract.exit();
     }
 }

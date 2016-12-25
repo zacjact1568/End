@@ -24,7 +24,10 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.zack.enderplan.App;
 import com.zack.enderplan.R;
+import com.zack.enderplan.injector.component.DaggerPlanCreationComponent;
+import com.zack.enderplan.injector.module.PlanCreationPresenterModule;
 import com.zack.enderplan.view.dialog.DateTimePickerDialogFragment;
 import com.zack.enderplan.view.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.presenter.CreatePlanPresenter;
@@ -32,6 +35,8 @@ import com.zack.enderplan.view.contract.CreatePlanViewContract;
 import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.common.Util;
 import com.zack.enderplan.view.widget.ItemView;
+
+import javax.inject.Inject;
 
 import butterknife.BindColor;
 import butterknife.BindView;
@@ -62,7 +67,9 @@ public class CreatePlanActivity extends BaseActivity implements CreatePlanViewCo
     @BindColor(R.color.grey)
     int mGreyColor;
 
-    private CreatePlanPresenter mCreatePlanPresenter;
+    @Inject
+    CreatePlanPresenter mCreatePlanPresenter;
+
     private MenuItem mStarMenuItem;
 
     public static void start(Context context) {
@@ -72,15 +79,22 @@ public class CreatePlanActivity extends BaseActivity implements CreatePlanViewCo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mCreatePlanPresenter.attach();
+    }
 
-        mCreatePlanPresenter = new CreatePlanPresenter(this);
-        mCreatePlanPresenter.setInitialView();
+    @Override
+    protected void onInjectPresenter() {
+        DaggerPlanCreationComponent.builder()
+                .planCreationPresenterModule(new PlanCreationPresenterModule(this))
+                .appComponent(App.getAppComponent())
+                .build()
+                .inject(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mCreatePlanPresenter.detachView();
+        mCreatePlanPresenter.detach();
     }
 
     @Override

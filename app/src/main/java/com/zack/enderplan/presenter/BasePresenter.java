@@ -1,12 +1,10 @@
 package com.zack.enderplan.presenter;
 
-import com.zack.enderplan.view.contract.BaseViewContract;
+public abstract class BasePresenter {
 
-public abstract class BasePresenter<VC extends BaseViewContract> {
+    public abstract void attach();
 
-    public abstract void attachView(VC viewContract);
-
-    public abstract void detachView();
+    public abstract void detach();
 
     protected String getPresenterName() {
         return getClass().getSimpleName();

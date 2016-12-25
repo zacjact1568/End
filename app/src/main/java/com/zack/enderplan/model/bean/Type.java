@@ -2,15 +2,18 @@ package com.zack.enderplan.model.bean;
 
 public class Type {
 
-    private String typeCode, typeName, typeMarkColor, typeMarkPattern;
+    private String typeCode;
+    private String typeName;
+    private String typeMarkColor;
+    private String typeMarkPattern;
     private int typeSequence;
 
     public Type(String typeCode, int typeSequence) {
-        this.typeCode = typeCode;
-        this.typeName = null;
-        this.typeMarkColor = null;
-        this.typeMarkPattern = null;
-        this.typeSequence = typeSequence;
+        this(typeCode, null, null, typeSequence);
+    }
+
+    public Type(String typeCode, String typeName, String typeMarkColor, int typeSequence) {
+        this(typeCode, typeName, typeMarkColor, null, typeSequence);
     }
 
     public Type(String typeCode, String typeName, String typeMarkColor, String typeMarkPattern, int typeSequence) {

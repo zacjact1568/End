@@ -15,33 +15,28 @@ import com.zack.enderplan.common.Util;
 
 import org.greenrobot.eventbus.EventBus;
 
-public class EditTypePresenter extends BasePresenter<EditTypeViewContract> {
+import javax.inject.Inject;
+
+public class EditTypePresenter extends BasePresenter {
 
     private EditTypeViewContract mEditTypeViewContract;
     private DataManager mDataManager;
     private EventBus mEventBus;
     private Type mType;
-    private int mPosition;
+    private int mTypeListPosition;
 
-    public EditTypePresenter(EditTypeViewContract editTypeViewContract, int position) {
-        mEventBus = EventBus.getDefault();
-        attachView(editTypeViewContract);
-        mDataManager = DataManager.getInstance();
-        mType = mDataManager.getType(position);
-        mPosition = position;
+    @Inject
+    public EditTypePresenter(EditTypeViewContract editTypeViewContract, int typeListPosition, DataManager dataManager, EventBus eventBus) {
+        mEditTypeViewContract = editTypeViewContract;
+        mTypeListPosition = typeListPosition;
+        mDataManager = dataManager;
+        mEventBus = eventBus;
+
+        mType = mDataManager.getType(mTypeListPosition);
     }
 
     @Override
-    public void attachView(EditTypeViewContract viewContract) {
-        mEditTypeViewContract = viewContract;
-    }
-
-    @Override
-    public void detachView() {
-        mEditTypeViewContract = null;
-    }
-
-    public void setInitialView() {
+    public void attach() {
         mEditTypeViewContract.showInitialView(new FormattedType(
                 Color.parseColor(mType.getTypeMarkColor()),
                 mDataManager.getTypeMarkColorName(mType.getTypeMarkColor()),
@@ -51,6 +46,11 @@ public class EditTypePresenter extends BasePresenter<EditTypeViewContract> {
                 mType.getTypeName(),
                 mType.getTypeName().substring(0, 1)
         ));
+    }
+
+    @Override
+    public void detach() {
+        mEditTypeViewContract = null;
     }
 
     public void notifySettingTypeName() {
@@ -71,7 +71,7 @@ public class EditTypePresenter extends BasePresenter<EditTypeViewContract> {
         } else if (!mType.getTypeName().equals(newTypeName) && mDataManager.isTypeNameUsed(newTypeName)) {
             mEditTypeViewContract.showToast(R.string.toast_type_name_exists);
         } else {
-            mDataManager.notifyUpdatingTypeName(mPosition, newTypeName);
+            mDataManager.notifyUpdatingTypeName(mTypeListPosition, newTypeName);
             mEditTypeViewContract.onTypeNameChanged(newTypeName, newTypeName.substring(0, 1));
             postTypeDetailChangedEvent(TypeDetailChangedEvent.FIELD_TYPE_NAME);
         }
@@ -83,7 +83,7 @@ public class EditTypePresenter extends BasePresenter<EditTypeViewContract> {
         if (mDataManager.isTypeMarkUsed(colorHex, mType.getTypeMarkPattern())) {
             mEditTypeViewContract.showToast(R.string.toast_type_mark_exists);
         } else {
-            mDataManager.notifyUpdatingTypeMarkColor(mPosition, colorHex);
+            mDataManager.notifyUpdatingTypeMarkColor(mTypeListPosition, colorHex);
             mEditTypeViewContract.onTypeMarkColorChanged(Color.parseColor(colorHex), typeMarkColor.getColorName());
             postTypeDetailChangedEvent(TypeDetailChangedEvent.FIELD_TYPE_MARK_COLOR);
         }
@@ -96,7 +96,7 @@ public class EditTypePresenter extends BasePresenter<EditTypeViewContract> {
         if (mDataManager.isTypeMarkUsed(mType.getTypeMarkColor(), patternFn)) {
             mEditTypeViewContract.showToast(R.string.toast_type_mark_exists);
         } else {
-            mDataManager.notifyUpdatingTypeMarkPattern(mPosition, patternFn);
+            mDataManager.notifyUpdatingTypeMarkPattern(mTypeListPosition, patternFn);
             mEditTypeViewContract.onTypeMarkPatternChanged(
                     hasPattern,
                     Util.getDrawableResourceId(patternFn),
@@ -107,6 +107,6 @@ public class EditTypePresenter extends BasePresenter<EditTypeViewContract> {
     }
 
     private void postTypeDetailChangedEvent(int changedField) {
-        mEventBus.post(new TypeDetailChangedEvent(getPresenterName(), mType.getTypeCode(), mPosition, changedField));
+        mEventBus.post(new TypeDetailChangedEvent(getPresenterName(), mType.getTypeCode(), mTypeListPosition, changedField));
     }
 }

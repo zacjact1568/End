@@ -20,7 +20,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zack.enderplan.App;
 import com.zack.enderplan.R;
+import com.zack.enderplan.injector.component.DaggerTypeCreationComponent;
+import com.zack.enderplan.injector.module.TypeCreationPresenterModule;
 import com.zack.enderplan.view.dialog.TypeMarkColorPickerDialogFragment;
 import com.zack.enderplan.view.dialog.TypeMarkPatternPickerDialogFragment;
 import com.zack.enderplan.view.contract.CreateTypeViewContract;
@@ -32,6 +35,8 @@ import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.common.Util;
 import com.zack.enderplan.view.widget.CircleColorView;
 import com.zack.enderplan.view.widget.ItemView;
+
+import javax.inject.Inject;
 
 import butterknife.BindColor;
 import butterknife.BindString;
@@ -64,7 +69,9 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeViewCo
     @BindString(R.string.dscpt_click_to_set)
     String mClickToSetDscpt;
 
-    private CreateTypePresenter mCreateTypePresenter;
+    @Inject
+    CreateTypePresenter mCreateTypePresenter;
+
     private MenuItem mCreateMenuItem;
 
     public static void start(Context context) {
@@ -74,15 +81,22 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeViewCo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mCreateTypePresenter.attach();
+    }
 
-        mCreateTypePresenter = new CreateTypePresenter(this);
-        mCreateTypePresenter.setInitialView();
+    @Override
+    protected void onInjectPresenter() {
+        DaggerTypeCreationComponent.builder()
+                .typeCreationPresenterModule(new TypeCreationPresenterModule(this))
+                .appComponent(App.getAppComponent())
+                .build()
+                .inject(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mCreateTypePresenter.detachView();
+        mCreateTypePresenter.detach();
     }
 
     @Override

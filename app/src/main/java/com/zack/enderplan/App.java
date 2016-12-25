@@ -6,6 +6,9 @@ import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatDelegate;
 
+import com.zack.enderplan.injector.component.AppComponent;
+import com.zack.enderplan.injector.component.DaggerAppComponent;
+import com.zack.enderplan.injector.module.AppModule;
 import com.zack.enderplan.model.preference.PreferenceHelper;
 import com.zack.enderplan.common.Constant;
 
@@ -19,11 +22,17 @@ public class App extends Application {
 
     private static final int BUFFER_SIZE = 400000;
 
+    private static AppComponent mAppComponent;
+
     private static Context globalContext;
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        mAppComponent = DaggerAppComponent.builder()
+                .appModule(new AppModule(getApplicationContext()))
+                .build();
 
         globalContext = getApplicationContext();
 
@@ -35,6 +44,11 @@ public class App extends Application {
         initTypeMarkDB();
     }
 
+    public static AppComponent getAppComponent() {
+        return mAppComponent;
+    }
+
+    @Deprecated
     public static Context getGlobalContext() {
         return globalContext;
     }

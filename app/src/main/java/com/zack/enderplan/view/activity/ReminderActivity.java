@@ -11,11 +11,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewAnimator;
 
+import com.zack.enderplan.App;
 import com.zack.enderplan.R;
+import com.zack.enderplan.injector.component.DaggerReminderComponent;
+import com.zack.enderplan.injector.module.ReminderPresenterModule;
 import com.zack.enderplan.view.dialog.DateTimePickerDialogFragment;
 import com.zack.enderplan.presenter.ReminderPresenter;
 import com.zack.enderplan.view.contract.ReminderViewContract;
 import com.zack.enderplan.common.Constant;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,7 +33,8 @@ public class ReminderActivity extends BaseActivity implements ReminderViewContra
     @BindView(R.id.switcher_delay)
     ViewAnimator mDelaySwitcher;
 
-    private ReminderPresenter mReminderPresenter;
+    @Inject
+    ReminderPresenter mReminderPresenter;
 
     public static PendingIntent getPendingIntentForStart(Context context, String planCode, int position) {
         Intent intent = new Intent(context, ReminderActivity.class);
@@ -42,20 +48,24 @@ public class ReminderActivity extends BaseActivity implements ReminderViewContra
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = getIntent();
-        String planCode = intent.getStringExtra(Constant.PLAN_CODE);
+        ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(getIntent().getStringExtra(Constant.PLAN_CODE), 0);
 
-        ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancel(planCode, 0);
+        mReminderPresenter.attach();
+    }
 
-        mReminderPresenter = new ReminderPresenter(this, intent.getIntExtra(Constant.POSITION, -1), planCode);
-
-        mReminderPresenter.setInitialView();
+    @Override
+    protected void onInjectPresenter() {
+        DaggerReminderComponent.builder()
+                .reminderPresenterModule(new ReminderPresenterModule(this, getIntent().getIntExtra(Constant.POSITION, -1), getIntent().getStringExtra(Constant.PLAN_CODE)))
+                .appComponent(App.getAppComponent())
+                .build()
+                .inject(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mReminderPresenter.detachView();
+        mReminderPresenter.detach();
     }
 
     @Override

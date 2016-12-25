@@ -17,7 +17,9 @@ import com.zack.enderplan.common.Constant;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-public class PlanDetailPresenter extends BasePresenter<PlanDetailViewContract> {
+import javax.inject.Inject;
+
+public class PlanDetailPresenter extends BasePresenter {
 
     private static final int APP_BAR_STATE_EXPANDED = 1;
     private static final int APP_BAR_STATE_INTERMEDIATE = 0;
@@ -26,33 +28,25 @@ public class PlanDetailPresenter extends BasePresenter<PlanDetailViewContract> {
     private PlanDetailViewContract mPlanDetailViewContract;
     private DataManager mDataManager;
     private EventBus mEventBus;
-    private int mPosition;
+    private int mPlanListPosition;
     private Plan mPlan;
     private int mAppBarMaxRange, mContentCollapsedTextHeight;
     private float mLastHeaderAlpha = 1f;
     private int mAppBarState = APP_BAR_STATE_EXPANDED;
 
-    public PlanDetailPresenter(PlanDetailViewContract planDetailViewContract, int position) {
-        mEventBus = EventBus.getDefault();
-        attachView(planDetailViewContract);
-        this.mPosition = position;
-        mDataManager = DataManager.getInstance();
-        mPlan = mDataManager.getPlan(position);
+    @Inject
+    public PlanDetailPresenter(PlanDetailViewContract planDetailViewContract, int planListPosition, DataManager dataManager, EventBus eventBus) {
+        mPlanDetailViewContract = planDetailViewContract;
+        mPlanListPosition = planListPosition;
+        mDataManager = dataManager;
+        mEventBus = eventBus;
+
+        mPlan = mDataManager.getPlan(mPlanListPosition);
     }
 
     @Override
-    public void attachView(PlanDetailViewContract viewContract) {
-        mPlanDetailViewContract = viewContract;
+    public void attach() {
         mEventBus.register(this);
-    }
-
-    @Override
-    public void detachView() {
-        mPlanDetailViewContract = null;
-        mEventBus.unregister(this);
-    }
-
-    public void setInitialView() {
         mPlanDetailViewContract.showInitialView(new FormattedPlan(
                 mPlan.getContent(),
                 mPlan.isStarred(),
@@ -63,6 +57,12 @@ public class PlanDetailPresenter extends BasePresenter<PlanDetailViewContract> {
                 formatDateTime(mPlan.getReminderTime()),
                 mPlan.isCompleted()
         ), new SimpleTypeAdapter(mDataManager.getTypeList(), SimpleTypeAdapter.STYLE_SPINNER));
+    }
+
+    @Override
+    public void detach() {
+        mPlanDetailViewContract = null;
+        mEventBus.unregister(this);
     }
 
     public void notifyMenuCreated() {
@@ -126,21 +126,21 @@ public class PlanDetailPresenter extends BasePresenter<PlanDetailViewContract> {
         String oldTypeCode = mPlan.getTypeCode();
         String newTypeCode = mDataManager.getType(spinnerPos).getTypeCode();
         if (!newTypeCode.equals(oldTypeCode)) {
-            mDataManager.notifyTypeOfPlanChanged(mPosition, oldTypeCode, newTypeCode);
+            mDataManager.notifyTypeOfPlanChanged(mPlanListPosition, oldTypeCode, newTypeCode);
             postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_TYPE_OF_PLAN);
         }
     }
 
     public void notifyPlanDeleted() {
-        mDataManager.notifyPlanDeleted(mPosition);
-        mEventBus.post(new PlanDeletedEvent(getPresenterName(), mPlan.getPlanCode(), mPosition, mPlan));
+        mDataManager.notifyPlanDeleted(mPlanListPosition);
+        mEventBus.post(new PlanDeletedEvent(getPresenterName(), mPlan.getPlanCode(), mPlanListPosition, mPlan));
         mPlanDetailViewContract.exit();
     }
 
     public void notifyContentChanged(String newContent) {
         if (!TextUtils.isEmpty(newContent)) {
             //内容不为空，合法
-            mDataManager.notifyPlanContentChanged(mPosition, newContent);
+            mDataManager.notifyPlanContentChanged(mPlanListPosition, newContent);
             mPlanDetailViewContract.onContentChanged(newContent);
             postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_CONTENT);
         } else {
@@ -150,7 +150,7 @@ public class PlanDetailPresenter extends BasePresenter<PlanDetailViewContract> {
     }
 
     public void notifyStarStatusChanged() {
-        mDataManager.notifyStarStatusChanged(mPosition);
+        mDataManager.notifyStarStatusChanged(mPlanListPosition);
         mPlanDetailViewContract.onStarStatusChanged(mPlan.isStarred());
         postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_STAR_STATUS);
     }
@@ -158,13 +158,13 @@ public class PlanDetailPresenter extends BasePresenter<PlanDetailViewContract> {
     public void notifyPlanStatusChanged() {
         //首先检测此计划是否有提醒
         if (mPlan.hasReminder()) {
-            mDataManager.notifyReminderTimeChanged(mPosition, Constant.TIME_UNDEFINED);
+            mDataManager.notifyReminderTimeChanged(mPlanListPosition, Constant.TIME_UNDEFINED);
             mPlanDetailViewContract.onReminderTimeChanged(false, Util.getString(R.string.dscpt_unsettled));
             postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_REMINDER_TIME);
         }
-        mDataManager.notifyPlanStatusChanged(mPosition);
+        mDataManager.notifyPlanStatusChanged(mPlanListPosition);
         //更新位置
-        mPosition = mPlan.isCompleted() ? mDataManager.getUcPlanCount() : 0;
+        mPlanListPosition = mPlan.isCompleted() ? mDataManager.getUcPlanCount() : 0;
         //刷新界面
         mPlanDetailViewContract.onPlanStatusChanged(mPlan.isCompleted());
         //发出事件
@@ -181,20 +181,20 @@ public class PlanDetailPresenter extends BasePresenter<PlanDetailViewContract> {
 
     public void notifyDeadlineChanged(long newDeadline) {
         if (mPlan.getDeadline() == newDeadline) return;
-        mDataManager.notifyDeadlineChanged(mPosition, newDeadline);
+        mDataManager.notifyDeadlineChanged(mPlanListPosition, newDeadline);
         mPlanDetailViewContract.onDeadlineChanged(mPlan.hasDeadline(), formatDateTime(newDeadline));
         postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_DEADLINE);
     }
 
     public void notifyReminderTimeChanged(long newReminderTime) {
         if (mPlan.getReminderTime() == newReminderTime) return;
-        mDataManager.notifyReminderTimeChanged(mPosition, newReminderTime);
+        mDataManager.notifyReminderTimeChanged(mPlanListPosition, newReminderTime);
         mPlanDetailViewContract.onReminderTimeChanged(mPlan.hasReminder(), formatDateTime(newReminderTime));
         postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_REMINDER_TIME);
     }
 
     private void postPlanDetailChangedEvent(int changedField) {
-        mEventBus.post(new PlanDetailChangedEvent(getPresenterName(), mPlan.getPlanCode(), mPosition, changedField));
+        mEventBus.post(new PlanDetailChangedEvent(getPresenterName(), mPlan.getPlanCode(), mPlanListPosition, changedField));
     }
 
     private String formatDateTime(long timeInMillis) {
@@ -220,7 +220,7 @@ public class PlanDetailPresenter extends BasePresenter<PlanDetailViewContract> {
                     //更新界面
                     mPlanDetailViewContract.onPlanStatusChanged(mPlan.isCompleted());
                     //更新position
-                    mPosition = event.getPosition();
+                    mPlanListPosition = event.getPosition();
                     break;
                 case PlanDetailChangedEvent.FIELD_DEADLINE:
                     mPlanDetailViewContract.onDeadlineChanged(mPlan.hasDeadline(), formatDateTime(mPlan.getDeadline()));

@@ -3,7 +3,6 @@ package com.zack.enderplan.view.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +15,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.zack.enderplan.App;
 import com.zack.enderplan.R;
+import com.zack.enderplan.injector.component.DaggerFirstPlanComponent;
+import com.zack.enderplan.injector.module.FirstPlanPresenterModule;
 import com.zack.enderplan.view.contract.FirstPlanViewContract;
 import com.zack.enderplan.presenter.FirstPlanPresenter;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,12 +39,21 @@ public class FirstPlanFragment extends BaseFragment implements FirstPlanViewCont
     @BindView(R.id.fab_enter)
     FloatingActionButton mEnterFab;
 
-    private FirstPlanPresenter mFirstPlanPresenter;
+    @Inject
+    FirstPlanPresenter mFirstPlanPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFirstPlanPresenter = new FirstPlanPresenter(this);
+    }
+
+    @Override
+    public void onInjectPresenter() {
+        DaggerFirstPlanComponent.builder()
+                .firstPlanPresenterModule(new FirstPlanPresenterModule(this))
+                .appComponent(App.getAppComponent())
+                .build()
+                .inject(this);
     }
 
     @Override
@@ -52,27 +65,26 @@ public class FirstPlanFragment extends BaseFragment implements FirstPlanViewCont
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        mFirstPlanPresenter.setInitialView(savedInstanceState);
+        mFirstPlanPresenter.attach();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mFirstPlanPresenter.detachView();
+        mFirstPlanPresenter.detach();
     }
 
     @Override
-    public void showInitialView(boolean shouldShowEnterAnimation) {
-        if (shouldShowEnterAnimation) {
-            mEditorLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    mEditorLayout.getViewTreeObserver().removeOnPreDrawListener(this);
-                    makeEnterAnimation();
-                    return false;
-                }
-            });
-        }
+    public void showInitialView() {
+        //TODO if (shouldShowEnterAnimation)
+        mEditorLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                mEditorLayout.getViewTreeObserver().removeOnPreDrawListener(this);
+                makeEnterAnimation();
+                return false;
+            }
+        });
     }
 
     @Override

@@ -17,34 +17,34 @@ import com.zack.enderplan.view.contract.AllTypesViewContract;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-public class AllTypesPresenter extends BasePresenter<AllTypesViewContract> {
+import javax.inject.Inject;
+
+public class AllTypesPresenter extends BasePresenter {
 
     private AllTypesViewContract mAllTypesViewContract;
     private DataManager mDataManager;
     private TypeAdapter mTypeAdapter;
     private EventBus mEventBus;
 
-    public AllTypesPresenter(AllTypesViewContract allTypesViewContract) {
-        mEventBus = EventBus.getDefault();
-        attachView(allTypesViewContract);
-        mDataManager = DataManager.getInstance();
+    @Inject
+    public AllTypesPresenter(AllTypesViewContract allTypesViewContract, DataManager dataManager, EventBus eventBus) {
+        mAllTypesViewContract = allTypesViewContract;
+        mDataManager = dataManager;
+        mEventBus = eventBus;
+
+        mTypeAdapter = new TypeAdapter(mDataManager.getTypeList(), mDataManager.getUcPlanCountOfEachTypeMap());
     }
 
     @Override
-    public void attachView(AllTypesViewContract viewContract) {
-        mAllTypesViewContract = viewContract;
+    public void attach() {
         mEventBus.register(this);
+        mAllTypesViewContract.showInitialView(mTypeAdapter);
     }
 
     @Override
-    public void detachView() {
+    public void detach() {
         mAllTypesViewContract = null;
         mEventBus.unregister(this);
-    }
-
-    public void setInitialView() {
-        mTypeAdapter = new TypeAdapter(mDataManager.getTypeList(), mDataManager.getUcPlanCountOfEachTypeMap());
-        mAllTypesViewContract.showInitialView(mTypeAdapter);
     }
 
     public void notifyTypeItemClicked(int position, View typeItem) {

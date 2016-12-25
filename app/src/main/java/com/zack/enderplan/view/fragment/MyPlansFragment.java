@@ -10,7 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.zack.enderplan.App;
 import com.zack.enderplan.R;
+import com.zack.enderplan.injector.component.DaggerAllTypesComponent;
+import com.zack.enderplan.injector.component.DaggerMyPlansComponent;
+import com.zack.enderplan.injector.module.AllTypesPresenterModule;
+import com.zack.enderplan.injector.module.MyPlansPresenterModule;
 import com.zack.enderplan.view.activity.PlanDetailActivity;
 import com.zack.enderplan.view.contract.MyPlansViewContract;
 import com.zack.enderplan.view.adapter.PlanAdapter;
@@ -18,6 +23,8 @@ import com.zack.enderplan.view.callback.PlanItemTouchCallback;
 import com.zack.enderplan.presenter.MyPlansPresenter;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.view.widget.EnhancedRecyclerView;
+
+import javax.inject.Inject;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -33,7 +40,8 @@ public class MyPlansFragment extends BaseListFragment implements MyPlansViewCont
     @BindString(R.string.snackbar_delete_format)
     String mSnackbarDeleteFormat;
 
-    private MyPlansPresenter mMyPlansPresenter;
+    @Inject
+    MyPlansPresenter mMyPlansPresenter;
 
     public MyPlansFragment() {
         // Required empty public constructor
@@ -42,8 +50,15 @@ public class MyPlansFragment extends BaseListFragment implements MyPlansViewCont
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
 
-        mMyPlansPresenter = new MyPlansPresenter(this);
+    @Override
+    public void onInjectPresenter() {
+        DaggerMyPlansComponent.builder()
+                .myPlansPresenterModule(new MyPlansPresenterModule(this))
+                .appComponent(App.getAppComponent())
+                .build()
+                .inject(this);
     }
 
     @Override
@@ -57,8 +72,7 @@ public class MyPlansFragment extends BaseListFragment implements MyPlansViewCont
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-
-        mMyPlansPresenter.setInitialView();
+        mMyPlansPresenter.attach();
     }
 
     @Override
@@ -76,7 +90,7 @@ public class MyPlansFragment extends BaseListFragment implements MyPlansViewCont
     @Override
     public void onDetach() {
         super.onDetach();
-        mMyPlansPresenter.detachView();
+        mMyPlansPresenter.detach();
     }
 
     @Override

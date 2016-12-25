@@ -17,7 +17,9 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
-public class MyPlansPresenter extends BasePresenter<MyPlansViewContract> {
+import javax.inject.Inject;
+
+public class MyPlansPresenter extends BasePresenter {
 
     private MyPlansViewContract mMyPlansViewContract;
     private DataManager mDataManager;
@@ -25,25 +27,13 @@ public class MyPlansPresenter extends BasePresenter<MyPlansViewContract> {
     private EventBus mEventBus;
     private boolean mViewVisible;
 
-    public MyPlansPresenter(MyPlansViewContract myPlansViewContract) {
-        mEventBus = EventBus.getDefault();
-        attachView(myPlansViewContract);
-        mDataManager = DataManager.getInstance();
-    }
+    @Inject
+    public MyPlansPresenter(MyPlansViewContract myPlansViewContract, DataManager dataManager, EventBus eventBus) {
+        mMyPlansViewContract = myPlansViewContract;
+        mDataManager = dataManager;
+        mEventBus = eventBus;
 
-    @Override
-    public void attachView(MyPlansViewContract viewContract) {
-        mMyPlansViewContract = viewContract;
-        mEventBus.register(this);
-    }
-
-    @Override
-    public void detachView() {
-        mMyPlansViewContract = null;
-        mEventBus.unregister(this);
-    }
-
-    public void setInitialView() {
+        //TODO 写到一个单独的方法里
         //初始化adapter
         mPlanAdapter = new PlanAdapter();
         mPlanAdapter.setOnPlanItemClickListener(new PlanAdapter.OnPlanItemClickListener() {
@@ -70,7 +60,18 @@ public class MyPlansPresenter extends BasePresenter<MyPlansViewContract> {
                 ));
             }
         });
+    }
+
+    @Override
+    public void attach() {
+        mEventBus.register(this);
         mMyPlansViewContract.showInitialView(mPlanAdapter);
+    }
+
+    @Override
+    public void detach() {
+        mMyPlansViewContract = null;
+        mEventBus.unregister(this);
     }
 
     public void notifySwitchingViewVisibility(boolean isVisible) {

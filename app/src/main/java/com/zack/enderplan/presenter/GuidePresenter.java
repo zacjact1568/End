@@ -8,31 +8,30 @@ import com.zack.enderplan.model.preference.PreferenceHelper;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-public class GuidePresenter extends BasePresenter<GuideViewContract> {
+import javax.inject.Inject;
+
+public class GuidePresenter extends BasePresenter {
 
     private GuideViewContract mGuideViewContract;
     private EventBus mEventBus;
     private long mLastBackKeyPressedTime;
 
-    public GuidePresenter(GuideViewContract guideViewContract) {
-        mEventBus = EventBus.getDefault();
-        attachView(guideViewContract);
+    @Inject
+    public GuidePresenter(GuideViewContract guideViewContract, EventBus eventBus) {
+        mGuideViewContract = guideViewContract;
+        mEventBus = eventBus;
     }
 
     @Override
-    public void attachView(GuideViewContract viewContract) {
-        mGuideViewContract = viewContract;
+    public void attach() {
         mEventBus.register(this);
+        mGuideViewContract.showInitialView();
     }
 
     @Override
-    public void detachView() {
+    public void detach() {
         mGuideViewContract = null;
         mEventBus.unregister(this);
-    }
-
-    public void setInitialView() {
-        mGuideViewContract.showInitialView();
     }
 
     public void notifyBackPressed() {

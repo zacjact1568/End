@@ -8,12 +8,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.zack.enderplan.App;
 import com.zack.enderplan.R;
+import com.zack.enderplan.injector.component.DaggerAllTypesComponent;
+import com.zack.enderplan.injector.module.AllTypesPresenterModule;
 import com.zack.enderplan.view.activity.TypeDetailActivity;
 import com.zack.enderplan.view.contract.AllTypesViewContract;
 import com.zack.enderplan.view.adapter.TypeAdapter;
 import com.zack.enderplan.view.callback.TypeItemTouchCallback;
 import com.zack.enderplan.presenter.AllTypesPresenter;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,7 +28,8 @@ public class AllTypesFragment extends BaseListFragment implements AllTypesViewCo
     @BindView(R.id.list_all_types)
     RecyclerView mTypeList;
 
-    private AllTypesPresenter mAllTypesPresenter;
+    @Inject
+    AllTypesPresenter mAllTypesPresenter;
 
     public AllTypesFragment() {
         // Required empty public constructor
@@ -32,8 +38,15 @@ public class AllTypesFragment extends BaseListFragment implements AllTypesViewCo
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
 
-        mAllTypesPresenter = new AllTypesPresenter(this);
+    @Override
+    public void onInjectPresenter() {
+        DaggerAllTypesComponent.builder()
+                .allTypesPresenterModule(new AllTypesPresenterModule(this))
+                .appComponent(App.getAppComponent())
+                .build()
+                .inject(this);
     }
 
     @Override
@@ -47,14 +60,13 @@ public class AllTypesFragment extends BaseListFragment implements AllTypesViewCo
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-
-        mAllTypesPresenter.setInitialView();
+        mAllTypesPresenter.attach();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mAllTypesPresenter.detachView();
+        mAllTypesPresenter.detach();
     }
 
     @Override

@@ -14,30 +14,29 @@ import com.zack.enderplan.view.contract.CreatePlanViewContract;
 
 import org.greenrobot.eventbus.EventBus;
 
-public class CreatePlanPresenter extends BasePresenter<CreatePlanViewContract> {
+import javax.inject.Inject;
+
+public class CreatePlanPresenter extends BasePresenter {
 
     private CreatePlanViewContract mCreatePlanViewContract;
     private DataManager mDataManager;
     private Plan mPlan;
 
-    public CreatePlanPresenter(CreatePlanViewContract createPlanViewContract) {
-        attachView(createPlanViewContract);
-        mDataManager = DataManager.getInstance();
-        mPlan = new Plan(Util.makeCode());
+    @Inject
+    public CreatePlanPresenter(CreatePlanViewContract createPlanViewContract, Plan plan, DataManager dataManager) {
+        mCreatePlanViewContract = createPlanViewContract;
+        mPlan = plan;
+        mDataManager = dataManager;
     }
 
     @Override
-    public void attachView(CreatePlanViewContract viewContract) {
-        mCreatePlanViewContract = viewContract;
-    }
-
-    @Override
-    public void detachView() {
-        mCreatePlanViewContract = null;
-    }
-
-    public void setInitialView() {
+    public void attach() {
         mCreatePlanViewContract.showInitialView(new SimpleTypeAdapter(mDataManager.getTypeList(), SimpleTypeAdapter.STYLE_SPINNER));
+    }
+
+    @Override
+    public void detach() {
+        mCreatePlanViewContract = null;
     }
 
     public void notifyContentChanged(String content) {

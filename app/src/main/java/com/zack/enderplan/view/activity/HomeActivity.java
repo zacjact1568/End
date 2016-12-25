@@ -15,14 +15,19 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zack.enderplan.App;
 import com.zack.enderplan.R;
 import com.zack.enderplan.common.Util;
+import com.zack.enderplan.injector.component.DaggerHomeComponent;
+import com.zack.enderplan.injector.module.HomePresenterModule;
 import com.zack.enderplan.view.fragment.BaseListFragment;
 import com.zack.enderplan.view.fragment.MyPlansFragment;
 import com.zack.enderplan.view.fragment.AllTypesFragment;
 import com.zack.enderplan.presenter.HomePresenter;
 import com.zack.enderplan.view.contract.HomeViewContract;
 import com.zack.enderplan.common.Constant;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,15 +44,24 @@ public class HomeActivity extends BaseActivity implements HomeViewContract {
     @BindView(R.id.layout_drawer)
     DrawerLayout mDrawerLayout;
 
+    @Inject
+    HomePresenter mHomePresenter;
+
     private TextView mUcPlanCountText;
-    private HomePresenter mHomePresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mHomePresenter.attach();
+    }
 
-        mHomePresenter = new HomePresenter(this);
-        mHomePresenter.setInitialView();
+    @Override
+    protected void onInjectPresenter() {
+        DaggerHomeComponent.builder()
+                .homePresenterModule(new HomePresenterModule(this))
+                .appComponent(App.getAppComponent())
+                .build()
+                .inject(this);
     }
 
     @Override
@@ -61,7 +75,7 @@ public class HomeActivity extends BaseActivity implements HomeViewContract {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mHomePresenter.detachView();
+        mHomePresenter.detach();
     }
 
     @Override
