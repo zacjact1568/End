@@ -1,8 +1,6 @@
 package com.zack.enderplan.injector.module;
 
-import com.zack.enderplan.App;
-import com.zack.enderplan.model.bean.Type;
-import com.zack.enderplan.view.contract.EditTypeViewContract;
+import com.zack.enderplan.view.contract.TypeEditViewContract;
 
 import dagger.Module;
 import dagger.Provides;
@@ -10,17 +8,17 @@ import dagger.Provides;
 @Module
 public class TypeEditPresenterModule {
 
-    private final EditTypeViewContract mEditTypeViewContract;
+    private final TypeEditViewContract mTypeEditViewContract;
     private final int mTypeListPosition;
 
-    public TypeEditPresenterModule(EditTypeViewContract editTypeViewContract, int typeListPosition) {
-        mEditTypeViewContract = editTypeViewContract;
+    public TypeEditPresenterModule(TypeEditViewContract typeEditViewContract, int typeListPosition) {
+        mTypeEditViewContract = typeEditViewContract;
         mTypeListPosition = typeListPosition;
     }
 
     @Provides
-    EditTypeViewContract provideEditTypeViewContract() {
-        return mEditTypeViewContract;
+    TypeEditViewContract provideEditTypeViewContract() {
+        return mTypeEditViewContract;
     }
 
     @Provides

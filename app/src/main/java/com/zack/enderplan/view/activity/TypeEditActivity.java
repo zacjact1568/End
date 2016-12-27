@@ -16,11 +16,11 @@ import com.zack.enderplan.App;
 import com.zack.enderplan.R;
 import com.zack.enderplan.injector.component.DaggerTypeEditComponent;
 import com.zack.enderplan.injector.module.TypeEditPresenterModule;
+import com.zack.enderplan.presenter.TypeEditPresenter;
 import com.zack.enderplan.view.dialog.TypeMarkColorPickerDialogFragment;
 import com.zack.enderplan.view.dialog.EditorDialogFragment;
 import com.zack.enderplan.view.dialog.TypeMarkPatternPickerDialogFragment;
-import com.zack.enderplan.view.contract.EditTypeViewContract;
-import com.zack.enderplan.presenter.EditTypePresenter;
+import com.zack.enderplan.view.contract.TypeEditViewContract;
 import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.TypeMarkColor;
 import com.zack.enderplan.model.bean.TypeMarkPattern;
@@ -35,7 +35,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class EditTypeActivity extends BaseActivity implements EditTypeViewContract {
+public class TypeEditActivity extends BaseActivity implements TypeEditViewContract {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -54,10 +54,10 @@ public class EditTypeActivity extends BaseActivity implements EditTypeViewContra
     String mUnsettledDscpt;
 
     @Inject
-    EditTypePresenter mEditTypePresenter;
+    TypeEditPresenter mTypeEditPresenter;
 
     public static void start(Activity activity, int typeListPosition, boolean sharedElementTransition, View sharedElement, String sharedElementName) {
-        Intent intent = new Intent(activity, EditTypeActivity.class);
+        Intent intent = new Intent(activity, TypeEditActivity.class);
         intent.putExtra(Constant.TYPE_LIST_POSITION, typeListPosition);
         ActivityOptions options;
         if (sharedElementTransition) {
@@ -71,7 +71,7 @@ public class EditTypeActivity extends BaseActivity implements EditTypeViewContra
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mEditTypePresenter.attach();
+        mTypeEditPresenter.attach();
     }
 
     @Override
@@ -86,7 +86,7 @@ public class EditTypeActivity extends BaseActivity implements EditTypeViewContra
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mEditTypePresenter.detach();
+        mTypeEditPresenter.detach();
     }
 
     @Override
@@ -111,7 +111,7 @@ public class EditTypeActivity extends BaseActivity implements EditTypeViewContra
 
     @Override
     public void showInitialView(FormattedType formattedType) {
-        setContentView(R.layout.activity_edit_type);
+        setContentView(R.layout.activity_type_edit);
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
@@ -128,7 +128,7 @@ public class EditTypeActivity extends BaseActivity implements EditTypeViewContra
         fragment.setOnPositiveButtonClickListener(new EditorDialogFragment.OnPositiveButtonClickListener() {
             @Override
             public void onPositiveButtonClick(String editorText) {
-                mEditTypePresenter.notifyUpdatingTypeName(editorText);
+                mTypeEditPresenter.notifyUpdatingTypeName(editorText);
             }
         });
         fragment.show(getSupportFragmentManager(), Constant.TYPE_NAME);
@@ -159,7 +159,7 @@ public class EditTypeActivity extends BaseActivity implements EditTypeViewContra
         fragment.setOnTypeMarkColorPickedListener(new TypeMarkColorPickerDialogFragment.OnTypeMarkColorPickedListener() {
             @Override
             public void onTypeMarkColorPicked(TypeMarkColor typeMarkColor) {
-                mEditTypePresenter.notifyTypeMarkColorSelected(typeMarkColor);
+                mTypeEditPresenter.notifyTypeMarkColorSelected(typeMarkColor);
             }
         });
         fragment.show(getSupportFragmentManager(), Constant.TYPE_MARK_COLOR);
@@ -171,7 +171,7 @@ public class EditTypeActivity extends BaseActivity implements EditTypeViewContra
         fragment.setOnTypeMarkPatternPickedListener(new TypeMarkPatternPickerDialogFragment.OnTypeMarkPatternPickedListener() {
             @Override
             public void onTypeMarkPatternPicked(TypeMarkPattern typeMarkPattern) {
-                mEditTypePresenter.notifyTypeMarkPatternSelected(typeMarkPattern);
+                mTypeEditPresenter.notifyTypeMarkPatternSelected(typeMarkPattern);
             }
         });
         fragment.show(getSupportFragmentManager(), Constant.TYPE_MARK_PATTERN);
@@ -181,13 +181,13 @@ public class EditTypeActivity extends BaseActivity implements EditTypeViewContra
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.item_type_name:
-                mEditTypePresenter.notifySettingTypeName();
+                mTypeEditPresenter.notifySettingTypeName();
                 break;
             case R.id.item_type_mark_color:
-                mEditTypePresenter.notifySettingTypeMarkColor();
+                mTypeEditPresenter.notifySettingTypeMarkColor();
                 break;
             case R.id.item_type_mark_pattern:
-                mEditTypePresenter.notifySettingTypeMarkPattern();
+                mTypeEditPresenter.notifySettingTypeMarkPattern();
                 break;
         }
     }

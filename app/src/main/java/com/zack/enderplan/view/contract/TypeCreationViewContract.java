@@ -5,7 +5,7 @@ import android.support.annotation.StringRes;
 
 import com.zack.enderplan.model.bean.FormattedType;
 
-public interface CreateTypeViewContract extends BaseViewContract {
+public interface TypeCreationViewContract extends BaseViewContract {
 
     void showInitialView(FormattedType formattedType);
 
@@ -18,6 +18,4 @@ public interface CreateTypeViewContract extends BaseViewContract {
     void showTypeMarkColorPickerDialog(String defaultColor);
 
     void showTypeMarkPatternPickerDialog(String defaultPattern);
-
-    void playShakeAnimation(String tag);
 }

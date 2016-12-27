@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".view.activity.PlanCreationActivity"
+    tools:showIn="@layout/activity_plan_creation">
+
+    <EditText
+        android:id="@+id/editor_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_content_editor"
+        android:lines="3"
+        android:background="@android:color/transparent"
+        android:gravity="top"
+        android:padding="16dp"/>
+
+    <include layout="@layout/divider"/>
+
+    <Spinner
+        android:id="@+id/spinner_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:spinnerMode="dialog"
+        tools:layout_height="40dp"/>
+
+    <include layout="@layout/divider"/>
+
+    <com.zack.enderplan.view.widget.ItemView
+        android:id="@+id/item_deadline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        app:iconImageSrc="@drawable/ic_schedule_black_24dp"
+        app:titleText="@string/title_deadline"
+        app:descriptionText="@string/dscpt_click_to_set"/>
+
+    <include layout="@layout/divider"/>
+
+    <com.zack.enderplan.view.widget.ItemView
+        android:id="@+id/item_reminder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        app:iconImageSrc="@drawable/ic_notifications_none_black_24dp"
+        app:titleText="@string/title_reminder"
+        app:descriptionText="@string/dscpt_click_to_set"/>
+
+    <include layout="@layout/divider"/>
+
+</LinearLayout>

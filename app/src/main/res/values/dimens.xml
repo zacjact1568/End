@@ -42,4 +42,7 @@
     <dimen name="logo_guide_size_half">80dp</dimen>
     <dimen name="logo_guide_vertical_margin">80dp</dimen>
 
+    <!--TODO 标准命名-->
+    <dimen name="elevation_toolbar">3dp</dimen>
+
 </resources>

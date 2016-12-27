@@ -5,7 +5,7 @@ import android.support.annotation.StringRes;
 
 import com.zack.enderplan.model.bean.FormattedType;
 
-public interface EditTypeViewContract extends BaseViewContract {
+public interface TypeEditViewContract extends BaseViewContract {
 
     void showInitialView(FormattedType formattedType);
 

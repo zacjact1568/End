@@ -24,28 +24,28 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.activity.CreatePlanActivity"
-            android:label="@string/title_activity_create_plan"
+            android:name=".view.activity.PlanCreationActivity"
+            android:label="@string/title_activity_plan_creation"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent.Window"/>
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".view.activity.PlanDetailActivity"
             android:label="@string/title_activity_plan_detail"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Transition.VerticalSlide.TransparentStatusBar"/>
         <activity
-            android:name=".view.activity.CreateTypeActivity"
-            android:label="@string/title_activity_create_type"
+            android:name=".view.activity.TypeCreationActivity"
+            android:label="@string/title_activity_type_creation"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent.Window"/>
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".view.activity.TypeDetailActivity"
             android:label="@string/title_activity_type_detail"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Transition.SharedElement.TransparentStatusBar"/>
         <activity
-            android:name=".view.activity.EditTypeActivity"
-            android:label="@string/title_activity_edit_type"
+            android:name=".view.activity.TypeEditActivity"
+            android:label="@string/title_activity_type_edit"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Transition.SharedElement"/>
         <activity

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".view.activity.EditTypeActivity">
+    tools:context=".view.activity.TypeCreationActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -16,6 +16,6 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
-    <include layout="@layout/content_edit_type"/>
+    <include layout="@layout/content_type_creation"/>
 
 </LinearLayout>

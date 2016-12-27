@@ -237,9 +237,9 @@ public class HomeActivity extends BaseActivity implements HomeViewContract {
         switch (view.getId()) {
             case R.id.fab_create:
                 if (isFragmentShowing(Constant.MY_PLANS)) {
-                    CreatePlanActivity.start(this);
+                    PlanCreationActivity.start(this);
                 } else {
-                    CreateTypeActivity.start(this);
+                    TypeCreationActivity.start(this);
                 }
                 break;
         }

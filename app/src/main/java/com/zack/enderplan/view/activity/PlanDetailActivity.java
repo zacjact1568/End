@@ -65,8 +65,8 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
     LinearLayout mContentLayout;
     @BindView(R.id.text_content_collapsed)
     TextView mContentCollapsedText;
-    @BindView(R.id.spinner)
-    Spinner spinner;
+    @BindView(R.id.spinner_type)
+    Spinner mTypeSpinner;
     @BindView(R.id.item_deadline)
     ItemView mDeadlineItem;
     @BindView(R.id.item_reminder)
@@ -181,8 +181,8 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
             }
         });
 
-        spinner.setAdapter(simpleTypeAdapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mTypeSpinner.setAdapter(simpleTypeAdapter);
+        mTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 planDetailPresenter.notifyTypeCodeChanged(position);
@@ -269,7 +269,7 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
 
     @Override
     public void onTypeOfPlanChanged(int posInTypeList) {
-        spinner.setSelection(posInTypeList);
+        mTypeSpinner.setSelection(posInTypeList);
     }
 
     @Override

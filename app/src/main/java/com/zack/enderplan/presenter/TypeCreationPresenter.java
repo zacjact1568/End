@@ -12,28 +12,28 @@ import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.bean.TypeMarkPattern;
 import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.common.Util;
-import com.zack.enderplan.view.contract.CreateTypeViewContract;
+import com.zack.enderplan.view.contract.TypeCreationViewContract;
 
 import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Inject;
 
-public class CreateTypePresenter extends BasePresenter {
+public class TypeCreationPresenter extends BasePresenter {
 
-    private CreateTypeViewContract mCreateTypeViewContract;
+    private TypeCreationViewContract mTypeCreationViewContract;
     private DataManager mDataManager;
     private Type mType;
 
     @Inject
-    public CreateTypePresenter(CreateTypeViewContract createTypeViewContract, Type type, DataManager dataManager) {
-        mCreateTypeViewContract = createTypeViewContract;
+    public TypeCreationPresenter(TypeCreationViewContract typeCreationViewContract, Type type, DataManager dataManager) {
+        mTypeCreationViewContract = typeCreationViewContract;
         mType = type;
         mDataManager = dataManager;
     }
 
     @Override
     public void attach() {
-        mCreateTypeViewContract.showInitialView(new FormattedType(
+        mTypeCreationViewContract.showInitialView(new FormattedType(
                 Color.parseColor(mType.getTypeMarkColor()),
                 mDataManager.getTypeMarkColorName(mType.getTypeMarkColor()),
                 mType.getTypeName(),
@@ -43,37 +43,37 @@ public class CreateTypePresenter extends BasePresenter {
 
     @Override
     public void detach() {
-        mCreateTypeViewContract = null;
+        mTypeCreationViewContract = null;
     }
 
     public void notifyTypeNameTextChanged(String typeName) {
         mType.setTypeName(typeName);
         if (TextUtils.isEmpty(typeName)) {
-            mCreateTypeViewContract.onTypeNameChanged(Util.getString(R.string.text_empty_type_name), "-", false);
+            mTypeCreationViewContract.onTypeNameChanged(Util.getString(R.string.text_empty_type_name), "-", false);
         } else {
-            mCreateTypeViewContract.onTypeNameChanged(typeName, typeName.substring(0, 1), true);
+            mTypeCreationViewContract.onTypeNameChanged(typeName, typeName.substring(0, 1), true);
         }
     }
 
     public void notifySettingTypeMarkColor() {
-        mCreateTypeViewContract.showTypeMarkColorPickerDialog(mType.getTypeMarkColor());
+        mTypeCreationViewContract.showTypeMarkColorPickerDialog(mType.getTypeMarkColor());
     }
 
     public void notifyTypeMarkColorSelected(TypeMarkColor typeMarkColor) {
         String colorHex = typeMarkColor.getColorHex();
         mType.setTypeMarkColor(colorHex);
-        mCreateTypeViewContract.onTypeMarkColorChanged(Color.parseColor(colorHex), typeMarkColor.getColorName());
+        mTypeCreationViewContract.onTypeMarkColorChanged(Color.parseColor(colorHex), typeMarkColor.getColorName());
     }
 
     public void notifySettingTypeMarkPattern() {
-        mCreateTypeViewContract.showTypeMarkPatternPickerDialog(mType.getTypeMarkPattern());
+        mTypeCreationViewContract.showTypeMarkPatternPickerDialog(mType.getTypeMarkPattern());
     }
 
     public void notifyTypeMarkPatternSelected(TypeMarkPattern typeMarkPattern) {
         boolean hasPattern = typeMarkPattern != null;
         String patternFn = hasPattern ? typeMarkPattern.getPatternFn() : null;
         mType.setTypeMarkPattern(patternFn);
-        mCreateTypeViewContract.onTypeMarkPatternChanged(
+        mTypeCreationViewContract.onTypeMarkPatternChanged(
                 hasPattern,
                 Util.getDrawableResourceId(patternFn),
                 hasPattern ? typeMarkPattern.getPatternName() : null
@@ -81,12 +81,12 @@ public class CreateTypePresenter extends BasePresenter {
     }
 
     public void notifyCreateButtonClicked() {
-        if (mDataManager.isTypeNameUsed(mType.getTypeName())) {
-            mCreateTypeViewContract.playShakeAnimation(Constant.TYPE_NAME);
-            mCreateTypeViewContract.showToast(R.string.toast_type_name_exists);
+        if (TextUtils.isEmpty(mType.getTypeName())) {
+            mTypeCreationViewContract.showToast(R.string.toast_empty_type_name);
+        } else if (mDataManager.isTypeNameUsed(mType.getTypeName())) {
+            mTypeCreationViewContract.showToast(R.string.toast_type_name_exists);
         } else if (mDataManager.isTypeMarkUsed(mType.getTypeMarkColor(), mType.getTypeMarkPattern())) {
-            mCreateTypeViewContract.playShakeAnimation(Constant.TYPE_MARK);
-            mCreateTypeViewContract.showToast(R.string.toast_type_mark_exists);
+            mTypeCreationViewContract.showToast(R.string.toast_type_mark_exists);
         } else {
             mDataManager.notifyTypeCreated(mType);
             EventBus.getDefault().post(new TypeCreatedEvent(
@@ -94,12 +94,12 @@ public class CreateTypePresenter extends BasePresenter {
                     mDataManager.getRecentlyCreatedType().getTypeCode(),
                     mDataManager.getRecentlyCreatedTypeLocation()
             ));
-            mCreateTypeViewContract.exit();
+            mTypeCreationViewContract.exit();
         }
     }
 
     public void notifyCancelButtonClicked() {
         //TODO 判断是否已编辑过
-        mCreateTypeViewContract.exit();
+        mTypeCreationViewContract.exit();
     }
 }

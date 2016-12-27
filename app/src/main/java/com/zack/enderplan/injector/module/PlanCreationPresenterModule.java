@@ -2,7 +2,7 @@ package com.zack.enderplan.injector.module;
 
 import com.zack.enderplan.common.Util;
 import com.zack.enderplan.model.bean.Plan;
-import com.zack.enderplan.view.contract.CreatePlanViewContract;
+import com.zack.enderplan.view.contract.PlanCreationViewContract;
 
 import dagger.Module;
 import dagger.Provides;
@@ -10,15 +10,15 @@ import dagger.Provides;
 @Module
 public class PlanCreationPresenterModule {
 
-    private final CreatePlanViewContract mCreatePlanViewContract;
+    private final PlanCreationViewContract mPlanCreationViewContract;
 
-    public PlanCreationPresenterModule(CreatePlanViewContract createPlanViewContract) {
-        mCreatePlanViewContract = createPlanViewContract;
+    public PlanCreationPresenterModule(PlanCreationViewContract planCreationViewContract) {
+        mPlanCreationViewContract = planCreationViewContract;
     }
 
     @Provides
-    CreatePlanViewContract provideCreatePlanViewContract() {
-        return mCreatePlanViewContract;
+    PlanCreationViewContract provideCreatePlanViewContract() {
+        return mPlanCreationViewContract;
     }
 
     @Provides

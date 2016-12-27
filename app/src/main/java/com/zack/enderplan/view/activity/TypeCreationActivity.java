@@ -1,8 +1,8 @@
 package com.zack.enderplan.view.activity;
 
-import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.Toolbar;
@@ -11,12 +11,9 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewAnimationUtils;
-import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,15 +21,14 @@ import com.zack.enderplan.App;
 import com.zack.enderplan.R;
 import com.zack.enderplan.injector.component.DaggerTypeCreationComponent;
 import com.zack.enderplan.injector.module.TypeCreationPresenterModule;
+import com.zack.enderplan.view.contract.TypeCreationViewContract;
 import com.zack.enderplan.view.dialog.TypeMarkColorPickerDialogFragment;
 import com.zack.enderplan.view.dialog.TypeMarkPatternPickerDialogFragment;
-import com.zack.enderplan.view.contract.CreateTypeViewContract;
-import com.zack.enderplan.presenter.CreateTypePresenter;
+import com.zack.enderplan.presenter.TypeCreationPresenter;
 import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.TypeMarkColor;
 import com.zack.enderplan.model.bean.TypeMarkPattern;
 import com.zack.enderplan.common.Constant;
-import com.zack.enderplan.common.Util;
 import com.zack.enderplan.view.widget.CircleColorView;
 import com.zack.enderplan.view.widget.ItemView;
 
@@ -44,10 +40,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class CreateTypeActivity extends BaseActivity implements CreateTypeViewContract {
+public class TypeCreationActivity extends BaseActivity implements TypeCreationViewContract {
 
-    @BindView(R.id.layout_circular_reveal)
-    LinearLayout mCircularRevealLayout;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.ic_type_mark)
@@ -61,27 +55,25 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeViewCo
     @BindView(R.id.item_type_mark_pattern)
     ItemView mTypeMarkPatternItem;
 
-    @BindColor(R.color.colorAccent)
-    int mAccentColor;
-    @BindColor(R.color.grey)
-    int mGreyColor;
+    @BindColor(R.color.colorPrimaryLight)
+    int mPrimaryLightColor;
 
     @BindString(R.string.dscpt_click_to_set)
     String mClickToSetDscpt;
 
     @Inject
-    CreateTypePresenter mCreateTypePresenter;
+    TypeCreationPresenter mTypeCreationPresenter;
 
     private MenuItem mCreateMenuItem;
 
     public static void start(Context context) {
-        context.startActivity(new Intent(context, CreateTypeActivity.class));
+        context.startActivity(new Intent(context, TypeCreationActivity.class));
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCreateTypePresenter.attach();
+        mTypeCreationPresenter.attach();
     }
 
     @Override
@@ -96,13 +88,15 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeViewCo
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mCreateTypePresenter.detach();
+        mTypeCreationPresenter.detach();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_create_type, menu);
+        getMenuInflater().inflate(R.menu.menu_type_creation, menu);
         mCreateMenuItem = menu.findItem(R.id.action_create);
+        //在这里改变图标的tint，因为没法在xml文件中改
+        mCreateMenuItem.getIcon().setTint(Color.WHITE);
         return true;
     }
 
@@ -110,10 +104,10 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeViewCo
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                mCreateTypePresenter.notifyCancelButtonClicked();
+                mTypeCreationPresenter.notifyCancelButtonClicked();
                 break;
             case R.id.action_create:
-                mCreateTypePresenter.notifyCreateButtonClicked();
+                mTypeCreationPresenter.notifyCreateButtonClicked();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -122,24 +116,24 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeViewCo
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
-        mCreateTypePresenter.notifyCancelButtonClicked();
+        mTypeCreationPresenter.notifyCancelButtonClicked();
     }
 
     @Override
     public void showInitialView(FormattedType formattedType) {
-        overridePendingTransition(0, 0);
-        setContentView(R.layout.activity_create_type);
+//        overridePendingTransition(0, 0);
+        setContentView(R.layout.activity_type_creation);
         ButterKnife.bind(this);
 
-        //TODO if (savedInstanceState == null)
-        mCircularRevealLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                mCircularRevealLayout.getViewTreeObserver().removeOnPreDrawListener(this);
-                playCircularRevealAnimation();
-                return false;
-            }
-        });
+//        //TODO if (savedInstanceState == null)
+//        mCircularRevealLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+//            @Override
+//            public boolean onPreDraw() {
+//                mCircularRevealLayout.getViewTreeObserver().removeOnPreDrawListener(this);
+//                playCircularRevealAnimation();
+//                return false;
+//            }
+//        });
 
         setSupportActionBar(mToolbar);
         setupActionBar();
@@ -158,7 +152,7 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeViewCo
 
             @Override
             public void afterTextChanged(Editable s) {
-                mCreateTypePresenter.notifyTypeNameTextChanged(s.toString());
+                mTypeCreationPresenter.notifyTypeNameTextChanged(s.toString());
             }
         });
 
@@ -183,7 +177,7 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeViewCo
         mTypeNameText.setText(typeName);
         mTypeMarkIcon.setInnerText(firstChar);
         if (mCreateMenuItem != null) {
-            mCreateMenuItem.setVisible(isValid);
+            mCreateMenuItem.getIcon().setTint(isValid ? Color.WHITE : mPrimaryLightColor);
         }
     }
 
@@ -193,7 +187,7 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeViewCo
         fragment.setOnTypeMarkColorPickedListener(new TypeMarkColorPickerDialogFragment.OnTypeMarkColorPickedListener() {
             @Override
             public void onTypeMarkColorPicked(TypeMarkColor typeMarkColor) {
-                mCreateTypePresenter.notifyTypeMarkColorSelected(typeMarkColor);
+                mTypeCreationPresenter.notifyTypeMarkColorSelected(typeMarkColor);
             }
         });
         fragment.show(getSupportFragmentManager(), Constant.TYPE_MARK_COLOR);
@@ -205,73 +199,54 @@ public class CreateTypeActivity extends BaseActivity implements CreateTypeViewCo
         fragment.setOnTypeMarkPatternPickedListener(new TypeMarkPatternPickerDialogFragment.OnTypeMarkPatternPickedListener() {
             @Override
             public void onTypeMarkPatternPicked(TypeMarkPattern typeMarkPattern) {
-                mCreateTypePresenter.notifyTypeMarkPatternSelected(typeMarkPattern);
+                mTypeCreationPresenter.notifyTypeMarkPatternSelected(typeMarkPattern);
             }
         });
         fragment.show(getSupportFragmentManager(), Constant.TYPE_MARK_PATTERN);
-    }
-
-    @Override
-    public void playShakeAnimation(String tag) {
-        Animation shakeAnim = AnimationUtils.loadAnimation(this, R.anim.anim_shake_cta);
-        switch (tag) {
-            case Constant.TYPE_MARK:
-                mTypeMarkIcon.startAnimation(shakeAnim);
-                break;
-            case Constant.TYPE_NAME:
-                mTypeNameEditor.startAnimation(shakeAnim);
-                break;
-            case Constant.TYPE_MARK_COLOR:
-                mTypeMarkColorItem.startAnimation(shakeAnim);
-                break;
-            case Constant.TYPE_MARK_PATTERN:
-                mTypeMarkPatternItem.startAnimation(shakeAnim);
-                break;
-        }
     }
 
     @OnClick({R.id.item_type_mark_color, R.id.item_type_mark_pattern})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.item_type_mark_color:
-                mCreateTypePresenter.notifySettingTypeMarkColor();
+                mTypeCreationPresenter.notifySettingTypeMarkColor();
                 break;
             case R.id.item_type_mark_pattern:
-                mCreateTypePresenter.notifySettingTypeMarkPattern();
+                mTypeCreationPresenter.notifySettingTypeMarkPattern();
                 break;
         }
     }
 
-    private void playCircularRevealAnimation() {
-        int fabCoordinateInPx = (int) (44 * getResources().getDisplayMetrics().density + 0.5f);
-        int centerX = mCircularRevealLayout.getWidth() - fabCoordinateInPx;
-        int centerY = mCircularRevealLayout.getHeight() - fabCoordinateInPx;
-
-        Animator anim = ViewAnimationUtils.createCircularReveal(mCircularRevealLayout, centerX, centerY, 0, (float) Math.hypot(centerX, centerY));
-        anim.setDuration(400);
-        anim.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                Util.showSoftInput(mTypeNameEditor);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-        anim.start();
-    }
+//    private void playCircularRevealAnimation() {
+//        int fabCoordinateInPx = (int) (44 * getResources().getDisplayMetrics().density + 0.5f);
+//        int centerX = mCircularRevealLayout.getWidth() - fabCoordinateInPx;
+//        int centerY = mCircularRevealLayout.getHeight() - fabCoordinateInPx;
+//
+//        Animator anim = ViewAnimationUtils.createCircularReveal(mCircularRevealLayout, centerX, centerY, 0, (float) Math.hypot(centerX, centerY));
+//        anim.setDuration(400);
+//        anim.addListener(new Animator.AnimatorListener() {
+//            @Override
+//            public void onAnimationStart(Animator animation) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                Util.showSoftInput(mTypeNameEditor);
+//            }
+//
+//            @Override
+//            public void onAnimationCancel(Animator animation) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animator animation) {
+//
+//            }
+//        });
+//        anim.start();
+//    }
 
     @Override
     public void showToast(@StringRes int msgResId) {

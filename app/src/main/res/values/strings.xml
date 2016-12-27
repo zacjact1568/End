@@ -61,7 +61,8 @@
 
     <string name="create_plan">Create a new plan</string>
     <string name="content">Content</string>
-    <string name="content_hint">Type your new plan content here</string>
+    <!--TODO 修改其他的hint_editor_*为hint_&editor-->
+    <string name="hint_content_editor">I want to …</string>
     <string name="content_error_empty">Forget this?</string>
     <string name="more_settings">More Settings</string>
     <string name="type">Type</string>
@@ -93,8 +94,8 @@
     <string name="text_uc_plan_count_multi_format">%d plans uncompleted</string>
     <string name="type_name_hint">The name of your new type</string>
 
-    <!--CreatePlanActivity-->
-    <string name="title_activity_create_plan">Plan Creation</string>
+    <!--PlanCreationActivity-->
+    <string name="title_activity_plan_creation">Plan Creation</string>
 
     <!--PlanDetailActivity-->
     <string name="title_activity_plan_detail">Plan Detail</string>
@@ -135,14 +136,14 @@
     <string name="title_dialog_last_type">Cannot Delete</string>
     <string name="msg_dialog_last_type">This is the last type.</string>
 
-    <!--CreateTypeActivity-->
-    <string name="title_activity_create_type">Type Creation</string>
+    <!--TypeCreationActivity-->
+    <string name="title_activity_type_creation">Type Creation</string>
     <string name="text_new_type_name">New Type</string>
     <string name="text_empty_type_name">(Empty)</string>
     <string name="hint_editor_type_name">The name of your new type</string>
 
-    <!--EditTypeActivity-->
-    <string name="title_activity_edit_type">Type Editing</string>
+    <!--TypeEditActivity-->
+    <string name="title_activity_type_edit">Type Edit</string>
     <string name="title_dialog_type_name_editor">Type Name Editor</string>
 
     <!--ReminderActivity-->

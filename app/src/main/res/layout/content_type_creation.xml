@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".view.activity.EditTypeActivity"
-    tools:showIn="@layout/activity_edit_type">
+    tools:context=".view.activity.TypeCreationActivity"
+    tools:showIn="@layout/activity_type_creation">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,13 +16,12 @@
         android:gravity="center"
         android:orientation="vertical"
         android:padding="12dp"
-        android:elevation="4dp">
+        android:elevation="@dimen/elevation_toolbar">
 
         <com.zack.enderplan.view.widget.CircleColorView
             android:id="@+id/ic_type_mark"
             android:layout_width="56dp"
             android:layout_height="56dp"
-            android:transitionName="@string/name_type_mark_shared_element_transition"
             app:edgeWidth="1dp"/>
 
         <TextView
@@ -33,18 +32,20 @@
             android:textSize="16sp"
             android:textColor="@android:color/white"
             android:textStyle="bold"
-            tools:text="Work"/>
+            tools:text="@string/text_new_type_name"/>
 
     </LinearLayout>
 
-    <com.zack.enderplan.view.widget.ItemView
-        android:id="@+id/item_type_name"
+    <EditText
+        android:id="@+id/editor_type_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
-        android:clickable="true"
-        app:iconImageSrc="@drawable/ic_edit_black_24dp"
-        app:titleText="@string/title_name"/>
+        android:hint="@string/hint_editor_type_name"
+        android:lines="1"
+        android:selectAllOnFocus="true"
+        android:background="@android:color/transparent"
+        android:padding="16dp"
+        tools:text="@string/text_new_type_name"/>
 
     <include layout="@layout/divider"/>
 
@@ -66,7 +67,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         app:iconImageSrc="@drawable/ic_image_black_24dp"
-        app:titleText="@string/title_pattern"/>
+        app:titleText="@string/title_pattern"
+        app:descriptionText="@string/dscpt_click_to_set"/>
 
     <include layout="@layout/divider"/>
 

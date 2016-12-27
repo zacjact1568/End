@@ -5,7 +5,7 @@ import com.zack.enderplan.R;
 import com.zack.enderplan.common.Util;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.bean.Type;
-import com.zack.enderplan.view.contract.CreateTypeViewContract;
+import com.zack.enderplan.view.contract.TypeCreationViewContract;
 
 import dagger.Module;
 import dagger.Provides;
@@ -13,15 +13,15 @@ import dagger.Provides;
 @Module
 public class TypeCreationPresenterModule {
 
-    private final CreateTypeViewContract mCreateTypeViewContract;
+    private final TypeCreationViewContract mTypeCreationViewContract;
 
-    public TypeCreationPresenterModule(CreateTypeViewContract createTypeViewContract) {
-        mCreateTypeViewContract = createTypeViewContract;
+    public TypeCreationPresenterModule(TypeCreationViewContract typeCreationViewContract) {
+        mTypeCreationViewContract = typeCreationViewContract;
     }
 
     @Provides
-    CreateTypeViewContract provideCreateTypeViewContract() {
-        return mCreateTypeViewContract;
+    TypeCreationViewContract provideCreateTypeViewContract() {
+        return mTypeCreationViewContract;
     }
 
     @Provides

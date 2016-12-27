@@ -309,7 +309,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
 
     @Override
     public void enterEditType(int position, boolean shouldPlaySharedElementTransition) {
-        EditTypeActivity.start(this, position, shouldPlaySharedElementTransition, typeMarkIcon, mTypeMarkSetName);
+        TypeEditActivity.start(this, position, shouldPlaySharedElementTransition, typeMarkIcon, mTypeMarkSetName);
     }
 
     @Override
