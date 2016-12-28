@@ -52,14 +52,14 @@ public class TypeMarkPatternAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        viewHolder.patternIcon.setImageResource(Util.getDrawableResourceId(typeMarkPattern.getPatternFn()));
+        viewHolder.mPatternIcon.setImageResource(Util.getDrawableResourceId(typeMarkPattern.getPatternFn()));
 
         return view;
     }
 
     class ViewHolder {
         @BindView(R.id.ic_pattern)
-        CheckView patternIcon;
+        CheckView mPatternIcon;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);

@@ -52,14 +52,14 @@ public class TypeMarkColorAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        viewHolder.colorIcon.setFillColor(Color.parseColor(typeMarkColor.getColorHex()));
+        viewHolder.mColorIcon.setFillColor(Color.parseColor(typeMarkColor.getColorHex()));
 
         return view;
     }
 
     class ViewHolder {
         @BindView(R.id.ic_color)
-        CircleColorView colorIcon;
+        CircleColorView mColorIcon;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);

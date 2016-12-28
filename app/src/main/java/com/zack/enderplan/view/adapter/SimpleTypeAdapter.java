@@ -68,16 +68,16 @@ public class SimpleTypeAdapter extends BaseAdapter {
             view = convertView;
             viewHolder = (ViewHolder) view.getTag();
         }
-        viewHolder.typeMarkIcon.setFillColor(Color.parseColor(type.getTypeMarkColor()));
-        viewHolder.typeNameText.setText(type.getTypeName());
+        viewHolder.mTypeMarkIcon.setFillColor(Color.parseColor(type.getTypeMarkColor()));
+        viewHolder.mTypeNameText.setText(type.getTypeName());
         return view;
     }
 
     class ViewHolder {
         @BindView(R.id.ic_type_mark)
-        CircleColorView typeMarkIcon;
+        CircleColorView mTypeMarkIcon;
         @BindView(R.id.text_type_name)
-        TextView typeNameText;
+        TextView mTypeNameText;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);

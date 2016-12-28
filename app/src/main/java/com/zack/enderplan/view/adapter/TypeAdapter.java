@@ -36,14 +36,14 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
     public void onBindViewHolder(final ViewHolder holder, int position) {
         Type type = mDataManager.getType(position);
 
-        holder.typeMarkIcon.setFillColor(Color.parseColor(type.getTypeMarkColor()));
-        holder.typeMarkIcon.setInnerIcon(type.getTypeMarkPattern() == null ? null : App.getContext().getDrawable(Util.getDrawableResourceId(type.getTypeMarkPattern())));
-        holder.typeMarkIcon.setInnerText(type.getTypeName().substring(0, 1));
-        holder.typeNameText.setText(type.getTypeName());
+        holder.mTypeMarkIcon.setFillColor(Color.parseColor(type.getTypeMarkColor()));
+        holder.mTypeMarkIcon.setInnerIcon(type.getTypeMarkPattern() == null ? null : App.getContext().getDrawable(Util.getDrawableResourceId(type.getTypeMarkPattern())));
+        holder.mTypeMarkIcon.setInnerText(type.getTypeName().substring(0, 1));
+        holder.mTypeNameText.setText(type.getTypeName());
 
         String ucPlanCountStr = getUcPlanCountStr(type.getTypeCode());
-        holder.ucPlanCountIcon.setVisibility(ucPlanCountStr == null ? View.INVISIBLE : View.VISIBLE);
-        holder.ucPlanCountIcon.setInnerText(ucPlanCountStr == null ? "" : ucPlanCountStr);
+        holder.mUcPlanCountIcon.setVisibility(ucPlanCountStr == null ? View.INVISIBLE : View.VISIBLE);
+        holder.mUcPlanCountIcon.setInnerText(ucPlanCountStr == null ? "" : ucPlanCountStr);
 
         if (mOnTypeItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -73,11 +73,11 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
 
     class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.ic_type_mark)
-        CircleColorView typeMarkIcon;
+        CircleColorView mTypeMarkIcon;
         @BindView(R.id.text_type_name)
-        TextView typeNameText;
+        TextView mTypeNameText;
         @BindView(R.id.ic_uc_plan_count)
-        CircleColorView ucPlanCountIcon;
+        CircleColorView mUcPlanCountIcon;
 
         public ViewHolder(View itemView) {
             super(itemView);

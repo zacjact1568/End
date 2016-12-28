@@ -12,8 +12,8 @@
         android:id="@+id/ic_pattern"
         android:layout_width="28dp"
         android:layout_height="28dp"
-        tools:src="@drawable/ic_schedule_black_24dp"
         app:checkedColor="@color/colorAccent"
-        app:uncheckedColor="@color/grey_600"/>
+        app:uncheckedColor="@color/grey_600"
+        tools:src="@drawable/ic_schedule_black_24dp"/>
 
 </com.zack.enderplan.view.widget.CheckableFrameLayout>
