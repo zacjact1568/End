@@ -94,8 +94,7 @@ public class MyPlansFragment extends BaseListFragment implements MyPlansViewCont
     }
 
     @Override
-    public void showInitialView(PlanAdapter planAdapter) {
-
+    public void showInitialView(PlanAdapter planAdapter, ItemTouchHelper itemTouchHelper) {
         mPlanList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mPlanList.setHasFixedSize(true);
         mPlanList.setEmptyView(mEmptyViewText);
@@ -106,28 +105,7 @@ public class MyPlansFragment extends BaseListFragment implements MyPlansViewCont
                 onListScrolled(dy);
             }
         });
-
-        PlanItemTouchCallback planItemTouchCallback = new PlanItemTouchCallback();
-        planItemTouchCallback.setOnItemSwipedListener(new PlanItemTouchCallback.OnItemSwipedListener() {
-            @Override
-            public void onItemSwiped(int position, int direction) {
-                switch (direction) {
-                    case PlanItemTouchCallback.DIR_START:
-                        mMyPlansPresenter.notifyDeletingPlan(position);
-                        break;
-                    case PlanItemTouchCallback.DIR_END:
-                        mMyPlansPresenter.notifyPlanStatusChanged(position);
-                        break;
-                }
-            }
-        });
-        planItemTouchCallback.setOnItemMovedListener(new PlanItemTouchCallback.OnItemMovedListener() {
-            @Override
-            public void onItemMoved(int fromPosition, int toPosition) {
-                mMyPlansPresenter.notifyPlanSequenceChanged(fromPosition, toPosition);
-            }
-        });
-        new ItemTouchHelper(planItemTouchCallback).attachToRecyclerView(mPlanList);
+        itemTouchHelper.attachToRecyclerView(mPlanList);
     }
 
     @Override

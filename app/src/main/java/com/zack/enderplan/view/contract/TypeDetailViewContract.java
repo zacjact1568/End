@@ -1,6 +1,7 @@
 package com.zack.enderplan.view.contract;
 
 import android.support.annotation.DrawableRes;
+import android.support.v7.widget.helper.ItemTouchHelper;
 
 import com.zack.enderplan.view.adapter.SingleTypePlanAdapter;
 import com.zack.enderplan.view.adapter.SimpleTypeAdapter;
@@ -9,7 +10,7 @@ import com.zack.enderplan.model.bean.Plan;
 
 public interface TypeDetailViewContract extends BaseViewContract {
 
-    void showInitialView(FormattedType formattedType, String ucPlanCountStr, SingleTypePlanAdapter singleTypePlanAdapter);
+    void showInitialView(FormattedType formattedType, String ucPlanCountStr, SingleTypePlanAdapter singleTypePlanAdapter, ItemTouchHelper itemTouchHelper);
 
     void onTypeNameChanged(String typeName, String firstChar);
 

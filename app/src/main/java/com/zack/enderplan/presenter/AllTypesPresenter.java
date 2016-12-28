@@ -1,5 +1,6 @@
 package com.zack.enderplan.presenter;
 
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
 import com.zack.enderplan.event.TypeDeletedEvent;
@@ -12,6 +13,7 @@ import com.zack.enderplan.event.TypeCreatedEvent;
 import com.zack.enderplan.event.TypeDetailChangedEvent;
 import com.zack.enderplan.view.adapter.TypeAdapter;
 import com.zack.enderplan.model.DataManager;
+import com.zack.enderplan.view.callback.TypeItemTouchCallback;
 import com.zack.enderplan.view.contract.AllTypesViewContract;
 
 import org.greenrobot.eventbus.EventBus;
@@ -32,13 +34,28 @@ public class AllTypesPresenter extends BasePresenter {
         mDataManager = dataManager;
         mEventBus = eventBus;
 
-        mTypeAdapter = new TypeAdapter(mDataManager.getTypeList(), mDataManager.getUcPlanCountOfEachTypeMap());
+        mTypeAdapter = new TypeAdapter(mDataManager);
+        mTypeAdapter.setOnTypeItemClickListener(new TypeAdapter.OnTypeItemClickListener() {
+            @Override
+            public void onTypeItemClick(int position, View typeItem) {
+                notifyTypeItemClicked(position, typeItem);
+            }
+        });
     }
 
     @Override
     public void attach() {
         mEventBus.register(this);
-        mAllTypesViewContract.showInitialView(mTypeAdapter);
+
+        TypeItemTouchCallback typeItemTouchCallback = new TypeItemTouchCallback();
+        typeItemTouchCallback.setOnItemMovedListener(new TypeItemTouchCallback.OnItemMovedListener() {
+            @Override
+            public void onItemMoved(int fromPosition, int toPosition) {
+                notifyTypeSequenceChanged(fromPosition, toPosition);
+            }
+        });
+
+        mAllTypesViewContract.showInitialView(mTypeAdapter, new ItemTouchHelper(typeItemTouchCallback));
     }
 
     @Override

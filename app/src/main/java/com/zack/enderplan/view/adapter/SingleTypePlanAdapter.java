@@ -1,8 +1,6 @@
 package com.zack.enderplan.view.adapter;
 
-import android.content.Context;
 import android.content.res.ColorStateList;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.zack.enderplan.App;
 import com.zack.enderplan.R;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.common.Util;
@@ -25,15 +22,14 @@ public class SingleTypePlanAdapter extends RecyclerView.Adapter<SingleTypePlanAd
     private List<Plan> mSingleTypePlanList;
     private int mAccentColor, mGrey600Color;
 
-    private OnStarButtonClickListener onStarButtonClickListener;
-    private OnPlanItemClickListener onPlanItemClickListener;
+    private OnStarStatusChangedListener mOnStarStatusChangedListener;
+    private OnPlanItemClickListener mOnPlanItemClickListener;
 
     public SingleTypePlanAdapter(List<Plan> singleTypePlanList) {
         mSingleTypePlanList = singleTypePlanList;
 
-        Context context = App.getContext();
-        mAccentColor = ContextCompat.getColor(context, R.color.colorAccent);
-        mGrey600Color = ContextCompat.getColor(context, R.color.grey_600);
+        mAccentColor = Util.getColor(R.color.colorAccent);
+        mGrey600Color = Util.getColor(R.color.grey_600);
     }
 
     @Override
@@ -48,23 +44,24 @@ public class SingleTypePlanAdapter extends RecyclerView.Adapter<SingleTypePlanAd
 
         holder.mContentText.setText(plan.isCompleted() ? Util.addStrikethroughSpan(plan.getContent()) : plan.getContent());
         holder.mReminderIcon.setVisibility(plan.hasReminder() ? View.VISIBLE : View.INVISIBLE);
-        holder.mStarButton.setImageResource(plan.isStarred() ? R.drawable.ic_star_black_24dp : R.drawable.ic_star_border_black_24dp);
-        holder.mStarButton.setImageTintList(ColorStateList.valueOf(plan.isStarred() ? mAccentColor : mGrey600Color));
-
-        if (onStarButtonClickListener != null) {
-            holder.mStarButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onStarButtonClickListener.onStarButtonClick(holder.getLayoutPosition());
+        setStarButtonImage(holder.mStarButton, plan.isStarred());
+        holder.mStarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int layoutPosition = holder.getLayoutPosition();
+                if (mOnStarStatusChangedListener != null) {
+                    mOnStarStatusChangedListener.onStarStatusChanged(layoutPosition);
                 }
-            });
-        }
+                //必须放到这里，根据新数据更新界面
+                setStarButtonImage(holder.mStarButton, mSingleTypePlanList.get(layoutPosition).isStarred());
+            }
+        });
 
-        if (onPlanItemClickListener != null) {
+        if (mOnPlanItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onPlanItemClickListener.onPlanItemClick(holder.getLayoutPosition());
+                    mOnPlanItemClickListener.onPlanItemClick(holder.getLayoutPosition());
                 }
             });
         }
@@ -73,6 +70,11 @@ public class SingleTypePlanAdapter extends RecyclerView.Adapter<SingleTypePlanAd
     @Override
     public int getItemCount() {
         return mSingleTypePlanList.size();
+    }
+
+    private void setStarButtonImage(ImageView starButton, boolean isStarred) {
+        starButton.setImageResource(isStarred ? R.drawable.ic_star_black_24dp : R.drawable.ic_star_border_black_24dp);
+        starButton.setImageTintList(ColorStateList.valueOf(isStarred ? mAccentColor : mGrey600Color));
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -94,14 +96,14 @@ public class SingleTypePlanAdapter extends RecyclerView.Adapter<SingleTypePlanAd
     }
 
     public void setOnPlanItemClickListener(OnPlanItemClickListener listener) {
-        onPlanItemClickListener = listener;
+        mOnPlanItemClickListener = listener;
     }
 
-    public interface OnStarButtonClickListener {
-        void onStarButtonClick(int position);
+    public interface OnStarStatusChangedListener {
+        void onStarStatusChanged(int position);
     }
 
-    public void setOnStarButtonClickListener(OnStarButtonClickListener listener) {
-        onStarButtonClickListener = listener;
+    public void setOnStarStatusChangedListener(OnStarStatusChangedListener listener) {
+        mOnStarStatusChangedListener = listener;
     }
 }

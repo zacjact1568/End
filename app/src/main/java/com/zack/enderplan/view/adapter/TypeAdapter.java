@@ -9,25 +9,21 @@ import android.widget.TextView;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
+import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.common.Util;
 import com.zack.enderplan.view.widget.CircleColorView;
-
-import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
 
-    private List<Type> typeList;
-    private Map<String, Integer> ucPlanCountOfEachTypeMap;
-    private OnTypeItemClickListener onTypeItemClickListener;
+    private DataManager mDataManager;
+    private OnTypeItemClickListener mOnTypeItemClickListener;
 
-    public TypeAdapter(List<Type> typeList, Map<String, Integer> ucPlanCountOfEachTypeMap) {
-        this.typeList = typeList;
-        this.ucPlanCountOfEachTypeMap = ucPlanCountOfEachTypeMap;
+    public TypeAdapter(DataManager dataManager) {
+        mDataManager = dataManager;
     }
 
     @Override
@@ -38,7 +34,7 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        Type type = typeList.get(position);
+        Type type = mDataManager.getType(position);
 
         holder.typeMarkIcon.setFillColor(Color.parseColor(type.getTypeMarkColor()));
         holder.typeMarkIcon.setInnerIcon(type.getTypeMarkPattern() == null ? null : App.getContext().getDrawable(Util.getDrawableResourceId(type.getTypeMarkPattern())));
@@ -49,11 +45,11 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
         holder.ucPlanCountIcon.setVisibility(ucPlanCountStr == null ? View.INVISIBLE : View.VISIBLE);
         holder.ucPlanCountIcon.setInnerText(ucPlanCountStr == null ? "" : ucPlanCountStr);
 
-        if (onTypeItemClickListener != null) {
+        if (mOnTypeItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onTypeItemClickListener.onTypeItemClick(holder.getLayoutPosition(), holder.itemView);
+                    mOnTypeItemClickListener.onTypeItemClick(holder.getLayoutPosition(), holder.itemView);
                 }
             });
         }
@@ -61,11 +57,11 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return typeList.size();
+        return mDataManager.getTypeCount();
     }
 
     private String getUcPlanCountStr(String typeCode) {
-        Integer count = ucPlanCountOfEachTypeMap.get(typeCode);
+        Integer count = mDataManager.getUcPlanCountOfEachTypeMap().get(typeCode);
         if (count == null) {
             return null;
         } else if (count < 10) {
@@ -94,6 +90,6 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
     }
 
     public void setOnTypeItemClickListener(OnTypeItemClickListener listener) {
-        this.onTypeItemClickListener = listener;
+        this.mOnTypeItemClickListener = listener;
     }
 }

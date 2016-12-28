@@ -70,15 +70,7 @@ public class AllTypesFragment extends BaseListFragment implements AllTypesViewCo
     }
 
     @Override
-    public void showInitialView(TypeAdapter typeAdapter) {
-
-        typeAdapter.setOnTypeItemClickListener(new TypeAdapter.OnTypeItemClickListener() {
-            @Override
-            public void onTypeItemClick(int position, View typeItem) {
-                mAllTypesPresenter.notifyTypeItemClicked(position, typeItem);
-            }
-        });
-
+    public void showInitialView(TypeAdapter typeAdapter, ItemTouchHelper itemTouchHelper) {
         mTypeList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mTypeList.setHasFixedSize(true);
         mTypeList.setAdapter(typeAdapter);
@@ -88,15 +80,7 @@ public class AllTypesFragment extends BaseListFragment implements AllTypesViewCo
                 onListScrolled(dy);
             }
         });
-
-        TypeItemTouchCallback typeItemTouchCallback = new TypeItemTouchCallback();
-        typeItemTouchCallback.setOnItemMovedListener(new TypeItemTouchCallback.OnItemMovedListener() {
-            @Override
-            public void onItemMoved(int fromPosition, int toPosition) {
-                mAllTypesPresenter.notifyTypeSequenceChanged(fromPosition, toPosition);
-            }
-        });
-        new ItemTouchHelper(typeItemTouchCallback).attachToRecyclerView(mTypeList);
+        itemTouchHelper.attachToRecyclerView(mTypeList);
     }
 
     @Override

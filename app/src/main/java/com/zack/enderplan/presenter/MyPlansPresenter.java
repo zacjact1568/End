@@ -1,5 +1,7 @@
 package com.zack.enderplan.presenter;
 
+import android.support.v7.widget.helper.ItemTouchHelper;
+
 import com.zack.enderplan.common.Logger;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.event.DataLoadedEvent;
@@ -9,6 +11,7 @@ import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.event.TypeDetailChangedEvent;
 import com.zack.enderplan.view.adapter.PlanAdapter;
 import com.zack.enderplan.model.DataManager;
+import com.zack.enderplan.view.callback.PlanItemTouchCallback;
 import com.zack.enderplan.view.contract.MyPlansViewContract;
 import com.zack.enderplan.common.Util;
 
@@ -35,7 +38,7 @@ public class MyPlansPresenter extends BasePresenter {
 
         //TODO 写到一个单独的方法里
         //初始化adapter
-        mPlanAdapter = new PlanAdapter();
+        mPlanAdapter = new PlanAdapter(mDataManager);
         mPlanAdapter.setOnPlanItemClickListener(new PlanAdapter.OnPlanItemClickListener() {
             @Override
             public void onPlanItemClick(int position) {
@@ -65,7 +68,29 @@ public class MyPlansPresenter extends BasePresenter {
     @Override
     public void attach() {
         mEventBus.register(this);
-        mMyPlansViewContract.showInitialView(mPlanAdapter);
+
+        PlanItemTouchCallback planItemTouchCallback = new PlanItemTouchCallback();
+        planItemTouchCallback.setOnItemSwipedListener(new PlanItemTouchCallback.OnItemSwipedListener() {
+            @Override
+            public void onItemSwiped(int position, int direction) {
+                switch (direction) {
+                    case PlanItemTouchCallback.DIR_START:
+                        notifyDeletingPlan(position);
+                        break;
+                    case PlanItemTouchCallback.DIR_END:
+                        notifyPlanStatusChanged(position);
+                        break;
+                }
+            }
+        });
+        planItemTouchCallback.setOnItemMovedListener(new PlanItemTouchCallback.OnItemMovedListener() {
+            @Override
+            public void onItemMoved(int fromPosition, int toPosition) {
+                notifyPlanSequenceChanged(fromPosition, toPosition);
+            }
+        });
+
+        mMyPlansViewContract.showInitialView(mPlanAdapter, new ItemTouchHelper(planItemTouchCallback));
     }
 
     @Override

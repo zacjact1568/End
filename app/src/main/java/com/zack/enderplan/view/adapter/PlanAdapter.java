@@ -27,8 +27,8 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
 
     private int mAccentColor, mGrey600Color;
 
-    public PlanAdapter() {
-        mDataManager = DataManager.getInstance();
+    public PlanAdapter(DataManager dataManager) {
+        mDataManager = dataManager;
 
         mAccentColor = Util.getColor(R.color.colorAccent);
         mGrey600Color = Util.getColor(R.color.grey_600);
@@ -46,11 +46,11 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
         Plan plan = mDataManager.getPlan(position);
         boolean isCompleted = plan.isCompleted();
 
-        holder.typeMarkIcon.setFillColor(isCompleted ? Color.GRAY : Color.parseColor(mDataManager.getTypeCodeAndTypeMarkMap().get(plan.getTypeCode()).getColorHex()));
-        holder.contentText.setText(isCompleted ? Util.addStrikethroughSpan(plan.getContent()) : plan.getContent());
-        holder.reminderIcon.setVisibility(plan.hasReminder() ? View.VISIBLE : View.INVISIBLE);
-        setStarButtonImage(holder.starButton, plan.isStarred());
-        holder.starButton.setOnClickListener(new View.OnClickListener() {
+        holder.mTypeMarkIcon.setFillColor(isCompleted ? Color.GRAY : Color.parseColor(mDataManager.getTypeCodeAndTypeMarkMap().get(plan.getTypeCode()).getColorHex()));
+        holder.mContentText.setText(isCompleted ? Util.addStrikethroughSpan(plan.getContent()) : plan.getContent());
+        holder.mReminderIcon.setVisibility(plan.hasReminder() ? View.VISIBLE : View.INVISIBLE);
+        setStarButtonImage(holder.mStarButton, plan.isStarred());
+        holder.mStarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int layoutPosition = holder.getLayoutPosition();
@@ -58,7 +58,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
                     mOnStarStatusChangedListener.onStarStatusChanged(layoutPosition);
                 }
                 //必须放到这里，根据新数据更新界面
-                setStarButtonImage(holder.starButton, mDataManager.getPlan(layoutPosition).isStarred());
+                setStarButtonImage(holder.mStarButton, mDataManager.getPlan(layoutPosition).isStarred());
             }
         });
 
@@ -94,13 +94,13 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
 
     class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.ic_type_mark)
-        CircleColorView typeMarkIcon;
+        CircleColorView mTypeMarkIcon;
         @BindView(R.id.text_content)
-        TextView contentText;
+        TextView mContentText;
         @BindView(R.id.ic_reminder)
-        ImageView reminderIcon;
+        ImageView mReminderIcon;
         @BindView(R.id.btn_star)
-        ImageView starButton;
+        ImageView mStarButton;
 
         public ViewHolder(View itemView) {
             super(itemView);

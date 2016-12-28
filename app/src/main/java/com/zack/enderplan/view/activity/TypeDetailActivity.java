@@ -151,7 +151,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     }
 
     @Override
-    public void showInitialView(FormattedType formattedType, String ucPlanCountStr, SingleTypePlanAdapter singleTypePlanAdapter) {
+    public void showInitialView(FormattedType formattedType, String ucPlanCountStr, SingleTypePlanAdapter singleTypePlanAdapter, ItemTouchHelper itemTouchHelper) {
         setContentView(R.layout.activity_type_detail);
         ButterKnife.bind(this);
 
@@ -183,45 +183,11 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
             }
         });
 
-        singleTypePlanAdapter.setOnPlanItemClickListener(new SingleTypePlanAdapter.OnPlanItemClickListener() {
-            @Override
-            public void onPlanItemClick(int position) {
-                mTypeDetailPresenter.notifyPlanItemClicked(position);
-            }
-        });
-
-        singleTypePlanAdapter.setOnStarButtonClickListener(new SingleTypePlanAdapter.OnStarButtonClickListener() {
-            @Override
-            public void onStarButtonClick(int position) {
-                mTypeDetailPresenter.notifyPlanStarStatusChanged(position);
-            }
-        });
-
         mPlanList.setLayoutManager(new LinearLayoutManager(this));
         mPlanList.setHasFixedSize(true);
         mPlanList.setAdapter(singleTypePlanAdapter);
 
-        PlanItemTouchCallback planItemTouchCallback = new PlanItemTouchCallback();
-        planItemTouchCallback.setOnItemSwipedListener(new PlanItemTouchCallback.OnItemSwipedListener() {
-            @Override
-            public void onItemSwiped(int position, int direction) {
-                switch (direction) {
-                    case PlanItemTouchCallback.DIR_START:
-                        mTypeDetailPresenter.notifyDeletingPlan(position);
-                        break;
-                    case PlanItemTouchCallback.DIR_END:
-                        mTypeDetailPresenter.notifySwitchingPlanStatus(position);
-                        break;
-                }
-            }
-        });
-        planItemTouchCallback.setOnItemMovedListener(new PlanItemTouchCallback.OnItemMovedListener() {
-            @Override
-            public void onItemMoved(int fromPosition, int toPosition) {
-                mTypeDetailPresenter.notifyPlanSequenceChanged(fromPosition, toPosition);
-            }
-        });
-        new ItemTouchHelper(planItemTouchCallback).attachToRecyclerView(mPlanList);
+        itemTouchHelper.attachToRecyclerView(mPlanList);
 
         contentEditor.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override

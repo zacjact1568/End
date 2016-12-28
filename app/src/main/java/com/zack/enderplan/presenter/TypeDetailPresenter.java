@@ -1,6 +1,7 @@
 package com.zack.enderplan.presenter;
 
 import android.graphics.Color;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.TextUtils;
 
 import com.zack.enderplan.R;
@@ -16,6 +17,7 @@ import com.zack.enderplan.event.PlanDeletedEvent;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.common.Util;
+import com.zack.enderplan.view.callback.PlanItemTouchCallback;
 import com.zack.enderplan.view.contract.TypeDetailViewContract;
 
 import org.greenrobot.eventbus.EventBus;
@@ -55,19 +57,61 @@ public class TypeDetailPresenter extends BasePresenter {
         mType = mDataManager.getType(mTypeListPosition);
         mSingleTypePlanList = mDataManager.getSingleTypePlanList(mType.getTypeCode());
         mSingleTypePlanAdapter = new SingleTypePlanAdapter(mSingleTypePlanList);
+        mSingleTypePlanAdapter.setOnPlanItemClickListener(new SingleTypePlanAdapter.OnPlanItemClickListener() {
+            @Override
+            public void onPlanItemClick(int position) {
+                mTypeDetailViewContract.onPlanItemClicked(mDataManager.getPlanLocationInPlanList(mSingleTypePlanList.get(position).getPlanCode()));
+            }
+        });
+        mSingleTypePlanAdapter.setOnStarStatusChangedListener(new SingleTypePlanAdapter.OnStarStatusChangedListener() {
+            @Override
+            public void onStarStatusChanged(int position) {
+                Plan plan = mSingleTypePlanList.get(position);
+                int planListPos = mDataManager.getPlanLocationInPlanList(plan.getPlanCode());
+                mDataManager.notifyStarStatusChanged(planListPos);
+                mEventBus.post(new PlanDetailChangedEvent(
+                        getPresenterName(),
+                        plan.getPlanCode(),
+                        planListPos,
+                        PlanDetailChangedEvent.FIELD_STAR_STATUS
+                ));
+            }
+        });
         mOtherTypeList = mDataManager.getTypeList(mType.getTypeCode());
     }
 
     @Override
     public void attach() {
         mEventBus.register(this);
+
+        PlanItemTouchCallback planItemTouchCallback = new PlanItemTouchCallback();
+        planItemTouchCallback.setOnItemSwipedListener(new PlanItemTouchCallback.OnItemSwipedListener() {
+            @Override
+            public void onItemSwiped(int position, int direction) {
+                switch (direction) {
+                    case PlanItemTouchCallback.DIR_START:
+                        notifyDeletingPlan(position);
+                        break;
+                    case PlanItemTouchCallback.DIR_END:
+                        notifySwitchingPlanStatus(position);
+                        break;
+                }
+            }
+        });
+        planItemTouchCallback.setOnItemMovedListener(new PlanItemTouchCallback.OnItemMovedListener() {
+            @Override
+            public void onItemMoved(int fromPosition, int toPosition) {
+                notifyPlanSequenceChanged(fromPosition, toPosition);
+            }
+        });
+
         mTypeDetailViewContract.showInitialView(new FormattedType(
                 Color.parseColor(mType.getTypeMarkColor()),
                 mType.getTypeMarkPattern() != null,
                 Util.getDrawableResourceId(mType.getTypeMarkPattern()),
                 mType.getTypeName(),
                 mType.getTypeName().substring(0, 1)
-        ), getUcPlanCountStr(mType.getTypeCode()), mSingleTypePlanAdapter);
+        ), getUcPlanCountStr(mType.getTypeCode()), mSingleTypePlanAdapter, new ItemTouchHelper(planItemTouchCallback));
     }
 
     @Override
@@ -153,25 +197,6 @@ public class TypeDetailPresenter extends BasePresenter {
             mTypeDetailViewContract.showToast(R.string.toast_create_plan_success);
             mTypeDetailViewContract.onPlanCreated();
         }
-    }
-
-    public void notifyPlanItemClicked(int position) {
-        int posInPlanList = mDataManager.getPlanLocationInPlanList(mSingleTypePlanList.get(position).getPlanCode());
-        mTypeDetailViewContract.onPlanItemClicked(posInPlanList);
-    }
-
-    public void notifyPlanStarStatusChanged(int position) {
-        //获取plan
-        Plan plan = mSingleTypePlanList.get(position);
-
-        int posInPlanList = mDataManager.getPlanLocationInPlanList(plan.getPlanCode());
-
-        mDataManager.notifyStarStatusChanged(posInPlanList);
-
-        //更新界面
-        mSingleTypePlanAdapter.notifyItemChanged(position);
-        //通知AllPlans界面更新
-        mEventBus.post(new PlanDetailChangedEvent(getPresenterName(), plan.getPlanCode(), posInPlanList, PlanDetailChangedEvent.FIELD_STAR_STATUS));
     }
 
     public void notifyDeletingPlan(int position) {
