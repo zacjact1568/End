@@ -6,6 +6,7 @@ import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
@@ -121,6 +122,9 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_type_detail, menu);
+        //在这里改变图标的tint，因为没法在xml文件中改
+        (menu.findItem(R.id.action_edit)).getIcon().setTint(Color.WHITE);
+        (menu.findItem(R.id.action_delete)).getIcon().setTint(Color.WHITE);
         return true;
     }
 

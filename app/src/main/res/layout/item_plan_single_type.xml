@@ -39,7 +39,7 @@
         android:layout_alignParentEnd="true"
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:clickable="true"
-        tools:src="@drawable/ic_star_outline_grey600_24dp"
+        tools:src="@drawable/ic_star_border_black_24dp"
         tools:tint="@color/grey_600"/>
 
 </RelativeLayout>

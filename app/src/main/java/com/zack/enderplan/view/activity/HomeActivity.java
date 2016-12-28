@@ -177,13 +177,13 @@ public class HomeActivity extends BaseActivity implements HomeViewContract {
             case Constant.MY_PLANS:
                 fragment = new MyPlansFragment();
                 titleResId = R.string.title_fragment_my_plans;
-                fabResId = R.drawable.ic_add_white_24dp;
+                fabResId = R.drawable.ic_add_black_24dp;
                 navViewCheckedItemId = R.id.nav_my_plans;
                 break;
             case Constant.ALL_TYPES:
                 fragment = new AllTypesFragment();
                 titleResId = R.string.title_fragment_all_types;
-                fabResId = R.drawable.ic_playlist_add_white_24dp;
+                fabResId = R.drawable.ic_playlist_add_black_24dp;
                 navViewCheckedItemId = R.id.nav_all_types;
                 break;
             default:

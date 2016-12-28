@@ -119,6 +119,9 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_plan_detail, menu);
         mStarMenuItem = menu.findItem(R.id.action_star);
+        //在这里改变图标的tint，因为没法在xml文件中改
+        (menu.findItem(R.id.action_edit)).getIcon().setTint(Color.WHITE);
+        (menu.findItem(R.id.action_delete)).getIcon().setTint(Color.WHITE);
         planDetailPresenter.notifyMenuCreated();
         return true;
     }
@@ -205,7 +208,8 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
     @Override
     public void updateStarMenuItem(boolean isStarred) {
         if (mStarMenuItem == null) return;
-        mStarMenuItem.setIcon(isStarred ? R.drawable.ic_star_white_24dp : R.drawable.ic_star_border_white_24dp);
+        mStarMenuItem.setIcon(isStarred ? R.drawable.ic_star_black_24dp : R.drawable.ic_star_border_black_24dp);
+        mStarMenuItem.getIcon().setTint(Color.WHITE);
     }
 
     @Override
