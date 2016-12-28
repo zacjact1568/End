@@ -44,7 +44,7 @@ public class SingleTypePlanAdapter extends RecyclerView.Adapter<SingleTypePlanAd
 
         holder.mContentText.setText(plan.isCompleted() ? Util.addStrikethroughSpan(plan.getContent()) : plan.getContent());
         holder.mReminderIcon.setVisibility(plan.hasReminder() ? View.VISIBLE : View.INVISIBLE);
-        setStarButtonImage(holder.mStarButton, plan.isStarred());
+        setStarButtonImage(holder.mStarButton, plan.isStarred(), plan.isCompleted());
         holder.mStarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,7 +53,8 @@ public class SingleTypePlanAdapter extends RecyclerView.Adapter<SingleTypePlanAd
                     mOnStarStatusChangedListener.onStarStatusChanged(layoutPosition);
                 }
                 //必须放到这里，根据新数据更新界面
-                setStarButtonImage(holder.mStarButton, mSingleTypePlanList.get(layoutPosition).isStarred());
+                Plan plan = mSingleTypePlanList.get(layoutPosition);
+                setStarButtonImage(holder.mStarButton, plan.isStarred(), plan.isCompleted());
             }
         });
 
@@ -72,9 +73,9 @@ public class SingleTypePlanAdapter extends RecyclerView.Adapter<SingleTypePlanAd
         return mSingleTypePlanList.size();
     }
 
-    private void setStarButtonImage(ImageView starButton, boolean isStarred) {
+    private void setStarButtonImage(ImageView starButton, boolean isStarred, boolean isCompleted) {
         starButton.setImageResource(isStarred ? R.drawable.ic_star_black_24dp : R.drawable.ic_star_border_black_24dp);
-        starButton.setImageTintList(ColorStateList.valueOf(isStarred ? mAccentColor : mGrey600Color));
+        starButton.setImageTintList(ColorStateList.valueOf(isCompleted ? mGrey600Color : mAccentColor));
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
