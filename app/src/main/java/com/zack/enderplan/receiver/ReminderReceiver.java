@@ -1,12 +1,10 @@
 package com.zack.enderplan.receiver;
 
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.zack.enderplan.R;
+import com.zack.enderplan.common.Util;
 import com.zack.enderplan.view.activity.ReminderActivity;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.model.bean.Plan;
@@ -41,18 +39,10 @@ public class ReminderReceiver extends BroadcastReceiver {
             ));
         }
 
-        showNotification(context, plan.getPlanCode(), position, plan.getContent());
-    }
-
-    private void showNotification(Context context, String planCode, int position, String content) {
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = new Notification.Builder(context)
-                .setSmallIcon(R.drawable.ic_check_box_black_24dp)
-                .setContentTitle(context.getResources().getString(R.string.title_notification_content))
-                .setContentText(content)
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setContentIntent(ReminderActivity.getPendingIntentForStart(context, planCode, position))
-                .build();
-        manager.notify(planCode, 0, notification);
+        Util.showNotification(
+                plan.getPlanCode(),
+                plan.getContent(),
+                ReminderActivity.getPendingIntentForStart(context, plan.getPlanCode(), position)
+        );
     }
 }

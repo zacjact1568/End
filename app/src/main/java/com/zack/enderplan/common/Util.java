@@ -1,6 +1,8 @@
 package com.zack.enderplan.common;
 
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +23,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.zack.enderplan.App;
+import com.zack.enderplan.R;
 import com.zack.enderplan.receiver.ReminderReceiver;
 
 import java.lang.reflect.Method;
@@ -223,5 +226,21 @@ public class Util {
 
     public static boolean isFutureTime(long timeInMillis) {
         return timeInMillis == Constant.TIME_UNDEFINED || timeInMillis > System.currentTimeMillis();
+    }
+
+    public static void showNotification(String tag, String content, PendingIntent intent) {
+        NotificationManager manager = (NotificationManager) App.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification notification = new Notification.Builder(App.getContext())
+                .setSmallIcon(R.drawable.ic_check_box_black_24dp)
+                .setContentTitle(getString(R.string.title_reminder_notification))
+                .setContentText(content)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setContentIntent(intent)
+                .build();
+        manager.notify(tag, 0, notification);
+    }
+
+    public static void cancelNotification(String tag) {
+        ((NotificationManager) App.getContext().getSystemService(Context.NOTIFICATION_SERVICE)).cancel(tag, 0);
     }
 }

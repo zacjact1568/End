@@ -35,11 +35,12 @@ public class ReminderPresenter extends BasePresenter {
             //说明DataManager中的数据在ReminderReceiver的时候还未加载完，但是现在已经加载完了（显示通知到点击通知之间）
             mPlanListPosition = mDataManager.getPlanLocationInPlanList(planCode);
         } else {
-            //说明DataManager中的数据到现在还未加载完，只有等通知
-            //TODO 添加向view的回调，不关闭通知，否则在这里关闭通知，以下的throw语句是临时的
-            throw new IllegalStateException("The data loading in DataManager hasn't completed yet");
+            //说明DataManager中的数据到现在还未加载完，不启动activity，保留通知
+            mReminderViewContract.exit();
+            return;
         }
 
+        Util.cancelNotification(planCode);
         mPlan = mDataManager.getPlan(mPlanListPosition);
     }
 

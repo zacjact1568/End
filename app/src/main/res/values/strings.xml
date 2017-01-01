@@ -196,8 +196,7 @@
     <string name="def_plan_3">Slide right to complete this plan</string>
 
     <!--Reminder-->
-    <string name="notification_ticker">One of your plan hit its deadline</string>
-    <string name="title_notification_content">EnderPlan Reminder</string>
+    <string name="title_reminder_notification">Reminder</string>
 
     <!--DateTimePickerDialogFragment-->
     <string name="text_time_picker_switcher">Set Time</string>

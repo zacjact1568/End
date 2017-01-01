@@ -23,8 +23,7 @@
     <string name="reminder">提醒</string>
     <string name="deleted_prompt">已刪除</string>
     <string name="creation_time">創建時間</string>
-    <string name="notification_ticker">你有一個任務到期</string>
-    <string name="title_notification_content">Ender計劃的提醒</string>
+    <string name="title_reminder_notification">提醒</string>
     <string name="more_settings">更多設置</string>
     <string name="content_error_empty">忘記這個了？</string>
     <string name="message_deadline_overdue_dialog">天了嚕，你設置的截止時間貌似已經過期了</string>

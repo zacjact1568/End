@@ -24,8 +24,7 @@
     <string name="reminder">提醒</string>
     <string name="deleted_prompt">已删除</string>
     <string name="creation_time">创建时间</string>
-    <string name="notification_ticker">你有一个任务到期</string>
-    <string name="title_notification_content">Ender计划的提醒</string>
+    <string name="title_reminder_notification">提醒</string>
     <string name="more_settings">更多设置</string>
     <string name="content_error_empty">忘记这个了？</string>
     <string name="message_deadline_overdue_dialog">天了噜，你设置的截止时间貌似已经过期了</string>
