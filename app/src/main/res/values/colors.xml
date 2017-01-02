@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--Light Blue & Light Green-->
-    <color name="colorPrimary">#FF03A9F4</color>
-    <color name="colorPrimaryDark">#FF0288D1</color>
+
+    <!--Light Blue 600-->
+    <color name="colorPrimary">#FF039BE5</color>
+    <!--Light Blue 800-->
+    <color name="colorPrimaryDark">#FF0277BD</color>
+    <!--Light Green 500-->
     <color name="colorAccent">#FF8BC34A</color>
-    <color name="colorPrimaryLight">#FFB3E5FC</color>
+    <!--Light Blue 200-->
+    <color name="colorPrimaryLight">#FF81D4FA</color>
 
     <!--Type mark colors-->
     <color name="red">#FFE51C23</color>
@@ -21,13 +25,7 @@
     <color name="brown">#FF795548</color>
     <color name="grey">#FF9E9E9E</color>
 
-    <!-- ReminderActivity -->
-    <color name="red_300">#FFF36C60</color>
-    <color name="blue_400">#FF738FFE</color>
-    <color name="green_200">#FF72D572</color>
-
     <color name="grey_600">#FF757575</color>
-    
     <color name="grey_text_light">#FF808080</color>
 
 </resources>
