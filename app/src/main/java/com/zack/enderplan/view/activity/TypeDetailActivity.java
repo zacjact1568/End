@@ -33,7 +33,6 @@ import com.zack.enderplan.injector.module.TypeDetailPresenterModule;
 import com.zack.enderplan.view.contract.TypeDetailViewContract;
 import com.zack.enderplan.view.adapter.SingleTypePlanAdapter;
 import com.zack.enderplan.view.adapter.SimpleTypeAdapter;
-import com.zack.enderplan.view.callback.PlanItemTouchCallback;
 import com.zack.enderplan.presenter.TypeDetailPresenter;
 import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.Plan;
@@ -53,17 +52,17 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     @BindView(R.id.layout_app_bar)
     AppBarLayout mAppBarLayout;
     @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    Toolbar mToolbar;
     @BindView(R.id.layout_header)
     LinearLayout mHeaderLayout;
     @BindView(R.id.ic_type_mark)
-    CircleColorView typeMarkIcon;
+    CircleColorView mTypeMarkIcon;
     @BindView(R.id.text_type_name)
-    TextView typeNameText;
+    TextView mTypeNameText;
     @BindView(R.id.text_uc_plan_count)
-    TextView ucPlanCountText;
+    TextView mUcPlanCountText;
     @BindView(R.id.editor_content)
-    EditText contentEditor;
+    EditText mContentEditor;
     @BindView(R.id.list_plan)
     RecyclerView mPlanList;
     @BindView(R.id.layout_editor)
@@ -73,16 +72,19 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     String mContentEditorHintFormat;
     @BindString(R.string.snackbar_delete_format)
     String mSnackbarDeleteFormat;
-    @BindString(R.string.name_type_mark_shared_element_transition)
-    String mTypeMarkSetName;
+    @BindString(R.string.transition_type_mark_icon)
+    String mTypeMarkIconSetName;
+    @BindString(R.string.transition_type_name_text)
+    String mTypeNameTextSetName;
 
     @Inject
     TypeDetailPresenter mTypeDetailPresenter;
 
-    public static void start(Activity activity, int typeListPosition, View sharedElement, String sharedElementName) {
+    public static void start(Activity activity, int typeListPosition, String transitionName, View sharedElement) {
         Intent intent = new Intent(activity, TypeDetailActivity.class);
         intent.putExtra(Constant.TYPE_LIST_POSITION, typeListPosition);
-        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity, sharedElement, sharedElementName);
+        intent.putExtra(Constant.TRANSITION_NAME, transitionName);
+        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity, sharedElement, transitionName);
         activity.startActivity(intent, options.toBundle());
     }
 
@@ -155,7 +157,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
         setContentView(R.layout.activity_type_detail);
         ButterKnife.bind(this);
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
         setupActionBar();
 
         mAppBarLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
@@ -174,6 +176,8 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
             }
         });
 
+        mTypeMarkIcon.setTransitionName(getIntent().getStringExtra(Constant.TRANSITION_NAME));
+
         mEditorLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
@@ -189,7 +193,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
 
         itemTouchHelper.attachToRecyclerView(mPlanList);
 
-        contentEditor.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mContentEditor.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -207,30 +211,30 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
 
     @Override
     public void onTypeNameChanged(String typeName, String firstChar) {
-        typeMarkIcon.setInnerText(firstChar);
-        typeNameText.setText(typeName);
-        contentEditor.setHint(String.format(mContentEditorHintFormat, typeName));
+        mTypeMarkIcon.setInnerText(firstChar);
+        mTypeNameText.setText(typeName);
+        mContentEditor.setHint(String.format(mContentEditorHintFormat, typeName));
     }
 
     @Override
     public void onTypeMarkColorChanged(int colorInt) {
-        typeMarkIcon.setFillColor(colorInt);
+        mTypeMarkIcon.setFillColor(colorInt);
     }
 
     @Override
     public void onTypeMarkPatternChanged(boolean hasPattern, int patternResId) {
-        typeMarkIcon.setInnerIcon(hasPattern ? getDrawable(patternResId) : null);
+        mTypeMarkIcon.setInnerIcon(hasPattern ? getDrawable(patternResId) : null);
     }
 
     @Override
     public void onPlanCreated() {
         mPlanList.scrollToPosition(0);
-        contentEditor.setText("");
+        mContentEditor.setText("");
     }
 
     @Override
     public void onUcPlanCountChanged(String ucPlanCountStr) {
-        ucPlanCountText.setText(ucPlanCountStr);
+        mUcPlanCountText.setText(ucPlanCountStr);
     }
 
     @Override
@@ -259,7 +263,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
 
     @Override
     public void onAppBarScrolledToCriticalPoint(String toolbarTitle, float editorLayoutTransY) {
-        toolbar.setTitle(toolbarTitle);
+        mToolbar.setTitle(toolbarTitle);
         ObjectAnimator.ofFloat(mEditorLayout, "translationY", mEditorLayout.getTranslationY(), editorLayoutTransY)
                 .setDuration(200)
                 .start();
@@ -279,7 +283,15 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
 
     @Override
     public void enterEditType(int position, boolean shouldPlaySharedElementTransition) {
-        TypeEditActivity.start(this, position, shouldPlaySharedElementTransition, typeMarkIcon, mTypeMarkSetName);
+        TypeEditActivity.start(
+                this,
+                position,
+                shouldPlaySharedElementTransition,
+                mTypeMarkIcon,
+                mTypeMarkIconSetName,
+                mTypeNameText,
+                mTypeNameTextSetName
+        );
     }
 
     @Override
@@ -369,7 +381,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ic_clear_text:
-                contentEditor.setText("");
+                mContentEditor.setText("");
                 break;
         }
     }

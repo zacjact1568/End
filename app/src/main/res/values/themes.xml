@@ -47,10 +47,10 @@
 
     <style name="AppTheme.Transition.SharedElement">
 
-        <item name="android:windowSharedElementEnterTransition">@transition/transition_shared_element</item>
-        <item name="android:windowSharedElementExitTransition">@transition/transition_shared_element</item>
-        <item name="android:windowSharedElementReenterTransition">@transition/transition_shared_element</item>
-        <item name="android:windowSharedElementReturnTransition">@transition/transition_shared_element</item>
+        <item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
+        <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
+        <item name="android:windowSharedElementReenterTransition">@android:transition/move</item>
+        <item name="android:windowSharedElementReturnTransition">@android:transition/move</item>
 
     </style>
 

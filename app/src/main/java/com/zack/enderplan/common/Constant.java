@@ -54,10 +54,12 @@ public class Constant {
     public static final String GUIDE = "guide";
     public static final String MY_PLANS = "my_plans";
     public static final String ALL_TYPES = "all_types";
-    public static final String CREATE_PLAN = "create_plan";
-    public static final String CREATE_TYPE = "create_type";
+    public static final String PLAN_CREATION = "plan_creation";
+    public static final String TYPE_CREATION = "type_creation";
     public static final String SETTINGS = "settings";
     public static final String ABOUT = "about";
 
     public static final String CURRENT_FRAGMENT = "current_fragment";
+
+    public static final String TRANSITION_NAME = "transition_name";
 }

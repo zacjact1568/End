@@ -80,7 +80,7 @@
     <string name="action_edit">编辑</string>
     <string name="title_activity_type_detail">类型详情</string>
     <string name="toast_type_not_empty">类型非空，不能删除</string>
-    <string name="name_type_mark_shared_element_transition">类型标记共享元素转换</string>
+    <string name="transition_type_mark_icon">类型标记图标转换</string>
     <string name="msg_dialog_delete_type">此类型和与之相关的所有计划将被删除。</string>
     <string name="action_save">保存</string>
     <string name="title_activity_type_creation">创建类型</string>
@@ -154,4 +154,5 @@
     <string name="toast_reminder_delayed_format">我将会%s提醒你</string>
     <string name="toast_past_deadline">截止时间应该在未来</string>
     <string name="toast_past_reminder_time">提醒时间应该在未来</string>
+    <string name="transition_type_mark_icon_format">在位置%d的类型标记图标转换</string>
 </resources>

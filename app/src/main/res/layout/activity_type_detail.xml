@@ -54,7 +54,6 @@
                     android:id="@+id/ic_type_mark"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:transitionName="@string/name_type_mark_shared_element_transition"
                     app:edgeColor="@android:color/white"
                     app:edgeWidth="1dp"/>
 

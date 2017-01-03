@@ -15,7 +15,6 @@ import com.zack.enderplan.injector.module.AllTypesPresenterModule;
 import com.zack.enderplan.view.activity.TypeDetailActivity;
 import com.zack.enderplan.view.contract.AllTypesViewContract;
 import com.zack.enderplan.view.adapter.TypeAdapter;
-import com.zack.enderplan.view.callback.TypeItemTouchCallback;
 import com.zack.enderplan.presenter.AllTypesPresenter;
 
 import javax.inject.Inject;
@@ -85,11 +84,12 @@ public class AllTypesFragment extends BaseListFragment implements AllTypesViewCo
 
     @Override
     public void onTypeItemClicked(int position, View typeItem) {
+        View typeMarkIcon = typeItem.findViewById(R.id.ic_type_mark);
         TypeDetailActivity.start(
                 getActivity(),
                 position,
-                typeItem.findViewById(R.id.ic_type_mark),
-                getResources().getString(R.string.name_type_mark_shared_element_transition)
+                typeMarkIcon.getTransitionName(),
+                typeMarkIcon
         );
     }
 

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.Toolbar;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -56,12 +57,13 @@ public class TypeEditActivity extends BaseActivity implements TypeEditViewContra
     @Inject
     TypeEditPresenter mTypeEditPresenter;
 
-    public static void start(Activity activity, int typeListPosition, boolean sharedElementTransition, View sharedElement, String sharedElementName) {
+    public static void start(Activity activity, int typeListPosition, boolean sharedElementTransition,
+                             View typeMarkIconSharedElement, String typeMarkIconTransitionName, View typeNameTextSharedElement, String typeNameTextTransitionName) {
         Intent intent = new Intent(activity, TypeEditActivity.class);
         intent.putExtra(Constant.TYPE_LIST_POSITION, typeListPosition);
         ActivityOptions options;
         if (sharedElementTransition) {
-            options = ActivityOptions.makeSceneTransitionAnimation(activity, sharedElement, sharedElementName);
+            options = ActivityOptions.makeSceneTransitionAnimation(activity, Pair.create(typeMarkIconSharedElement, typeMarkIconTransitionName), Pair.create(typeNameTextSharedElement, typeNameTextTransitionName));
         } else {
             options = ActivityOptions.makeSceneTransitionAnimation(activity);
         }

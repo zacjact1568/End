@@ -79,7 +79,6 @@
     <string name="action_edit">編輯</string>
     <string name="title_activity_type_detail">類型詳情</string>
     <string name="toast_type_not_empty">類型非空，不能刪除</string>
-    <string name="name_type_mark_shared_element_transition">類型標記共享元素轉換</string>
     <string name="msg_dialog_delete_type">此類型和與之相關的所有計劃將被刪除。</string>
     <string name="action_save">存儲</string>
     <string name="title_activity_type_creation">創建類型</string>

@@ -42,7 +42,9 @@
     <string name="snackbar_create_format">\"%s\" has been created</string>
     <string name="snackbar_delete_format">\"%s\" has been deleted</string>
 
-    <string name="name_type_mark_shared_element_transition">Type mark shared element transition</string>
+    <string name="transition_type_mark_icon">Type mark icon transition</string>
+    <string name="transition_type_name_text">Type name text transition</string>
+    <string name="transition_type_mark_icon_format">Type mark icon transition at position %d</string>
 
     <string name="toast_past_deadline">The deadline should be in the future</string>
     <string name="toast_past_reminder_time">The reminder time should be in the future</string>
