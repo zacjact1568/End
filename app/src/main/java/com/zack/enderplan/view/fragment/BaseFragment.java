@@ -18,6 +18,10 @@ public abstract class BaseFragment extends Fragment {
 
     }
 
+    protected String getFragmentName() {
+        return getClass().getSimpleName();
+    }
+
     public void showToast(@StringRes int msgResId) {
         Toast.makeText(getContext(), msgResId, Toast.LENGTH_SHORT).show();
     }

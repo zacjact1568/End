@@ -69,7 +69,19 @@ public class HomeActivity extends BaseActivity implements HomeViewContract {
         super.onPostCreate(savedInstanceState);
         mHomePresenter.notifyStartingUpCompleted();
         //如果放到setInitialView中，toolbar的title不会改变
-        showFragment(Constant.MY_PLANS);
+        showFragment(savedInstanceState == null ? Constant.MY_PLANS : savedInstanceState.getString(Constant.CURRENT_FRAGMENT, Constant.MY_PLANS));
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        String currentFragment;
+        if (isFragmentShowing(Constant.MY_PLANS)) {
+            currentFragment = Constant.MY_PLANS;
+        } else {
+            currentFragment = Constant.ALL_TYPES;
+        }
+        outState.putString(Constant.CURRENT_FRAGMENT, currentFragment);
     }
 
     @Override
@@ -170,18 +182,35 @@ public class HomeActivity extends BaseActivity implements HomeViewContract {
 
     @Override
     public void showFragment(String tag) {
-        if (isFragmentShowing(tag)) return;
-        BaseListFragment fragment;
+        if (!isFragmentShowing(tag)) {
+            BaseListFragment fragment;
+            switch (tag) {
+                case Constant.MY_PLANS:
+                    fragment = new MyPlansFragment();
+                    break;
+                case Constant.ALL_TYPES:
+                    fragment = new AllTypesFragment();
+                    break;
+                default:
+                    throw new IllegalArgumentException("The argument tag cannot be " + tag);
+            }
+            fragment.setOnListScrolledListener(new BaseListFragment.OnListScrolledListener() {
+                @Override
+                public void onListScrolled(int variation) {
+                    mHomePresenter.notifyListScrolled(variation);
+                }
+            });
+            getSupportFragmentManager().beginTransaction().replace(R.id.layout_fragment, fragment, tag).commit();
+        }
+        //在切换相同fragment时，下面的语句是不必要的
         int titleResId, fabResId, navViewCheckedItemId;
         switch (tag) {
             case Constant.MY_PLANS:
-                fragment = new MyPlansFragment();
                 titleResId = R.string.title_fragment_my_plans;
                 fabResId = R.drawable.ic_add_black_24dp;
                 navViewCheckedItemId = R.id.nav_my_plans;
                 break;
             case Constant.ALL_TYPES:
-                fragment = new AllTypesFragment();
                 titleResId = R.string.title_fragment_all_types;
                 fabResId = R.drawable.ic_playlist_add_black_24dp;
                 navViewCheckedItemId = R.id.nav_all_types;
@@ -189,13 +218,6 @@ public class HomeActivity extends BaseActivity implements HomeViewContract {
             default:
                 throw new IllegalArgumentException("The argument tag cannot be " + tag);
         }
-        fragment.setOnListScrolledListener(new BaseListFragment.OnListScrolledListener() {
-            @Override
-            public void onListScrolled(int variation) {
-                mHomePresenter.notifyListScrolled(variation);
-            }
-        });
-        getSupportFragmentManager().beginTransaction().replace(R.id.layout_fragment, fragment, tag).commit();
         mToolbar.setTitle(titleResId);
         mCreateFab.setImageResource(fabResId);
         mCreateFab.setTranslationY(0f);

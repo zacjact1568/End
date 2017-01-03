@@ -58,4 +58,6 @@ public class Constant {
     public static final String CREATE_TYPE = "create_type";
     public static final String SETTINGS = "settings";
     public static final String ABOUT = "about";
+
+    public static final String CURRENT_FRAGMENT = "current_fragment";
 }
