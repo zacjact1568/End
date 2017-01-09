@@ -31,6 +31,7 @@ import com.zack.enderplan.R;
 import com.zack.enderplan.receiver.ReminderReceiver;
 
 import java.lang.reflect.Method;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -281,5 +282,15 @@ public class Util {
 
     public static void showToast(String msg) {
         Toast.makeText(App.getContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    public static long getDateTimePickerDefaultTime(long timeInMillis) {
+        if (timeInMillis == Constant.UNDEFINED_TIME) {
+            Calendar calendar = Calendar.getInstance();
+            //TODO 延后的时间可以自定义
+            calendar.add(Calendar.MINUTE, 1);
+            timeInMillis = calendar.getTimeInMillis();
+        }
+        return timeInMillis;
     }
 }

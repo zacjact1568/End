@@ -172,11 +172,11 @@ public class PlanDetailPresenter extends BasePresenter {
     }
 
     public void notifySettingDeadline() {
-        mPlanDetailViewContract.showDeadlinePickerDialog(mPlan.getDeadline());
+        mPlanDetailViewContract.showDeadlinePickerDialog(Util.getDateTimePickerDefaultTime(mPlan.getDeadline()));
     }
 
     public void notifySettingReminder() {
-        mPlanDetailViewContract.showReminderTimePickerDialog(mPlan.getReminderTime());
+        mPlanDetailViewContract.showReminderTimePickerDialog(Util.getDateTimePickerDefaultTime(mPlan.getReminderTime()));
     }
 
     public void notifyDeadlineChanged(long deadline) {

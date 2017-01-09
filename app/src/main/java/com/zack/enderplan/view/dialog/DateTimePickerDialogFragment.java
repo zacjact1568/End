@@ -6,10 +6,10 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.ViewSwitcher;
+import android.widget.ViewAnimator;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.common.Constant;
@@ -27,9 +27,9 @@ public class DateTimePickerDialogFragment extends DialogFragment {
     @BindView(R.id.picker_time)
     TimePicker mTimePicker;
     @BindView(R.id.switcher_date_time_picker)
-    ViewSwitcher mDateTimePickerSwitcher;
+    ViewAnimator mDateTimePickerSwitcher;
     @BindView(R.id.btn_picker_switcher)
-    TextView mPickerSwitcherButton;
+    Button mPickerSwitcherButton;
 
     private static final String ARG_DEFAULT_TIME = "default_time";
 
@@ -54,9 +54,8 @@ public class DateTimePickerDialogFragment extends DialogFragment {
 
         mCalendar = Calendar.getInstance();
         Bundle args = getArguments();
-        long defaultTime;
-        if (args != null && (defaultTime = args.getLong(ARG_DEFAULT_TIME)) != Constant.UNDEFINED_TIME) {
-            mCalendar.setTimeInMillis(defaultTime);
+        if (args != null) {
+            mCalendar.setTimeInMillis(args.getLong(ARG_DEFAULT_TIME));
         }
     }
 

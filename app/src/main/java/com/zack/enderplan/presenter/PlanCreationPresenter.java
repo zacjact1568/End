@@ -75,11 +75,11 @@ public class PlanCreationPresenter extends BasePresenter {
 
     //TODO 以后都用这种形式，即notifySetting***，更换控件就不用改方法名了
     public void notifySettingDeadline() {
-        mPlanCreationViewContract.showDeadlinePickerDialog(mPlan.getDeadline());
+        mPlanCreationViewContract.showDeadlinePickerDialog(Util.getDateTimePickerDefaultTime(mPlan.getDeadline()));
     }
 
     public void notifySettingReminder() {
-        mPlanCreationViewContract.showReminderTimePickerDialog(mPlan.getReminderTime());
+        mPlanCreationViewContract.showReminderTimePickerDialog(Util.getDateTimePickerDefaultTime(mPlan.getReminderTime()));
     }
 
     public void notifyCreatingPlan() {

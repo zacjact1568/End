@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
+import android.widget.ViewAnimator;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.view.adapter.TypeMarkColorAdapter;
@@ -31,7 +31,7 @@ import butterknife.OnClick;
 public class TypeMarkColorPickerDialogFragment extends DialogFragment {
 
     @BindView(R.id.switcher_color_picker)
-    ViewSwitcher mColorPickerSwitcher;
+    ViewAnimator mColorPickerSwitcher;
     @BindView(R.id.grid_type_mark_color)
     GridView mTypeMarkColorGrid;
     @BindView(R.id.picker_type_mark_color)
