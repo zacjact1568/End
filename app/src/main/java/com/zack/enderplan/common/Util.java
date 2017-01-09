@@ -5,14 +5,17 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.LocaleList;
 import android.os.Vibrator;
 import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -21,6 +24,7 @@ import android.text.style.StyleSpan;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
@@ -197,18 +201,12 @@ public class Util {
      */
     public static void setReminder(String planCode, long timeInMillis) {
         Context context = App.getContext();
-        Intent intent = new Intent(context, ReminderReceiver.class);
-        //相当于只有下面这条语句才能区分不同的PendingIntent，也就是code才能区分，如果code相同，那么extra也会被无视
-        intent.setAction("com.zack.enderplan.ACTION_REMINDER_PLAN_" + planCode);
-        intent.setPackage(context.getPackageName());
-        intent.putExtra(Constant.PLAN_CODE, planCode);
-        //此处FLAG_UPDATE_CURRENT真的很有用，修改过plan后再set，通知内容也会被替换成新的plan.content了，也就不需要cancel后再set了
-        PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent intent = ReminderReceiver.getPendingIntentForSend(context, planCode);
         AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (timeInMillis != Constant.TIME_UNDEFINED) {
-            manager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pi);
+        if (timeInMillis != Constant.UNDEFINED_TIME) {
+            manager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, intent);
         } else {
-            manager.cancel(pi);
+            manager.cancel(intent);
         }
     }
 
@@ -224,23 +222,64 @@ public class Util {
         return App.getContext().getString(resId);
     }
 
-    public static boolean isFutureTime(long timeInMillis) {
-        return timeInMillis == Constant.TIME_UNDEFINED || timeInMillis > System.currentTimeMillis();
+    public static Drawable getDrawable(@DrawableRes int resId) {
+        return App.getContext().getDrawable(resId);
     }
 
-    public static void showNotification(String tag, String content, PendingIntent intent) {
-        NotificationManager manager = (NotificationManager) App.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = new Notification.Builder(App.getContext())
+    public static Drawable getDrawable(String name) {
+        int resId = getDrawableResourceId(name);
+        if (resId == 0) return null;
+        return getDrawable(resId);
+    }
+
+    public static boolean isFutureTime(long timeInMillis) {
+        return timeInMillis == Constant.UNDEFINED_TIME || timeInMillis > System.currentTimeMillis();
+    }
+
+    public static void showNotification(String tag, String title, String content, Bitmap largeIcon, PendingIntent intent, NotificationCompat.Action... actions) {
+        Context context = App.getContext();
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_check_box_black_24dp)
-                .setContentTitle(getString(R.string.title_reminder_notification))
+                .setLargeIcon(largeIcon)
+                .setContentTitle(title)
                 .setContentText(content)
-                .setDefaults(Notification.DEFAULT_ALL)
                 .setContentIntent(intent)
-                .build();
-        manager.notify(tag, 0, notification);
+                .setColor(getColor(R.color.colorPrimary))
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setPriority(Notification.PRIORITY_MAX)
+                .setShowWhen(true);
+        for (NotificationCompat.Action action : actions) {
+            builder.addAction(action);
+        }
+        ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(tag, 0, builder.build());
     }
 
     public static void cancelNotification(String tag) {
         ((NotificationManager) App.getContext().getSystemService(Context.NOTIFICATION_SERVICE)).cancel(tag, 0);
+    }
+
+    public static Bitmap convertViewToBitmap(View view, int size) {
+        int measureSpec = View.MeasureSpec.makeMeasureSpec(size, View.MeasureSpec.EXACTLY);
+        view.measure(measureSpec, measureSpec);
+        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+        view.setDrawingCacheEnabled(true);
+        return view.getDrawingCache();
+    }
+
+    public static String getFirstChar(String str) {
+        return str.substring(0, 1);
+    }
+
+    public static NotificationCompat.Action getNotificationAction(@DrawableRes int iconResId, @StringRes int titleResId, PendingIntent intent) {
+        return new NotificationCompat.Action.Builder(iconResId, getString(titleResId), intent).build();
+    }
+
+    //TODO 考虑全部转移到这两个方法
+    public static void showToast(@StringRes int msgResId) {
+        Toast.makeText(App.getContext(), msgResId, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void showToast(String msg) {
+        Toast.makeText(App.getContext(), msg, Toast.LENGTH_SHORT).show();
     }
 }

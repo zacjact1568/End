@@ -23,11 +23,11 @@ public class Plan implements Parcelable {
         this.mPlanCode = planCode;
         this.mContent = null;
         this.mTypeCode = null;
-        this.mCreationTime = Constant.TIME_UNDEFINED;
-        this.mDeadline = Constant.TIME_UNDEFINED;
-        this.mCompletionTime = Constant.TIME_UNDEFINED;
+        this.mCreationTime = Constant.UNDEFINED_TIME;
+        this.mDeadline = Constant.UNDEFINED_TIME;
+        this.mCompletionTime = Constant.UNDEFINED_TIME;
         this.mStarStatus = PLAN_STAR_STATUS_NOT_STARRED;
-        this.mReminderTime = Constant.TIME_UNDEFINED;
+        this.mReminderTime = Constant.UNDEFINED_TIME;
     }
 
     public Plan(String planCode, String content, String typeCode, long creationTime, long deadline,
@@ -130,11 +130,11 @@ public class Plan implements Parcelable {
     }
 
     public boolean hasDeadline() {
-        return mDeadline != Constant.TIME_UNDEFINED;
+        return mDeadline != Constant.UNDEFINED_TIME;
     }
 
     public boolean isCompleted() {
-        return mCompletionTime != Constant.TIME_UNDEFINED;
+        return mCompletionTime != Constant.UNDEFINED_TIME;
     }
 
     public boolean isStarred() {
@@ -142,7 +142,7 @@ public class Plan implements Parcelable {
     }
 
     public boolean hasReminder() {
-        return mReminderTime != Constant.TIME_UNDEFINED;
+        return mReminderTime != Constant.UNDEFINED_TIME;
     }
 
     public void invertStarStatus() {

@@ -24,7 +24,7 @@
     <string name="reminder">提醒</string>
     <string name="deleted_prompt">已删除</string>
     <string name="creation_time">创建时间</string>
-    <string name="title_reminder_notification">提醒</string>
+    <string name="title_notification_reminder">提醒</string>
     <string name="more_settings">更多设置</string>
     <string name="content_error_empty">忘记这个了？</string>
     <string name="message_deadline_overdue_dialog">天了噜，你设置的截止时间貌似已经过期了</string>
@@ -155,4 +155,9 @@
     <string name="toast_past_deadline">截止时间应该在未来</string>
     <string name="toast_past_reminder_time">提醒时间应该在未来</string>
     <string name="transition_type_mark_icon_format">在位置%d的类型标记图标转换</string>
+    <string name="button_complete">完成</string>
+    <string name="button_delay">延迟</string>
+    <string name="toast_delay_10_minutes">在10分钟后</string>
+    <string name="transition_type_name_text">类型名称文本转换</string>
+    <string name="toast_data_loading_unfinished">数据还未载入完成，请稍等……</string>
 </resources>

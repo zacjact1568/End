@@ -5,7 +5,7 @@ public class Constant {
     public static final String DEVELOPER_EMAIL = "zacjact1568@hotmail.com";
 
     /** 未定义的时间 */
-    public static final long TIME_UNDEFINED = -1L;
+    public static final long UNDEFINED_TIME = -1L;
 
     public static final String DB_TYPE_MARK = "type_mark.db";
 
@@ -49,7 +49,7 @@ public class Constant {
     public static final String ONE_HOUR = "one_hour";
     public static final String TOMORROW = "tomorrow";
 
-    public static final int COORDINATE_FAB = 44;
+    public static final int FAB_COORDINATE = 44;
 
     public static final String GUIDE = "guide";
     public static final String MY_PLANS = "my_plans";
@@ -62,4 +62,13 @@ public class Constant {
     public static final String CURRENT_FRAGMENT = "current_fragment";
 
     public static final String TRANSITION_NAME = "transition_name";
+
+    /** 128是刚好合适的大小，小的话在通知中会很模糊，大的话会有锯齿（系统会把图片缩放到固定的大小） */
+    public static final int NOTIFICATION_LARGE_ICON_SIZE = 128;
+
+    public static final String NOTIFICATION_ACTION = "notification_action";
+
+    public static final String ACTION_PREFIX = "com.zack.enderplan.action.";
+    public static final String ACTION_REMINDER = ACTION_PREFIX + "REMINDER_%s";
+    public static final String ACTION_REMINDER_NOTIFICATION_ACTION = ACTION_PREFIX + "REMINDER_%s_NOTIFICATION_ACTION_%s";
 }

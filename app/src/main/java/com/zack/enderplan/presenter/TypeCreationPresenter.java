@@ -37,7 +37,7 @@ public class TypeCreationPresenter extends BasePresenter {
                 Color.parseColor(mType.getTypeMarkColor()),
                 mDataManager.getTypeMarkColorName(mType.getTypeMarkColor()),
                 mType.getTypeName(),
-                mType.getTypeName().substring(0, 1)
+                Util.getFirstChar(mType.getTypeName())
         ));
     }
 
@@ -51,7 +51,7 @@ public class TypeCreationPresenter extends BasePresenter {
         if (TextUtils.isEmpty(typeName)) {
             mTypeCreationViewContract.onTypeNameChanged(Util.getString(R.string.text_empty_type_name), "-", false);
         } else {
-            mTypeCreationViewContract.onTypeNameChanged(typeName, typeName.substring(0, 1), true);
+            mTypeCreationViewContract.onTypeNameChanged(typeName, Util.getFirstChar(typeName), true);
         }
     }
 

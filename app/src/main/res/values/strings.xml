@@ -19,6 +19,8 @@
     <string name="button_move">Move</string>
     <string name="button_select">Select</string>
     <string name="button_undo">Undo</string>
+    <string name="button_complete">Complete</string>
+    <string name="button_delay">Delay</string>
 
     <string name="title_star">Star</string>
     <string name="title_deadline">Deadline</string>
@@ -158,6 +160,7 @@
     <string name="text_1_hour">1 hour</string>
     <string name="text_tomorrow">Tomorrow</string>
     <string name="text_more">More</string>
+    <string name="toast_delay_10_minutes">10 minutes later</string>
     <string name="toast_delay_1_hour">1 hour later</string>
     <string name="toast_delay_tomorrow">tomorrow</string>
     <string name="toast_delay_more">at %s</string>
@@ -198,7 +201,8 @@
     <string name="def_plan_3">Slide right to complete this plan</string>
 
     <!--Reminder-->
-    <string name="title_reminder_notification">Reminder</string>
+    <string name="title_notification_reminder">Reminder</string>
+    <string name="toast_data_loading_unfinished">Data loading hasn\'t finished yet, please wait…</string>
 
     <!--DateTimePickerDialogFragment-->
     <string name="text_time_picker_switcher">Set Time</string>

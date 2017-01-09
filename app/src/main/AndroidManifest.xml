@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.zack.enderplan">
 
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:name=".App"
@@ -15,73 +16,80 @@
         <activity
             android:name=".view.activity.HomeActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.Transparent.StatusBar"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Transparent.StatusBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".view.activity.PlanCreationActivity"
             android:label="@string/title_activity_plan_creation"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".view.activity.PlanDetailActivity"
             android:label="@string/title_activity_plan_detail"
-            android:theme="@style/AppTheme.Transition.VerticalSlide.TransparentStatusBar"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Transition.VerticalSlide.TransparentStatusBar"/>
         <activity
             android:name=".view.activity.TypeCreationActivity"
             android:label="@string/title_activity_type_creation"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".view.activity.TypeDetailActivity"
             android:label="@string/title_activity_type_detail"
-            android:theme="@style/AppTheme.Transition.SharedElement.TransparentStatusBar"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Transition.SharedElement.TransparentStatusBar"
             android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".view.activity.TypeEditActivity"
             android:label="@string/title_activity_type_edit"
-            android:theme="@style/AppTheme.Transition.SharedElement"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Transition.SharedElement"/>
         <activity
             android:name=".view.activity.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".view.activity.AboutActivity"
             android:label="@string/title_activity_about"
-            android:theme="@style/AppTheme.Transparent.StatusBar"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Transparent.StatusBar"/>
         <activity
             android:name=".view.activity.ReminderActivity"
             android:label="@string/title_activity_reminder"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Transparent.All"
-            android:screenOrientation="portrait"/>
+            android:launchMode="singleTask"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"/>
         <activity
             android:name=".view.activity.GuideActivity"
             android:label="@string/title_activity_welcome"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"/>
 
         <receiver
             android:name=".receiver.ReminderReceiver"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false"/>
         <receiver
             android:name=".receiver.BootCompleteReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
+        <receiver
+            android:name=".receiver.ReminderNotificationActionReceiver"
+            android:enabled="true"
+            android:exported="false"/>
     </application>
 
 </manifest>

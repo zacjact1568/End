@@ -110,7 +110,7 @@ public class TypeDetailPresenter extends BasePresenter {
                 mType.getTypeMarkPattern() != null,
                 Util.getDrawableResourceId(mType.getTypeMarkPattern()),
                 mType.getTypeName(),
-                mType.getTypeName().substring(0, 1)
+                Util.getFirstChar(mType.getTypeName())
         ), getUcPlanCountStr(mType.getTypeCode()), mSingleTypePlanAdapter, new ItemTouchHelper(planItemTouchCallback));
     }
 
@@ -351,7 +351,7 @@ public class TypeDetailPresenter extends BasePresenter {
         if (!mType.getTypeCode().equals(event.getTypeCode()) || event.getEventSource().equals(getPresenterName())) return;
         switch (event.getChangedField()) {
             case TypeDetailChangedEvent.FIELD_TYPE_NAME:
-                mTypeDetailViewContract.onTypeNameChanged(mType.getTypeName(), mType.getTypeName().substring(0, 1));
+                mTypeDetailViewContract.onTypeNameChanged(mType.getTypeName(), Util.getFirstChar(mType.getTypeName()));
                 break;
             case TypeDetailChangedEvent.FIELD_TYPE_MARK_COLOR:
                 mTypeDetailViewContract.onTypeMarkColorChanged(Color.parseColor(mType.getTypeMarkColor()));

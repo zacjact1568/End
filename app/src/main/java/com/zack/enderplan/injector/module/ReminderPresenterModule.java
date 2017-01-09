@@ -10,12 +10,10 @@ public class ReminderPresenterModule {
 
     private final ReminderViewContract mReminderViewContract;
     private final int mPlanListPosition;
-    private final String mPlanCode;
 
-    public ReminderPresenterModule(ReminderViewContract reminderViewContract, int planListPosition, String planCode) {
+    public ReminderPresenterModule(ReminderViewContract reminderViewContract, int planListPosition) {
         mReminderViewContract = reminderViewContract;
         mPlanListPosition = planListPosition;
-        mPlanCode = planCode;
     }
 
     @Provides
@@ -26,10 +24,5 @@ public class ReminderPresenterModule {
     @Provides
     int providePlanListPosition() {
         return mPlanListPosition;
-    }
-
-    @Provides
-    String providePlanCode() {
-        return mPlanCode;
     }
 }

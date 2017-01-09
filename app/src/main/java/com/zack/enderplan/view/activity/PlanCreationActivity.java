@@ -249,7 +249,7 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
 //    }
 //
 //    private void playCircularRevealAnimation() {
-//        int fabCoordinateInPx = Util.convertDpToPx(Constant.COORDINATE_FAB);
+//        int fabCoordinateInPx = Util.convertDpToPx(Constant.FAB_COORDINATE);
 //        int centerX = mCircularRevealLayout.getWidth() - fabCoordinateInPx;
 //        int centerY = mCircularRevealLayout.getHeight() - fabCoordinateInPx;
 //

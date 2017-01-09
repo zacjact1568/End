@@ -38,7 +38,7 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
 
         holder.mTypeMarkIcon.setFillColor(Color.parseColor(type.getTypeMarkColor()));
         holder.mTypeMarkIcon.setInnerIcon(type.getTypeMarkPattern() == null ? null : App.getContext().getDrawable(Util.getDrawableResourceId(type.getTypeMarkPattern())));
-        holder.mTypeMarkIcon.setInnerText(type.getTypeName().substring(0, 1));
+        holder.mTypeMarkIcon.setInnerText(Util.getFirstChar(type.getTypeName()));
         holder.mTypeMarkIcon.setTransitionName(String.format(Util.getString(R.string.transition_type_mark_icon_format), position));
         holder.mTypeNameText.setText(type.getTypeName());
 

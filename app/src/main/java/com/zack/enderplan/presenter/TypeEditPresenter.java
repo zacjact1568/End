@@ -44,7 +44,7 @@ public class TypeEditPresenter extends BasePresenter {
                 Util.getDrawableResourceId(mType.getTypeMarkPattern()),
                 mDataManager.getTypeMarkPatternName(mType.getTypeMarkPattern()),
                 mType.getTypeName(),
-                mType.getTypeName().substring(0, 1)
+                Util.getFirstChar(mType.getTypeName())
         ));
     }
 
@@ -72,7 +72,7 @@ public class TypeEditPresenter extends BasePresenter {
             mTypeEditViewContract.showToast(R.string.toast_type_name_exists);
         } else {
             mDataManager.notifyUpdatingTypeName(mTypeListPosition, newTypeName);
-            mTypeEditViewContract.onTypeNameChanged(newTypeName, newTypeName.substring(0, 1));
+            mTypeEditViewContract.onTypeNameChanged(newTypeName, Util.getFirstChar(newTypeName));
             postTypeDetailChangedEvent(TypeDetailChangedEvent.FIELD_TYPE_NAME);
         }
     }

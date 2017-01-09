@@ -55,7 +55,7 @@ public class DateTimePickerDialogFragment extends DialogFragment {
         mCalendar = Calendar.getInstance();
         Bundle args = getArguments();
         long defaultTime;
-        if (args != null && (defaultTime = args.getLong(ARG_DEFAULT_TIME)) != Constant.TIME_UNDEFINED) {
+        if (args != null && (defaultTime = args.getLong(ARG_DEFAULT_TIME)) != Constant.UNDEFINED_TIME) {
             mCalendar.setTimeInMillis(defaultTime);
         }
     }
@@ -121,7 +121,7 @@ public class DateTimePickerDialogFragment extends DialogFragment {
                 break;
             case R.id.btn_remove:
                 if (mOnDateTimePickedListener != null) {
-                    mOnDateTimePickedListener.onDateTimePicked(Constant.TIME_UNDEFINED);
+                    mOnDateTimePickedListener.onDateTimePicked(Constant.UNDEFINED_TIME);
                 }
                 getDialog().dismiss();
                 break;

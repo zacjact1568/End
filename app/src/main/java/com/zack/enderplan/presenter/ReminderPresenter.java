@@ -24,23 +24,11 @@ public class ReminderPresenter extends BasePresenter {
     private DataManager mDataManager;
 
     @Inject
-    public ReminderPresenter(ReminderViewContract reminderViewContract, int planListPosition, String planCode, DataManager dataManager) {
+    public ReminderPresenter(ReminderViewContract reminderViewContract, int planListPosition, DataManager dataManager) {
         mReminderViewContract = reminderViewContract;
+        mPlanListPosition = planListPosition;
         mDataManager = dataManager;
 
-        if (planListPosition != -1) {
-            //说明DataManager中的数据在ReminderReceiver的时候就已经加载完，直接取plan
-            mPlanListPosition = planListPosition;
-        } else if (mDataManager.isDataLoaded()) {
-            //说明DataManager中的数据在ReminderReceiver的时候还未加载完，但是现在已经加载完了（显示通知到点击通知之间）
-            mPlanListPosition = mDataManager.getPlanLocationInPlanList(planCode);
-        } else {
-            //说明DataManager中的数据到现在还未加载完，不启动activity，保留通知
-            mReminderViewContract.exit();
-            return;
-        }
-
-        Util.cancelNotification(planCode);
         mPlan = mDataManager.getPlan(mPlanListPosition);
     }
 
@@ -73,7 +61,7 @@ public class ReminderPresenter extends BasePresenter {
     }
 
     public void notifyUpdatingReminderTime(long reminderTime) {
-        if (reminderTime == Constant.TIME_UNDEFINED) return;
+        if (reminderTime == Constant.UNDEFINED_TIME) return;
         if (Util.isFutureTime(reminderTime)) {
             updateReminderTime(
                     reminderTime,
@@ -106,7 +94,7 @@ public class ReminderPresenter extends BasePresenter {
                 mPlanListPosition,
                 PlanDetailChangedEvent.FIELD_PLAN_STATUS
         ));
-        mReminderViewContract.showToast(Util.getString(R.string.toast_plan_completed));
+        mReminderViewContract.showToast(R.string.toast_plan_completed);
         mReminderViewContract.exit();
     }
 

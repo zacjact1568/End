@@ -1,6 +1,5 @@
 package com.zack.enderplan.view.activity;
 
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -35,12 +34,12 @@ public class ReminderActivity extends BaseActivity implements ReminderViewContra
     @Inject
     ReminderPresenter mReminderPresenter;
 
-    public static PendingIntent getPendingIntentForStart(Context context, String planCode, int planListPosition) {
-        Intent intent = new Intent(context, ReminderActivity.class);
-        //plan_code总是有效的，position可能无效（-1），但优先考虑position
-        intent.putExtra(Constant.PLAN_CODE, planCode);
-        intent.putExtra(Constant.PLAN_LIST_POSITION, planListPosition);
-        return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+    public static void start(Context context, int planListPosition) {
+        context.startActivity(
+                new Intent(context, ReminderActivity.class)
+                        .putExtra(Constant.PLAN_LIST_POSITION, planListPosition)
+                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        );
     }
 
     @Override
@@ -52,7 +51,7 @@ public class ReminderActivity extends BaseActivity implements ReminderViewContra
     @Override
     protected void onInjectPresenter() {
         DaggerReminderComponent.builder()
-                .reminderPresenterModule(new ReminderPresenterModule(this, getIntent().getIntExtra(Constant.PLAN_LIST_POSITION, -1), getIntent().getStringExtra(Constant.PLAN_CODE)))
+                .reminderPresenterModule(new ReminderPresenterModule(this, getIntent().getIntExtra(Constant.PLAN_LIST_POSITION, -1)))
                 .appComponent(App.getAppComponent())
                 .build()
                 .inject(this);
@@ -105,7 +104,7 @@ public class ReminderActivity extends BaseActivity implements ReminderViewContra
                 mReminderPresenter.notifyDelayingReminder(Constant.TOMORROW);
                 break;
             case R.id.btn_more:
-                DateTimePickerDialogFragment fragment = DateTimePickerDialogFragment.newInstance(Constant.TIME_UNDEFINED);
+                DateTimePickerDialogFragment fragment = DateTimePickerDialogFragment.newInstance(Constant.UNDEFINED_TIME);
                 fragment.setOnDateTimePickedListener(new DateTimePickerDialogFragment.OnDateTimePickedListener() {
                     @Override
                     public void onDateTimePicked(long timeInMillis) {

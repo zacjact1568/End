@@ -246,7 +246,7 @@ public class DataManager {
         }
         if (plan.hasReminder()) {
             //This plan has registered a reminder that need to be canceled
-            Util.setReminder(plan.getPlanCode(), Constant.TIME_UNDEFINED);
+            Util.setReminder(plan.getPlanCode(), Constant.UNDEFINED_TIME);
         }
         removeFromPlanList(location);
         //更新数据库
@@ -319,8 +319,8 @@ public class DataManager {
         removeFromPlanList(location);
 
         long currentTimeMillis = System.currentTimeMillis();
-        long newCreationTime = isCompletedPast ? currentTimeMillis : Constant.TIME_UNDEFINED;
-        long newCompletionTime = isCompletedPast ? Constant.TIME_UNDEFINED : currentTimeMillis;
+        long newCreationTime = isCompletedPast ? currentTimeMillis : Constant.UNDEFINED_TIME;
+        long newCompletionTime = isCompletedPast ? Constant.UNDEFINED_TIME : currentTimeMillis;
 
         plan.setCreationTime(newCreationTime);
         plan.setCompletionTime(newCompletionTime);

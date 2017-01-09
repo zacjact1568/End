@@ -158,7 +158,7 @@ public class PlanDetailPresenter extends BasePresenter {
     public void notifyPlanStatusChanged() {
         //首先检测此计划是否有提醒
         if (mPlan.hasReminder()) {
-            mDataManager.notifyReminderTimeChanged(mPlanListPosition, Constant.TIME_UNDEFINED);
+            mDataManager.notifyReminderTimeChanged(mPlanListPosition, Constant.UNDEFINED_TIME);
             mPlanDetailViewContract.onReminderTimeChanged(false, Util.getString(R.string.dscpt_unsettled));
             postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_REMINDER_TIME);
         }
@@ -206,7 +206,7 @@ public class PlanDetailPresenter extends BasePresenter {
     }
 
     private String formatDateTime(long timeInMillis) {
-        if (timeInMillis == Constant.TIME_UNDEFINED) {
+        if (timeInMillis == Constant.UNDEFINED_TIME) {
             return Util.getString(R.string.dscpt_unsettled);
         } else {
             return DateFormat.format(Util.getString(R.string.date_time_format), timeInMillis).toString();

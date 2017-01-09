@@ -103,7 +103,7 @@ public class PlanCreationPresenter extends BasePresenter {
     }
 
     private String formatDateTime(long timeInMillis) {
-        if (timeInMillis == Constant.TIME_UNDEFINED) {
+        if (timeInMillis == Constant.UNDEFINED_TIME) {
             return Util.getString(R.string.dscpt_click_to_set);
         } else {
             return DateFormat.format(Util.getString(R.string.date_time_format), timeInMillis).toString();

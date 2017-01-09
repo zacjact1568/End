@@ -175,7 +175,7 @@ public class HomeActivity extends BaseActivity implements HomeViewContract {
 
     @Override
     public void changeFabVisibility(boolean isVisible) {
-        ObjectAnimator.ofFloat(mCreateFab, "translationY", mCreateFab.getTranslationY(), isVisible ? 0f : Util.convertDpToPx(Constant.COORDINATE_FAB) + mCreateFab.getHeight() / 2f)
+        ObjectAnimator.ofFloat(mCreateFab, "translationY", mCreateFab.getTranslationY(), isVisible ? 0f : Util.convertDpToPx(Constant.FAB_COORDINATE) + mCreateFab.getHeight() / 2f)
                 .setDuration(200)
                 .start();
     }

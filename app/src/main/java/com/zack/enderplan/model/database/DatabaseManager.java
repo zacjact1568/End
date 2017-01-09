@@ -159,6 +159,23 @@ public class DatabaseManager {
         database.delete(Constant.TYPE, Constant.TYPE_CODE + " = ?", new String[]{typeCode});
     }
 
+    public Type queryType(String typeCode) {
+        Type type = null;
+        Cursor cursor = database.query(Constant.TYPE, null, Constant.TYPE_CODE + " = ?", new String[]{typeCode},
+                null, null, null);
+        if (cursor.moveToFirst()) {
+            type = new Type(
+                    typeCode,
+                    cursor.getString(cursor.getColumnIndex(Constant.TYPE_NAME)),
+                    cursor.getString(cursor.getColumnIndex(Constant.TYPE_MARK_COLOR)),
+                    cursor.getString(cursor.getColumnIndex(Constant.TYPE_MARK_PATTERN)),
+                    cursor.getInt(cursor.getColumnIndex(Constant.TYPE_SEQUENCE))
+            );
+        }
+        cursor.close();
+        return type;
+    }
+
     //*****************Plan********************
 
     public void savePlan(Plan plan) {
