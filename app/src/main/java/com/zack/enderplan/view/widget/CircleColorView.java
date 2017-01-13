@@ -115,7 +115,11 @@ public class CircleColorView extends View {
     }
 
     private void drawText(Canvas canvas) {
-        if (mInnerText == null || mInnerIcon != null) return;
+        if (mInnerText == null || mInnerText.isEmpty() || mInnerIcon != null) return;
+
+        if (mInnerText.length() > 1) {
+            mInnerText = Util.getFirstChar(mInnerText);
+        }
 
         mTextPaint.setTextSize(mDiameter / 2f);
         mTextPaint.setColor(mInnerTextColor);
