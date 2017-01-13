@@ -2,6 +2,7 @@ package com.zack.enderplan.presenter;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.common.Util;
 import com.zack.enderplan.event.DataLoadedEvent;
 import com.zack.enderplan.event.GuideEndedEvent;
 import com.zack.enderplan.event.PlanCreatedEvent;
@@ -51,6 +52,11 @@ public class HomePresenter extends BasePresenter {
         }
     }
 
+    public void notifyUcPlanCountTextClicked() {
+        mHomeViewContract.closeDrawer();
+        mHomeViewContract.showToast(getUcPlanCountStr());
+    }
+
     public void notifyListScrolled(int variation) {
         if (variation != 0 && mLastListScrollingVariation > 0 == variation < 0) {
             //滑动经过临界点
@@ -62,7 +68,7 @@ public class HomePresenter extends BasePresenter {
     public void notifyBackPressed(boolean isDrawerOpen, boolean isOnRootFragment) {
         long currentTime = System.currentTimeMillis();
         if (isDrawerOpen) {
-            mHomeViewContract.onCloseDrawer();
+            mHomeViewContract.closeDrawer();
         } else if (!isOnRootFragment) {
             //不是在根Fragment（可以直接退出的Fragment）上，回到根Fragment
             mHomeViewContract.showFragment(Constant.MY_PLANS);
@@ -78,6 +84,18 @@ public class HomePresenter extends BasePresenter {
 
     private String getUcPlanCount() {
         return String.valueOf(mDataManager.getUcPlanCount());
+    }
+
+    private String getUcPlanCountStr() {
+        int count = mDataManager.getUcPlanCount();
+        switch (count) {
+            case 0:
+                return Util.getString(R.string.toast_uc_plan_count_none);
+            case 1:
+                return Util.getString(R.string.toast_uc_plan_count_one);
+            default:
+                return String.format(Util.getString(R.string.toast_uc_plan_count_multi_format), count);
+        }
     }
 
     @Subscribe

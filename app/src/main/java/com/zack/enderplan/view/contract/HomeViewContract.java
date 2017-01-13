@@ -6,7 +6,7 @@ public interface HomeViewContract extends BaseViewContract {
 
     void changeUcPlanCount(String ucPlanCount);
 
-    void onCloseDrawer();
+    void closeDrawer();
 
     void changeFabVisibility(boolean isVisible);
 
@@ -15,4 +15,6 @@ public interface HomeViewContract extends BaseViewContract {
     void onPressBackKey();
 
     void enterActivity(String tag);
+
+    void showToast(String msg);
 }

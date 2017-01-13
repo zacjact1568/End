@@ -160,4 +160,7 @@
     <string name="toast_delay_10_minutes">在10分钟后</string>
     <string name="transition_type_name_text">类型名称文本转换</string>
     <string name="toast_data_loading_unfinished">数据还未载入完成，请稍等……</string>
+    <string name="toast_uc_plan_count_multi_format">你还有%d个计划需要完成</string>
+    <string name="toast_uc_plan_count_none">所有计划都已完成！</string>
+    <string name="toast_uc_plan_count_one">你只有一个计划需要完成了</string>
 </resources>

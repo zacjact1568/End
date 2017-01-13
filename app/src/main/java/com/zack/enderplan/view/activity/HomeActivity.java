@@ -161,6 +161,12 @@ public class HomeActivity extends BaseActivity implements HomeViewContract {
         });
 
         mUcPlanCountText.setText(ucPlanCount);
+        mUcPlanCountText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mHomePresenter.notifyUcPlanCountTextClicked();
+            }
+        });
     }
 
     @Override
@@ -169,7 +175,7 @@ public class HomeActivity extends BaseActivity implements HomeViewContract {
     }
 
     @Override
-    public void onCloseDrawer() {
+    public void closeDrawer() {
         mDrawerLayout.closeDrawer(GravityCompat.START);
     }
 
@@ -242,6 +248,11 @@ public class HomeActivity extends BaseActivity implements HomeViewContract {
                 AboutActivity.start(this);
                 break;
         }
+    }
+
+    @Override
+    public void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     @Override

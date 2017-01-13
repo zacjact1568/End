@@ -63,6 +63,10 @@
 
     <string name="nav_sub_header">Others</string>
 
+    <string name="toast_uc_plan_count_none">All plans have been completed!</string>
+    <string name="toast_uc_plan_count_one">You have only one plan to complete</string>
+    <string name="toast_uc_plan_count_multi_format">You have %d plans to complete</string>
+
     <string name="create_plan">Create a new plan</string>
     <string name="content">Content</string>
     <!--TODO 修改其他的hint_editor_*为hint_&editor-->
