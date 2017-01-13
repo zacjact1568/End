@@ -90,7 +90,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
 
     private void setStarButtonImage(ImageView starButton, boolean isStarred, boolean isCompleted) {
         starButton.setImageResource(isStarred ? R.drawable.ic_star_black_24dp : R.drawable.ic_star_border_black_24dp);
-        starButton.setImageTintList(ColorStateList.valueOf(isCompleted ? mGrey600Color : mAccentColor));
+        starButton.setImageTintList(ColorStateList.valueOf(!isStarred || isCompleted ? mGrey600Color : mAccentColor));
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
