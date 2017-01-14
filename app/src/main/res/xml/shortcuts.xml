@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <shortcut
+        android:shortcutId="plan_creation"
+        android:enabled="true"
+        android:icon="@drawable/ic_add_black_24dp"
+        android:shortcutShortLabel="@string/title_activity_plan_creation"
+        android:shortcutLongLabel="@string/title_activity_plan_creation"
+        android:shortcutDisabledMessage="@string/toast_shortcut_disabled">
+
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.zack.enderplan"
+            android:targetClass="com.zack.enderplan.view.activity.PlanCreationActivity" />
+
+        <categories android:name="android.shortcut.conversation" />
+
+    </shortcut>
+
+</shortcuts>

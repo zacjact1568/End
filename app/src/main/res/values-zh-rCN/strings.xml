@@ -163,4 +163,5 @@
     <string name="toast_uc_plan_count_multi_format">你还有%d个计划需要完成</string>
     <string name="toast_uc_plan_count_none">所有计划都已完成！</string>
     <string name="toast_uc_plan_count_one">你只有一个计划需要完成了</string>
+    <string name="toast_shortcut_disabled">快捷方式已禁用</string>
 </resources>
