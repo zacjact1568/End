@@ -3,10 +3,12 @@ package com.zack.enderplan.view.adapter;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zack.enderplan.R;
@@ -26,12 +28,15 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
     private OnStarStatusChangedListener mOnStarStatusChangedListener;
 
     private int mAccentColor, mGrey600Color;
+    private String mDateTimeFormat;
 
     public PlanAdapter(DataManager dataManager) {
         mDataManager = dataManager;
 
         mAccentColor = Util.getColor(R.color.colorAccent);
         mGrey600Color = Util.getColor(R.color.grey_600);
+
+        mDateTimeFormat = Util.getString(R.string.date_time_format);
     }
 
     @Override
@@ -49,6 +54,8 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
         holder.mTypeMarkIcon.setFillColor(isCompleted ? Color.GRAY : Color.parseColor(mDataManager.getTypeCodeAndTypeMarkMap().get(plan.getTypeCode()).getColorHex()));
         holder.mContentText.setText(isCompleted ? Util.addStrikethroughSpan(plan.getContent()) : plan.getContent());
         holder.mReminderIcon.setVisibility(plan.hasReminder() ? View.VISIBLE : View.INVISIBLE);
+        holder.mDeadlineLayout.setVisibility(plan.hasDeadline() ? View.VISIBLE : View.GONE);
+        holder.mDeadlineText.setText(plan.hasDeadline() ? DateFormat.format(mDateTimeFormat, plan.getDeadline()) : null);
         setStarButtonImage(holder.mStarButton, plan.isStarred(), plan.isCompleted());
         holder.mStarButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,6 +107,10 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
         TextView mContentText;
         @BindView(R.id.ic_reminder)
         ImageView mReminderIcon;
+        @BindView(R.id.layout_deadline)
+        LinearLayout mDeadlineLayout;
+        @BindView(R.id.text_deadline)
+        TextView mDeadlineText;
         @BindView(R.id.btn_star)
         ImageView mStarButton;
 
