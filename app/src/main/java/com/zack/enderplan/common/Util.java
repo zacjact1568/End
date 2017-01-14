@@ -293,4 +293,10 @@ public class Util {
         }
         return timeInMillis;
     }
+
+    public static int getScreenCoordinateY(View view) {
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        return location[1];
+    }
 }

@@ -22,6 +22,7 @@ public class ReminderPresenter extends BasePresenter {
     private int mPlanListPosition;
     private Plan mPlan;
     private DataManager mDataManager;
+    private int mReminderCoordinateY;
 
     @Inject
     public ReminderPresenter(ReminderViewContract reminderViewContract, int planListPosition, DataManager dataManager) {
@@ -40,6 +41,16 @@ public class ReminderPresenter extends BasePresenter {
     @Override
     public void detach() {
         mReminderViewContract = null;
+    }
+
+    public void notifyPreDrawingReminder(int reminderCoordinateY) {
+        mReminderCoordinateY = reminderCoordinateY;
+    }
+
+    public void notifyTouchFinished(float coordinateY) {
+        if (coordinateY < mReminderCoordinateY) {
+            mReminderViewContract.exit();
+        }
     }
 
     public void notifyDelayingReminder(String delay) {

@@ -4,7 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewAnimator;
@@ -27,6 +30,8 @@ import butterknife.OnClick;
 
 public class ReminderActivity extends BaseActivity implements ReminderViewContract {
 
+    @BindView(R.id.layout_reminder)
+    LinearLayout mReminderLayout;
     @BindView(R.id.text_content)
     TextView mContentText;
     @BindView(R.id.switcher_delay)
@@ -65,9 +70,27 @@ public class ReminderActivity extends BaseActivity implements ReminderViewContra
     }
 
     @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            mReminderPresenter.notifyTouchFinished(event.getRawY());
+        }
+        return super.onTouchEvent(event);
+    }
+
+    @Override
     public void showInitialView(String content) {
+        overridePendingTransition(0, 0);
         setContentView(R.layout.activity_reminder);
         ButterKnife.bind(this);
+
+        mReminderLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                mReminderPresenter.notifyPreDrawingReminder(Util.getScreenCoordinateY(mReminderLayout));
+                mReminderLayout.getViewTreeObserver().removeOnPreDrawListener(this);
+                return false;
+            }
+        });
 
         mContentText.setText(content);
     }
@@ -125,5 +148,6 @@ public class ReminderActivity extends BaseActivity implements ReminderViewContra
     @Override
     public void exit() {
         finish();
+        overridePendingTransition(0, 0);
     }
 }

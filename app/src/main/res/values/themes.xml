@@ -83,6 +83,14 @@
 
     </style>
 
+    <style name="AppTheme.Translucence">
+
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/translucence</item>
+
+    </style>
+
     <style name="AppTheme.Transition.VerticalSlide.TransparentStatusBar">
 
         <item name="android:statusBarColor">@android:color/transparent</item>

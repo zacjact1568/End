@@ -67,7 +67,7 @@
             android:name=".view.activity.ReminderActivity"
             android:label="@string/title_activity_reminder"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent.All"
+            android:theme="@style/AppTheme.Translucence"
             android:launchMode="singleTask"
             android:taskAffinity=""
             android:excludeFromRecents="true"/>
