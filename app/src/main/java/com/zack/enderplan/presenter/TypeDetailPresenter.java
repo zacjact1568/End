@@ -5,6 +5,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.TextUtils;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.event.TypeDeletedEvent;
 import com.zack.enderplan.event.TypeDetailChangedEvent;
 import com.zack.enderplan.view.adapter.SimpleTypeAdapter;
@@ -229,7 +230,7 @@ public class TypeDetailPresenter extends BasePresenter {
 
         //检测是否设置了提醒
         if (plan.hasReminder()) {
-            mDataManager.notifyReminderTimeChanged(planListPos, 0);
+            mDataManager.notifyReminderTimeChanged(planListPos, Constant.UNDEFINED_TIME);
             //TODO mSingleTypePlanAdapter.notifyItemChanged(position)这句不要，MyPlansPresenter也要删去这一句
             mEventBus.post(new PlanDetailChangedEvent(getPresenterName(), plan.getPlanCode(), planListPos, PlanDetailChangedEvent.FIELD_REMINDER_TIME));
         }

@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zack.enderplan.R;
@@ -16,6 +15,7 @@ import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.common.Util;
 import com.zack.enderplan.view.widget.CircleColorView;
+import com.zack.enderplan.view.widget.ImageTextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,7 +55,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
         holder.mContentText.setText(isCompleted ? Util.addStrikethroughSpan(plan.getContent()) : plan.getContent());
         holder.mReminderIcon.setVisibility(plan.hasReminder() ? View.VISIBLE : View.INVISIBLE);
         holder.mDeadlineLayout.setVisibility(plan.hasDeadline() ? View.VISIBLE : View.GONE);
-        holder.mDeadlineText.setText(plan.hasDeadline() ? DateFormat.format(mDateTimeFormat, plan.getDeadline()) : null);
+        holder.mDeadlineLayout.setText(plan.hasDeadline() ? DateFormat.format(mDateTimeFormat, plan.getDeadline()).toString() : null);
         setStarButtonImage(holder.mStarButton, plan.isStarred(), plan.isCompleted());
         holder.mStarButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,9 +108,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
         @BindView(R.id.ic_reminder)
         ImageView mReminderIcon;
         @BindView(R.id.layout_deadline)
-        LinearLayout mDeadlineLayout;
-        @BindView(R.id.text_deadline)
-        TextView mDeadlineText;
+        ImageTextView mDeadlineLayout;
         @BindView(R.id.btn_star)
         ImageView mStarButton;
 

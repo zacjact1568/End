@@ -2,6 +2,7 @@ package com.zack.enderplan.presenter;
 
 import android.support.v7.widget.helper.ItemTouchHelper;
 
+import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.common.Logger;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.event.DataLoadedEvent;
@@ -127,7 +128,7 @@ public class MyPlansPresenter extends BasePresenter {
         Plan plan = mDataManager.getPlan(position);
         //首先检测此计划是否有提醒
         if (plan.hasReminder()) {
-            mDataManager.notifyReminderTimeChanged(position, 0);
+            mDataManager.notifyReminderTimeChanged(position, Constant.UNDEFINED_TIME);
             mPlanAdapter.notifyItemChanged(position);
             mEventBus.post(new PlanDetailChangedEvent(getPresenterName(), plan.getPlanCode(), position, PlanDetailChangedEvent.FIELD_REMINDER_TIME));
         }

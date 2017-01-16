@@ -35,7 +35,11 @@ public class ReminderPresenter extends BasePresenter {
 
     @Override
     public void attach() {
-        mReminderViewContract.showInitialView(mPlan.getContent());
+        mReminderViewContract.showInitialView(
+                mPlan.getContent(),
+                mPlan.hasDeadline(),
+                mPlan.hasDeadline() ? DateFormat.format(Util.getString(R.string.date_time_format), mPlan.getDeadline()).toString() : null
+        );
     }
 
     @Override

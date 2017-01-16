@@ -20,21 +20,26 @@
             android:id="@+id/text_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/ic_reminder"
+            android:layout_marginEnd="16dp"
             android:textSize="20sp"
             android:textColor="@android:color/white"
             android:maxLines="2"
             android:ellipsize="end"
             tools:text="Buy Joanne on iTunes"/>
 
-        <TextView
+        <com.zack.enderplan.view.widget.ImageTextView
+            android:id="@+id/layout_deadline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/text_content"
-            android:text="@string/dscpt_reminder"
-            android:textSize="12sp"
-            android:textColor="@color/colorPrimaryLight"/>
+            app:image="@drawable/ic_schedule_black_24dp"
+            app:size="12dp"
+            app:color="@color/colorPrimaryLight"/>
 
         <ImageView
+            android:id="@+id/ic_reminder"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_centerVertical="true"

@@ -21,6 +21,7 @@ import com.zack.enderplan.view.dialog.DateTimePickerDialogFragment;
 import com.zack.enderplan.presenter.ReminderPresenter;
 import com.zack.enderplan.view.contract.ReminderViewContract;
 import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.view.widget.ImageTextView;
 
 import javax.inject.Inject;
 
@@ -34,6 +35,8 @@ public class ReminderActivity extends BaseActivity implements ReminderViewContra
     LinearLayout mReminderLayout;
     @BindView(R.id.text_content)
     TextView mContentText;
+    @BindView(R.id.layout_deadline)
+    ImageTextView mDeadlineLayout;
     @BindView(R.id.switcher_delay)
     ViewAnimator mDelaySwitcher;
 
@@ -78,7 +81,7 @@ public class ReminderActivity extends BaseActivity implements ReminderViewContra
     }
 
     @Override
-    public void showInitialView(String content) {
+    public void showInitialView(String content, boolean hasDeadline, String deadline) {
         overridePendingTransition(0, 0);
         setContentView(R.layout.activity_reminder);
         ButterKnife.bind(this);
@@ -93,6 +96,9 @@ public class ReminderActivity extends BaseActivity implements ReminderViewContra
         });
 
         mContentText.setText(content);
+
+        mDeadlineLayout.setVisibility(hasDeadline ? View.VISIBLE : View.GONE);
+        mDeadlineLayout.setText(deadline);
     }
 
     @Override

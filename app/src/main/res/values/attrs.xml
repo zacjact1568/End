@@ -31,4 +31,11 @@
         <attr name="dividerColor" format="color"/>
     </declare-styleable>
 
+    <declare-styleable name="ImageTextView">
+        <attr name="image" format="reference"/>
+        <attr name="text" format="string"/>
+        <attr name="size" format="dimension"/>
+        <attr name="color" format="color"/>
+    </declare-styleable>
+
 </resources>
