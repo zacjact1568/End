@@ -57,13 +57,8 @@ public class GuideActivity extends BaseActivity implements GuideViewContract {
     }
 
     @Override
-    public void showToast(int msgResId) {
-        Toast.makeText(this, msgResId, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void exit() {
-        finish();
+        super.exit();
         //TODO 添加动画
     }
 }

@@ -255,16 +255,6 @@ public class HomeActivity extends BaseActivity implements HomeViewContract {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void showToast(int msgResId) {
-        Toast.makeText(this, msgResId, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void exit() {
-        finish();
-    }
-
     @OnClick({R.id.fab_create})
     public void onClick(View view) {
         switch (view.getId()) {

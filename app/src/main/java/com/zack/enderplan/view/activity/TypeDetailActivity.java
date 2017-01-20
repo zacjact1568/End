@@ -295,16 +295,6 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     }
 
     @Override
-    public void showToast(int msgResId) {
-        Toast.makeText(this, msgResId, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void exit() {
-        finish();
-    }
-
-    @Override
     public void onDetectedDeletingLastType() {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.title_dialog_last_type)

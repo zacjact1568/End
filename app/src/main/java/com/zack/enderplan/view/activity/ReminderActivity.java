@@ -147,13 +147,8 @@ public class ReminderActivity extends BaseActivity implements ReminderViewContra
     }
 
     @Override
-    public void showToast(@StringRes int msgResId) {
-        Toast.makeText(this, msgResId, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void exit() {
-        finish();
+        super.exit();
         overridePendingTransition(0, 0);
     }
 }

@@ -193,14 +193,4 @@ public class TypeEditActivity extends BaseActivity implements TypeEditViewContra
                 break;
         }
     }
-
-    @Override
-    public void showToast(@StringRes int msgResId) {
-        Toast.makeText(this, msgResId, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void exit() {
-        finish();
-    }
 }

@@ -4,6 +4,8 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -298,5 +300,9 @@ public class Util {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
         return location[1];
+    }
+
+    public static void putTextToClipboard(String label, String text) {
+        ((ClipboardManager) App.getContext().getSystemService(Context.CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText(label, text));
     }
 }

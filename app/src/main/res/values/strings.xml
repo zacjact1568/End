@@ -186,6 +186,14 @@
     <string name="developer">Developer</string>
     <string name="me">\@zacjact1568</string>
     <string name="slogan">\"Making plans until the world ends\"</string>
+    <string name="subject_email">Email from an EnderPlan User</string>
+    <string name="title_dialog_no_email_app_found">No email app found</string>
+    <string name="msg_dialog_no_email_app_found">
+        It seems that you doesn\'t install an email app. You can copy my email address \"zacjact1568@hotmail.com\" to clipboard and send me an email later.
+    </string>
+    <string name="btn_dialog_copy_to_clipboard">Copy to Clipboard</string>
+    <string name="toast_copy_to_clipboard_successfully">Text has been copied to clipboard</string>
+    <string name="label_developer_email">Email of EnderPlan\'s developer</string>
 
     <!--WelcomeFragment-->
     <string name="title_activity_welcome">Welcome</string>
@@ -215,7 +223,6 @@
 
     <!--TypeMarkColorPickerDialogFragment-->
     <string name="title_dialog_fragment_type_mark_color_picker">Color Picker</string>
-    <!--TODO 改成button-->
     <string name="btn_custom">Custom</string>
     <string name="btn_preset">Preset</string>
 

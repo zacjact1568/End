@@ -326,16 +326,6 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
         super.onBackPressed();
     }
 
-    @Override
-    public void showToast(int msgResId) {
-        Toast.makeText(this, msgResId, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void exit() {
-        finish();
-    }
-
     @OnClick({R.id.item_deadline, R.id.item_reminder, R.id.fab, R.id.btn_switch_plan_status})
     public void onClick(View view) {
         switch (view.getId()) {
