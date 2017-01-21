@@ -171,15 +171,15 @@ public class TypeDetailPresenter extends BasePresenter {
 
     public void notifyCreatingPlan(Plan newPlan, int position, int planListPos) {
         //刷新全局列表
-        mDataManager.notifyPlanCreated(position, newPlan);
+        mDataManager.notifyPlanCreated(planListPos, newPlan);
 
         //刷新此界面
-        mSingleTypePlanList.add(planListPos, newPlan);
-        mSingleTypePlanAdapter.notifyItemInserted(planListPos);
+        mSingleTypePlanList.add(position, newPlan);
+        mSingleTypePlanAdapter.notifyItemInserted(position);
         //下面这句一定要在「刷新全局列表」后
         mTypeDetailViewContract.onUcPlanCountChanged(getUcPlanCountStr(newPlan.getTypeCode()));
 
-        mEventBus.post(new PlanCreatedEvent(getPresenterName(), newPlan.getPlanCode(), position));
+        mEventBus.post(new PlanCreatedEvent(getPresenterName(), newPlan.getPlanCode(), planListPos));
     }
 
     public void notifyCreatingPlan(String newContent) {
