@@ -242,7 +242,7 @@ public class Util {
     public static void showNotification(String tag, String title, String content, Bitmap largeIcon, PendingIntent intent, NotificationCompat.Action... actions) {
         Context context = App.getContext();
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_check_box_black_24dp)
+                .setSmallIcon(R.drawable.ic_check_circle_black_24dp)
                 .setLargeIcon(largeIcon)
                 .setContentTitle(title)
                 .setContentText(content)
