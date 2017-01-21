@@ -131,7 +131,6 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
 //        mCircularRevealLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
 //            @Override
 //            public boolean onPreDraw() {
-//                //TODO typeDetailActivity里，把removeListener放在最前
 //                mCircularRevealLayout.getViewTreeObserver().removeOnPreDrawListener(this);
 //                placeCreateFab();
 //                playCircularRevealAnimation();

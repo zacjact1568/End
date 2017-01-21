@@ -3,10 +3,11 @@ package com.zack.enderplan.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.StringRes;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -89,8 +90,8 @@ public class ReminderActivity extends BaseActivity implements ReminderViewContra
         mReminderLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
-                mReminderPresenter.notifyPreDrawingReminder(Util.getScreenCoordinateY(mReminderLayout));
                 mReminderLayout.getViewTreeObserver().removeOnPreDrawListener(this);
+                mReminderPresenter.notifyPreDrawingReminder(Util.getScreenCoordinateY(mReminderLayout));
                 return false;
             }
         });
@@ -99,6 +100,11 @@ public class ReminderActivity extends BaseActivity implements ReminderViewContra
 
         mDeadlineLayout.setVisibility(hasDeadline ? View.VISIBLE : View.GONE);
         mDeadlineLayout.setText(deadline);
+    }
+
+    @Override
+    public void playEnterAnimation() {
+        mReminderLayout.startAnimation(AnimationUtils.loadAnimation(this, R.anim.anim_enter_up));
     }
 
     @Override
@@ -148,7 +154,24 @@ public class ReminderActivity extends BaseActivity implements ReminderViewContra
 
     @Override
     public void exit() {
-        super.exit();
-        overridePendingTransition(0, 0);
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.anim_exit_down);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                finish();
+                overridePendingTransition(0, 0);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        mReminderLayout.startAnimation(animation);
     }
 }

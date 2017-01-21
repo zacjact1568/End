@@ -49,6 +49,7 @@ public class ReminderPresenter extends BasePresenter {
 
     public void notifyPreDrawingReminder(int reminderCoordinateY) {
         mReminderCoordinateY = reminderCoordinateY;
+        mReminderViewContract.playEnterAnimation();
     }
 
     public void notifyTouchFinished(float coordinateY) {

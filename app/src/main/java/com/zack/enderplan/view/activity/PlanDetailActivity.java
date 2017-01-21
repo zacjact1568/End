@@ -162,8 +162,8 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
         mAppBarLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
-                planDetailPresenter.notifyPreDrawingAppBar(mAppBarLayout.getTotalScrollRange());
                 mAppBarLayout.getViewTreeObserver().removeOnPreDrawListener(this);
+                planDetailPresenter.notifyPreDrawingAppBar(mAppBarLayout.getTotalScrollRange());
                 return false;
             }
         });
@@ -178,8 +178,8 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
         mContentCollapsedText.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
-                planDetailPresenter.notifyPreDrawingContentCollapsedText(mContentCollapsedText.getHeight());
                 mContentCollapsedText.getViewTreeObserver().removeOnPreDrawListener(this);
+                planDetailPresenter.notifyPreDrawingContentCollapsedText(mContentCollapsedText.getHeight());
                 return false;
             }
         });
