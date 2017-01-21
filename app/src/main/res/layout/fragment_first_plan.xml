@@ -14,7 +14,7 @@
         android:layout_height="@dimen/logo_guide_size_half"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/logo_guide_vertical_margin"
-        android:src="@drawable/ic_check_box_black_24dp"
+        android:src="@drawable/ic_check_circle_black_24dp"
         android:tint="@android:color/white"
         android:alpha="0.8"/>
 
