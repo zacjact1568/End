@@ -2,6 +2,7 @@ package com.zack.enderplan.view.adapter;
 
 import android.content.res.ColorStateList;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.zack.enderplan.R;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.common.Util;
+import com.zack.enderplan.view.widget.ImageTextView;
 
 import java.util.List;
 
@@ -21,6 +23,7 @@ public class SingleTypePlanAdapter extends RecyclerView.Adapter<SingleTypePlanAd
 
     private List<Plan> mSingleTypePlanList;
     private int mAccentColor, mGrey600Color;
+    private String mDateTimeFormat;
 
     private OnStarStatusChangedListener mOnStarStatusChangedListener;
     private OnPlanItemClickListener mOnPlanItemClickListener;
@@ -30,6 +33,8 @@ public class SingleTypePlanAdapter extends RecyclerView.Adapter<SingleTypePlanAd
 
         mAccentColor = Util.getColor(R.color.colorAccent);
         mGrey600Color = Util.getColor(R.color.grey_600);
+
+        mDateTimeFormat = Util.getString(R.string.date_time_format);
     }
 
     @Override
@@ -43,6 +48,8 @@ public class SingleTypePlanAdapter extends RecyclerView.Adapter<SingleTypePlanAd
         Plan plan = mSingleTypePlanList.get(position);
 
         holder.mContentText.setText(plan.isCompleted() ? Util.addStrikethroughSpan(plan.getContent()) : plan.getContent());
+        holder.mDeadlineLayout.setVisibility(plan.hasDeadline() ? View.VISIBLE : View.GONE);
+        holder.mDeadlineLayout.setText(plan.hasDeadline() ? DateFormat.format(mDateTimeFormat, plan.getDeadline()).toString() : null);
         holder.mReminderIcon.setVisibility(plan.hasReminder() ? View.VISIBLE : View.INVISIBLE);
         setStarButtonImage(holder.mStarButton, plan.isStarred(), plan.isCompleted());
         holder.mStarButton.setOnClickListener(new View.OnClickListener() {
@@ -81,6 +88,8 @@ public class SingleTypePlanAdapter extends RecyclerView.Adapter<SingleTypePlanAd
     class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.text_content)
         TextView mContentText;
+        @BindView(R.id.layout_deadline)
+        ImageTextView mDeadlineLayout;
         @BindView(R.id.ic_reminder)
         ImageView mReminderIcon;
         @BindView(R.id.btn_star)

@@ -188,7 +188,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
         });
 
         mPlanList.setLayoutManager(new LinearLayoutManager(this));
-        mPlanList.setHasFixedSize(true);
+        //mPlanList.setHasFixedSize(true);
         mPlanList.setAdapter(singleTypePlanAdapter);
 
         itemTouchHelper.attachToRecyclerView(mPlanList);
