@@ -35,7 +35,7 @@
     <string name="title_activity_settings">设置</string>
     <string name="pref_title_language">语言</string>
     <string name="version">版本</string>
-    <string name="empty_view_prompt">这里还没有计划呢</string>
+    <string name="text_empty_plan_list_1">这里还没有计划呢</string>
     <string name="edit_content_hint">在这儿修改你计划的内容</string>
     <string name="action_delete">删除</string>
     <string name="title_activity_plan_creation">创建计划</string>
@@ -170,4 +170,5 @@
     <string name="msg_dialog_no_email_app_found">你好像没有安装email应用程序。你可以将我的邮箱\"zacjact1568@hotmail.com\"复制到剪贴板，稍后再给我发送邮件。</string>
     <string name="label_developer_email">Ender计划 开发者的电子邮件</string>
     <string name="toast_copy_to_clipboard_successfully">文本已复制到剪贴板</string>
+    <string name="text_empty_plan_list_2">点击\"+\"按钮创建一个</string>
 </resources>

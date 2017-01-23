@@ -8,7 +8,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
@@ -31,8 +31,8 @@ public class MyPlansFragment extends BaseListFragment implements MyPlansViewCont
 
     @BindView(R.id.list_my_plans)
     EnhancedRecyclerView mMyPlansList;
-    @BindView(R.id.text_empty_view)
-    TextView mEmptyViewText;
+    @BindView(R.id.layout_empty)
+    LinearLayout mEmptyLayout;
 
     @BindString(R.string.snackbar_delete_format)
     String mSnackbarDeleteFormat;
@@ -94,7 +94,7 @@ public class MyPlansFragment extends BaseListFragment implements MyPlansViewCont
     public void showInitialView(PlanAdapter planAdapter, ItemTouchHelper itemTouchHelper) {
         mMyPlansList.setLayoutManager(new LinearLayoutManager(getActivity()));
         //mMyPlansList.setHasFixedSize(true);
-        mMyPlansList.setEmptyView(mEmptyViewText);
+        mMyPlansList.setEmptyView(mEmptyLayout);
         mMyPlansList.setAdapter(planAdapter);
         mMyPlansList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

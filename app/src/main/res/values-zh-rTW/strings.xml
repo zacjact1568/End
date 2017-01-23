@@ -34,7 +34,7 @@
     <string name="title_activity_settings">設定</string>
     <string name="pref_title_language">語言</string>
     <string name="version">版本</string>
-    <string name="empty_view_prompt">這裡還沒有計劃呢</string>
+    <string name="text_empty_plan_list_1">這裡還沒有計劃呢</string>
     <string name="edit_content_hint">在這兒修改你計劃的內容</string>
     <string name="action_delete">刪除</string>
     <string name="title_activity_plan_creation">創建計劃</string>
