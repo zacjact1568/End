@@ -39,7 +39,7 @@ public class SingleTypePlanAdapter extends RecyclerView.Adapter<SingleTypePlanAd
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_plan_single_type, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_single_type_plan, parent, false);
         return new ViewHolder(itemView);
     }
 

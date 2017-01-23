@@ -24,7 +24,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
@@ -63,8 +62,8 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     TextView mUcPlanCountText;
     @BindView(R.id.editor_content)
     EditText mContentEditor;
-    @BindView(R.id.list_plan)
-    RecyclerView mPlanList;
+    @BindView(R.id.list_single_type_plans)
+    RecyclerView mSingleTypePlansList;
     @BindView(R.id.layout_editor)
     FrameLayout mEditorLayout;
 
@@ -187,11 +186,11 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
             }
         });
 
-        mPlanList.setLayoutManager(new LinearLayoutManager(this));
-        //mPlanList.setHasFixedSize(true);
-        mPlanList.setAdapter(singleTypePlanAdapter);
+        mSingleTypePlansList.setLayoutManager(new LinearLayoutManager(this));
+        //mSingleTypePlansList.setHasFixedSize(true);
+        mSingleTypePlansList.setAdapter(singleTypePlanAdapter);
 
-        itemTouchHelper.attachToRecyclerView(mPlanList);
+        itemTouchHelper.attachToRecyclerView(mSingleTypePlansList);
 
         mContentEditor.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -228,7 +227,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
 
     @Override
     public void onPlanCreated() {
-        mPlanList.scrollToPosition(0);
+        mSingleTypePlansList.scrollToPosition(0);
         mContentEditor.setText("");
     }
 
@@ -240,7 +239,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     @Override
     public void onPlanDeleted(final Plan deletedPlan, final int position, final int planListPos, boolean shouldShowSnackbar) {
         if (shouldShowSnackbar) {
-            Snackbar.make(mPlanList, String.format(mSnackbarDeleteFormat, deletedPlan.getContent()), Snackbar.LENGTH_LONG)
+            Snackbar.make(mSingleTypePlansList, String.format(mSnackbarDeleteFormat, deletedPlan.getContent()), Snackbar.LENGTH_LONG)
                     .setAction(R.string.button_undo, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -273,7 +272,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     public void backToTop() {
         mAppBarLayout.setExpanded(true);
         //TODO 滑动到顶部
-        //mPlanList.scrollToPosition(0);
+        //mSingleTypePlansList.scrollToPosition(0);
     }
 
     @Override
