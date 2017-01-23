@@ -158,9 +158,8 @@ public class MyPlansPresenter extends BasePresenter {
     @Subscribe
     public void onPlanCreated(PlanCreatedEvent event) {
         if (event.getEventSource().equals(getPresenterName())) return;
-        //可能会报错
         mPlanAdapter.notifyItemInserted(event.getPosition());
-        //mPlanAdapter.notifyDataSetChanged();
+        mMyPlansViewContract.onPlanCreated();
     }
 
     @Subscribe

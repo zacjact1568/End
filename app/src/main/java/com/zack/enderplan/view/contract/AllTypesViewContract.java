@@ -10,4 +10,6 @@ public interface AllTypesViewContract extends BaseViewContract {
     void showInitialView(TypeAdapter typeAdapter, ItemTouchHelper itemTouchHelper);
 
     void onTypeItemClicked(int position, View typeItem);
+
+    void onTypeCreated(int scrollTo);
 }

@@ -111,6 +111,11 @@ public class MyPlansFragment extends BaseListFragment implements MyPlansViewCont
     }
 
     @Override
+    public void onPlanCreated() {
+        mMyPlansList.scrollToPosition(0);
+    }
+
+    @Override
     public void onPlanDeleted(final Plan deletedPlan, final int position, boolean shouldShowSnackbar) {
         if (shouldShowSnackbar) {
             Snackbar.make(mMyPlansList, String.format(mSnackbarDeleteFormat, deletedPlan.getContent()), Snackbar.LENGTH_LONG)

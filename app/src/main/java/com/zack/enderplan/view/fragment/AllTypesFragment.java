@@ -25,7 +25,7 @@ import butterknife.ButterKnife;
 public class AllTypesFragment extends BaseListFragment implements AllTypesViewContract {
 
     @BindView(R.id.list_all_types)
-    RecyclerView mTypeList;
+    RecyclerView mAllTypesList;
 
     @Inject
     AllTypesPresenter mAllTypesPresenter;
@@ -70,16 +70,16 @@ public class AllTypesFragment extends BaseListFragment implements AllTypesViewCo
 
     @Override
     public void showInitialView(TypeAdapter typeAdapter, ItemTouchHelper itemTouchHelper) {
-        mTypeList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mTypeList.setHasFixedSize(true);
-        mTypeList.setAdapter(typeAdapter);
-        mTypeList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mAllTypesList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mAllTypesList.setHasFixedSize(true);
+        mAllTypesList.setAdapter(typeAdapter);
+        mAllTypesList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 onListScrolled(dy);
             }
         });
-        itemTouchHelper.attachToRecyclerView(mTypeList);
+        itemTouchHelper.attachToRecyclerView(mAllTypesList);
     }
 
     @Override
@@ -91,6 +91,11 @@ public class AllTypesFragment extends BaseListFragment implements AllTypesViewCo
                 typeMarkIcon.getTransitionName(),
                 typeMarkIcon
         );
+    }
+
+    @Override
+    public void onTypeCreated(int scrollTo) {
+        mAllTypesList.scrollToPosition(scrollTo);
     }
 
     @Override

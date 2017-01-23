@@ -11,5 +11,7 @@ public interface MyPlansViewContract extends BaseViewContract {
 
     void onPlanItemClicked(int position);
 
+    void onPlanCreated();
+
     void onPlanDeleted(Plan deletedPlan, int position, boolean shouldShowSnackbar);
 }
