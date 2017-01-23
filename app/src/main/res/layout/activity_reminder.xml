@@ -149,7 +149,7 @@
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 app:fillColor="@color/colorAccent"
-                app:innerText="1h"/>
+                app:innerIcon="@drawable/ic_directions_run_black_24dp"/>
 
             <com.zack.enderplan.view.widget.CircleColorView
                 android:id="@+id/btn_tomorrow"
@@ -159,7 +159,7 @@
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 app:fillColor="@color/colorAccent"
-                app:innerText="1d"/>
+                app:innerIcon="@drawable/ic_directions_walk_black_24dp"/>
 
             <com.zack.enderplan.view.widget.CircleColorView
                 android:id="@+id/btn_more"
