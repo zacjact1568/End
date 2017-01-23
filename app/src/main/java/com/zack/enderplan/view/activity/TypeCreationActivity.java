@@ -4,21 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.StringRes;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
+import com.zack.enderplan.common.Util;
 import com.zack.enderplan.injector.component.DaggerTypeCreationComponent;
 import com.zack.enderplan.injector.module.TypeCreationPresenterModule;
 import com.zack.enderplan.view.contract.TypeCreationViewContract;
@@ -138,6 +135,7 @@ public class TypeCreationActivity extends BaseActivity implements TypeCreationVi
         setSupportActionBar(mToolbar);
         setupActionBar();
 
+        Util.showSoftInput(mTypeNameEditor, 100);
         mTypeNameEditor.setText(formattedType.getTypeName());
         mTypeNameEditor.addTextChangedListener(new TextWatcher() {
             @Override

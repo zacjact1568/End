@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,7 +14,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
@@ -141,6 +139,7 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
         setSupportActionBar(mToolbar);
         setupActionBar();
 
+        Util.showSoftInput(mContentEditor, 100);
         mContentEditor.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

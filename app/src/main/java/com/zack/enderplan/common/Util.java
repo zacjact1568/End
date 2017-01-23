@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Handler;
 import android.os.LocaleList;
 import android.os.Vibrator;
 import android.support.annotation.ColorRes;
@@ -185,8 +186,19 @@ public class Util {
 
     /** 为给定的editor显示软键盘 */
     public static void showSoftInput(EditText editor) {
-        if (!editor.hasFocus()) return;
+        if (!editor.hasFocus()) {
+            editor.requestFocus();
+        }
         ((InputMethodManager) App.getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(editor, 0);
+    }
+
+    public static void showSoftInput(final EditText editor, long delayTime) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showSoftInput(editor);
+            }
+        }, delayTime);
     }
 
     /** 为给定的editor隐藏软键盘 */
