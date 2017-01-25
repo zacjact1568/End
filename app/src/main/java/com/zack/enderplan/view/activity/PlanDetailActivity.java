@@ -21,7 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
@@ -33,7 +32,7 @@ import com.zack.enderplan.view.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.presenter.PlanDetailPresenter;
 import com.zack.enderplan.view.contract.PlanDetailViewContract;
 import com.zack.enderplan.model.bean.FormattedPlan;
-import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.util.Constant;
 import com.zack.enderplan.view.widget.ItemView;
 
 import javax.inject.Inject;

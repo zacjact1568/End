@@ -9,7 +9,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.common.Util;
+import com.zack.enderplan.util.ColorUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -83,19 +83,19 @@ public class ColorPicker extends FrameLayout implements SeekBar.OnSeekBarChangeL
 
         mAlpha = Color.alpha(color);
         mAlphaBar.setProgress(mAlpha - 156);
-        mAlphaText.setText(Util.parseColorChannel(mAlpha));
+        mAlphaText.setText(ColorUtil.parseColorChannel(mAlpha));
 
         mRed = Color.red(color);
         mRedBar.setProgress(mRed);
-        mRedText.setText(Util.parseColorChannel(mRed));
+        mRedText.setText(ColorUtil.parseColorChannel(mRed));
 
         mGreen = Color.green(color);
         mGreenBar.setProgress(mGreen);
-        mGreenText.setText(Util.parseColorChannel(mGreen));
+        mGreenText.setText(ColorUtil.parseColorChannel(mGreen));
 
         mBlue = Color.blue(color);
         mBlueBar.setProgress(mBlue);
-        mBlueText.setText(Util.parseColorChannel(mBlue));
+        mBlueText.setText(ColorUtil.parseColorChannel(mBlue));
     }
 
     @Override
@@ -103,19 +103,19 @@ public class ColorPicker extends FrameLayout implements SeekBar.OnSeekBarChangeL
         switch (seekBar.getId()) {
             case R.id.bar_alpha:
                 mAlpha = progress + 156;
-                mAlphaText.setText(Util.parseColorChannel(mAlpha));
+                mAlphaText.setText(ColorUtil.parseColorChannel(mAlpha));
                 break;
             case R.id.bar_red:
                 mRed = progress;
-                mRedText.setText(Util.parseColorChannel(mRed));
+                mRedText.setText(ColorUtil.parseColorChannel(mRed));
                 break;
             case R.id.bar_green:
                 mGreen = progress;
-                mGreenText.setText(Util.parseColorChannel(mGreen));
+                mGreenText.setText(ColorUtil.parseColorChannel(mGreen));
                 break;
             case R.id.bar_blue:
                 mBlue = progress;
-                mBlueText.setText(Util.parseColorChannel(mBlue));
+                mBlueText.setText(ColorUtil.parseColorChannel(mBlue));
                 break;
         }
         mColor = Color.argb(mAlpha, mRed, mGreen, mBlue);

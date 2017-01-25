@@ -51,6 +51,15 @@
     <string name="toast_past_deadline">The deadline should be in the future</string>
     <string name="toast_past_reminder_time">The reminder time should be in the future</string>
 
+    <string name="dscpt_time_within_1_minute">Within 1 minute</string>
+    <string name="dscpt_time_1_minute">1 minute</string>
+    <!--TODO 考虑取消format标识-->
+    <string name="dscpt_time_multi_minutes">%d minutes</string>
+    <string name="dscpt_time_today">%s today</string>
+    <string name="dscpt_time_tomorrow">%s tomorrow</string>
+    <string name="dscpt_time_yesterday">%s yesterday</string>
+    <string name="dscpt_time_general">%1$s, %2$s</string>
+
     <!--HomeActivity-->
 
     <string name="navigation_drawer_open">Open navigation drawer</string>

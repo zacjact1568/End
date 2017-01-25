@@ -17,14 +17,14 @@ import android.widget.Spinner;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
-import com.zack.enderplan.common.Util;
+import com.zack.enderplan.util.SystemUtil;
 import com.zack.enderplan.injector.component.DaggerPlanCreationComponent;
 import com.zack.enderplan.injector.module.PlanCreationPresenterModule;
 import com.zack.enderplan.view.contract.PlanCreationViewContract;
 import com.zack.enderplan.view.dialog.DateTimePickerDialogFragment;
 import com.zack.enderplan.view.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.presenter.PlanCreationPresenter;
-import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.util.Constant;
 import com.zack.enderplan.view.widget.ItemView;
 
 import javax.inject.Inject;
@@ -139,7 +139,7 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
         setSupportActionBar(mToolbar);
         setupActionBar();
 
-        Util.showSoftInput(mContentEditor, 100);
+        SystemUtil.showSoftInput(mContentEditor, 100);
         mContentEditor.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -247,7 +247,7 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
 //    }
 //
 //    private void playCircularRevealAnimation() {
-//        int fabCoordinateInPx = Util.convertDpToPx(Constant.FAB_COORDINATE);
+//        int fabCoordinateInPx = CommonUtil.convertDpToPx(Constant.FAB_COORDINATE);
 //        int centerX = mCircularRevealLayout.getWidth() - fabCoordinateInPx;
 //        int centerY = mCircularRevealLayout.getHeight() - fabCoordinateInPx;
 //
@@ -261,7 +261,7 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
 //
 //            @Override
 //            public void onAnimationEnd(Animator animation) {
-//                Util.showSoftInput(mContentEditor);
+//                CommonUtil.showSoftInput(mContentEditor);
 //            }
 //
 //            @Override

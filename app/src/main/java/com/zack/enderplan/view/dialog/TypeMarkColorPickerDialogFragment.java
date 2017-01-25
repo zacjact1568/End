@@ -15,10 +15,10 @@ import android.widget.TextView;
 import android.widget.ViewAnimator;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.util.ColorUtil;
 import com.zack.enderplan.view.adapter.TypeMarkColorAdapter;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.bean.TypeMarkColor;
-import com.zack.enderplan.common.Util;
 import com.zack.enderplan.view.widget.CircleColorView;
 import com.zack.enderplan.view.widget.ColorPicker;
 
@@ -120,7 +120,7 @@ public class TypeMarkColorPickerDialogFragment extends DialogFragment {
         mTypeMarkColorPicker.setOnColorChangedListener(new ColorPicker.OnColorChangedListener() {
             @Override
             public void onColorChanged(int color) {
-                String colorHex = Util.parseColor(color);
+                String colorHex = ColorUtil.parseColor(color);
                 mTypeMarkColorIcon.setFillColor(color);
                 mTypeMarkColorText.setText(colorHex);
                 mTypeMarkColor.setColorHex(colorHex);

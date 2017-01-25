@@ -171,4 +171,11 @@
     <string name="label_developer_email">Ender计划 开发者的电子邮件</string>
     <string name="toast_copy_to_clipboard_successfully">文本已复制到剪贴板</string>
     <string name="text_empty_plan_list_2">点击\"+\"按钮创建一个</string>
+    <string name="dscpt_time_1_minute">1分钟</string>
+    <string name="dscpt_time_multi_minutes">%d分钟</string>
+    <string name="dscpt_time_today">今天%s</string>
+    <string name="dscpt_time_tomorrow">明天%s</string>
+    <string name="dscpt_time_yesterday">昨天%s</string>
+    <string name="dscpt_time_within_1_minute">1分钟以内</string>
+    <string name="dscpt_time_general">%1$s，%2$s</string>
 </resources>

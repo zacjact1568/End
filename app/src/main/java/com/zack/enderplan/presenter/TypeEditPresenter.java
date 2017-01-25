@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.text.TextUtils;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.util.ResourceUtil;
+import com.zack.enderplan.util.StringUtil;
 import com.zack.enderplan.event.TypeDetailChangedEvent;
 import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.Type;
@@ -11,7 +13,7 @@ import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.view.contract.TypeEditViewContract;
 import com.zack.enderplan.model.bean.TypeMarkColor;
 import com.zack.enderplan.model.bean.TypeMarkPattern;
-import com.zack.enderplan.common.Util;
+import com.zack.enderplan.util.CommonUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -41,10 +43,10 @@ public class TypeEditPresenter extends BasePresenter {
                 Color.parseColor(mType.getTypeMarkColor()),
                 mDataManager.getTypeMarkColorName(mType.getTypeMarkColor()),
                 mType.getTypeMarkPattern() != null,
-                Util.getDrawableResourceId(mType.getTypeMarkPattern()),
+                ResourceUtil.getDrawableResourceId(mType.getTypeMarkPattern()),
                 mDataManager.getTypeMarkPatternName(mType.getTypeMarkPattern()),
                 mType.getTypeName(),
-                Util.getFirstChar(mType.getTypeName())
+                StringUtil.getFirstChar(mType.getTypeName())
         ));
     }
 
@@ -72,7 +74,7 @@ public class TypeEditPresenter extends BasePresenter {
             mTypeEditViewContract.showToast(R.string.toast_type_name_exists);
         } else {
             mDataManager.notifyUpdatingTypeName(mTypeListPosition, newTypeName);
-            mTypeEditViewContract.onTypeNameChanged(newTypeName, Util.getFirstChar(newTypeName));
+            mTypeEditViewContract.onTypeNameChanged(newTypeName, StringUtil.getFirstChar(newTypeName));
             postTypeDetailChangedEvent(TypeDetailChangedEvent.FIELD_TYPE_NAME);
         }
     }
@@ -92,14 +94,14 @@ public class TypeEditPresenter extends BasePresenter {
     public void notifyTypeMarkPatternSelected(TypeMarkPattern typeMarkPattern) {
         boolean hasPattern = typeMarkPattern != null;
         String patternFn = hasPattern ? typeMarkPattern.getPatternFn() : null;
-        if (Util.isObjectEqual(mType.getTypeMarkPattern(), patternFn)) return;
+        if (CommonUtil.isObjectEqual(mType.getTypeMarkPattern(), patternFn)) return;
         if (mDataManager.isTypeMarkUsed(mType.getTypeMarkColor(), patternFn)) {
             mTypeEditViewContract.showToast(R.string.toast_type_mark_exists);
         } else {
             mDataManager.notifyUpdatingTypeMarkPattern(mTypeListPosition, patternFn);
             mTypeEditViewContract.onTypeMarkPatternChanged(
                     hasPattern,
-                    Util.getDrawableResourceId(patternFn),
+                    ResourceUtil.getDrawableResourceId(patternFn),
                     hasPattern ? typeMarkPattern.getPatternName() : null
             );
             postTypeDetailChangedEvent(TypeDetailChangedEvent.FIELD_TYPE_MARK_PATTERN);

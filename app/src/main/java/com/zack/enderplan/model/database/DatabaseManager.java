@@ -6,14 +6,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.zack.enderplan.App;
+import com.zack.enderplan.util.SystemUtil;
 import com.zack.enderplan.model.bean.Data;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.model.bean.TypeMark;
 import com.zack.enderplan.model.bean.TypeMarkColor;
 import com.zack.enderplan.model.bean.TypeMarkPattern;
-import com.zack.enderplan.common.Constant;
-import com.zack.enderplan.common.Util;
+import com.zack.enderplan.util.Constant;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -392,7 +392,7 @@ public class DatabaseManager {
     //*****************Others*****************
 
     private String getColumnNameSuffixByLocale() {
-        Locale preferredLocale = Util.getPreferredLocale();
+        Locale preferredLocale = SystemUtil.getPreferredLocale();
         if (preferredLocale.equals(Locale.SIMPLIFIED_CHINESE)) {
             return Constant.ZH_CN;
         } else if (preferredLocale.equals(Locale.TRADITIONAL_CHINESE)) {

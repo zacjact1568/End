@@ -2,8 +2,9 @@ package com.zack.enderplan.presenter;
 
 import android.support.v7.widget.helper.ItemTouchHelper;
 
-import com.zack.enderplan.common.Constant;
-import com.zack.enderplan.common.Logger;
+import com.zack.enderplan.util.Constant;
+import com.zack.enderplan.util.LogUtil;
+import com.zack.enderplan.util.SystemUtil;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.event.DataLoadedEvent;
 import com.zack.enderplan.event.PlanCreatedEvent;
@@ -14,7 +15,6 @@ import com.zack.enderplan.view.adapter.PlanAdapter;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.view.callback.PlanItemTouchCallback;
 import com.zack.enderplan.view.contract.MyPlansViewContract;
-import com.zack.enderplan.common.Util;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -49,7 +49,7 @@ public class MyPlansPresenter extends BasePresenter {
         mPlanAdapter.setOnPlanItemLongClickListener(new PlanAdapter.OnPlanItemLongClickListener() {
             @Override
             public void onPlanItemLongClick(int position) {
-                Logger.d("Long click at position" + position);
+                LogUtil.d("Long click at position" + position);
             }
         });
         mPlanAdapter.setOnStarStatusChangedListener(new PlanAdapter.OnStarStatusChangedListener() {
@@ -106,7 +106,7 @@ public class MyPlansPresenter extends BasePresenter {
 
     public void notifyDeletingPlan(int position) {
 
-        Util.makeShortVibrate();
+        SystemUtil.makeShortVibrate();
 
         //必须先把要删除计划的引用拿到
         Plan plan = mDataManager.getPlan(position);

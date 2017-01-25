@@ -1,5 +1,8 @@
 package com.zack.enderplan.model;
 
+import com.zack.enderplan.util.ColorUtil;
+import com.zack.enderplan.util.CommonUtil;
+import com.zack.enderplan.util.SystemUtil;
 import com.zack.enderplan.model.bean.TypeMark;
 import com.zack.enderplan.model.bean.TypeMarkColor;
 import com.zack.enderplan.model.bean.TypeMarkPattern;
@@ -7,8 +10,7 @@ import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.model.database.DatabaseManager;
 import com.zack.enderplan.event.DataLoadedEvent;
-import com.zack.enderplan.common.Constant;
-import com.zack.enderplan.common.Util;
+import com.zack.enderplan.util.Constant;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -230,7 +232,7 @@ public class DataManager {
         //设置提醒
         if (newPlan.hasReminder()) {
             //有提醒，需要设置
-            Util.setReminder(newPlan.getPlanCode(), newPlan.getReminderTime());
+            SystemUtil.setReminder(newPlan.getPlanCode(), newPlan.getReminderTime());
         }
         //存储至数据库
         mDatabaseManager.savePlan(newPlan);
@@ -246,7 +248,7 @@ public class DataManager {
         }
         if (plan.hasReminder()) {
             //This plan has registered a reminder that need to be canceled
-            Util.setReminder(plan.getPlanCode(), Constant.UNDEFINED_TIME);
+            SystemUtil.setReminder(plan.getPlanCode(), Constant.UNDEFINED_TIME);
         }
         removeFromPlanList(location);
         //更新数据库
@@ -300,7 +302,7 @@ public class DataManager {
     /** 编辑计划提醒时间 */
     public void notifyReminderTimeChanged(int location, long newReminderTime) {
         Plan plan = getPlan(location);
-        Util.setReminder(plan.getPlanCode(), newReminderTime);
+        SystemUtil.setReminder(plan.getPlanCode(), newReminderTime);
         plan.setReminderTime(newReminderTime);
         mDatabaseManager.updateReminderTime(plan.getPlanCode(), newReminderTime);
     }
@@ -497,7 +499,7 @@ public class DataManager {
     /** 判断给定类型是否已使用过 */
     public boolean isTypeMarkUsed(String typeMarkColor, String typeMarkPattern) {
         for (Type type : mTypeList) {
-            if (Util.isObjectEqual(type.getTypeMarkPattern(), typeMarkPattern) && type.getTypeMarkColor().equals(typeMarkColor)) {
+            if (CommonUtil.isObjectEqual(type.getTypeMarkPattern(), typeMarkPattern) && type.getTypeMarkColor().equals(typeMarkColor)) {
                 return true;
             }
         }
@@ -517,7 +519,7 @@ public class DataManager {
     /** 判断给定类型图案是否已使用过 */
     public boolean isTypeMarkPatternUsed(String typeMarkPattern) {
         for (Type type : mTypeList) {
-            if (Util.isObjectEqual(type.getTypeMarkPattern(), typeMarkPattern)) {
+            if (CommonUtil.isObjectEqual(type.getTypeMarkPattern(), typeMarkPattern)) {
                 return true;
             }
         }
@@ -575,7 +577,7 @@ public class DataManager {
     /** 获取一个随机的TypeMark颜色 */
     public String getRandomTypeMarkColor() {
         while (true) {
-            String color = Util.makeColor();
+            String color = ColorUtil.makeColor();
             if (!isTypeMarkColorUsed(color)) {
                 return color;
             }

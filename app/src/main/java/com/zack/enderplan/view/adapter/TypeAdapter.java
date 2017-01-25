@@ -9,9 +9,10 @@ import android.widget.TextView;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
+import com.zack.enderplan.util.ResourceUtil;
+import com.zack.enderplan.util.StringUtil;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.bean.Type;
-import com.zack.enderplan.common.Util;
 import com.zack.enderplan.view.widget.CircleColorView;
 
 import butterknife.BindView;
@@ -37,9 +38,9 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
         Type type = mDataManager.getType(position);
 
         holder.mTypeMarkIcon.setFillColor(Color.parseColor(type.getTypeMarkColor()));
-        holder.mTypeMarkIcon.setInnerIcon(type.getTypeMarkPattern() == null ? null : App.getContext().getDrawable(Util.getDrawableResourceId(type.getTypeMarkPattern())));
-        holder.mTypeMarkIcon.setInnerText(Util.getFirstChar(type.getTypeName()));
-        holder.mTypeMarkIcon.setTransitionName(String.format(Util.getString(R.string.transition_type_mark_icon_format), position));
+        holder.mTypeMarkIcon.setInnerIcon(type.getTypeMarkPattern() == null ? null : App.getContext().getDrawable(ResourceUtil.getDrawableResourceId(type.getTypeMarkPattern())));
+        holder.mTypeMarkIcon.setInnerText(StringUtil.getFirstChar(type.getTypeName()));
+        holder.mTypeMarkIcon.setTransitionName(String.format(ResourceUtil.getString(R.string.transition_type_mark_icon_format), position));
         holder.mTypeNameText.setText(type.getTypeName());
 
         String ucPlanCountStr = getUcPlanCountStr(type.getTypeCode());

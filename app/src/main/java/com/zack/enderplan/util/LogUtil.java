@@ -1,8 +1,8 @@
-package com.zack.enderplan.common;
+package com.zack.enderplan.util;
 
 import android.util.Log;
 
-public class Logger {
+public class LogUtil {
 
     private static final String DEF_TAG = "Default Tag";
 

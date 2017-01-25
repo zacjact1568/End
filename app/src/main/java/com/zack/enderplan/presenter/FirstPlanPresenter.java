@@ -6,6 +6,8 @@ import android.text.TextUtils;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
+import com.zack.enderplan.util.ColorUtil;
+import com.zack.enderplan.util.CommonUtil;
 import com.zack.enderplan.view.contract.FirstPlanViewContract;
 import com.zack.enderplan.event.GuideEndedEvent;
 import com.zack.enderplan.event.PlanCreatedEvent;
@@ -13,7 +15,6 @@ import com.zack.enderplan.event.TypeCreatedEvent;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.bean.Type;
-import com.zack.enderplan.common.Util;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -46,7 +47,7 @@ public class FirstPlanPresenter extends BasePresenter {
         if (!TextUtils.isEmpty(content)) {
             addDefaultTypes();
             addDefaultPlans();
-            Plan plan = new Plan(Util.makeCode());
+            Plan plan = new Plan(CommonUtil.makeCode());
             plan.setContent(content);
             plan.setTypeCode(mDataManager.getType(0).getTypeCode());
             plan.setCreationTime(System.currentTimeMillis());
@@ -71,9 +72,9 @@ public class FirstPlanPresenter extends BasePresenter {
         Context context = App.getContext();
         for (int i = 0; i < 4; i++) {
             Type type = new Type(
-                    Util.makeCode(),
+                    CommonUtil.makeCode(),
                     context.getString(nameResIds[i]),
-                    Util.parseColor(ContextCompat.getColor(context, colorResIds[i])),
+                    ColorUtil.parseColor(ContextCompat.getColor(context, colorResIds[i])),
                     patternFns[i],
                     i
             );
@@ -88,7 +89,7 @@ public class FirstPlanPresenter extends BasePresenter {
         Context context = App.getContext();
         String defaultTypeCode = mDataManager.getType(0).getTypeCode();
         for (int i = 0; i < 3; i++) {
-            Plan plan = new Plan(Util.makeCode());
+            Plan plan = new Plan(CommonUtil.makeCode());
             plan.setContent(context.getString(contentResIds[i]));
             plan.setTypeCode(defaultTypeCode);
             plan.setCreationTime(System.currentTimeMillis());

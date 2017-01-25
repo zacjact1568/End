@@ -1,6 +1,6 @@
 package com.zack.enderplan.injector.module;
 
-import com.zack.enderplan.common.Util;
+import com.zack.enderplan.util.CommonUtil;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.view.contract.PlanCreationViewContract;
 
@@ -23,6 +23,6 @@ public class PlanCreationPresenterModule {
 
     @Provides
     Plan providePlan() {
-        return new Plan(Util.makeCode());
+        return new Plan(CommonUtil.makeCode());
     }
 }

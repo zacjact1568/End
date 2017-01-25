@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
-import com.zack.enderplan.common.Util;
+import com.zack.enderplan.util.CommonUtil;
 import com.zack.enderplan.injector.component.DaggerHomeComponent;
 import com.zack.enderplan.injector.module.HomePresenterModule;
 import com.zack.enderplan.view.fragment.BaseListFragment;
@@ -25,7 +25,7 @@ import com.zack.enderplan.view.fragment.MyPlansFragment;
 import com.zack.enderplan.view.fragment.AllTypesFragment;
 import com.zack.enderplan.presenter.HomePresenter;
 import com.zack.enderplan.view.contract.HomeViewContract;
-import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.util.Constant;
 
 import javax.inject.Inject;
 
@@ -181,7 +181,7 @@ public class HomeActivity extends BaseActivity implements HomeViewContract {
 
     @Override
     public void changeFabVisibility(boolean isVisible) {
-        ObjectAnimator.ofFloat(mCreateFab, "translationY", mCreateFab.getTranslationY(), isVisible ? 0f : Util.convertDpToPx(Constant.FAB_COORDINATE) + mCreateFab.getHeight() / 2f)
+        ObjectAnimator.ofFloat(mCreateFab, "translationY", mCreateFab.getTranslationY(), isVisible ? 0f : CommonUtil.convertDpToPx(Constant.FAB_COORDINATE) + mCreateFab.getHeight() / 2f)
                 .setDuration(200)
                 .start();
     }

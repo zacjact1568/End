@@ -1,15 +1,14 @@
 package com.zack.enderplan.presenter;
 
 import android.text.TextUtils;
-import android.text.format.DateFormat;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.util.ResourceUtil;
+import com.zack.enderplan.util.TimeUtil;
 import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.view.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.DataManager;
-import com.zack.enderplan.common.Constant;
-import com.zack.enderplan.common.Util;
 import com.zack.enderplan.view.contract.PlanCreationViewContract;
 
 import org.greenrobot.eventbus.EventBus;
@@ -50,7 +49,7 @@ public class PlanCreationPresenter extends BasePresenter {
 
     public void notifyDeadlineChanged(long deadline) {
         if (mPlan.getDeadline() == deadline) return;
-        if (Util.isFutureTime(deadline)) {
+        if (TimeUtil.isValidDateTimePickerTime(deadline)) {
             mPlan.setDeadline(deadline);
             mPlanCreationViewContract.onDeadlineChanged(mPlan.hasDeadline(), formatDateTime(deadline));
         } else {
@@ -60,7 +59,7 @@ public class PlanCreationPresenter extends BasePresenter {
 
     public void notifyReminderTimeChanged(long reminderTime) {
         if (mPlan.getReminderTime() == reminderTime) return;
-        if (Util.isFutureTime(reminderTime)) {
+        if (TimeUtil.isValidDateTimePickerTime(reminderTime)) {
             mPlan.setReminderTime(reminderTime);
             mPlanCreationViewContract.onReminderTimeChanged(mPlan.hasReminder(), formatDateTime(reminderTime));
         } else {
@@ -75,11 +74,11 @@ public class PlanCreationPresenter extends BasePresenter {
 
     //TODO 以后都用这种形式，即notifySetting***，更换控件就不用改方法名了
     public void notifySettingDeadline() {
-        mPlanCreationViewContract.showDeadlinePickerDialog(Util.getDateTimePickerDefaultTime(mPlan.getDeadline()));
+        mPlanCreationViewContract.showDeadlinePickerDialog(TimeUtil.getDefaultDateTimePickerTime(mPlan.getDeadline()));
     }
 
     public void notifySettingReminder() {
-        mPlanCreationViewContract.showReminderTimePickerDialog(Util.getDateTimePickerDefaultTime(mPlan.getReminderTime()));
+        mPlanCreationViewContract.showReminderTimePickerDialog(TimeUtil.getDefaultDateTimePickerTime(mPlan.getReminderTime()));
     }
 
     public void notifyCreatingPlan() {
@@ -103,10 +102,7 @@ public class PlanCreationPresenter extends BasePresenter {
     }
 
     private String formatDateTime(long timeInMillis) {
-        if (timeInMillis == Constant.UNDEFINED_TIME) {
-            return Util.getString(R.string.dscpt_click_to_set);
-        } else {
-            return DateFormat.format(Util.getString(R.string.date_time_format), timeInMillis).toString();
-        }
+        String time = TimeUtil.formatTime(timeInMillis);
+        return time != null ? time : ResourceUtil.getString(R.string.dscpt_click_to_set);
     }
 }

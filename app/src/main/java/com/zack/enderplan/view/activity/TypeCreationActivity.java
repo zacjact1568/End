@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
-import com.zack.enderplan.common.Util;
+import com.zack.enderplan.util.SystemUtil;
 import com.zack.enderplan.injector.component.DaggerTypeCreationComponent;
 import com.zack.enderplan.injector.module.TypeCreationPresenterModule;
 import com.zack.enderplan.view.contract.TypeCreationViewContract;
@@ -25,7 +25,7 @@ import com.zack.enderplan.presenter.TypeCreationPresenter;
 import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.TypeMarkColor;
 import com.zack.enderplan.model.bean.TypeMarkPattern;
-import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.util.Constant;
 import com.zack.enderplan.view.widget.CircleColorView;
 import com.zack.enderplan.view.widget.ItemView;
 
@@ -135,7 +135,7 @@ public class TypeCreationActivity extends BaseActivity implements TypeCreationVi
         setSupportActionBar(mToolbar);
         setupActionBar();
 
-        Util.showSoftInput(mTypeNameEditor, 100);
+        SystemUtil.showSoftInput(mTypeNameEditor, 100);
         mTypeNameEditor.setText(formattedType.getTypeName());
         mTypeNameEditor.addTextChangedListener(new TextWatcher() {
             @Override
@@ -230,7 +230,7 @@ public class TypeCreationActivity extends BaseActivity implements TypeCreationVi
 //
 //            @Override
 //            public void onAnimationEnd(Animator animation) {
-//                Util.showSoftInput(mTypeNameEditor);
+//                CommonUtil.showSoftInput(mTypeNameEditor);
 //            }
 //
 //            @Override

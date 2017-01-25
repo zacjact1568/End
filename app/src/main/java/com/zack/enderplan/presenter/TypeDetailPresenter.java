@@ -5,7 +5,10 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.TextUtils;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.util.Constant;
+import com.zack.enderplan.util.ResourceUtil;
+import com.zack.enderplan.util.StringUtil;
+import com.zack.enderplan.util.SystemUtil;
 import com.zack.enderplan.event.TypeDeletedEvent;
 import com.zack.enderplan.event.TypeDetailChangedEvent;
 import com.zack.enderplan.view.adapter.SimpleTypeAdapter;
@@ -17,7 +20,7 @@ import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDeletedEvent;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.model.DataManager;
-import com.zack.enderplan.common.Util;
+import com.zack.enderplan.util.CommonUtil;
 import com.zack.enderplan.view.callback.PlanItemTouchCallback;
 import com.zack.enderplan.view.contract.TypeDetailViewContract;
 
@@ -109,9 +112,9 @@ public class TypeDetailPresenter extends BasePresenter {
         mTypeDetailViewContract.showInitialView(new FormattedType(
                 Color.parseColor(mType.getTypeMarkColor()),
                 mType.getTypeMarkPattern() != null,
-                Util.getDrawableResourceId(mType.getTypeMarkPattern()),
+                ResourceUtil.getDrawableResourceId(mType.getTypeMarkPattern()),
                 mType.getTypeName(),
-                Util.getFirstChar(mType.getTypeName())
+                StringUtil.getFirstChar(mType.getTypeName())
         ), getUcPlanCountStr(mType.getTypeCode()), mSingleTypePlanAdapter, new ItemTouchHelper(planItemTouchCallback));
     }
 
@@ -188,7 +191,7 @@ public class TypeDetailPresenter extends BasePresenter {
             mTypeDetailViewContract.showToast(R.string.toast_create_plan_failed);
         } else {
             //创建新计划
-            Plan plan = new Plan(Util.makeCode());
+            Plan plan = new Plan(CommonUtil.makeCode());
             plan.setContent(newContent);
             plan.setTypeCode(mType.getTypeCode());
             plan.setCreationTime(System.currentTimeMillis());
@@ -202,7 +205,7 @@ public class TypeDetailPresenter extends BasePresenter {
 
     public void notifyDeletingPlan(int position) {
 
-        Util.makeShortVibrate();
+        SystemUtil.makeShortVibrate();
 
         Plan plan = mSingleTypePlanList.get(position);
         int planListPos = mDataManager.getPlanLocationInPlanList(plan.getPlanCode());
@@ -329,11 +332,11 @@ public class TypeDetailPresenter extends BasePresenter {
         }
         switch (count) {
             case 0:
-                return Util.getString(R.string.text_uc_plan_count_none);
+                return ResourceUtil.getString(R.string.text_uc_plan_count_none);
             case 1:
-                return Util.getString(R.string.text_uc_plan_count_one);
+                return ResourceUtil.getString(R.string.text_uc_plan_count_one);
             default:
-                return String.format(Util.getString(R.string.text_uc_plan_count_multi_format), count);
+                return String.format(ResourceUtil.getString(R.string.text_uc_plan_count_multi_format), count);
         }
     }
 
@@ -352,13 +355,13 @@ public class TypeDetailPresenter extends BasePresenter {
         if (!mType.getTypeCode().equals(event.getTypeCode()) || event.getEventSource().equals(getPresenterName())) return;
         switch (event.getChangedField()) {
             case TypeDetailChangedEvent.FIELD_TYPE_NAME:
-                mTypeDetailViewContract.onTypeNameChanged(mType.getTypeName(), Util.getFirstChar(mType.getTypeName()));
+                mTypeDetailViewContract.onTypeNameChanged(mType.getTypeName(), StringUtil.getFirstChar(mType.getTypeName()));
                 break;
             case TypeDetailChangedEvent.FIELD_TYPE_MARK_COLOR:
                 mTypeDetailViewContract.onTypeMarkColorChanged(Color.parseColor(mType.getTypeMarkColor()));
                 break;
             case TypeDetailChangedEvent.FIELD_TYPE_MARK_PATTERN:
-                mTypeDetailViewContract.onTypeMarkPatternChanged(mType.getTypeMarkPattern() != null, Util.getDrawableResourceId(mType.getTypeMarkPattern()));
+                mTypeDetailViewContract.onTypeMarkPatternChanged(mType.getTypeMarkPattern() != null, ResourceUtil.getDrawableResourceId(mType.getTypeMarkPattern()));
                 break;
         }
     }

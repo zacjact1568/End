@@ -11,7 +11,7 @@ import com.zack.enderplan.injector.component.DaggerAppComponent;
 import com.zack.enderplan.injector.module.AppModule;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.preference.PreferenceHelper;
-import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.util.Constant;
 
 import java.io.File;
 import java.io.FileOutputStream;

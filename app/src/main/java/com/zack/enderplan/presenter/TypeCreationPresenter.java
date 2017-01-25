@@ -4,14 +4,14 @@ import android.graphics.Color;
 import android.text.TextUtils;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.util.ResourceUtil;
+import com.zack.enderplan.util.StringUtil;
 import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.model.bean.TypeMarkColor;
 import com.zack.enderplan.event.TypeCreatedEvent;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.bean.TypeMarkPattern;
-import com.zack.enderplan.common.Constant;
-import com.zack.enderplan.common.Util;
 import com.zack.enderplan.view.contract.TypeCreationViewContract;
 
 import org.greenrobot.eventbus.EventBus;
@@ -37,7 +37,7 @@ public class TypeCreationPresenter extends BasePresenter {
                 Color.parseColor(mType.getTypeMarkColor()),
                 mDataManager.getTypeMarkColorName(mType.getTypeMarkColor()),
                 mType.getTypeName(),
-                Util.getFirstChar(mType.getTypeName())
+                StringUtil.getFirstChar(mType.getTypeName())
         ));
     }
 
@@ -49,9 +49,9 @@ public class TypeCreationPresenter extends BasePresenter {
     public void notifyTypeNameTextChanged(String typeName) {
         mType.setTypeName(typeName);
         if (TextUtils.isEmpty(typeName)) {
-            mTypeCreationViewContract.onTypeNameChanged(Util.getString(R.string.text_empty_type_name), "-", false);
+            mTypeCreationViewContract.onTypeNameChanged(ResourceUtil.getString(R.string.text_empty_type_name), "-", false);
         } else {
-            mTypeCreationViewContract.onTypeNameChanged(typeName, Util.getFirstChar(typeName), true);
+            mTypeCreationViewContract.onTypeNameChanged(typeName, StringUtil.getFirstChar(typeName), true);
         }
     }
 
@@ -75,7 +75,7 @@ public class TypeCreationPresenter extends BasePresenter {
         mType.setTypeMarkPattern(patternFn);
         mTypeCreationViewContract.onTypeMarkPatternChanged(
                 hasPattern,
-                Util.getDrawableResourceId(patternFn),
+                ResourceUtil.getDrawableResourceId(patternFn),
                 hasPattern ? typeMarkPattern.getPatternName() : null
         );
     }

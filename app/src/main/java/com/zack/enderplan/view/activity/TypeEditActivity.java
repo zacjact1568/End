@@ -4,14 +4,12 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.StringRes;
 import android.support.v7.widget.Toolbar;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
@@ -25,7 +23,7 @@ import com.zack.enderplan.view.contract.TypeEditViewContract;
 import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.TypeMarkColor;
 import com.zack.enderplan.model.bean.TypeMarkPattern;
-import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.util.Constant;
 import com.zack.enderplan.view.widget.CircleColorView;
 import com.zack.enderplan.view.widget.ItemView;
 

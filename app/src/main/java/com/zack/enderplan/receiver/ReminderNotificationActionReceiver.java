@@ -5,8 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.common.Constant;
-import com.zack.enderplan.common.Util;
+import com.zack.enderplan.util.Constant;
+import com.zack.enderplan.util.ResourceUtil;
+import com.zack.enderplan.util.SystemUtil;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.bean.Plan;
@@ -51,7 +52,7 @@ public class ReminderNotificationActionReceiver extends BaseReceiver {
     public void onReceive(Context context, Intent intent) {
         if (!mDataManager.isDataLoaded()) {
             //说明DataManager中的数据到点击通知为止还未加载完
-            Util.showToast(R.string.toast_data_loading_unfinished);
+            SystemUtil.showToast(R.string.toast_data_loading_unfinished);
             return;
         }
 
@@ -64,7 +65,7 @@ public class ReminderNotificationActionReceiver extends BaseReceiver {
 
         mPlan = mDataManager.getPlan(mPlanListPosition);
 
-        Util.cancelNotification(mPlan.getPlanCode());
+        SystemUtil.cancelNotification(mPlan.getPlanCode());
 
         switch (intent.getStringExtra(Constant.NOTIFICATION_ACTION)) {
             case NOTIFICATION_ACTION_CONTENT:
@@ -94,7 +95,7 @@ public class ReminderNotificationActionReceiver extends BaseReceiver {
                 mPlanListPosition,
                 PlanDetailChangedEvent.FIELD_PLAN_STATUS
         ));
-        Util.showToast(R.string.toast_plan_completed);
+        SystemUtil.showToast(R.string.toast_plan_completed);
     }
 
     private void onDelay() {
@@ -108,6 +109,6 @@ public class ReminderNotificationActionReceiver extends BaseReceiver {
                 mPlanListPosition,
                 PlanDetailChangedEvent.FIELD_REMINDER_TIME
         ));
-        Util.showToast(String.format(Util.getString(R.string.toast_reminder_delayed_format), Util.getString(R.string.toast_delay_10_minutes)));
+        SystemUtil.showToast(String.format(ResourceUtil.getString(R.string.toast_reminder_delayed_format), ResourceUtil.getString(R.string.toast_delay_10_minutes)));
     }
 }

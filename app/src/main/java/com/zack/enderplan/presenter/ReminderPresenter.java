@@ -1,14 +1,13 @@
 package com.zack.enderplan.presenter;
 
-import android.text.format.DateFormat;
-
 import com.zack.enderplan.R;
-import com.zack.enderplan.common.Util;
+import com.zack.enderplan.util.ResourceUtil;
+import com.zack.enderplan.util.TimeUtil;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.view.contract.ReminderViewContract;
-import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.util.Constant;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -38,7 +37,7 @@ public class ReminderPresenter extends BasePresenter {
         mReminderViewContract.showInitialView(
                 mPlan.getContent(),
                 mPlan.hasDeadline(),
-                mPlan.hasDeadline() ? DateFormat.format(Util.getString(R.string.date_time_format), mPlan.getDeadline()).toString() : null
+                mPlan.hasDeadline() ? TimeUtil.formatTime(mPlan.getDeadline()) : null
         );
     }
 
@@ -64,24 +63,24 @@ public class ReminderPresenter extends BasePresenter {
         switch (delay) {
             case Constant.ONE_HOUR:
                 calendar.add(Calendar.HOUR, 1);
-                delayDscpt = Util.getString(R.string.toast_delay_1_hour);
+                delayDscpt = ResourceUtil.getString(R.string.toast_delay_1_hour);
                 break;
             case Constant.TOMORROW:
                 calendar.add(Calendar.DATE, 1);
-                delayDscpt = Util.getString(R.string.toast_delay_tomorrow);
+                delayDscpt = ResourceUtil.getString(R.string.toast_delay_tomorrow);
                 break;
             default:
                 throw new IllegalArgumentException("The argument delayTime cannot be " + delay);
         }
-        updateReminderTime(calendar.getTimeInMillis(), String.format(Util.getString(R.string.toast_reminder_delayed_format), delayDscpt));
+        updateReminderTime(calendar.getTimeInMillis(), String.format(ResourceUtil.getString(R.string.toast_reminder_delayed_format), delayDscpt));
     }
 
     public void notifyUpdatingReminderTime(long reminderTime) {
         if (reminderTime == Constant.UNDEFINED_TIME) return;
-        if (Util.isFutureTime(reminderTime)) {
+        if (TimeUtil.isValidDateTimePickerTime(reminderTime)) {
             updateReminderTime(
                     reminderTime,
-                    String.format(Util.getString(R.string.toast_reminder_delayed_format), String.format(Util.getString(R.string.toast_delay_more), DateFormat.format(Util.getString(R.string.date_time_format_short), reminderTime).toString()))
+                    String.format(ResourceUtil.getString(R.string.toast_reminder_delayed_format), String.format(ResourceUtil.getString(R.string.toast_delay_more), TimeUtil.formatTime(reminderTime)))
             );
         } else {
             mReminderViewContract.showToast(R.string.toast_past_reminder_time);

@@ -14,8 +14,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.common.Constant;
-import com.zack.enderplan.common.Util;
+import com.zack.enderplan.util.Constant;
+import com.zack.enderplan.util.ResourceUtil;
+import com.zack.enderplan.util.SystemUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -86,7 +87,7 @@ public class AboutActivity extends BaseActivity {
                             .setNegativeButton(R.string.btn_dialog_copy_to_clipboard, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Util.putTextToClipboard(Util.getString(R.string.label_developer_email), Constant.DEVELOPER_EMAIL);
+                                    SystemUtil.putTextToClipboard(ResourceUtil.getString(R.string.label_developer_email), Constant.DEVELOPER_EMAIL);
                                     showToast(R.string.toast_copy_to_clipboard_successfully);
                                 }
                             })

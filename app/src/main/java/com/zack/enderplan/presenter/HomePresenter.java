@@ -1,8 +1,8 @@
 package com.zack.enderplan.presenter;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.common.Constant;
-import com.zack.enderplan.common.Util;
+import com.zack.enderplan.util.Constant;
+import com.zack.enderplan.util.ResourceUtil;
 import com.zack.enderplan.event.DataLoadedEvent;
 import com.zack.enderplan.event.GuideEndedEvent;
 import com.zack.enderplan.event.PlanCreatedEvent;
@@ -90,11 +90,11 @@ public class HomePresenter extends BasePresenter {
         int count = mDataManager.getUcPlanCount();
         switch (count) {
             case 0:
-                return Util.getString(R.string.toast_uc_plan_count_none);
+                return ResourceUtil.getString(R.string.toast_uc_plan_count_none);
             case 1:
-                return Util.getString(R.string.toast_uc_plan_count_one);
+                return ResourceUtil.getString(R.string.toast_uc_plan_count_one);
             default:
-                return String.format(Util.getString(R.string.toast_uc_plan_count_multi_format), count);
+                return String.format(ResourceUtil.getString(R.string.toast_uc_plan_count_multi_format), count);
         }
     }
 

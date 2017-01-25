@@ -1,10 +1,10 @@
 package com.zack.enderplan.presenter;
 
 import android.text.TextUtils;
-import android.text.format.DateFormat;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.common.Util;
+import com.zack.enderplan.util.ResourceUtil;
+import com.zack.enderplan.util.TimeUtil;
 import com.zack.enderplan.event.PlanDeletedEvent;
 import com.zack.enderplan.view.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.model.bean.FormattedPlan;
@@ -12,7 +12,7 @@ import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.view.contract.PlanDetailViewContract;
-import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.util.Constant;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -97,7 +97,7 @@ public class PlanDetailPresenter extends BasePresenter {
 
         if ((headerAlpha == 0 || mLastHeaderAlpha == 0) && headerAlpha != mLastHeaderAlpha) {
             //刚退出透明状态或刚进入透明状态
-            mPlanDetailViewContract.onAppBarScrolledToCriticalPoint(headerAlpha == 0 ? Util.getString(R.string.title_activity_plan_detail) : " ", headerAlpha == 0);
+            mPlanDetailViewContract.onAppBarScrolledToCriticalPoint(headerAlpha == 0 ? ResourceUtil.getString(R.string.title_activity_plan_detail) : " ", headerAlpha == 0);
             mLastHeaderAlpha = headerAlpha;
         }
 
@@ -159,7 +159,7 @@ public class PlanDetailPresenter extends BasePresenter {
         //首先检测此计划是否有提醒
         if (mPlan.hasReminder()) {
             mDataManager.notifyReminderTimeChanged(mPlanListPosition, Constant.UNDEFINED_TIME);
-            mPlanDetailViewContract.onReminderTimeChanged(false, Util.getString(R.string.dscpt_unsettled));
+            mPlanDetailViewContract.onReminderTimeChanged(false, ResourceUtil.getString(R.string.dscpt_unsettled));
             postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_REMINDER_TIME);
         }
         mDataManager.notifyPlanStatusChanged(mPlanListPosition);
@@ -172,16 +172,16 @@ public class PlanDetailPresenter extends BasePresenter {
     }
 
     public void notifySettingDeadline() {
-        mPlanDetailViewContract.showDeadlinePickerDialog(Util.getDateTimePickerDefaultTime(mPlan.getDeadline()));
+        mPlanDetailViewContract.showDeadlinePickerDialog(TimeUtil.getDefaultDateTimePickerTime(mPlan.getDeadline()));
     }
 
     public void notifySettingReminder() {
-        mPlanDetailViewContract.showReminderTimePickerDialog(Util.getDateTimePickerDefaultTime(mPlan.getReminderTime()));
+        mPlanDetailViewContract.showReminderTimePickerDialog(TimeUtil.getDefaultDateTimePickerTime(mPlan.getReminderTime()));
     }
 
     public void notifyDeadlineChanged(long deadline) {
         if (mPlan.getDeadline() == deadline) return;
-        if (Util.isFutureTime(deadline)) {
+        if (TimeUtil.isValidDateTimePickerTime(deadline)) {
             mDataManager.notifyDeadlineChanged(mPlanListPosition, deadline);
             mPlanDetailViewContract.onDeadlineChanged(mPlan.hasDeadline(), formatDateTime(deadline));
             postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_DEADLINE);
@@ -192,7 +192,7 @@ public class PlanDetailPresenter extends BasePresenter {
 
     public void notifyReminderTimeChanged(long reminderTime) {
         if (mPlan.getReminderTime() == reminderTime) return;
-        if (Util.isFutureTime(reminderTime)) {
+        if (TimeUtil.isValidDateTimePickerTime(reminderTime)) {
             mDataManager.notifyReminderTimeChanged(mPlanListPosition, reminderTime);
             mPlanDetailViewContract.onReminderTimeChanged(mPlan.hasReminder(), formatDateTime(reminderTime));
             postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_REMINDER_TIME);
@@ -206,11 +206,8 @@ public class PlanDetailPresenter extends BasePresenter {
     }
 
     private String formatDateTime(long timeInMillis) {
-        if (timeInMillis == Constant.UNDEFINED_TIME) {
-            return Util.getString(R.string.dscpt_unsettled);
-        } else {
-            return DateFormat.format(Util.getString(R.string.date_time_format), timeInMillis).toString();
-        }
+        String time = TimeUtil.formatTime(timeInMillis);
+        return time != null ? time : ResourceUtil.getString(R.string.dscpt_unsettled);
     }
 
     @Subscribe

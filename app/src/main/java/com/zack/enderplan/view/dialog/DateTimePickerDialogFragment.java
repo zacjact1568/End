@@ -12,7 +12,8 @@ import android.widget.TimePicker;
 import android.widget.ViewAnimator;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.util.Constant;
+import com.zack.enderplan.util.TimeUtil;
 
 import java.util.Calendar;
 
@@ -89,7 +90,7 @@ public class DateTimePickerDialogFragment extends DialogFragment {
             mTimePicker.setHour(mCalendar.get(Calendar.HOUR_OF_DAY));
             mTimePicker.setMinute(mCalendar.get(Calendar.MINUTE));
         }
-        mTimePicker.setIs24HourView(true);
+        mTimePicker.setIs24HourView(TimeUtil.is24HourFormat());
         mTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {

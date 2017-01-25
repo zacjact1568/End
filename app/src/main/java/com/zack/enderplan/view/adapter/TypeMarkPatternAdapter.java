@@ -6,8 +6,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.util.ResourceUtil;
 import com.zack.enderplan.model.bean.TypeMarkPattern;
-import com.zack.enderplan.common.Util;
 import com.zack.enderplan.view.widget.CheckView;
 
 import java.util.List;
@@ -52,7 +52,7 @@ public class TypeMarkPatternAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        viewHolder.mPatternIcon.setImageResource(Util.getDrawableResourceId(typeMarkPattern.getPatternFn()));
+        viewHolder.mPatternIcon.setImageResource(ResourceUtil.getDrawableResourceId(typeMarkPattern.getPatternFn()));
 
         return view;
     }

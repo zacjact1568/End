@@ -11,7 +11,8 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.common.Util;
+import com.zack.enderplan.util.CommonUtil;
+import com.zack.enderplan.util.StringUtil;
 
 public class CircleColorView extends View {
 
@@ -118,7 +119,7 @@ public class CircleColorView extends View {
         if (mInnerText == null || mInnerText.isEmpty() || mInnerIcon != null) return;
 
         if (mInnerText.length() > 1) {
-            mInnerText = Util.getFirstChar(mInnerText);
+            mInnerText = StringUtil.getFirstChar(mInnerText);
         }
 
         mTextPaint.setTextSize(mDiameter / 2f);
@@ -150,13 +151,13 @@ public class CircleColorView extends View {
     }
 
     public void setInnerText(String innerText) {
-        if (Util.isObjectEqual(innerText, mInnerText)) return;
+        if (CommonUtil.isObjectEqual(innerText, mInnerText)) return;
         mInnerText = innerText;
         invalidate();
     }
 
     public void setInnerIcon(Drawable innerIcon) {
-        if (Util.isObjectEqual(innerIcon, mInnerIcon)) return;
+        if (CommonUtil.isObjectEqual(innerIcon, mInnerIcon)) return;
         mInnerIcon = innerIcon;
         if (mInnerIcon != null) {
             mInnerIcon.setTint(mInnerIconTintColor);

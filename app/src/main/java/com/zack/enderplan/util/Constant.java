@@ -1,4 +1,4 @@
-package com.zack.enderplan.common;
+package com.zack.enderplan.util;
 
 public class Constant {
 

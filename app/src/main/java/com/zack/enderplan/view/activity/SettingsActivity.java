@@ -13,7 +13,7 @@ import android.view.MenuItem;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.model.preference.PreferenceHelper;
-import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.util.Constant;
 
 import java.util.Locale;
 

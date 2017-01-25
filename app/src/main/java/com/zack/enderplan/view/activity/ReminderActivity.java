@@ -15,13 +15,14 @@ import android.widget.ViewAnimator;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
-import com.zack.enderplan.common.Util;
+import com.zack.enderplan.util.TimeUtil;
+import com.zack.enderplan.util.ViewUtil;
 import com.zack.enderplan.injector.component.DaggerReminderComponent;
 import com.zack.enderplan.injector.module.ReminderPresenterModule;
 import com.zack.enderplan.view.dialog.DateTimePickerDialogFragment;
 import com.zack.enderplan.presenter.ReminderPresenter;
 import com.zack.enderplan.view.contract.ReminderViewContract;
-import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.util.Constant;
 import com.zack.enderplan.view.widget.ImageTextView;
 
 import javax.inject.Inject;
@@ -91,7 +92,7 @@ public class ReminderActivity extends BaseActivity implements ReminderViewContra
             @Override
             public boolean onPreDraw() {
                 mReminderLayout.getViewTreeObserver().removeOnPreDrawListener(this);
-                mReminderPresenter.notifyPreDrawingReminder(Util.getScreenCoordinateY(mReminderLayout));
+                mReminderPresenter.notifyPreDrawingReminder(ViewUtil.getScreenCoordinateY(mReminderLayout));
                 return false;
             }
         });
@@ -140,7 +141,7 @@ public class ReminderActivity extends BaseActivity implements ReminderViewContra
                 mReminderPresenter.notifyDelayingReminder(Constant.TOMORROW);
                 break;
             case R.id.btn_more:
-                DateTimePickerDialogFragment fragment = DateTimePickerDialogFragment.newInstance(Util.getDateTimePickerDefaultTime(Constant.UNDEFINED_TIME));
+                DateTimePickerDialogFragment fragment = DateTimePickerDialogFragment.newInstance(TimeUtil.getDefaultDateTimePickerTime(Constant.UNDEFINED_TIME));
                 fragment.setOnDateTimePickedListener(new DateTimePickerDialogFragment.OnDateTimePickedListener() {
                     @Override
                     public void onDateTimePicked(long timeInMillis) {

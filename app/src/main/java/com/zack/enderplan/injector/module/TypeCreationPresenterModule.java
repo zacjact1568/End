@@ -2,7 +2,8 @@ package com.zack.enderplan.injector.module;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
-import com.zack.enderplan.common.Util;
+import com.zack.enderplan.util.ResourceUtil;
+import com.zack.enderplan.util.CommonUtil;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.view.contract.TypeCreationViewContract;
@@ -28,8 +29,8 @@ public class TypeCreationPresenterModule {
     Type provideType() {
         DataManager dataManager = App.getDataManager();
         return new Type(
-                Util.makeCode(),
-                Util.getString(R.string.text_new_type_name),
+                CommonUtil.makeCode(),
+                ResourceUtil.getString(R.string.text_new_type_name),
                 dataManager.getRandomTypeMarkColor(),
                 dataManager.getTypeCount()
         );

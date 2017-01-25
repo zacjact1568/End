@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.common.Util;
+import com.zack.enderplan.util.SystemUtil;
 
 public class EditorDialogFragment extends DialogFragment {
 
@@ -51,7 +51,7 @@ public class EditorDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         mEditor = new EditText(getContext());
-        Util.showSoftInput(mEditor, 100);
+        SystemUtil.showSoftInput(mEditor, 100);
         if (!TextUtils.isEmpty(mContentEditorStr)) {
             mEditor.setText(mContentEditorStr);
             mEditor.setSelection(mEditor.length());

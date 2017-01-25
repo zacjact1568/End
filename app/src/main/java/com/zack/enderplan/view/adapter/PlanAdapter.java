@@ -3,7 +3,6 @@ package com.zack.enderplan.view.adapter;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.util.ResourceUtil;
+import com.zack.enderplan.util.StringUtil;
+import com.zack.enderplan.util.TimeUtil;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.bean.Plan;
-import com.zack.enderplan.common.Util;
 import com.zack.enderplan.view.widget.CircleColorView;
 import com.zack.enderplan.view.widget.ImageTextView;
 
@@ -28,15 +29,12 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
     private OnStarStatusChangedListener mOnStarStatusChangedListener;
 
     private int mAccentColor, mGrey600Color;
-    private String mDateTimeFormat;
 
     public PlanAdapter(DataManager dataManager) {
         mDataManager = dataManager;
 
-        mAccentColor = Util.getColor(R.color.colorAccent);
-        mGrey600Color = Util.getColor(R.color.grey_600);
-
-        mDateTimeFormat = Util.getString(R.string.date_time_format);
+        mAccentColor = ResourceUtil.getColor(R.color.colorAccent);
+        mGrey600Color = ResourceUtil.getColor(R.color.grey_600);
     }
 
     @Override
@@ -52,10 +50,10 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
         boolean isCompleted = plan.isCompleted();
 
         holder.mTypeMarkIcon.setFillColor(isCompleted ? Color.GRAY : Color.parseColor(mDataManager.getTypeCodeAndTypeMarkMap().get(plan.getTypeCode()).getColorHex()));
-        holder.mContentText.setText(isCompleted ? Util.addStrikethroughSpan(plan.getContent()) : plan.getContent());
+        holder.mContentText.setText(isCompleted ? StringUtil.addStrikethroughSpan(plan.getContent()) : plan.getContent());
         holder.mReminderIcon.setVisibility(plan.hasReminder() ? View.VISIBLE : View.INVISIBLE);
         holder.mDeadlineLayout.setVisibility(plan.hasDeadline() ? View.VISIBLE : View.GONE);
-        holder.mDeadlineLayout.setText(plan.hasDeadline() ? DateFormat.format(mDateTimeFormat, plan.getDeadline()).toString() : null);
+        holder.mDeadlineLayout.setText(plan.hasDeadline() ? TimeUtil.formatTime(plan.getDeadline()) : null);
         setStarButtonImage(holder.mStarButton, plan.isStarred(), plan.isCompleted());
         holder.mStarButton.setOnClickListener(new View.OnClickListener() {
             @Override

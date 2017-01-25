@@ -6,13 +6,16 @@ import android.content.Intent;
 import android.graphics.Color;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.common.Util;
+import com.zack.enderplan.util.ResourceUtil;
+import com.zack.enderplan.util.StringUtil;
+import com.zack.enderplan.util.SystemUtil;
+import com.zack.enderplan.util.ViewUtil;
 import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.database.DatabaseManager;
 import com.zack.enderplan.model.DataManager;
-import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.util.Constant;
 import com.zack.enderplan.view.widget.CircleColorView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -60,21 +63,21 @@ public class ReminderReceiver extends BaseReceiver {
 
         CircleColorView typeMarkIcon = new CircleColorView(context);
         typeMarkIcon.setFillColor(Color.parseColor(type.getTypeMarkColor()));
-        typeMarkIcon.setInnerText(Util.getFirstChar(type.getTypeName()));
-        typeMarkIcon.setInnerIcon(Util.getDrawable(type.getTypeMarkPattern()));
+        typeMarkIcon.setInnerText(StringUtil.getFirstChar(type.getTypeName()));
+        typeMarkIcon.setInnerIcon(ResourceUtil.getDrawable(type.getTypeMarkPattern()));
 
-        Util.showNotification(
+        SystemUtil.showNotification(
                 plan.getPlanCode(),
-                Util.getString(R.string.title_notification_reminder),
+                ResourceUtil.getString(R.string.title_notification_reminder),
                 plan.getContent(),
-                Util.convertViewToBitmap(typeMarkIcon, Constant.NOTIFICATION_LARGE_ICON_SIZE),
+                ViewUtil.convertViewToBitmap(typeMarkIcon, Constant.NOTIFICATION_LARGE_ICON_SIZE),
                 ReminderNotificationActionReceiver.getPendingIntentForSend(context, plan.getPlanCode(), position, ReminderNotificationActionReceiver.NOTIFICATION_ACTION_CONTENT),
-                Util.getNotificationAction(
+                SystemUtil.getNotificationAction(
                         R.drawable.ic_check_black_24dp,
                         R.string.button_complete,
                         ReminderNotificationActionReceiver.getPendingIntentForSend(context, plan.getPlanCode(), position, ReminderNotificationActionReceiver.NOTIFICATION_ACTION_COMPLETE)
                 ),
-                Util.getNotificationAction(
+                SystemUtil.getNotificationAction(
                         R.drawable.ic_snooze_black_24dp,
                         R.string.button_delay,
                         ReminderNotificationActionReceiver.getPendingIntentForSend(context, plan.getPlanCode(), position, ReminderNotificationActionReceiver.NOTIFICATION_ACTION_DELAY)
