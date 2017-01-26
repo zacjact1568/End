@@ -3,9 +3,7 @@ package com.zack.enderplan.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
@@ -13,9 +11,6 @@ import android.view.MenuItem;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.model.preference.PreferenceHelper;
-import com.zack.enderplan.common.Constant;
-
-import java.util.Locale;
 
 public class SettingsActivity extends BaseActivity {
 
@@ -51,16 +46,10 @@ public class SettingsActivity extends BaseActivity {
     public static class SettingsFragment extends PreferenceFragment
             implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-        private ListPreference nightModePref;
-
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
-
-            nightModePref = (ListPreference) findPreference(PreferenceHelper.KEY_PREF_NIGHT_MODE);
-
-            initPreferenceSummary();
         }
 
         @Override
@@ -79,41 +68,11 @@ public class SettingsActivity extends BaseActivity {
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             switch (key) {
                 case PreferenceHelper.KEY_PREF_NIGHT_MODE:
-                    String nightModeValue = sharedPreferences.getString(PreferenceHelper.KEY_PREF_NIGHT_MODE, "");
-                    nightModePref.setSummary(nightModePref.getEntries()[nightModePref.findIndexOfValue(nightModeValue)]);
-
-                    int mode = AppCompatDelegate.MODE_NIGHT_NO;
-                    switch (nightModeValue) {
-                        case Constant.OFF:
-                            mode = AppCompatDelegate.MODE_NIGHT_NO;
-                            break;
-                        case Constant.ON:
-                            mode = AppCompatDelegate.MODE_NIGHT_YES;
-                            break;
-                        case Constant.AUTO:
-                            mode = AppCompatDelegate.MODE_NIGHT_AUTO;
-                            break;
-                        case Constant.DEF:
-                            mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
-                            break;
-                        default:
-                            break;
-                    }
-                    AppCompatDelegate.setDefaultNightMode(mode);
-                    break;
-                default:
+                    AppCompatDelegate.setDefaultNightMode(sharedPreferences.getBoolean(PreferenceHelper.KEY_PREF_NIGHT_MODE, false) ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+                    //返回并重新创建HomeActivity
+                    HomeActivity.start(getActivity());
                     break;
             }
-            //返回并重新创建HomeActivity
-            Intent intent = new Intent(getActivity(), HomeActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-        }
-
-        private void initPreferenceSummary() {
-            PreferenceHelper helper = PreferenceHelper.getInstance();
-            //Night mode
-            nightModePref.setSummary(nightModePref.getEntries()[nightModePref.findIndexOfValue(helper.getStringPref(PreferenceHelper.KEY_PREF_NIGHT_MODE))]);
         }
     }
 }

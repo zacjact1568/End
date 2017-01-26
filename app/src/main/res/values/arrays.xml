@@ -1,20 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!--夜间模式-->
-    <string-array name="pref_night_mode_titles">
-        <item>Off</item>
-        <item>On</item>
-        <item>Auto</item>
-        <item>Follow System</item>
-    </string-array>
-    <string-array name="pref_night_mode_values" translatable="false">
-        <item>off</item>
-        <item>on</item>
-        <item>auto</item>
-        <item>def</item>
-    </string-array>
-
     <array name="type_marks">
         <item>@color/red</item>
         <item>@color/pink</item>

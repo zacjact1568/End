@@ -57,7 +57,7 @@ public class App extends Application {
     private void initFromPreferences() {
         PreferenceHelper helper = PreferenceHelper.getInstance();
         //设定白天夜间模式
-        initNightMode(helper.getStringPref(PreferenceHelper.KEY_PREF_NIGHT_MODE));
+        AppCompatDelegate.setDefaultNightMode(helper.getBooleanPref(PreferenceHelper.KEY_PREF_NIGHT_MODE) ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
     }
 
     /** 初始化类型标记数据库 */
@@ -82,26 +82,5 @@ public class App extends Application {
                 e.printStackTrace();
             }
         }
-    }
-
-    private void initNightMode(String value) {
-        int mode = AppCompatDelegate.MODE_NIGHT_NO;
-        switch (value) {
-            case Constant.OFF:
-                mode = AppCompatDelegate.MODE_NIGHT_NO;
-                break;
-            case Constant.ON:
-                mode = AppCompatDelegate.MODE_NIGHT_YES;
-                break;
-            case Constant.AUTO:
-                mode = AppCompatDelegate.MODE_NIGHT_AUTO;
-                break;
-            case Constant.DEF:
-                mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
-                break;
-            default:
-                break;
-        }
-        AppCompatDelegate.setDefaultNightMode(mode);
     }
 }

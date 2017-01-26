@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ListPreference
+    <SwitchPreference
         android:key="night_mode"
         android:title="@string/pref_title_night_mode"
-        android:entries="@array/pref_night_mode_titles"
-        android:entryValues="@array/pref_night_mode_values"
-        android:defaultValue="off"/>
+        android:summaryOn="@string/pref_summary_on"
+        android:summaryOff="@string/pref_summary_off"
+        android:defaultValue="false"/>
 
 </PreferenceScreen>
