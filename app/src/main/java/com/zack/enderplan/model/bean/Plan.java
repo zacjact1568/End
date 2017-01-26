@@ -3,7 +3,7 @@ package com.zack.enderplan.model.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.zack.enderplan.util.Constant;
+import com.zack.enderplan.common.Constant;
 
 public class Plan implements Parcelable {
 

@@ -13,7 +13,7 @@ import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.model.bean.TypeMark;
 import com.zack.enderplan.model.bean.TypeMarkColor;
 import com.zack.enderplan.model.bean.TypeMarkPattern;
-import com.zack.enderplan.util.Constant;
+import com.zack.enderplan.common.Constant;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -36,7 +36,7 @@ import com.zack.enderplan.view.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.presenter.TypeDetailPresenter;
 import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.Plan;
-import com.zack.enderplan.util.Constant;
+import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.view.widget.CircleColorView;
 
 import javax.inject.Inject;

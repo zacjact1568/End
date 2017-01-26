@@ -5,7 +5,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.TextUtils;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.util.Constant;
+import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.util.ResourceUtil;
 import com.zack.enderplan.util.StringUtil;
 import com.zack.enderplan.util.SystemUtil;

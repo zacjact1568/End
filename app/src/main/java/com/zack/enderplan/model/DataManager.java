@@ -10,7 +10,7 @@ import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.model.database.DatabaseManager;
 import com.zack.enderplan.event.DataLoadedEvent;
-import com.zack.enderplan.util.Constant;
+import com.zack.enderplan.common.Constant;
 
 import org.greenrobot.eventbus.EventBus;
 

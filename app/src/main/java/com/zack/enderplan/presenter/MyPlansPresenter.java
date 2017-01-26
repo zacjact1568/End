@@ -2,7 +2,7 @@ package com.zack.enderplan.presenter;
 
 import android.support.v7.widget.helper.ItemTouchHelper;
 
-import com.zack.enderplan.util.Constant;
+import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.util.LogUtil;
 import com.zack.enderplan.util.SystemUtil;
 import com.zack.enderplan.model.bean.Plan;

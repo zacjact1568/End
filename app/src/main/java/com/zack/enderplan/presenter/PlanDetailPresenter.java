@@ -12,7 +12,7 @@ import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.view.contract.PlanDetailViewContract;
-import com.zack.enderplan.util.Constant;
+import com.zack.enderplan.common.Constant;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.util.Constant;
+import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.util.ResourceUtil;
 import com.zack.enderplan.util.SystemUtil;
 import com.zack.enderplan.event.PlanDetailChangedEvent;

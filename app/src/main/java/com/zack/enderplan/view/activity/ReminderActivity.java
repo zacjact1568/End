@@ -22,7 +22,7 @@ import com.zack.enderplan.injector.module.ReminderPresenterModule;
 import com.zack.enderplan.view.dialog.DateTimePickerDialogFragment;
 import com.zack.enderplan.presenter.ReminderPresenter;
 import com.zack.enderplan.view.contract.ReminderViewContract;
-import com.zack.enderplan.util.Constant;
+import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.view.widget.ImageTextView;
 
 import javax.inject.Inject;

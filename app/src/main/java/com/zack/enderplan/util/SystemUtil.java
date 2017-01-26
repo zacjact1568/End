@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
+import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.receiver.ReminderReceiver;
 
 import java.util.Locale;

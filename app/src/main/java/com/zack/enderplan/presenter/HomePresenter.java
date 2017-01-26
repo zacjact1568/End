@@ -1,7 +1,7 @@
 package com.zack.enderplan.presenter;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.util.Constant;
+import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.util.ResourceUtil;
 import com.zack.enderplan.event.DataLoadedEvent;
 import com.zack.enderplan.event.GuideEndedEvent;

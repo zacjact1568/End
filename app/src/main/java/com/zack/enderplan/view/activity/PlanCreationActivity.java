@@ -24,7 +24,7 @@ import com.zack.enderplan.view.contract.PlanCreationViewContract;
 import com.zack.enderplan.view.dialog.DateTimePickerDialogFragment;
 import com.zack.enderplan.view.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.presenter.PlanCreationPresenter;
-import com.zack.enderplan.util.Constant;
+import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.view.widget.ItemView;
 
 import javax.inject.Inject;

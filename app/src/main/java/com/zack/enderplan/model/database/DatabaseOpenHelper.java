@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.zack.enderplan.util.Constant;
+import com.zack.enderplan.common.Constant;
 
 public class DatabaseOpenHelper extends SQLiteOpenHelper {
 

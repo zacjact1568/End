@@ -25,7 +25,7 @@ import com.zack.enderplan.view.fragment.MyPlansFragment;
 import com.zack.enderplan.view.fragment.AllTypesFragment;
 import com.zack.enderplan.presenter.HomePresenter;
 import com.zack.enderplan.view.contract.HomeViewContract;
-import com.zack.enderplan.util.Constant;
+import com.zack.enderplan.common.Constant;
 
 import javax.inject.Inject;
 

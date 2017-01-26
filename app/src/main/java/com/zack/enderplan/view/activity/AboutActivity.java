@@ -14,7 +14,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.util.Constant;
+import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.util.ResourceUtil;
 import com.zack.enderplan.util.SystemUtil;
 
