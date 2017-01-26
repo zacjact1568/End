@@ -56,8 +56,6 @@ public class App extends Application {
     /** 通过Preference中的数据初始化某些设置 */
     private void initFromPreferences() {
         PreferenceHelper helper = PreferenceHelper.getInstance();
-        //设定运行时的默认语言
-        initLocale(helper.getStringPref(PreferenceHelper.KEY_PREF_LANGUAGE));
         //设定白天夜间模式
         initNightMode(helper.getStringPref(PreferenceHelper.KEY_PREF_NIGHT_MODE));
     }
@@ -84,27 +82,6 @@ public class App extends Application {
                 e.printStackTrace();
             }
         }
-    }
-
-    private void initLocale(String value) {
-        if (value.equals(Constant.DEF)) {
-            return;
-        }
-        Configuration config = getResources().getConfiguration();
-        switch (value) {
-            case Constant.EN:
-                config.setLocale(Locale.ENGLISH);
-                break;
-            case Constant.ZH_CN:
-                config.setLocale(Locale.SIMPLIFIED_CHINESE);
-                break;
-            case Constant.ZH_TW:
-                config.setLocale(Locale.TRADITIONAL_CHINESE);
-                break;
-            default:
-                break;
-        }
-        getResources().updateConfiguration(config, null);
     }
 
     private void initNightMode(String value) {

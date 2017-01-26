@@ -51,14 +51,13 @@ public class SettingsActivity extends BaseActivity {
     public static class SettingsFragment extends PreferenceFragment
             implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-        private ListPreference languagePref, nightModePref;
+        private ListPreference nightModePref;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
 
-            languagePref = (ListPreference) findPreference(PreferenceHelper.KEY_PREF_LANGUAGE);
             nightModePref = (ListPreference) findPreference(PreferenceHelper.KEY_PREF_NIGHT_MODE);
 
             initPreferenceSummary();
@@ -79,27 +78,6 @@ public class SettingsActivity extends BaseActivity {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             switch (key) {
-                case PreferenceHelper.KEY_PREF_LANGUAGE:
-                    String languageValue = sharedPreferences.getString(PreferenceHelper.KEY_PREF_LANGUAGE, Constant.DEF);
-                    languagePref.setSummary(languagePref.getEntries()[languagePref.findIndexOfValue(languageValue)]);
-
-                    Configuration config = getResources().getConfiguration();
-                    switch (languageValue) {
-                        case Constant.EN:
-                            config.setLocale(Locale.ENGLISH);
-                            break;
-                        case Constant.ZH_CN:
-                            config.setLocale(Locale.SIMPLIFIED_CHINESE);
-                            break;
-                        case Constant.ZH_TW:
-                            config.setLocale(Locale.TRADITIONAL_CHINESE);
-                            break;
-                        default:
-                            config.setLocale(Locale.getDefault());
-                            break;
-                    }
-                    getResources().updateConfiguration(config, null);
-                    break;
                 case PreferenceHelper.KEY_PREF_NIGHT_MODE:
                     String nightModeValue = sharedPreferences.getString(PreferenceHelper.KEY_PREF_NIGHT_MODE, "");
                     nightModePref.setSummary(nightModePref.getEntries()[nightModePref.findIndexOfValue(nightModeValue)]);
@@ -134,8 +112,6 @@ public class SettingsActivity extends BaseActivity {
 
         private void initPreferenceSummary() {
             PreferenceHelper helper = PreferenceHelper.getInstance();
-            //Language
-            languagePref.setSummary(languagePref.getEntries()[languagePref.findIndexOfValue(helper.getStringPref(PreferenceHelper.KEY_PREF_LANGUAGE))]);
             //Night mode
             nightModePref.setSummary(nightModePref.getEntries()[nightModePref.findIndexOfValue(helper.getStringPref(PreferenceHelper.KEY_PREF_NIGHT_MODE))]);
         }

@@ -8,7 +8,6 @@ import com.zack.enderplan.App;
 public class PreferenceHelper {
 
     public static final String KEY_PREF_NEED_GUIDE = "need_guide";
-    public static final String KEY_PREF_LANGUAGE = "language";
     public static final String KEY_PREF_NIGHT_MODE = "night_mode";
 
     private SharedPreferences sharedPreferences;

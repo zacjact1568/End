@@ -8,11 +8,4 @@
         android:entryValues="@array/pref_night_mode_values"
         android:defaultValue="off"/>
 
-    <ListPreference
-        android:key="language"
-        android:title="@string/pref_title_language"
-        android:entries="@array/pref_language_titles"
-        android:entryValues="@array/pref_language_values"
-        android:defaultValue="def"/>
-
 </PreferenceScreen>
