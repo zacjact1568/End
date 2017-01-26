@@ -77,7 +77,7 @@ public class ReminderPresenter extends BasePresenter {
 
     public void notifyUpdatingReminderTime(long reminderTime) {
         if (reminderTime == Constant.UNDEFINED_TIME) return;
-        if (TimeUtil.isValidDateTimePickerTime(reminderTime)) {
+        if (TimeUtil.isValidTime(reminderTime)) {
             updateReminderTime(
                     reminderTime,
                     String.format(ResourceUtil.getString(R.string.toast_reminder_delayed_format), String.format(ResourceUtil.getString(R.string.toast_delay_more), TimeUtil.formatTime(reminderTime)))

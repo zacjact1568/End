@@ -11,11 +11,11 @@ import java.util.Date;
 
 public class TimeUtil {
 
-    public static boolean isValidDateTimePickerTime(long timeInMillis) {
+    public static boolean isValidTime(long timeInMillis) {
         return timeInMillis == Constant.UNDEFINED_TIME || timeInMillis > System.currentTimeMillis();
     }
 
-    public static long getDefaultDateTimePickerTime(long timeInMillis) {
+    public static long getDateTimePickerDefaultTime(long timeInMillis) {
         if (timeInMillis == Constant.UNDEFINED_TIME) {
             Calendar calendar = Calendar.getInstance();
             //TODO 延后的时间可以自定义

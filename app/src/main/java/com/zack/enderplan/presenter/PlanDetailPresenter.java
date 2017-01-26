@@ -172,16 +172,16 @@ public class PlanDetailPresenter extends BasePresenter {
     }
 
     public void notifySettingDeadline() {
-        mPlanDetailViewContract.showDeadlinePickerDialog(TimeUtil.getDefaultDateTimePickerTime(mPlan.getDeadline()));
+        mPlanDetailViewContract.showDeadlinePickerDialog(TimeUtil.getDateTimePickerDefaultTime(mPlan.getDeadline()));
     }
 
     public void notifySettingReminder() {
-        mPlanDetailViewContract.showReminderTimePickerDialog(TimeUtil.getDefaultDateTimePickerTime(mPlan.getReminderTime()));
+        mPlanDetailViewContract.showReminderTimePickerDialog(TimeUtil.getDateTimePickerDefaultTime(mPlan.getReminderTime()));
     }
 
     public void notifyDeadlineChanged(long deadline) {
         if (mPlan.getDeadline() == deadline) return;
-        if (TimeUtil.isValidDateTimePickerTime(deadline)) {
+        if (TimeUtil.isValidTime(deadline)) {
             mDataManager.notifyDeadlineChanged(mPlanListPosition, deadline);
             mPlanDetailViewContract.onDeadlineChanged(mPlan.hasDeadline(), formatDateTime(deadline));
             postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_DEADLINE);
@@ -192,7 +192,7 @@ public class PlanDetailPresenter extends BasePresenter {
 
     public void notifyReminderTimeChanged(long reminderTime) {
         if (mPlan.getReminderTime() == reminderTime) return;
-        if (TimeUtil.isValidDateTimePickerTime(reminderTime)) {
+        if (TimeUtil.isValidTime(reminderTime)) {
             mDataManager.notifyReminderTimeChanged(mPlanListPosition, reminderTime);
             mPlanDetailViewContract.onReminderTimeChanged(mPlan.hasReminder(), formatDateTime(reminderTime));
             postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_REMINDER_TIME);

@@ -50,6 +50,7 @@
 
     <string name="toast_past_deadline">The deadline should be in the future</string>
     <string name="toast_past_reminder_time">The reminder time should be in the future</string>
+    <string name="toast_past_deadline_and_reminder_time">The deadline and reminder time should be in the future</string>
 
     <string name="dscpt_time_within_1_minute">Within 1 minute</string>
     <string name="dscpt_time_1_minute">1 minute</string>
