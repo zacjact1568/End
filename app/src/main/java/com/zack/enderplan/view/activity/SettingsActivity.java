@@ -1,16 +1,17 @@
 package com.zack.enderplan.view.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.model.preference.PreferenceHelper;
+import com.zack.enderplan.view.fragment.SettingsFragment;
 
 public class SettingsActivity extends BaseActivity {
 
@@ -32,47 +33,33 @@ public class SettingsActivity extends BaseActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_settings, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                exit();
+                break;
+            case R.id.action_reset:
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.title_dialog_reset_settings)
+                        .setMessage(R.string.msg_dialog_reset_settings)
+                        .setPositiveButton(R.string.btn_dialog_reset_settings, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                PreferenceHelper.getInstance().resetValues();
+                            }
+                        })
+                        .setNegativeButton(R.string.button_cancel, null)
+                        .show();
                 break;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public static class SettingsFragment extends PreferenceFragment
-            implements SharedPreferences.OnSharedPreferenceChangeListener {
-
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.preferences);
-        }
-
-        @Override
-        public void onResume() {
-            super.onResume();
-            getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-        }
-
-        @Override
-        public void onPause() {
-            super.onPause();
-            getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
-        }
-
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            switch (key) {
-                case PreferenceHelper.KEY_PREF_NIGHT_MODE:
-                    AppCompatDelegate.setDefaultNightMode(sharedPreferences.getBoolean(PreferenceHelper.KEY_PREF_NIGHT_MODE, false) ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
-                    //返回并重新创建HomeActivity
-                    HomeActivity.start(getActivity());
-                    break;
-            }
-        }
     }
 }

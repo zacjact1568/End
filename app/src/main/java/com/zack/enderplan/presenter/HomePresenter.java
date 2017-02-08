@@ -27,7 +27,7 @@ public class HomePresenter extends BasePresenter {
     private long mLastBackKeyPressedTime;
 
     @Inject
-    public HomePresenter(HomeViewContract homeViewContract, DataManager dataManager, PreferenceHelper preferenceHelper, EventBus eventBus) {
+    HomePresenter(HomeViewContract homeViewContract, DataManager dataManager, PreferenceHelper preferenceHelper, EventBus eventBus) {
         mHomeViewContract = homeViewContract;
         mDataManager = dataManager;
         mPreferenceHelper = preferenceHelper;
@@ -47,7 +47,7 @@ public class HomePresenter extends BasePresenter {
     }
 
     public void notifyStartingUpCompleted() {
-        if (mPreferenceHelper.getBooleanPref(PreferenceHelper.KEY_PREF_NEED_GUIDE)) {
+        if (mPreferenceHelper.getNeedGuideValue()) {
             mHomeViewContract.enterActivity(Constant.GUIDE);
         }
     }
@@ -126,14 +126,6 @@ public class HomePresenter extends BasePresenter {
         if (event.getEventSource().equals(getPresenterName())) return;
         if (event.getChangedField() == PlanDetailChangedEvent.FIELD_PLAN_STATUS) {
             mHomeViewContract.changeUcPlanCount(getUcPlanCount());
-        }
-    }
-
-    @Subscribe
-    public void onGuideEnded(GuideEndedEvent event) {
-        if (event.getEventSource().equals(getPresenterName())) return;
-        if (!event.isEndNormally()) {
-            mHomeViewContract.exit();
         }
     }
 }

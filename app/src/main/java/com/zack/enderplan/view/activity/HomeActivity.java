@@ -130,6 +130,19 @@ public class HomeActivity extends BaseActivity implements HomeViewContract {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (resultCode) {
+            case RESULT_OK:
+                //正常结束引导
+                break;
+            case RESULT_CANCELED:
+                //中途退出引导
+                exit();
+                break;
+        }
+    }
+
+    @Override
     public void showInitialView(String ucPlanCount) {
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);

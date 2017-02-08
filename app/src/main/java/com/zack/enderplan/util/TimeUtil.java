@@ -12,7 +12,7 @@ import java.util.Date;
 public class TimeUtil {
 
     public static boolean isValidTime(long timeInMillis) {
-        return timeInMillis == Constant.UNDEFINED_TIME || timeInMillis > System.currentTimeMillis();
+        return timeInMillis == Constant.UNDEFINED_TIME || isFutureTime(timeInMillis);
     }
 
     public static long getDateTimePickerDefaultTime(long timeInMillis) {
@@ -23,6 +23,10 @@ public class TimeUtil {
             timeInMillis = calendar.getTimeInMillis();
         }
         return timeInMillis;
+    }
+
+    public static boolean isFutureTime(long timeInMillis) {
+        return timeInMillis > System.currentTimeMillis();
     }
 
     public static boolean is24HourFormat() {

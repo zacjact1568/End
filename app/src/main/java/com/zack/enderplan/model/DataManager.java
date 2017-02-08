@@ -11,6 +11,7 @@ import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.model.database.DatabaseManager;
 import com.zack.enderplan.event.DataLoadedEvent;
 import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.util.TimeUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -331,6 +332,22 @@ public class DataManager {
         addToPlanList(newPosition, plan);
 
         mDatabaseManager.updatePlanStatus(plan.getPlanCode(), newCreationTime, newCompletionTime);
+    }
+
+    /**
+     * 将已过时的提醒移除<br>
+     * 在某些rom中，reminder不能在指定时间触发，调用此方法移除这些过时的reminder
+     */
+    public void removeExpiredReminders() {
+        for (int i = 0; i < getPlanCount(); i++) {
+            Plan plan = getPlan(i);
+            //说明已经遍历到已完成的计划的部分了，可以不再遍历下去了
+            if (plan.isCompleted()) break;
+            if (plan.hasReminder() && !TimeUtil.isFutureTime(plan.getReminderTime())) {
+                //有reminder且已过时
+                notifyReminderTimeChanged(i, Constant.UNDEFINED_TIME);
+            }
+        }
     }
 
     //****************TypeList****************

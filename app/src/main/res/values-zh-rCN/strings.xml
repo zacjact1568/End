@@ -73,7 +73,7 @@
     <string name="app_name">Ender计划</string>
     <string name="title_fragment_all_types">所有类型</string>
     <string name="title_fragment_my_plans">我的计划</string>
-    <string name="title_activity_welcome">欢迎</string>
+    <string name="title_guide_page_welcome">欢迎</string>
     <string name="btn_text_start">开始</string>
     <string name="slogan">「哪怕世界末日到了也要做计划」</string>
     <string name="hint_first_plan_content">输入你的第一个计划</string>
@@ -134,9 +134,7 @@
     <string name="def_type_2">家庭</string>
     <string name="def_type_1">待办事项</string>
     <string name="def_type_3">工作</string>
-    <string name="def_plan_2">左滑删除计划</string>
     <string name="def_plan_3">右滑完成计划</string>
-    <string name="def_plan_1">点击查看计划详情</string>
     <string name="action_create">创建</string>
     <string name="btn_custom">自定义</string>
     <string name="btn_preset">预置</string>
@@ -181,4 +179,23 @@
     <string name="toast_past_deadline_and_reminder_time">截止时间和提醒时间应该在未来</string>
     <string name="pref_summary_off">关闭</string>
     <string name="pref_summary_on">开启</string>
+    <string name="btn_guide_page_reminder">启用</string>
+    <string name="dscpt_guide_page_ready">享受Ender计划吧</string>
+    <string name="dscpt_guide_page_welcome">触摸右箭头以继续</string>
+    <string name="title_guide_page_ready">向导结束</string>
+    <string name="button_enable">启用</string>
+    <string name="msg_dialog_about_reminder">Ender计划使用系统级的服务来实现提醒功能，但由于部分设备预装了优化版的Android系统，提醒功能有时不能正常工作。如果您发现提醒时间不准确或无法收到提醒，请尝试开启Ender计划的自启动及后台运行权限。</string>
+    <string name="action_reset">重置</string>
+    <string name="btn_dialog_reset_settings">重置并重启</string>
+    <string name="button_disable">禁用</string>
+    <string name="button_restart">重启</string>
+    <string name="msg_dialog_reset_settings">设置将会被重置为默认，Ender计划将会重启。</string>
+    <string name="msg_dialog_switch_night_mode">在白天和夜间模式之间切换需要重启Ender计划。</string>
+    <string name="title_dialog_reset_settings">重置设置？</string>
+    <string name="title_dialog_switch_night_mode">重启Ender计划？</string>
+    <string name="title_dialog_about_reminder">关于提醒</string>
+    <string name="def_plan_4">左滑删除计划</string>
+    <string name="def_plan_2">触摸查看计划详情</string>
+    <string name="def_plan_1">触摸\"+\"按钮创建一个计划</string>
+    <string name="title_activity_guide">向导</string>
 </resources>

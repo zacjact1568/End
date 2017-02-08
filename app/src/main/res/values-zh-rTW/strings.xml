@@ -72,7 +72,7 @@
     <string name="app_name">Ender計劃</string>
     <string name="title_fragment_all_types">所有類型</string>
     <string name="title_fragment_my_plans">我的計劃</string>
-    <string name="title_activity_welcome">歡迎</string>
+    <string name="title_guide_page_welcome">歡迎</string>
     <string name="btn_text_start">開始</string>
     <string name="slogan">「哪怕世界末日到了也要做計劃」</string>
     <string name="hint_first_plan_content">輸入你的第一個計劃</string>
@@ -131,9 +131,7 @@
     <string name="def_type_4">學習</string>
     <string name="def_type_1">待辦事項</string>
     <string name="def_type_3">工作</string>
-    <string name="def_plan_2">左滑刪除計劃</string>
     <string name="def_plan_3">右滑完成計劃</string>
-    <string name="def_plan_1">點擊查看計劃詳情</string>
     <string name="action_create">創建</string>
     <string name="btn_custom">自定義</string>
     <string name="btn_preset">預置</string>

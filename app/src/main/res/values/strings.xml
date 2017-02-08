@@ -21,6 +21,9 @@
     <string name="button_undo">Undo</string>
     <string name="button_complete">Complete</string>
     <string name="button_delay">Delay</string>
+    <string name="button_enable">Enable</string>
+    <string name="button_disable">Disable</string>
+    <string name="button_restart">Restart</string>
 
     <string name="title_star">Star</string>
     <string name="title_deadline">Deadline</string>
@@ -70,6 +73,7 @@
     <string name="action_all_types">All Types</string>
     <string name="action_settings">Settings</string>
     <string name="action_about">About</string>
+    <string name="action_reset">Reset</string>
 
     <string name="nav_sub_header">Others</string>
 
@@ -116,6 +120,8 @@
     <!--PlanCreationActivity-->
     <string name="title_activity_plan_creation">Plan Creation</string>
     <string name="toast_shortcut_disabled">Shortcut disabled</string>
+    <string name="title_dialog_about_reminder">About Reminder</string>
+    <string name="msg_dialog_about_reminder">EnderPlan uses a system-level service to implement reminder, but some devices were pre-installed an optimized version of Android system, which makes reminder sometimes can\'t work as expected. If you find that the reminder time is inaccurate or you can\'t receive the reminder, please try to turn on auto-start and background running permissions for EnderPlan.</string>
 
     <!--PlanDetailActivity-->
     <string name="title_activity_plan_detail">Plan Detail</string>
@@ -189,9 +195,14 @@
     <string name="title_activity_settings">Settings</string>
     <string name="pref_title_theme">Theme</string>
     <string name="pref_title_night_mode">Night Mode</string>
+    <string name="title_dialog_switch_night_mode">Restart EnderPlan?</string>
+    <string name="msg_dialog_switch_night_mode">EnderPlan needs a restart to switch between day and night mode.</string>
     <string name="pref_summary_on">On</string>
     <string name="pref_summary_off">Off</string>
     <string name="pref_title_language">Language</string>
+    <string name="title_dialog_reset_settings">Reset Settings?</string>
+    <string name="msg_dialog_reset_settings">Settings will be reset to default, EnderPlan will restart.</string>
+    <string name="btn_dialog_reset_settings">Reset And Restart</string>
 
     <!--AboutActivity-->
     <string name="title_activity_about">About</string>
@@ -208,8 +219,12 @@
     <string name="toast_copy_to_clipboard_successfully">Text has been copied to clipboard</string>
     <string name="label_developer_email">Email of EnderPlan\'s developer</string>
 
-    <!--WelcomeFragment-->
-    <string name="title_activity_welcome">Welcome</string>
+    <!--GuideActivity-->
+    <string name="title_activity_guide">Guide</string>
+    <string name="title_guide_page_welcome">Welcome</string>
+    <string name="dscpt_guide_page_welcome">Touch the right arrow to continue</string>
+    <string name="title_guide_page_ready">Guide Ends</string>
+    <string name="dscpt_guide_page_ready">Enjoy EnderPlan</string>
     <string name="btn_text_start">Start</string>
 
     <!--FirstPlanFragment-->
@@ -222,9 +237,10 @@
     <string name="def_type_4">Study</string>
 
     <!--Default plans-->
-    <string name="def_plan_1">Click to see the detail of this plan</string>
-    <string name="def_plan_2">Slide left to delete this plan</string>
+    <string name="def_plan_1">Touch \"+\" button to create a plan</string>
+    <string name="def_plan_2">Touch to see the detail of this plan</string>
     <string name="def_plan_3">Slide right to complete this plan</string>
+    <string name="def_plan_4">Slide left to delete this plan</string>
 
     <!--Reminder-->
     <string name="title_notification_reminder">Reminder</string>

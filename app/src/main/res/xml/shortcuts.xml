@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+<shortcuts
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <shortcut
         android:shortcutId="plan_creation"
@@ -7,7 +9,8 @@
         android:icon="@drawable/ic_add_black_24dp"
         android:shortcutShortLabel="@string/title_activity_plan_creation"
         android:shortcutLongLabel="@string/title_activity_plan_creation"
-        android:shortcutDisabledMessage="@string/toast_shortcut_disabled">
+        android:shortcutDisabledMessage="@string/toast_shortcut_disabled"
+        tools:targetApi="N_MR1">
 
         <intent
             android:action="android.intent.action.VIEW"

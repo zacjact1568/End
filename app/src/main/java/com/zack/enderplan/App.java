@@ -2,7 +2,6 @@ package com.zack.enderplan;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatDelegate;
 
@@ -17,7 +16,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Locale;
 
 public class App extends Application {
 
@@ -57,7 +55,7 @@ public class App extends Application {
     private void initFromPreferences() {
         PreferenceHelper helper = PreferenceHelper.getInstance();
         //设定白天夜间模式
-        AppCompatDelegate.setDefaultNightMode(helper.getBooleanPref(PreferenceHelper.KEY_PREF_NIGHT_MODE) ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+        AppCompatDelegate.setDefaultNightMode(helper.getNightModeValue() ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
     }
 
     /** 初始化类型标记数据库 */

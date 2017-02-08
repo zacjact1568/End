@@ -73,7 +73,7 @@
             android:excludeFromRecents="true"/>
         <activity
             android:name=".view.activity.GuideActivity"
-            android:label="@string/title_activity_welcome"
+            android:label="@string/title_activity_guide"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"/>
 
