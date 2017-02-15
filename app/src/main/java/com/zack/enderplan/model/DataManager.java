@@ -56,16 +56,22 @@ public class DataManager {
                 //以下代码都是在主线程中执行的，所以如果在主线程访问mPlanList或mTypeList，只有两种情况：空或满数据
                 mPlanList.addAll(planList);
                 mTypeList.addAll(typeList);
-                for (Plan plan : mPlanList) {
+                for (int i = 0; i < getPlanCount(); i++) {
+                    Plan plan = getPlan(i);
                     //说明已经遍历到已完成的计划的部分了，可以不再遍历下去了
                     if (plan.isCompleted()) break;
-                    //初始化（计算）未完成计划的数量（仅一次）
+                    //初始化（计算）未完成计划的数量
                     mUcPlanCount++;
-                    //初始化（计算）每个类型具有的未完成计划数量map（仅一次）
+                    //初始化（计算）每个类型具有的未完成计划数量map
                     updateUcPlanCountOfEachTypeMap(plan.getTypeCode(), 1);
+                    //将过期的reminder移除（在某些rom中，如果未开启后台运行权限，杀死进程后无法被系统唤醒）
+                    if (plan.hasReminder() && !TimeUtil.isFutureTime(plan.getReminderTime())) {
+                        //有reminder且已过时
+                        notifyReminderTimeChanged(i, Constant.UNDEFINED_TIME);
+                    }
                 }
                 for (Type type : mTypeList) {
-                    //初始化TypeCode和TypeMark的对应表（仅一次）
+                    //初始化TypeCode和TypeMark的对应表
                     mTypeCodeAndTypeMarkMap.put(
                             type.getTypeCode(),
                             new TypeMark(type.getTypeMarkColor(), type.getTypeMarkPattern())
@@ -332,22 +338,6 @@ public class DataManager {
         addToPlanList(newPosition, plan);
 
         mDatabaseManager.updatePlanStatus(plan.getPlanCode(), newCreationTime, newCompletionTime);
-    }
-
-    /**
-     * 将已过时的提醒移除<br>
-     * 在某些rom中，reminder不能在指定时间触发，调用此方法移除这些过时的reminder
-     */
-    public void removeExpiredReminders() {
-        for (int i = 0; i < getPlanCount(); i++) {
-            Plan plan = getPlan(i);
-            //说明已经遍历到已完成的计划的部分了，可以不再遍历下去了
-            if (plan.isCompleted()) break;
-            if (plan.hasReminder() && !TimeUtil.isFutureTime(plan.getReminderTime())) {
-                //有reminder且已过时
-                notifyReminderTimeChanged(i, Constant.UNDEFINED_TIME);
-            }
-        }
     }
 
     //****************TypeList****************
