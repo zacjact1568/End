@@ -306,7 +306,11 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     public void onDetectedTypeNotEmpty() {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.title_dialog_type_not_empty)
-                .setMessage(StringUtil.addBoldStyle(getString(R.string.msg_dialog_type_not_empty), new String[]{getString(R.string.button_move), getString(R.string.button_delete), getString(R.string.button_cancel)}))
+                .setMessage(StringUtil.addSpan(
+                        getString(R.string.msg_dialog_type_not_empty),
+                        new String[]{getString(R.string.button_move), getString(R.string.button_delete), getString(R.string.button_cancel)},
+                        StringUtil.SPAN_BOLD_STYLE
+                ))
                 .setPositiveButton(R.string.button_move, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -355,7 +359,11 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     public void showPlanMigrationConfirmationDialog(String fromTypeName, String toTypeName, final String toTypeCode) {
         new AlertDialog.Builder(this)
                 .setTitle(fromTypeName)
-                .setMessage(StringUtil.addBoldStyle(getString(R.string.msg_dialog_migrate_plan_pt1) + " " + toTypeName + getString(R.string.msg_dialog_migrate_plan_pt2), new String[]{toTypeName}))
+                .setMessage(StringUtil.addSpan(
+                        getString(R.string.msg_dialog_migrate_plan_pt1) + " " + toTypeName + getString(R.string.msg_dialog_migrate_plan_pt2),
+                        new String[]{toTypeName},
+                        StringUtil.SPAN_BOLD_STYLE
+                ))
                 .setPositiveButton(R.string.btn_dialog_move_and_delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

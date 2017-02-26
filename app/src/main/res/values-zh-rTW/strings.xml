@@ -64,12 +64,11 @@
     <string name="plan_uc_none">所有任務都完成了</string>
     <string name="plan_uc_one">個任務未完成</string>
     <string name="text_view_details">查看詳細</string>
-    <string name="toast_double_click_exit">再次點擊退出Ender計劃</string>
+    <string name="toast_double_click_exit">再次點擊退出EnderPlan</string>
     <string name="toast_reminder_delayed_5min">我將會在5分鐘之後提醒你</string>
     <string name="toast_reminder_canceled">提醒已取消</string>
     <string name="toast_plan_completed">計劃已標記為完成</string>
     <string name="action_my_plans">我的計劃</string>
-    <string name="app_name">Ender計劃</string>
     <string name="title_fragment_all_types">所有類型</string>
     <string name="title_fragment_my_plans">我的計劃</string>
     <string name="title_guide_page_welcome">歡迎</string>
@@ -135,7 +134,7 @@
     <string name="action_create">創建</string>
     <string name="btn_custom">自定義</string>
     <string name="btn_preset">預置</string>
-    <string name="dscpt_reminder">Ender計劃的提醒</string>
+    <string name="dscpt_reminder">EnderPlan的提醒</string>
     <string name="text_1_hour">1小時</string>
     <string name="text_back">返回</string>
     <string name="text_complete">完成</string>

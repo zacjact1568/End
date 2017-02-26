@@ -45,7 +45,7 @@ public class SingleTypePlanAdapter extends RecyclerView.Adapter<SingleTypePlanAd
     public void onBindViewHolder(final ViewHolder holder, int position) {
         Plan plan = mSingleTypePlanList.get(position);
 
-        holder.mContentText.setText(plan.isCompleted() ? StringUtil.addStrikethroughSpan(plan.getContent()) : plan.getContent());
+        holder.mContentText.setText(plan.isCompleted() ? StringUtil.addSpan(plan.getContent(), StringUtil.SPAN_STRIKETHROUGH) : plan.getContent());
         holder.mDeadlineLayout.setVisibility(plan.hasDeadline() ? View.VISIBLE : View.GONE);
         holder.mDeadlineLayout.setText(plan.hasDeadline() ? TimeUtil.formatTime(plan.getDeadline()) : null);
         holder.mReminderIcon.setVisibility(plan.hasReminder() ? View.VISIBLE : View.INVISIBLE);

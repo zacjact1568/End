@@ -5,24 +5,57 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
+import android.text.style.UnderlineSpan;
+
+import java.util.Arrays;
 
 public class StringUtil {
 
-    /** 为给定字符串添加删除线 */
-    public static SpannableString addStrikethroughSpan(String str) {
-        SpannableString spannableString = new SpannableString(str);
-        spannableString.setSpan(new StrikethroughSpan(), 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-        return spannableString;
+    public static final int SPAN_STRIKETHROUGH = 0;
+    public static final int SPAN_BOLD_STYLE = 1;
+    public static final int SPAN_UNDERLINE = 2;
+
+    /** 整个字符串都添加span */
+    public static SpannableString addSpan(String str, int span) {
+        return addSpan(new SpannableString(str), span, 0, str.length());
     }
 
-    /** 为给定字符串中的子字符串加粗 */
-    public static SpannableString addBoldStyle(String str, String[] bolds) {
-        SpannableString ss = new SpannableString(str);
-        for (String bold : bolds) {
-            int start = str.indexOf(bold);
-            int end = start + bold.length();
-            ss.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+    /** 一个字符串不同段上添加相同的span */
+    public static SpannableString addSpan(String str, String[] segs, int span) {
+        int[] spans = new int[segs.length];
+        Arrays.fill(spans, span);
+        return addSpan(str, segs, spans);
+    }
+
+    /** 一个字符串不同段上添加不同的span */
+    public static SpannableString addSpan(String str, String[] segs, int[] spans) {
+        if (segs.length != spans.length) {
+            throw new RuntimeException("The length of string segment array and span type array should be equal");
         }
+        SpannableString ss = new SpannableString(str);
+        for (int i = 0; i < segs.length; i++) {
+            String seg = segs[i];
+            addSpan(ss, spans[i], str.indexOf(seg), seg.length());
+        }
+        return ss;
+    }
+
+    private static SpannableString addSpan(SpannableString ss, int span, int start, int length) {
+        Object what;
+        switch (span) {
+            case SPAN_STRIKETHROUGH:
+                what = new StrikethroughSpan();
+                break;
+            case SPAN_BOLD_STYLE:
+                what = new StyleSpan(Typeface.BOLD);
+                break;
+            case SPAN_UNDERLINE:
+                what = new UnderlineSpan();
+                break;
+            default:
+                throw new IllegalArgumentException("The argument span cannot be " + span);
+        }
+        ss.setSpan(what, start, start + length, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
         return ss;
     }
 

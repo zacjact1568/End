@@ -1,5 +1,6 @@
 package com.zack.enderplan.util;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -7,8 +8,12 @@ import android.app.PendingIntent;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.LocaleList;
@@ -147,5 +152,31 @@ public class SystemUtil {
 
     public static void showToast(String msg) {
         Toast.makeText(App.getContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void openLink(String link, Activity activity) {
+        openLink(link, activity, activity.getString(R.string.toast_no_link_app_found));
+    }
+
+    public static void openLink(String link, Activity activity, String failed) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+        if (intent.resolveActivity(activity.getPackageManager()) != null) {
+            activity.startActivity(intent);
+        } else {
+            showToast(failed);
+        }
+    }
+
+    public static String getVersionName() {
+        Context context = App.getContext();
+        String versionName;
+        PackageManager manager = context.getPackageManager();
+        try {
+            PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
+            versionName = info.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            versionName = "null";
+        }
+        return versionName;
     }
 }

@@ -50,7 +50,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
         boolean isCompleted = plan.isCompleted();
 
         holder.mTypeMarkIcon.setFillColor(isCompleted ? Color.GRAY : Color.parseColor(mDataManager.getTypeCodeAndTypeMarkMap().get(plan.getTypeCode()).getColorHex()));
-        holder.mContentText.setText(isCompleted ? StringUtil.addStrikethroughSpan(plan.getContent()) : plan.getContent());
+        holder.mContentText.setText(isCompleted ? StringUtil.addSpan(plan.getContent(), StringUtil.SPAN_STRIKETHROUGH) : plan.getContent());
         holder.mReminderIcon.setVisibility(plan.hasReminder() ? View.VISIBLE : View.INVISIBLE);
         holder.mDeadlineLayout.setVisibility(plan.hasDeadline() ? View.VISIBLE : View.GONE);
         holder.mDeadlineLayout.setText(plan.hasDeadline() ? TimeUtil.formatTime(plan.getDeadline()) : null);

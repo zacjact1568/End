@@ -2,7 +2,7 @@
 
     <!--通用-->
 
-    <string name="app_name">EnderPlan</string>
+    <string name="app_name" translatable="false">EnderPlan</string>
 
     <string name="action_search">Search</string>
     <string name="action_edit">Edit</string>
@@ -120,8 +120,6 @@
     <!--PlanCreationActivity-->
     <string name="title_activity_plan_creation">Plan Creation</string>
     <string name="toast_shortcut_disabled">Shortcut disabled</string>
-    <string name="title_dialog_about_reminder">About Reminder</string>
-    <string name="msg_dialog_about_reminder">EnderPlan uses a system-level service to implement reminder, but some devices were pre-installed an optimized version of Android system, which makes reminder sometimes can\'t work as expected. If you find that the reminder time is inaccurate or you can\'t receive the reminder, please try to turn on auto-start and background running permissions for EnderPlan.</string>
 
     <!--PlanDetailActivity-->
     <string name="title_activity_plan_detail">Plan Detail</string>
@@ -218,6 +216,16 @@
     <string name="btn_dialog_copy_to_clipboard">Copy to Clipboard</string>
     <string name="toast_copy_to_clipboard_successfully">Text has been copied to clipboard</string>
     <string name="label_developer_email">Email of EnderPlan\'s developer</string>
+    <string name="text_intro">As the name implied, EnderPlan is an simple app that helps you manage your plans. You can create plans and group them with types, set reminder for your plans and EnderPlan will tell the system to send you a notification when time is up.</string>
+    <string name="text_developer">EnderPlan is written by Zack Zhang</string>
+    <string name="text_email">Email</string>
+    <string name="text_store">Store</string>
+    <string name="toast_no_store_found">It seems that you doesn\'t install an application store</string>
+    <string name="toast_no_link_app_found">No app can open a link</string>
+    <string name="btn_reminder_problem">Reminder can\'t work?</string>
+    <string name="title_dialog_reminder_problem">About Reminder</string>
+    <string name="msg_dialog_reminder_problem">EnderPlan uses a system-level service to implement reminder, but some devices were pre-installed an optimized version of Android system, which makes reminder sometimes can\'t work as expected. If you find that the reminder time is inaccurate or you can\'t receive the reminder, please try to turn on auto-start and background running permissions for EnderPlan.</string>
+    <string name="text_library">Special thanks to the developers of the following libraries:</string>
 
     <!--GuideActivity-->
     <string name="title_activity_guide">Guide</string>

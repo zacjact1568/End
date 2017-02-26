@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,38 +9,18 @@
     tools:context=".view.activity.AboutActivity"
     tools:showIn="@layout/activity_about">
 
-    <LinearLayout
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager_about"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <com.pixelcan.inkpageindicator.InkPageIndicator
+        android:id="@+id/indicator_about"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:orientation="vertical">
+        android:layout_gravity="center|top"
+        android:layout_marginTop="16dp"
+        app:pageIndicatorColor="@android:color/darker_gray"
+        app:currentPageIndicatorColor="@color/colorPrimary"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/version"
-            android:textSize="18sp"
-            android:textColor="?attr/colorPrimary"/>
-
-        <TextView
-            android:id="@+id/text_version_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="20160429"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/developer"
-            android:textSize="18sp"
-            android:textColor="?attr/colorPrimary"
-            android:layout_marginTop="16dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/me"/>
-
-    </LinearLayout>
-
-</android.support.v4.widget.NestedScrollView>
+</FrameLayout>
