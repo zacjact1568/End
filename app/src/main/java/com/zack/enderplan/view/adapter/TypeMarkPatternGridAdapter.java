@@ -15,11 +15,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TypeMarkPatternAdapter extends BaseAdapter {
+public class TypeMarkPatternGridAdapter extends BaseAdapter {
 
     private List<TypeMarkPattern> mTypeMarkPatternList;
 
-    public TypeMarkPatternAdapter(List<TypeMarkPattern> typeMarkPatternList) {
+    public TypeMarkPatternGridAdapter(List<TypeMarkPattern> typeMarkPatternList) {
         mTypeMarkPatternList = typeMarkPatternList;
     }
 
@@ -44,7 +44,7 @@ public class TypeMarkPatternAdapter extends BaseAdapter {
         View view;
         ViewHolder viewHolder;
         if (convertView == null) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_type_mark_pattern, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_grid_type_mark_pattern, parent, false);
             viewHolder = new ViewHolder(view);
             view.setTag(viewHolder);
         } else {

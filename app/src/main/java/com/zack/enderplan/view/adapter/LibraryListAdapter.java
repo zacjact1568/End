@@ -14,7 +14,7 @@ import com.zack.enderplan.util.SystemUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class LibraryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
@@ -30,7 +30,7 @@ public class LibraryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private Activity mActivity;
 
-    public LibraryAdapter(Activity activity) {
+    public LibraryListAdapter(Activity activity) {
         mActivity = activity;
     }
 
@@ -40,7 +40,7 @@ public class LibraryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             case TYPE_HEADER:
                 return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.header_list_libraries, parent, false));
             case TYPE_ITEM:
-                return new ItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_libraries, parent, false));
+                return new ItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_library, parent, false));
             default:
                 throw new IllegalArgumentException("The argument viewType cannot be " + viewType);
         }

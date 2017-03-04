@@ -6,7 +6,7 @@
     tools:context=".view.fragment.MyPlansFragment">
 
     <com.zack.enderplan.view.widget.EnhancedRecyclerView
-        android:id="@+id/list_my_plans"
+        android:id="@+id/list_plan"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

@@ -15,11 +15,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TypeMarkColorAdapter extends BaseAdapter {
+public class TypeMarkColorGridAdapter extends BaseAdapter {
 
     private List<TypeMarkColor> mTypeMarkColorList;
 
-    public TypeMarkColorAdapter(List<TypeMarkColor> typeMarkColorList) {
+    public TypeMarkColorGridAdapter(List<TypeMarkColor> typeMarkColorList) {
         this.mTypeMarkColorList = typeMarkColorList;
     }
 
@@ -44,7 +44,7 @@ public class TypeMarkColorAdapter extends BaseAdapter {
         View view;
         ViewHolder viewHolder;
         if (convertView == null) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_type_mark_color, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_grid_type_mark_color, parent, false);
             viewHolder = new ViewHolder(view);
             view.setTag(viewHolder);
         } else {

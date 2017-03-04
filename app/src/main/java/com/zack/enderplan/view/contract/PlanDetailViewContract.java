@@ -1,11 +1,11 @@
 package com.zack.enderplan.view.contract;
 
-import com.zack.enderplan.view.adapter.SimpleTypeAdapter;
+import com.zack.enderplan.view.adapter.SimpleTypeListAdapter;
 import com.zack.enderplan.model.bean.FormattedPlan;
 
 public interface PlanDetailViewContract extends BaseViewContract {
 
-    void showInitialView(FormattedPlan formattedPlan, SimpleTypeAdapter simpleTypeAdapter);
+    void showInitialView(FormattedPlan formattedPlan, SimpleTypeListAdapter simpleTypeListAdapter);
 
     void updateStarMenuItem(boolean isStarred);
 

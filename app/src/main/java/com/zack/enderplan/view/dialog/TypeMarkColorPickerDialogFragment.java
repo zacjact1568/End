@@ -16,7 +16,7 @@ import android.widget.ViewAnimator;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.util.ColorUtil;
-import com.zack.enderplan.view.adapter.TypeMarkColorAdapter;
+import com.zack.enderplan.view.adapter.TypeMarkColorGridAdapter;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.bean.TypeMarkColor;
 import com.zack.enderplan.view.widget.CircleColorView;
@@ -103,7 +103,7 @@ public class TypeMarkColorPickerDialogFragment extends DialogFragment {
             }
         });
 
-        mTypeMarkColorGrid.setAdapter(new TypeMarkColorAdapter(mTypeMarkColorList));
+        mTypeMarkColorGrid.setAdapter(new TypeMarkColorGridAdapter(mTypeMarkColorList));
 
         if (mPosition != -1) {
             mTypeMarkColorGrid.setItemChecked(mPosition, true);

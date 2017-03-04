@@ -11,7 +11,7 @@ import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDeletedEvent;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.event.TypeDetailChangedEvent;
-import com.zack.enderplan.view.adapter.PlanAdapter;
+import com.zack.enderplan.view.adapter.PlanListAdapter;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.view.callback.PlanItemTouchCallback;
 import com.zack.enderplan.view.contract.MyPlansViewContract;
@@ -27,7 +27,7 @@ public class MyPlansPresenter extends BasePresenter {
 
     private MyPlansViewContract mMyPlansViewContract;
     private DataManager mDataManager;
-    private PlanAdapter mPlanAdapter;
+    private PlanListAdapter mPlanListAdapter;
     private EventBus mEventBus;
     private boolean mViewVisible;
 
@@ -39,20 +39,20 @@ public class MyPlansPresenter extends BasePresenter {
 
         //TODO 写到一个单独的方法里
         //初始化adapter
-        mPlanAdapter = new PlanAdapter(mDataManager);
-        mPlanAdapter.setOnPlanItemClickListener(new PlanAdapter.OnPlanItemClickListener() {
+        mPlanListAdapter = new PlanListAdapter(mDataManager);
+        mPlanListAdapter.setOnPlanItemClickListener(new PlanListAdapter.OnPlanItemClickListener() {
             @Override
             public void onPlanItemClick(int position) {
                 mMyPlansViewContract.onPlanItemClicked(position);
             }
         });
-        mPlanAdapter.setOnPlanItemLongClickListener(new PlanAdapter.OnPlanItemLongClickListener() {
+        mPlanListAdapter.setOnPlanItemLongClickListener(new PlanListAdapter.OnPlanItemLongClickListener() {
             @Override
             public void onPlanItemLongClick(int position) {
                 LogUtil.d("Long click at position" + position);
             }
         });
-        mPlanAdapter.setOnStarStatusChangedListener(new PlanAdapter.OnStarStatusChangedListener() {
+        mPlanListAdapter.setOnStarStatusChangedListener(new PlanListAdapter.OnStarStatusChangedListener() {
             @Override
             public void onStarStatusChanged(int position) {
                 mDataManager.notifyStarStatusChanged(position);
@@ -91,7 +91,7 @@ public class MyPlansPresenter extends BasePresenter {
             }
         });
 
-        mMyPlansViewContract.showInitialView(mPlanAdapter, new ItemTouchHelper(planItemTouchCallback));
+        mMyPlansViewContract.showInitialView(mPlanListAdapter, new ItemTouchHelper(planItemTouchCallback));
     }
 
     @Override
@@ -112,7 +112,7 @@ public class MyPlansPresenter extends BasePresenter {
         Plan plan = mDataManager.getPlan(position);
 
         mDataManager.notifyPlanDeleted(position);
-        mPlanAdapter.notifyItemRemoved(position);
+        mPlanListAdapter.notifyItemRemoved(position);
         mMyPlansViewContract.onPlanDeleted(plan, position, mViewVisible);
 
         mEventBus.post(new PlanDeletedEvent(getPresenterName(), plan.getPlanCode(), position, plan));
@@ -120,7 +120,7 @@ public class MyPlansPresenter extends BasePresenter {
 
     public void notifyCreatingPlan(Plan newPlan, int position) {
         mDataManager.notifyPlanCreated(position, newPlan);
-        mPlanAdapter.notifyItemInserted(position);
+        mPlanListAdapter.notifyItemInserted(position);
         mEventBus.post(new PlanCreatedEvent(getPresenterName(), newPlan.getPlanCode(), position));
     }
 
@@ -129,16 +129,16 @@ public class MyPlansPresenter extends BasePresenter {
         //首先检测此计划是否有提醒
         if (plan.hasReminder()) {
             mDataManager.notifyReminderTimeChanged(position, Constant.UNDEFINED_TIME);
-            mPlanAdapter.notifyItemChanged(position);
+            mPlanListAdapter.notifyItemChanged(position);
             mEventBus.post(new PlanDetailChangedEvent(getPresenterName(), plan.getPlanCode(), position, PlanDetailChangedEvent.FIELD_REMINDER_TIME));
         }
         //执行以下语句时，只是在view上让position处的plan删除了，实际上还未被删除但也即将被删除
         //NOTE: 不能用notifyItemRemoved，会没有效果
-        mPlanAdapter.notifyItemRemoved(position);
+        mPlanListAdapter.notifyItemRemoved(position);
         mDataManager.notifyPlanStatusChanged(position);
         //这里，plan的状态已经更新
         int newPosition = plan.isCompleted() ? mDataManager.getUcPlanCount() : 0;
-        mPlanAdapter.notifyItemInserted(newPosition);
+        mPlanListAdapter.notifyItemInserted(newPosition);
         //发送事件，更新其他组件
         mEventBus.post(new PlanDetailChangedEvent(getPresenterName(), plan.getPlanCode(), newPosition, PlanDetailChangedEvent.FIELD_PLAN_STATUS));
     }
@@ -147,18 +147,18 @@ public class MyPlansPresenter extends BasePresenter {
         if (fromPosition < mDataManager.getUcPlanCount() != toPosition < mDataManager.getUcPlanCount()) return;
         //只能移动到相同完成状态的计划位置处
         mDataManager.swapPlansInPlanList(fromPosition, toPosition);
-        mPlanAdapter.notifyItemMoved(fromPosition, toPosition);
+        mPlanListAdapter.notifyItemMoved(fromPosition, toPosition);
     }
 
     @Subscribe
     public void onDataLoaded(DataLoadedEvent event) {
-        mPlanAdapter.notifyDataSetChanged();
+        mPlanListAdapter.notifyDataSetChanged();
     }
 
     @Subscribe
     public void onPlanCreated(PlanCreatedEvent event) {
         if (event.getEventSource().equals(getPresenterName())) return;
-        mPlanAdapter.notifyItemInserted(event.getPosition());
+        mPlanListAdapter.notifyItemInserted(event.getPosition());
         mMyPlansViewContract.onPlanCreated();
     }
 
@@ -167,7 +167,7 @@ public class MyPlansPresenter extends BasePresenter {
         List<Integer> singleTypeUcPlanPosList = mDataManager.getPlanLocationListOfOneType(event.getTypeCode());
         for (int position : singleTypeUcPlanPosList) {
             //所有属于这个类型的计划都需要刷新
-            mPlanAdapter.notifyItemChanged(position);
+            mPlanListAdapter.notifyItemChanged(position);
         }
     }
 
@@ -176,16 +176,16 @@ public class MyPlansPresenter extends BasePresenter {
         if (event.getEventSource().equals(getPresenterName())) return;
         if (event.getChangedField() == PlanDetailChangedEvent.FIELD_PLAN_STATUS) {
             //有完成情况的改变，直接全部刷新
-            mPlanAdapter.notifyDataSetChanged();
+            mPlanListAdapter.notifyDataSetChanged();
         } else {
             //普通、类型改变的刷新
-            mPlanAdapter.notifyItemChanged(event.getPosition());
+            mPlanListAdapter.notifyItemChanged(event.getPosition());
         }
     }
 
     @Subscribe
     public void onPlanDeleted(PlanDeletedEvent event) {
         if (event.getEventSource().equals(getPresenterName())) return;
-        mPlanAdapter.notifyItemRemoved(event.getPosition());
+        mPlanListAdapter.notifyItemRemoved(event.getPosition());
     }
 }

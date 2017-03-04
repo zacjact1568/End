@@ -7,7 +7,7 @@ import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.util.ResourceUtil;
 import com.zack.enderplan.util.TimeUtil;
 import com.zack.enderplan.event.PlanCreatedEvent;
-import com.zack.enderplan.view.adapter.SimpleTypeAdapter;
+import com.zack.enderplan.view.adapter.SimpleTypeListAdapter;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.view.contract.PlanCreationViewContract;
@@ -31,7 +31,7 @@ public class PlanCreationPresenter extends BasePresenter {
 
     @Override
     public void attach() {
-        mPlanCreationViewContract.showInitialView(new SimpleTypeAdapter(mDataManager.getTypeList(), SimpleTypeAdapter.STYLE_SPINNER));
+        mPlanCreationViewContract.showInitialView(new SimpleTypeListAdapter(mDataManager.getTypeList(), SimpleTypeListAdapter.STYLE_SPINNER));
     }
 
     @Override

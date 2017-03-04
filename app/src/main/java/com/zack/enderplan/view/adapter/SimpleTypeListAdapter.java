@@ -17,7 +17,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SimpleTypeAdapter extends BaseAdapter {
+public class SimpleTypeListAdapter extends BaseAdapter {
 
     public static final int STYLE_SPINNER = 0;
     public static final int STYLE_DIALOG = 1;
@@ -26,14 +26,14 @@ public class SimpleTypeAdapter extends BaseAdapter {
     @LayoutRes
     private int mLayoutResId;
 
-    public SimpleTypeAdapter(List<Type> typeList, int style) {
+    public SimpleTypeListAdapter(List<Type> typeList, int style) {
         this.typeList = typeList;
         switch (style) {
             case STYLE_SPINNER:
-                mLayoutResId = R.layout.item_type_spinner_style;
+                mLayoutResId = R.layout.item_list_simple_type_spinner_style;
                 break;
             case STYLE_DIALOG:
-                mLayoutResId = R.layout.item_type_dialog_style;
+                mLayoutResId = R.layout.item_list_simple_type_dialog_style;
                 break;
             default:
                 throw new IllegalArgumentException("No such adapter style found: " + style);

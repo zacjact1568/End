@@ -14,7 +14,7 @@ import com.zack.enderplan.injector.component.DaggerAllTypesComponent;
 import com.zack.enderplan.injector.module.AllTypesPresenterModule;
 import com.zack.enderplan.view.activity.TypeDetailActivity;
 import com.zack.enderplan.view.contract.AllTypesViewContract;
-import com.zack.enderplan.view.adapter.TypeAdapter;
+import com.zack.enderplan.view.adapter.TypeListAdapter;
 import com.zack.enderplan.presenter.AllTypesPresenter;
 
 import javax.inject.Inject;
@@ -24,8 +24,8 @@ import butterknife.ButterKnife;
 
 public class AllTypesFragment extends BaseListFragment implements AllTypesViewContract {
 
-    @BindView(R.id.list_all_types)
-    RecyclerView mAllTypesList;
+    @BindView(R.id.list_type)
+    RecyclerView mTypeList;
 
     @Inject
     AllTypesPresenter mAllTypesPresenter;
@@ -69,17 +69,17 @@ public class AllTypesFragment extends BaseListFragment implements AllTypesViewCo
     }
 
     @Override
-    public void showInitialView(TypeAdapter typeAdapter, ItemTouchHelper itemTouchHelper) {
-        mAllTypesList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAllTypesList.setHasFixedSize(true);
-        mAllTypesList.setAdapter(typeAdapter);
-        mAllTypesList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+    public void showInitialView(TypeListAdapter typeListAdapter, ItemTouchHelper itemTouchHelper) {
+        mTypeList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mTypeList.setHasFixedSize(true);
+        mTypeList.setAdapter(typeListAdapter);
+        mTypeList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 onListScrolled(dy);
             }
         });
-        itemTouchHelper.attachToRecyclerView(mAllTypesList);
+        itemTouchHelper.attachToRecyclerView(mTypeList);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class AllTypesFragment extends BaseListFragment implements AllTypesViewCo
 
     @Override
     public void onTypeCreated(int scrollTo) {
-        mAllTypesList.scrollToPosition(scrollTo);
+        mTypeList.scrollToPosition(scrollTo);
     }
 
     @Override

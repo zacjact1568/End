@@ -18,18 +18,18 @@ import com.zack.enderplan.view.widget.CircleColorView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.ViewHolder> {
+public class TypeListAdapter extends RecyclerView.Adapter<TypeListAdapter.ViewHolder> {
 
     private DataManager mDataManager;
     private OnTypeItemClickListener mOnTypeItemClickListener;
 
-    public TypeAdapter(DataManager dataManager) {
+    public TypeListAdapter(DataManager dataManager) {
         mDataManager = dataManager;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_type, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_type, parent, false);
         return new ViewHolder(itemView);
     }
 

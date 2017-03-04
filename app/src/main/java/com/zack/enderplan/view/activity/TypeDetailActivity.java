@@ -30,9 +30,9 @@ import com.zack.enderplan.R;
 import com.zack.enderplan.util.StringUtil;
 import com.zack.enderplan.injector.component.DaggerTypeDetailComponent;
 import com.zack.enderplan.injector.module.TypeDetailPresenterModule;
+import com.zack.enderplan.view.adapter.SimpleTypeListAdapter;
+import com.zack.enderplan.view.adapter.SingleTypePlanListAdapter;
 import com.zack.enderplan.view.contract.TypeDetailViewContract;
-import com.zack.enderplan.view.adapter.SingleTypePlanAdapter;
-import com.zack.enderplan.view.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.presenter.TypeDetailPresenter;
 import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.Plan;
@@ -62,8 +62,8 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     TextView mUcPlanCountText;
     @BindView(R.id.editor_content)
     EditText mContentEditor;
-    @BindView(R.id.list_single_type_plans)
-    RecyclerView mSingleTypePlansList;
+    @BindView(R.id.list_single_type_plan)
+    RecyclerView mSingleTypePlanList;
     @BindView(R.id.layout_editor)
     FrameLayout mEditorLayout;
 
@@ -152,7 +152,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     }
 
     @Override
-    public void showInitialView(FormattedType formattedType, String ucPlanCountStr, SingleTypePlanAdapter singleTypePlanAdapter, ItemTouchHelper itemTouchHelper) {
+    public void showInitialView(FormattedType formattedType, String ucPlanCountStr, SingleTypePlanListAdapter singleTypePlanListAdapter, ItemTouchHelper itemTouchHelper) {
         setContentView(R.layout.activity_type_detail);
         ButterKnife.bind(this);
 
@@ -186,11 +186,11 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
             }
         });
 
-        mSingleTypePlansList.setLayoutManager(new LinearLayoutManager(this));
-        //mSingleTypePlansList.setHasFixedSize(true);
-        mSingleTypePlansList.setAdapter(singleTypePlanAdapter);
+        mSingleTypePlanList.setLayoutManager(new LinearLayoutManager(this));
+        //mSingleTypePlanList.setHasFixedSize(true);
+        mSingleTypePlanList.setAdapter(singleTypePlanListAdapter);
 
-        itemTouchHelper.attachToRecyclerView(mSingleTypePlansList);
+        itemTouchHelper.attachToRecyclerView(mSingleTypePlanList);
 
         mContentEditor.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -227,7 +227,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
 
     @Override
     public void onPlanCreated() {
-        mSingleTypePlansList.scrollToPosition(0);
+        mSingleTypePlanList.scrollToPosition(0);
         mContentEditor.setText("");
     }
 
@@ -239,7 +239,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     @Override
     public void onPlanDeleted(final Plan deletedPlan, final int position, final int planListPos, boolean shouldShowSnackbar) {
         if (shouldShowSnackbar) {
-            Snackbar.make(mSingleTypePlansList, String.format(mSnackbarDeleteFormat, deletedPlan.getContent()), Snackbar.LENGTH_LONG)
+            Snackbar.make(mSingleTypePlanList, String.format(mSnackbarDeleteFormat, deletedPlan.getContent()), Snackbar.LENGTH_LONG)
                     .setAction(R.string.button_undo, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -272,7 +272,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     public void backToTop() {
         mAppBarLayout.setExpanded(true);
         //TODO 滑动到顶部
-        //mSingleTypePlansList.scrollToPosition(0);
+        //mSingleTypePlanList.scrollToPosition(0);
     }
 
     @Override
@@ -328,10 +328,10 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     }
 
     @Override
-    public void showMovePlanDialog(int planCount, SimpleTypeAdapter simpleTypeAdapter) {
+    public void showMovePlanDialog(int planCount, SimpleTypeListAdapter simpleTypeListAdapter) {
         new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.title_dialog_move_plan_pt1) + " " + planCount + " " + getString(planCount > 1 ? R.string.title_dialog_move_plan_pt2_pl : R.string.title_dialog_move_plan_pt2_sg))
-                .setAdapter(simpleTypeAdapter, new DialogInterface.OnClickListener() {
+                .setAdapter(simpleTypeListAdapter, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mTypeDetailPresenter.notifyTypeItemInMovePlanDialogClicked(which);

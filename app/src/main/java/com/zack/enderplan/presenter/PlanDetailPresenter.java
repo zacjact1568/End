@@ -6,7 +6,7 @@ import com.zack.enderplan.R;
 import com.zack.enderplan.util.ResourceUtil;
 import com.zack.enderplan.util.TimeUtil;
 import com.zack.enderplan.event.PlanDeletedEvent;
-import com.zack.enderplan.view.adapter.SimpleTypeAdapter;
+import com.zack.enderplan.view.adapter.SimpleTypeListAdapter;
 import com.zack.enderplan.model.bean.FormattedPlan;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
@@ -56,7 +56,7 @@ public class PlanDetailPresenter extends BasePresenter {
                 mPlan.hasReminder(),
                 formatDateTime(mPlan.getReminderTime()),
                 mPlan.isCompleted()
-        ), new SimpleTypeAdapter(mDataManager.getTypeList(), SimpleTypeAdapter.STYLE_SPINNER));
+        ), new SimpleTypeListAdapter(mDataManager.getTypeList(), SimpleTypeListAdapter.STYLE_SPINNER));
     }
 
     @Override

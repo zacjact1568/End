@@ -15,8 +15,8 @@ import com.zack.enderplan.R;
 import com.zack.enderplan.injector.component.DaggerMyPlansComponent;
 import com.zack.enderplan.injector.module.MyPlansPresenterModule;
 import com.zack.enderplan.view.activity.PlanDetailActivity;
+import com.zack.enderplan.view.adapter.PlanListAdapter;
 import com.zack.enderplan.view.contract.MyPlansViewContract;
-import com.zack.enderplan.view.adapter.PlanAdapter;
 import com.zack.enderplan.presenter.MyPlansPresenter;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.view.widget.EnhancedRecyclerView;
@@ -29,8 +29,8 @@ import butterknife.ButterKnife;
 
 public class MyPlansFragment extends BaseListFragment implements MyPlansViewContract {
 
-    @BindView(R.id.list_my_plans)
-    EnhancedRecyclerView mMyPlansList;
+    @BindView(R.id.list_plan)
+    EnhancedRecyclerView mPlanList;
     @BindView(R.id.layout_empty)
     LinearLayout mEmptyLayout;
 
@@ -91,18 +91,18 @@ public class MyPlansFragment extends BaseListFragment implements MyPlansViewCont
     }
 
     @Override
-    public void showInitialView(PlanAdapter planAdapter, ItemTouchHelper itemTouchHelper) {
-        mMyPlansList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        //mMyPlansList.setHasFixedSize(true);
-        mMyPlansList.setEmptyView(mEmptyLayout);
-        mMyPlansList.setAdapter(planAdapter);
-        mMyPlansList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+    public void showInitialView(PlanListAdapter planListAdapter, ItemTouchHelper itemTouchHelper) {
+        mPlanList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        //mPlanList.setHasFixedSize(true);
+        mPlanList.setEmptyView(mEmptyLayout);
+        mPlanList.setAdapter(planListAdapter);
+        mPlanList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 onListScrolled(dy);
             }
         });
-        itemTouchHelper.attachToRecyclerView(mMyPlansList);
+        itemTouchHelper.attachToRecyclerView(mPlanList);
     }
 
     @Override
@@ -112,13 +112,13 @@ public class MyPlansFragment extends BaseListFragment implements MyPlansViewCont
 
     @Override
     public void onPlanCreated() {
-        mMyPlansList.scrollToPosition(0);
+        mPlanList.scrollToPosition(0);
     }
 
     @Override
     public void onPlanDeleted(final Plan deletedPlan, final int position, boolean shouldShowSnackbar) {
         if (shouldShowSnackbar) {
-            Snackbar.make(mMyPlansList, String.format(mSnackbarDeleteFormat, deletedPlan.getContent()), Snackbar.LENGTH_LONG)
+            Snackbar.make(mPlanList, String.format(mSnackbarDeleteFormat, deletedPlan.getContent()), Snackbar.LENGTH_LONG)
                     .setAction(R.string.button_undo, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

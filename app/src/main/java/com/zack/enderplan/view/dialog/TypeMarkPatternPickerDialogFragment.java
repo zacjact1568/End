@@ -9,7 +9,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.view.adapter.TypeMarkPatternAdapter;
+import com.zack.enderplan.view.adapter.TypeMarkPatternGridAdapter;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.bean.TypeMarkPattern;
 
@@ -80,7 +80,7 @@ public class TypeMarkPatternPickerDialogFragment extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        mTypeMarkPatternGrid.setAdapter(new TypeMarkPatternAdapter(mTypeMarkPatternList));
+        mTypeMarkPatternGrid.setAdapter(new TypeMarkPatternGridAdapter(mTypeMarkPatternList));
 
         if (mPosition != -1) {
             mTypeMarkPatternGrid.setItemChecked(mPosition, true);

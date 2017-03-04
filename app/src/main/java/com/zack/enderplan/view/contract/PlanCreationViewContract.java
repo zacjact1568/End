@@ -1,10 +1,10 @@
 package com.zack.enderplan.view.contract;
 
-import com.zack.enderplan.view.adapter.SimpleTypeAdapter;
+import com.zack.enderplan.view.adapter.SimpleTypeListAdapter;
 
 public interface PlanCreationViewContract extends BaseViewContract {
 
-    void showInitialView(SimpleTypeAdapter simpleTypeAdapter);
+    void showInitialView(SimpleTypeListAdapter simpleTypeListAdapter);
 
     void onContentChanged(boolean isValid);
 

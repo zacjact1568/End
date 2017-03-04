@@ -28,7 +28,7 @@ import com.zack.enderplan.injector.component.DaggerPlanDetailComponent;
 import com.zack.enderplan.injector.module.PlanDetailPresenterModule;
 import com.zack.enderplan.view.dialog.DateTimePickerDialogFragment;
 import com.zack.enderplan.view.dialog.EditorDialogFragment;
-import com.zack.enderplan.view.adapter.SimpleTypeAdapter;
+import com.zack.enderplan.view.adapter.SimpleTypeListAdapter;
 import com.zack.enderplan.presenter.PlanDetailPresenter;
 import com.zack.enderplan.view.contract.PlanDetailViewContract;
 import com.zack.enderplan.model.bean.FormattedPlan;
@@ -150,7 +150,7 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
     }
 
     @Override
-    public void showInitialView(FormattedPlan formattedPlan, SimpleTypeAdapter simpleTypeAdapter) {
+    public void showInitialView(FormattedPlan formattedPlan, SimpleTypeListAdapter simpleTypeListAdapter) {
 
         setContentView(R.layout.activity_plan_detail);
         ButterKnife.bind(this);
@@ -183,7 +183,7 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
             }
         });
 
-        mTypeSpinner.setAdapter(simpleTypeAdapter);
+        mTypeSpinner.setAdapter(simpleTypeListAdapter);
         mTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

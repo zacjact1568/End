@@ -20,9 +20,9 @@ import com.zack.enderplan.R;
 import com.zack.enderplan.util.SystemUtil;
 import com.zack.enderplan.injector.component.DaggerPlanCreationComponent;
 import com.zack.enderplan.injector.module.PlanCreationPresenterModule;
+import com.zack.enderplan.view.adapter.SimpleTypeListAdapter;
 import com.zack.enderplan.view.contract.PlanCreationViewContract;
 import com.zack.enderplan.view.dialog.DateTimePickerDialogFragment;
-import com.zack.enderplan.view.adapter.SimpleTypeAdapter;
 import com.zack.enderplan.presenter.PlanCreationPresenter;
 import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.view.widget.ItemView;
@@ -120,7 +120,7 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
     }
 
     @Override
-    public void showInitialView(SimpleTypeAdapter simpleTypeAdapter) {
+    public void showInitialView(SimpleTypeListAdapter simpleTypeListAdapter) {
         //overridePendingTransition(0, 0);
         setContentView(R.layout.activity_plan_creation);
         ButterKnife.bind(this);
@@ -157,7 +157,7 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
             }
         });
 
-        mTypeSpinner.setAdapter(simpleTypeAdapter);
+        mTypeSpinner.setAdapter(simpleTypeListAdapter);
         mTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

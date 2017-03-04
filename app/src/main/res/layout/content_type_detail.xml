@@ -10,7 +10,7 @@
     tools:showIn="@layout/activity_type_detail">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/list_single_type_plans"
+        android:id="@+id/list_single_type_plan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

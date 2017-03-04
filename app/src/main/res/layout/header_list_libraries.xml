@@ -9,4 +9,3 @@
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
     android:paddingBottom="16dp"/>
-    <!--TODO 所有的list item都改成item_list_${list_name}的形式-->

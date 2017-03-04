@@ -1,25 +1,21 @@
 package com.zack.enderplan.view.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.view.adapter.LibraryAdapter;
+import com.zack.enderplan.view.adapter.LibraryListAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class LibrariesFragment extends BaseFragment {
 
-    @BindView(R.id.list_libraries)
-    RecyclerView mLibrariesList;
+    @BindView(R.id.list_library)
+    RecyclerView mLibraryList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,7 +32,7 @@ public class LibrariesFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        mLibrariesList.setAdapter(new LibraryAdapter(getActivity()));
+        mLibraryList.setAdapter(new LibraryListAdapter(getActivity()));
     }
 
     @Override

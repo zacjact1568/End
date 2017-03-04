@@ -11,8 +11,8 @@ import com.zack.enderplan.util.StringUtil;
 import com.zack.enderplan.util.SystemUtil;
 import com.zack.enderplan.event.TypeDeletedEvent;
 import com.zack.enderplan.event.TypeDetailChangedEvent;
-import com.zack.enderplan.view.adapter.SimpleTypeAdapter;
-import com.zack.enderplan.view.adapter.SingleTypePlanAdapter;
+import com.zack.enderplan.view.adapter.SimpleTypeListAdapter;
+import com.zack.enderplan.view.adapter.SingleTypePlanListAdapter;
 import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.bean.Type;
@@ -40,7 +40,7 @@ public class TypeDetailPresenter extends BasePresenter {
 
     private TypeDetailViewContract mTypeDetailViewContract;
     private DataManager mDataManager;
-    private SingleTypePlanAdapter mSingleTypePlanAdapter;
+    private SingleTypePlanListAdapter mSingleTypePlanListAdapter;
     private List<Plan> mSingleTypePlanList;
     private List<Type> mOtherTypeList;
     private int mTypeListPosition;
@@ -60,14 +60,14 @@ public class TypeDetailPresenter extends BasePresenter {
 
         mType = mDataManager.getType(mTypeListPosition);
         mSingleTypePlanList = mDataManager.getSingleTypePlanList(mType.getTypeCode());
-        mSingleTypePlanAdapter = new SingleTypePlanAdapter(mSingleTypePlanList);
-        mSingleTypePlanAdapter.setOnPlanItemClickListener(new SingleTypePlanAdapter.OnPlanItemClickListener() {
+        mSingleTypePlanListAdapter = new SingleTypePlanListAdapter(mSingleTypePlanList);
+        mSingleTypePlanListAdapter.setOnPlanItemClickListener(new SingleTypePlanListAdapter.OnPlanItemClickListener() {
             @Override
             public void onPlanItemClick(int position) {
                 mTypeDetailViewContract.onPlanItemClicked(mDataManager.getPlanLocationInPlanList(mSingleTypePlanList.get(position).getPlanCode()));
             }
         });
-        mSingleTypePlanAdapter.setOnStarStatusChangedListener(new SingleTypePlanAdapter.OnStarStatusChangedListener() {
+        mSingleTypePlanListAdapter.setOnStarStatusChangedListener(new SingleTypePlanListAdapter.OnStarStatusChangedListener() {
             @Override
             public void onStarStatusChanged(int position) {
                 Plan plan = mSingleTypePlanList.get(position);
@@ -115,7 +115,7 @@ public class TypeDetailPresenter extends BasePresenter {
                 ResourceUtil.getDrawableResourceId(mType.getTypeMarkPattern()),
                 mType.getTypeName(),
                 StringUtil.getFirstChar(mType.getTypeName())
-        ), getUcPlanCountStr(mType.getTypeCode()), mSingleTypePlanAdapter, new ItemTouchHelper(planItemTouchCallback));
+        ), getUcPlanCountStr(mType.getTypeCode()), mSingleTypePlanListAdapter, new ItemTouchHelper(planItemTouchCallback));
     }
 
     @Override
@@ -178,7 +178,7 @@ public class TypeDetailPresenter extends BasePresenter {
 
         //刷新此界面
         mSingleTypePlanList.add(position, newPlan);
-        mSingleTypePlanAdapter.notifyItemInserted(position);
+        mSingleTypePlanListAdapter.notifyItemInserted(position);
         //下面这句一定要在「刷新全局列表」后
         mTypeDetailViewContract.onUcPlanCountChanged(getUcPlanCountStr(newPlan.getTypeCode()));
 
@@ -212,7 +212,7 @@ public class TypeDetailPresenter extends BasePresenter {
 
         //刷新此界面上的列表
         mSingleTypePlanList.remove(position);
-        mSingleTypePlanAdapter.notifyItemRemoved(position);
+        mSingleTypePlanListAdapter.notifyItemRemoved(position);
         mTypeDetailViewContract.onPlanDeleted(plan, position, planListPos, mViewVisible);
         if (!plan.isCompleted()) {
             //说明刚才删除的是个未完成的计划，需要修改界面上的内容
@@ -234,7 +234,7 @@ public class TypeDetailPresenter extends BasePresenter {
         //检测是否设置了提醒
         if (plan.hasReminder()) {
             mDataManager.notifyReminderTimeChanged(planListPos, Constant.UNDEFINED_TIME);
-            //TODO mSingleTypePlanAdapter.notifyItemChanged(position)这句不要，MyPlansPresenter也要删去这一句
+            //TODO mSingleTypePlanListAdapter.notifyItemChanged(position)这句不要，MyPlansPresenter也要删去这一句
             mEventBus.post(new PlanDetailChangedEvent(getPresenterName(), plan.getPlanCode(), planListPos, PlanDetailChangedEvent.FIELD_REMINDER_TIME));
         }
         //刷新全局列表
@@ -242,11 +242,11 @@ public class TypeDetailPresenter extends BasePresenter {
 
         //刷新此列表
         mSingleTypePlanList.remove(position);
-        mSingleTypePlanAdapter.notifyItemRemoved(position);
+        mSingleTypePlanListAdapter.notifyItemRemoved(position);
         //下面这句一定要在「刷新全局列表」后
         int newPosition = plan.isCompleted() ? mDataManager.getUcPlanCountOfOneType(plan.getTypeCode()) : 0;
         mSingleTypePlanList.add(newPosition, plan);
-        mSingleTypePlanAdapter.notifyItemInserted(newPosition);
+        mSingleTypePlanListAdapter.notifyItemInserted(newPosition);
         mTypeDetailViewContract.onUcPlanCountChanged(getUcPlanCountStr(mType.getTypeCode()));
 
         //发送事件，更新其他组件
@@ -266,7 +266,7 @@ public class TypeDetailPresenter extends BasePresenter {
         mDataManager.swapPlansInPlanList(fromPlanListPos, toPlanListPos);
         //更新此列表
         Collections.swap(mSingleTypePlanList, fromPosition, toPosition);
-        mSingleTypePlanAdapter.notifyItemMoved(fromPosition, toPosition);
+        mSingleTypePlanListAdapter.notifyItemMoved(fromPosition, toPosition);
     }
 
     public void notifyTypeEditingButtonClicked() {
@@ -292,7 +292,7 @@ public class TypeDetailPresenter extends BasePresenter {
     public void notifyMovePlanButtonClicked() {
         mTypeDetailViewContract.showMovePlanDialog(
                 mDataManager.getPlanCountOfOneType(mType.getTypeCode()),
-                new SimpleTypeAdapter(mOtherTypeList, SimpleTypeAdapter.STYLE_DIALOG)
+                new SimpleTypeListAdapter(mOtherTypeList, SimpleTypeListAdapter.STYLE_DIALOG)
         );
     }
 
@@ -379,13 +379,13 @@ public class TypeDetailPresenter extends BasePresenter {
 
             //更新此列表
             mSingleTypePlanList.remove(position);
-            mSingleTypePlanAdapter.notifyItemRemoved(position);
+            mSingleTypePlanListAdapter.notifyItemRemoved(position);
 
             //更新显示的未完成计划数量
             mTypeDetailViewContract.onUcPlanCountChanged(getUcPlanCountStr(mType.getTypeCode()));
         } else {
             //其他更新，需要刷新singleTypeUcPlanList
-            mSingleTypePlanAdapter.notifyItemChanged(position);
+            mSingleTypePlanListAdapter.notifyItemChanged(position);
         }
     }
 
@@ -399,7 +399,7 @@ public class TypeDetailPresenter extends BasePresenter {
 
         //刷新list
         mSingleTypePlanList.remove(position);
-        mSingleTypePlanAdapter.notifyItemRemoved(position);
+        mSingleTypePlanListAdapter.notifyItemRemoved(position);
 
         if (!event.getDeletedPlan().isCompleted()) {
             //说明刚才删除的是个未完成的计划，需要修改界面上的内容
