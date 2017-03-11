@@ -6,7 +6,7 @@
     <shortcut
         android:shortcutId="plan_creation"
         android:enabled="true"
-        android:icon="@drawable/ic_add_black_24dp"
+        android:icon="@drawable/ic_shortcut_plan_creation"
         android:shortcutShortLabel="@string/title_activity_plan_creation"
         android:shortcutLongLabel="@string/title_activity_plan_creation"
         android:shortcutDisabledMessage="@string/toast_shortcut_disabled"
