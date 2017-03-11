@@ -1,11 +1,11 @@
 # EnderPlan
 
-**_A simple GTD app._**
+** MAKE PLANS UNTIL THE WORLD ENDS ! **
 
-Developed by Zack Zhang
+EnderPlan is a simple to-do app, developed by Zack Zhang.
 
-# Ender计划
+Contact me if someone need: zacjact1568@hotmail.com
 
-**_一个简单的 GTD app。_**
+The name of this app is inspired by [Enderman](http://minecraft.gamepedia.com/Enderman) in [Minecraft](https://minecraft.net/).
 
-由 全杰是也 开发
+NOTE: This app is still under development, not a released edition.
