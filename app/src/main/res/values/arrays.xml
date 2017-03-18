@@ -16,4 +16,8 @@
         <item>@color/brown</item>
     </array>
 
+    <string-array name="common_problems">
+        <item>Reminder can\'t work?</item>
+    </string-array>
+
 </resources>

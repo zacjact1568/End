@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string-array name="common_problems">
+        <item>提醒不能正常工作？</item>
+    </string-array>
+
 </resources>

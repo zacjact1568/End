@@ -21,6 +21,7 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private static final Library[] LIBRARIES = {
             new Library("Android Support Libraries", "Android", "https://developer.android.com/topic/libraries/support-library/"),
+            new Library("Material Design Icons", "Google", "https://material.io/icons/"),
             new Library("Butter Knife", "JakeWharton", "http://jakewharton.github.io/butterknife/"),
             new Library("EventBus", "greenrobot", "http://greenrobot.org/eventbus/"),
             new Library("Dagger 2", "Google", "https://google.github.io/dagger/"),

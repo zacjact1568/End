@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -29,6 +30,8 @@ public class AboutActivity extends BaseActivity implements AboutViewContract {
 
     @BindView(R.id.layout_app_bar)
     AppBarLayout mAppBarLayout;
+    @BindView(R.id.layout_collapsing_toolbar)
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.layout_header)
@@ -90,6 +93,9 @@ public class AboutActivity extends BaseActivity implements AboutViewContract {
 
         setSupportActionBar(mToolbar);
         setupActionBar();
+
+        //注释掉这一句使AppBar可折叠
+        ((AppBarLayout.LayoutParams) mCollapsingToolbarLayout.getLayoutParams()).setScrollFlags(0);
 
         mAppBarLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override

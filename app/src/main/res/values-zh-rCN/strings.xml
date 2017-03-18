@@ -74,7 +74,7 @@
     <string name="title_fragment_my_plans">我的计划</string>
     <string name="title_guide_page_welcome">欢迎</string>
     <string name="btn_text_start">开始</string>
-    <string name="slogan">「哪怕世界末日到了也要做计划」</string>
+    <string name="text_slogan">哪怕世界末日到了也要做计划！</string>
     <string name="hint_first_plan_content">输入你的第一个计划</string>
     <string name="action_edit">编辑</string>
     <string name="title_activity_type_detail">类型详情</string>
@@ -195,8 +195,8 @@
     <string name="def_plan_2">触摸查看计划详情</string>
     <string name="def_plan_1">触摸\"+\"按钮创建一个计划</string>
     <string name="title_activity_guide">向导</string>
-    <string name="btn_reminder_problem">提醒不能正常工作？</string>
-    <string name="text_developer">EnderPlan由Zack创造</string>
+    <string name="btn_common_problems">常见问题</string>
+    <string name="text_developer">EnderPlan 由 Zack Zhang 创造</string>
     <string name="title_dialog_reminder_problem">关于提醒</string>
     <string name="text_library">特别感谢以下这些库的开发者：</string>
     <string name="text_store">商店</string>
@@ -204,4 +204,6 @@
     <string name="text_email">邮件</string>
     <string name="toast_no_store_found">你好像没有安装应用商店</string>
     <string name="toast_no_link_app_found">没有可以打开链接的应用</string>
+    <string name="app_name">Ender计划</string>
+    <string name="title_dialog_common_problems">常见问题</string>
 </resources>

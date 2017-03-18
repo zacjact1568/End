@@ -88,7 +88,7 @@ public class GuidePresenter extends BasePresenter {
     private List<Fragment> getGuidePages() {
         List<Fragment> fragmentList = new ArrayList<>();
         //欢迎页
-        fragmentList.add(SimpleGuidePageFragment.newInstance(R.drawable.ic_check_circle_black_24dp, R.string.title_guide_page_welcome, R.string.slogan));
+        fragmentList.add(SimpleGuidePageFragment.newInstance(R.drawable.ic_check_circle_black_24dp, R.string.title_guide_page_welcome, R.string.text_slogan));
         //引导结束页
         //fragmentList.add(SimpleGuidePageFragment.newInstance(R.drawable.ic_check_black_24dp, R.string.title_guide_page_ready, R.string.dscpt_guide_page_ready));
         return fragmentList;

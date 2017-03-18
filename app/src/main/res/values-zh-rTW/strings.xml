@@ -73,7 +73,7 @@
     <string name="title_fragment_my_plans">我的計劃</string>
     <string name="title_guide_page_welcome">歡迎</string>
     <string name="btn_text_start">開始</string>
-    <string name="slogan">「哪怕世界末日到了也要做計劃」</string>
+    <string name="text_slogan">哪怕世界末日到了也要做計劃！</string>
     <string name="hint_first_plan_content">輸入你的第一個計劃</string>
     <string name="action_edit">編輯</string>
     <string name="title_activity_type_detail">類型詳情</string>
@@ -147,4 +147,5 @@
     <string name="toast_delay_tomorrow">在明天</string>
     <string name="toast_reminder_delayed_format">我將會%s提醒你</string>
     <string name="def_type_2">家庭</string>
+    <string name="app_name">Ender計劃</string>
 </resources>

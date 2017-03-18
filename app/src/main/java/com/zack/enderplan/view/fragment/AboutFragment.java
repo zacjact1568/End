@@ -16,13 +16,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.util.CommonUtil;
 import com.zack.enderplan.util.ResourceUtil;
-import com.zack.enderplan.util.StringUtil;
 import com.zack.enderplan.util.SystemUtil;
 
 import butterknife.BindView;
@@ -31,12 +29,8 @@ import butterknife.OnClick;
 
 public class AboutFragment extends BaseFragment implements SensorEventListener {
 
-    @BindView(R.id.image_logo)
+    @BindView(R.id.img_logo)
     ImageView mLogoImage;
-    @BindView(R.id.text_email)
-    TextView mEmailText;
-    @BindView(R.id.text_store)
-    TextView mStoreText;
 
     private SensorManager mSensorManager;
     private float[] mGravityValues;
@@ -65,9 +59,6 @@ public class AboutFragment extends BaseFragment implements SensorEventListener {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-
-        mEmailText.setText(StringUtil.addSpan(getString(R.string.text_email), StringUtil.SPAN_UNDERLINE));
-        mStoreText.setText(StringUtil.addSpan(getString(R.string.text_store), StringUtil.SPAN_UNDERLINE));
     }
 
     @Override
@@ -91,10 +82,10 @@ public class AboutFragment extends BaseFragment implements SensorEventListener {
         mLogoImage.setTranslationY(0f);
     }
 
-    @OnClick({R.id.text_email, R.id.text_store, R.id.btn_reminder_problem})
+    @OnClick({R.id.ic_email, R.id.ic_store, R.id.btn_common_problems})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.text_email:
+            case R.id.ic_email:
                 Intent intent = new Intent(Intent.ACTION_SENDTO);
                 intent.setData(Uri.parse("mailto:"));
                 intent.putExtra(Intent.EXTRA_EMAIL, new String[]{Constant.DEVELOPER_EMAIL});
@@ -116,18 +107,32 @@ public class AboutFragment extends BaseFragment implements SensorEventListener {
                             .show();
                 }
                 break;
-            case R.id.text_store:
+            case R.id.ic_store:
                 SystemUtil.openLink(
                         "market://details?id=" + getContext().getPackageName(),
                         getActivity(),
                         getString(R.string.toast_no_store_found)
                 );
                 break;
-            case R.id.btn_reminder_problem:
+            case R.id.btn_common_problems:
                 new AlertDialog.Builder(getContext())
-                        .setTitle(R.string.title_dialog_reminder_problem)
-                        .setMessage(R.string.msg_dialog_reminder_problem)
-                        .setPositiveButton(R.string.button_ok, null)
+                        .setTitle(R.string.title_dialog_common_problems)
+                        .setItems(R.array.common_problems, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case 0:
+                                        //reminder problem
+                                        new AlertDialog.Builder(getContext())
+                                                .setTitle(R.string.title_dialog_reminder_problem)
+                                                .setMessage(R.string.msg_dialog_reminder_problem)
+                                                .setPositiveButton(R.string.button_ok, null)
+                                                .show();
+                                        break;
+                                }
+                            }
+                        })
+                        .setPositiveButton(R.string.button_cancel, null)
                         .show();
                 break;
         }
@@ -154,8 +159,8 @@ public class AboutFragment extends BaseFragment implements SensorEventListener {
 
     private void playTranslationOnLogoImage(float pitch, float roll) {
 
-        float translationX = -roll * 60;
-        float translationY = pitch * 60;
+        float translationX = -roll * 30;
+        float translationY = pitch * 30;
         
         boolean isTranslationXProper = Math.abs(translationX) <= mMaxTranslation;
         boolean isTranslationYProper = Math.abs(translationY) <= mMaxTranslation;

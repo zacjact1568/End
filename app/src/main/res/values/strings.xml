@@ -2,7 +2,7 @@
 
     <!--通用-->
 
-    <string name="app_name" translatable="false">EnderPlan</string>
+    <string name="app_name">EnderPlan</string>
 
     <string name="action_search">Search</string>
     <string name="action_edit">Edit</string>
@@ -207,7 +207,9 @@
     <string name="version">Version</string>
     <string name="developer">Developer</string>
     <string name="me">\@zacjact1568</string>
-    <string name="slogan">\"Making plans until the world ends\"</string>
+    <string name="text_app_name_pt1">Ender</string>
+    <string name="text_app_name_pt2">Plan</string>
+    <string name="text_slogan">MAKE PLANS UNTIL THE WORLD ENDS !</string>
     <string name="subject_email">Email from an EnderPlan User</string>
     <string name="title_dialog_no_email_app_found">No email app found</string>
     <string name="msg_dialog_no_email_app_found">
@@ -222,7 +224,8 @@
     <string name="text_store">Store</string>
     <string name="toast_no_store_found">It seems that you doesn\'t install an application store</string>
     <string name="toast_no_link_app_found">No app can open a link</string>
-    <string name="btn_reminder_problem">Reminder can\'t work?</string>
+    <string name="btn_common_problems">Common problems</string>
+    <string name="title_dialog_common_problems">Common problems</string>
     <string name="title_dialog_reminder_problem">About Reminder</string>
     <string name="msg_dialog_reminder_problem">EnderPlan uses a system-level service to implement reminder, but some devices were pre-installed an optimized version of Android system, which makes reminder sometimes can\'t work as expected. If you find that the reminder time is inaccurate or you can\'t receive the reminder, please try to turn on auto-start and background running permissions for EnderPlan.</string>
     <string name="text_library">Special thanks to the developers of the following libraries:</string>
