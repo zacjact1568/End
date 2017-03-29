@@ -88,12 +88,13 @@ public class GuideActivity extends BaseActivity implements GuideViewContract {
             }
         });
 
-        onPageSelected(true, false);
+        onPageSelected(true, guidePagerAdapter.getCount() == 1);
     }
 
     @Override
     public void onPageSelected(boolean isFirstPage, boolean isLastPage) {
         mStartButton.setVisibility(isFirstPage ? View.GONE : View.VISIBLE);
+        mEndButton.setVisibility(isFirstPage && isLastPage ? View.GONE : View.VISIBLE);
         mEndButton.setInnerIcon(getDrawable(isLastPage ? R.drawable.ic_check_black_24dp : R.drawable.ic_arrow_forward_black_24dp));
     }
 

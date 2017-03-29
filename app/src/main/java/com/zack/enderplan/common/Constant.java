@@ -6,6 +6,8 @@ public class Constant {
 
     /** 未定义的时间 */
     public static final long UNDEFINED_TIME = -1L;
+    /** 未定义的资源id */
+    public static final int UNDEFINED_RES_ID = -1;
 
     public static final String DB_TYPE_MARK = "type_mark.db";
 

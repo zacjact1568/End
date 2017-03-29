@@ -24,6 +24,7 @@
     <string name="button_enable">Enable</string>
     <string name="button_disable">Disable</string>
     <string name="button_restart">Restart</string>
+    <string name="button_start">Start</string>
 
     <string name="title_star">Star</string>
     <string name="title_deadline">Deadline</string>
@@ -236,7 +237,6 @@
     <string name="dscpt_guide_page_welcome">Touch the right arrow to continue</string>
     <string name="title_guide_page_ready">Guide Ends</string>
     <string name="dscpt_guide_page_ready">Enjoy EnderPlan</string>
-    <string name="btn_text_start">Start</string>
 
     <!--FirstPlanFragment-->
     <string name="hint_first_plan_content">Enter your first plan</string>

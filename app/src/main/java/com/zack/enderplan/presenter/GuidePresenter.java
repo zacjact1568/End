@@ -2,6 +2,7 @@ package com.zack.enderplan.presenter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.view.View;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.event.PlanCreatedEvent;
@@ -64,9 +65,7 @@ public class GuidePresenter extends BasePresenter {
                 mGuideViewContract.navigateToPage(currentPage + 1);
             } else {
                 //最后一页
-                createDefaultData();
-                mPreferenceHelper.setNeedGuideValue(false);
-                mGuideViewContract.exitWithResult(true);
+                endGuide(true);
             }
         }
     }
@@ -78,7 +77,7 @@ public class GuidePresenter extends BasePresenter {
     public void notifyBackPressed() {
         long currentTime = System.currentTimeMillis();
         if (currentTime - mLastBackKeyPressedTime < 1500) {
-            mGuideViewContract.exitWithResult(false);
+            endGuide(false);
         } else {
             mLastBackKeyPressedTime = currentTime;
             mGuideViewContract.showToast(R.string.toast_double_click_exit);
@@ -88,9 +87,25 @@ public class GuidePresenter extends BasePresenter {
     private List<Fragment> getGuidePages() {
         List<Fragment> fragmentList = new ArrayList<>();
         //欢迎页
-        fragmentList.add(SimpleGuidePageFragment.newInstance(R.drawable.ic_check_circle_black_24dp, R.string.title_guide_page_welcome, R.string.text_slogan));
+        fragmentList.add(new SimpleGuidePageFragment.Builder()
+                .setImage(R.drawable.img_logo)
+                .setTitle(R.string.title_guide_page_welcome)
+                .setDescription(R.string.text_slogan)
+                .setButton(R.string.button_start, new SimpleGuidePageFragment.OnButtonClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        endGuide(true);
+                    }
+                })
+                .create()
+        );
         //引导结束页
-        //fragmentList.add(SimpleGuidePageFragment.newInstance(R.drawable.ic_check_black_24dp, R.string.title_guide_page_ready, R.string.dscpt_guide_page_ready));
+//        fragmentList.add(new SimpleGuidePageFragment.Builder()
+//                .setImage(R.drawable.ic_check_black_24dp)
+//                .setTitle(R.string.title_guide_page_ready)
+//                .setDescription(R.string.dscpt_guide_page_ready)
+//                .create()
+//        );
         return fragmentList;
     }
 
@@ -122,5 +137,13 @@ public class GuidePresenter extends BasePresenter {
             mDataManager.notifyPlanCreated(plan);
             mEventBus.post(new PlanCreatedEvent(getPresenterName(), plan.getPlanCode(), mDataManager.getRecentlyCreatedPlanLocation()));
         }
+    }
+
+    private void endGuide(boolean isNormally) {
+        if (isNormally) {
+            createDefaultData();
+            mPreferenceHelper.setNeedGuideValue(false);
+        }
+        mGuideViewContract.exitWithResult(isNormally);
     }
 }
