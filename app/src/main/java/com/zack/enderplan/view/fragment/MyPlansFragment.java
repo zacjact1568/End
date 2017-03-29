@@ -92,8 +92,6 @@ public class MyPlansFragment extends BaseListFragment implements MyPlansViewCont
 
     @Override
     public void showInitialView(PlanListAdapter planListAdapter, ItemTouchHelper itemTouchHelper) {
-        mPlanList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        //mPlanList.setHasFixedSize(true);
         mPlanList.setEmptyView(mEmptyLayout);
         mPlanList.setAdapter(planListAdapter);
         mPlanList.addOnScrollListener(new RecyclerView.OnScrollListener() {

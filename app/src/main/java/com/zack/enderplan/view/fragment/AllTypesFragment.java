@@ -70,7 +70,6 @@ public class AllTypesFragment extends BaseListFragment implements AllTypesViewCo
 
     @Override
     public void showInitialView(TypeListAdapter typeListAdapter, ItemTouchHelper itemTouchHelper) {
-        mTypeList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mTypeList.setHasFixedSize(true);
         mTypeList.setAdapter(typeListAdapter);
         mTypeList.addOnScrollListener(new RecyclerView.OnScrollListener() {
