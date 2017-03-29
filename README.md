@@ -1,6 +1,6 @@
 # EnderPlan
 
-**MAKE PLANS UNTIL THE WORLD ENDS !**
+<img src="ic_launcher-web.png"/>
 
 EnderPlan is a simple to-do app, written by Zack Zhang.
 
