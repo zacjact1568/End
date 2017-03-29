@@ -88,7 +88,7 @@ public class GuidePresenter extends BasePresenter {
         List<Fragment> fragmentList = new ArrayList<>();
         //欢迎页
         fragmentList.add(new SimpleGuidePageFragment.Builder()
-                .setImage(R.drawable.img_logo)
+                .setImage(R.drawable.img_logo_with_bg)
                 .setTitle(R.string.title_guide_page_welcome)
                 .setDescription(R.string.text_slogan)
                 .setButton(R.string.button_start, new SimpleGuidePageFragment.OnButtonClickListener() {
