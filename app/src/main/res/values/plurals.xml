@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <plurals name="text_plan_count">
+        <!--中文环境下默认other-->
+        <item quantity="one">%d PLAN</item>
+        <item quantity="other">%d PLANS</item>
+    </plurals>
+
+</resources>

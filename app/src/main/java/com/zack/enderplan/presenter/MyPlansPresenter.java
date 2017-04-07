@@ -13,7 +13,7 @@ import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.event.TypeDetailChangedEvent;
 import com.zack.enderplan.view.adapter.PlanListAdapter;
 import com.zack.enderplan.model.DataManager;
-import com.zack.enderplan.view.callback.PlanItemTouchCallback;
+import com.zack.enderplan.view.callback.PlanListItemTouchCallback;
 import com.zack.enderplan.view.contract.MyPlansViewContract;
 
 import org.greenrobot.eventbus.EventBus;
@@ -30,9 +30,10 @@ public class MyPlansPresenter extends BasePresenter {
     private PlanListAdapter mPlanListAdapter;
     private EventBus mEventBus;
     private boolean mViewVisible;
+    private boolean mPlanItemEmpty;
 
     @Inject
-    public MyPlansPresenter(MyPlansViewContract myPlansViewContract, DataManager dataManager, EventBus eventBus) {
+    MyPlansPresenter(MyPlansViewContract myPlansViewContract, DataManager dataManager, EventBus eventBus) {
         mMyPlansViewContract = myPlansViewContract;
         mDataManager = dataManager;
         mEventBus = eventBus;
@@ -70,28 +71,30 @@ public class MyPlansPresenter extends BasePresenter {
     public void attach() {
         mEventBus.register(this);
 
-        PlanItemTouchCallback planItemTouchCallback = new PlanItemTouchCallback();
-        planItemTouchCallback.setOnItemSwipedListener(new PlanItemTouchCallback.OnItemSwipedListener() {
+        PlanListItemTouchCallback planListItemTouchCallback = new PlanListItemTouchCallback(mDataManager);
+        planListItemTouchCallback.setOnItemSwipedListener(new PlanListItemTouchCallback.OnItemSwipedListener() {
             @Override
             public void onItemSwiped(int position, int direction) {
                 switch (direction) {
-                    case PlanItemTouchCallback.DIR_START:
+                    case PlanListItemTouchCallback.DIR_START:
                         notifyDeletingPlan(position);
                         break;
-                    case PlanItemTouchCallback.DIR_END:
+                    case PlanListItemTouchCallback.DIR_END:
                         notifyPlanStatusChanged(position);
                         break;
                 }
             }
         });
-        planItemTouchCallback.setOnItemMovedListener(new PlanItemTouchCallback.OnItemMovedListener() {
+        planListItemTouchCallback.setOnItemMovedListener(new PlanListItemTouchCallback.OnItemMovedListener() {
             @Override
             public void onItemMoved(int fromPosition, int toPosition) {
                 notifyPlanSequenceChanged(fromPosition, toPosition);
             }
         });
 
-        mMyPlansViewContract.showInitialView(mPlanListAdapter, new ItemTouchHelper(planItemTouchCallback));
+        mPlanItemEmpty = mDataManager.getPlanCount() == 0;
+
+        mMyPlansViewContract.showInitialView(mPlanListAdapter, new ItemTouchHelper(planListItemTouchCallback), mPlanItemEmpty);
     }
 
     @Override
@@ -104,6 +107,22 @@ public class MyPlansPresenter extends BasePresenter {
         mViewVisible = isVisible;
     }
 
+    /** 两个参数分别指出list是否滚动到顶部和底部 */
+    public void notifyPlanListScrolled(boolean top, boolean bottom) {
+        int scrollEdge;
+        if (top) {
+            //触顶
+            scrollEdge = PlanListAdapter.SCROLL_EDGE_TOP;
+        } else if (bottom) {
+            //触底
+            scrollEdge = PlanListAdapter.SCROLL_EDGE_BOTTOM;
+        } else {
+            //中间
+            scrollEdge = PlanListAdapter.SCROLL_EDGE_MIDDLE;
+        }
+        mPlanListAdapter.notifyListScrolled(scrollEdge);
+    }
+
     public void notifyDeletingPlan(int position) {
 
         SystemUtil.makeShortVibrate();
@@ -113,7 +132,10 @@ public class MyPlansPresenter extends BasePresenter {
 
         mDataManager.notifyPlanDeleted(position);
         mPlanListAdapter.notifyItemRemoved(position);
+        mPlanListAdapter.notifyFooterChanged();
         mMyPlansViewContract.onPlanDeleted(plan, position, mViewVisible);
+
+        checkPlanItemEmptyState();
 
         mEventBus.post(new PlanDeletedEvent(getPresenterName(), plan.getPlanCode(), position, plan));
     }
@@ -150,6 +172,13 @@ public class MyPlansPresenter extends BasePresenter {
         mPlanListAdapter.notifyItemMoved(fromPosition, toPosition);
     }
 
+    private void checkPlanItemEmptyState() {
+        boolean isEmpty = mDataManager.getPlanCount() == 0;
+        if (mPlanItemEmpty == isEmpty) return;
+        mPlanItemEmpty = isEmpty;
+        mMyPlansViewContract.onPlanItemEmptyStateChanged(mPlanItemEmpty);
+    }
+
     @Subscribe
     public void onDataLoaded(DataLoadedEvent event) {
         mPlanListAdapter.notifyDataSetChanged();
@@ -158,7 +187,9 @@ public class MyPlansPresenter extends BasePresenter {
     @Subscribe
     public void onPlanCreated(PlanCreatedEvent event) {
         if (event.getEventSource().equals(getPresenterName())) return;
+        checkPlanItemEmptyState();
         mPlanListAdapter.notifyItemInserted(event.getPosition());
+        mPlanListAdapter.notifyFooterChanged();
         mMyPlansViewContract.onPlanCreated();
     }
 

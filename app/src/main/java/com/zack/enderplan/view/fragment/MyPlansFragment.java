@@ -2,7 +2,6 @@ package com.zack.enderplan.view.fragment;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
@@ -19,7 +18,6 @@ import com.zack.enderplan.view.adapter.PlanListAdapter;
 import com.zack.enderplan.view.contract.MyPlansViewContract;
 import com.zack.enderplan.presenter.MyPlansPresenter;
 import com.zack.enderplan.model.bean.Plan;
-import com.zack.enderplan.view.widget.EnhancedRecyclerView;
 
 import javax.inject.Inject;
 
@@ -30,7 +28,7 @@ import butterknife.ButterKnife;
 public class MyPlansFragment extends BaseListFragment implements MyPlansViewContract {
 
     @BindView(R.id.list_plan)
-    EnhancedRecyclerView mPlanList;
+    RecyclerView mPlanList;
     @BindView(R.id.layout_empty)
     LinearLayout mEmptyLayout;
 
@@ -91,16 +89,21 @@ public class MyPlansFragment extends BaseListFragment implements MyPlansViewCont
     }
 
     @Override
-    public void showInitialView(PlanListAdapter planListAdapter, ItemTouchHelper itemTouchHelper) {
-        mPlanList.setEmptyView(mEmptyLayout);
+    public void showInitialView(PlanListAdapter planListAdapter, ItemTouchHelper itemTouchHelper, boolean isPlanItemEmpty) {
         mPlanList.setAdapter(planListAdapter);
         mPlanList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 onListScrolled(dy);
+                mMyPlansPresenter.notifyPlanListScrolled(
+                        !mPlanList.canScrollVertically(-1),
+                        !mPlanList.canScrollVertically(1)
+                );
             }
         });
         itemTouchHelper.attachToRecyclerView(mPlanList);
+
+        onPlanItemEmptyStateChanged(isPlanItemEmpty);
     }
 
     @Override
@@ -125,6 +128,12 @@ public class MyPlansFragment extends BaseListFragment implements MyPlansViewCont
                     })
                     .show();
         }
+    }
+
+    @Override
+    public void onPlanItemEmptyStateChanged(boolean isEmpty) {
+        mPlanList.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+        mEmptyLayout.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
     }
 
     @Override

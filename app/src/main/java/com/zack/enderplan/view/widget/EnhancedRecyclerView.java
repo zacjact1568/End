@@ -9,7 +9,7 @@ public class EnhancedRecyclerView extends RecyclerView {
 
     private View mEmptyView;
 
-    private AdapterDataObserver observer = new AdapterDataObserver() {
+    private AdapterDataObserver mAdapterDataObserver = new AdapterDataObserver() {
         @Override
         public void onChanged() {
             checkIfEmpty();
@@ -39,24 +39,23 @@ public class EnhancedRecyclerView extends RecyclerView {
     }
 
     private void checkIfEmpty() {
-        if (mEmptyView != null && getAdapter() != null) {
-            boolean isAdapterEmpty = getAdapter().getItemCount() == 0;
-            mEmptyView.setVisibility(isAdapterEmpty ? VISIBLE : GONE);
-            setVisibility(isAdapterEmpty ? GONE : VISIBLE);
-        }
+        if (mEmptyView == null || getAdapter() == null) return;
+        boolean isAdapterEmpty = getAdapter().getItemCount() == 0;
+        mEmptyView.setVisibility(isAdapterEmpty ? VISIBLE : GONE);
+        setVisibility(isAdapterEmpty ? GONE : VISIBLE);
     }
 
     @Override
     public void setAdapter(Adapter adapter) {
         Adapter oldAdapter = getAdapter();
         if (oldAdapter != null) {
-            oldAdapter.unregisterAdapterDataObserver(observer);
+            oldAdapter.unregisterAdapterDataObserver(mAdapterDataObserver);
         }
 
         super.setAdapter(adapter);
 
         if (adapter != null) {
-            adapter.registerAdapterDataObserver(observer);
+            adapter.registerAdapterDataObserver(mAdapterDataObserver);
         }
 
         checkIfEmpty();

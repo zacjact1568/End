@@ -13,7 +13,7 @@ import com.zack.enderplan.event.TypeCreatedEvent;
 import com.zack.enderplan.event.TypeDetailChangedEvent;
 import com.zack.enderplan.view.adapter.TypeListAdapter;
 import com.zack.enderplan.model.DataManager;
-import com.zack.enderplan.view.callback.TypeItemTouchCallback;
+import com.zack.enderplan.view.callback.TypeListItemTouchCallback;
 import com.zack.enderplan.view.contract.AllTypesViewContract;
 
 import org.greenrobot.eventbus.EventBus;
@@ -47,15 +47,15 @@ public class AllTypesPresenter extends BasePresenter {
     public void attach() {
         mEventBus.register(this);
 
-        TypeItemTouchCallback typeItemTouchCallback = new TypeItemTouchCallback();
-        typeItemTouchCallback.setOnItemMovedListener(new TypeItemTouchCallback.OnItemMovedListener() {
+        TypeListItemTouchCallback typeListItemTouchCallback = new TypeListItemTouchCallback(mDataManager);
+        typeListItemTouchCallback.setOnItemMovedListener(new TypeListItemTouchCallback.OnItemMovedListener() {
             @Override
             public void onItemMoved(int fromPosition, int toPosition) {
                 notifyTypeSequenceChanged(fromPosition, toPosition);
             }
         });
 
-        mAllTypesViewContract.showInitialView(mTypeListAdapter, new ItemTouchHelper(typeItemTouchCallback));
+        mAllTypesViewContract.showInitialView(mTypeListAdapter, new ItemTouchHelper(typeListItemTouchCallback));
     }
 
     @Override

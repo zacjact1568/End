@@ -39,7 +39,7 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case TYPE_HEADER:
-                return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.header_list_libraries, parent, false));
+                return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.header_list_library, parent, false));
             case TYPE_ITEM:
                 return new ItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_library, parent, false));
             default:

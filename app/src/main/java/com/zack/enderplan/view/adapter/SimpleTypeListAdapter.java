@@ -26,6 +26,7 @@ public class SimpleTypeListAdapter extends BaseAdapter {
     @LayoutRes
     private int mLayoutResId;
 
+    //TODO 直传DataManager
     public SimpleTypeListAdapter(List<Type> typeList, int style) {
         this.typeList = typeList;
         switch (style) {

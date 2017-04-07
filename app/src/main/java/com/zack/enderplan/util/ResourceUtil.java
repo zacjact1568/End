@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.PluralsRes;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 
@@ -29,6 +30,10 @@ public class ResourceUtil {
 
     public static String getString(@StringRes int resId) {
         return App.getContext().getString(resId);
+    }
+
+    public static String getQuantityString(@PluralsRes int resId, int quantity) {
+        return App.getContext().getResources().getQuantityString(resId, quantity, quantity);
     }
 
     public static Drawable getDrawable(@DrawableRes int resId) {

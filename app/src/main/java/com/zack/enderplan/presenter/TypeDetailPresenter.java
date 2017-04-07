@@ -21,7 +21,8 @@ import com.zack.enderplan.event.PlanDeletedEvent;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.util.CommonUtil;
-import com.zack.enderplan.view.callback.PlanItemTouchCallback;
+import com.zack.enderplan.view.callback.PlanListItemTouchCallback;
+import com.zack.enderplan.view.callback.SingleTypePlanListItemTouchCallback;
 import com.zack.enderplan.view.contract.TypeDetailViewContract;
 
 import org.greenrobot.eventbus.EventBus;
@@ -52,7 +53,7 @@ public class TypeDetailPresenter extends BasePresenter {
     private boolean mViewVisible;
 
     @Inject
-    public TypeDetailPresenter(TypeDetailViewContract typeDetailViewContract, int typeListPosition, DataManager dataManager, EventBus eventBus) {
+    TypeDetailPresenter(TypeDetailViewContract typeDetailViewContract, int typeListPosition, DataManager dataManager, EventBus eventBus) {
         mTypeDetailViewContract = typeDetailViewContract;
         mTypeListPosition = typeListPosition;
         mDataManager = dataManager;
@@ -88,21 +89,21 @@ public class TypeDetailPresenter extends BasePresenter {
     public void attach() {
         mEventBus.register(this);
 
-        PlanItemTouchCallback planItemTouchCallback = new PlanItemTouchCallback();
-        planItemTouchCallback.setOnItemSwipedListener(new PlanItemTouchCallback.OnItemSwipedListener() {
+        SingleTypePlanListItemTouchCallback singleTypePlanListItemTouchCallback = new SingleTypePlanListItemTouchCallback(mSingleTypePlanList);
+        singleTypePlanListItemTouchCallback.setOnItemSwipedListener(new PlanListItemTouchCallback.OnItemSwipedListener() {
             @Override
             public void onItemSwiped(int position, int direction) {
                 switch (direction) {
-                    case PlanItemTouchCallback.DIR_START:
+                    case PlanListItemTouchCallback.DIR_START:
                         notifyDeletingPlan(position);
                         break;
-                    case PlanItemTouchCallback.DIR_END:
+                    case PlanListItemTouchCallback.DIR_END:
                         notifySwitchingPlanStatus(position);
                         break;
                 }
             }
         });
-        planItemTouchCallback.setOnItemMovedListener(new PlanItemTouchCallback.OnItemMovedListener() {
+        singleTypePlanListItemTouchCallback.setOnItemMovedListener(new PlanListItemTouchCallback.OnItemMovedListener() {
             @Override
             public void onItemMoved(int fromPosition, int toPosition) {
                 notifyPlanSequenceChanged(fromPosition, toPosition);
@@ -115,7 +116,7 @@ public class TypeDetailPresenter extends BasePresenter {
                 ResourceUtil.getDrawableResourceId(mType.getTypeMarkPattern()),
                 mType.getTypeName(),
                 StringUtil.getFirstChar(mType.getTypeName())
-        ), getUcPlanCountStr(mType.getTypeCode()), mSingleTypePlanListAdapter, new ItemTouchHelper(planItemTouchCallback));
+        ), getUcPlanCountStr(mType.getTypeCode()), mSingleTypePlanListAdapter, new ItemTouchHelper(singleTypePlanListItemTouchCallback));
     }
 
     @Override

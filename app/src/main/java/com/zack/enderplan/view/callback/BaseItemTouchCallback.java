@@ -4,19 +4,20 @@ import android.graphics.Canvas;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
-public class PlanItemTouchCallback extends ItemTouchHelper.Callback {
+public abstract class BaseItemTouchCallback extends ItemTouchHelper.Callback {
 
     public static final int DIR_START = 0;
     public static final int DIR_END = 1;
 
-    private OnItemSwipedListener mOnItemSwipedListener;
     private OnItemMovedListener mOnItemMovedListener;
+    private OnItemSwipedListener mOnItemSwipedListener;
+
+    public abstract int getMoveDirs(int position);
+    public abstract int getSwipeDirs(int position);
 
     @Override
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-        int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-        int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
-        return makeMovementFlags(dragFlags, swipeFlags);
+        return makeMovementFlags(getMoveDirs(viewHolder.getLayoutPosition()), getSwipeDirs(viewHolder.getLayoutPosition()));
     }
 
     @Override
