@@ -1,10 +1,11 @@
 package com.zack.enderplan.presenter;
 
+import android.content.SharedPreferences;
+
 import com.zack.enderplan.R;
 import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.util.ResourceUtil;
 import com.zack.enderplan.event.DataLoadedEvent;
-import com.zack.enderplan.event.GuideEndedEvent;
 import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDeletedEvent;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
@@ -17,12 +18,13 @@ import org.greenrobot.eventbus.Subscribe;
 
 import javax.inject.Inject;
 
-public class HomePresenter extends BasePresenter {
+public class HomePresenter extends BasePresenter implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private HomeViewContract mHomeViewContract;
     private DataManager mDataManager;
     private PreferenceHelper mPreferenceHelper;
     private EventBus mEventBus;
+    private int[] mPlanCountTextSizes;
     private int mLastListScrollingVariation;
     private long mLastBackKeyPressedTime;
 
@@ -32,29 +34,38 @@ public class HomePresenter extends BasePresenter {
         mDataManager = dataManager;
         mPreferenceHelper = preferenceHelper;
         mEventBus = eventBus;
+
+        //setTextSize传入的就是sp
+        mPlanCountTextSizes = new int[]{52, 44, 32};
     }
 
     @Override
     public void attach() {
         mEventBus.register(this);
-        mHomeViewContract.showInitialView(getUcPlanCount());
+        mPreferenceHelper.registerOnChangeListener(this);
+        String planCount = getPlanCount();
+        mHomeViewContract.showInitialView(planCount, getPlanCountTextSize(planCount), getPlanCountDscpt());
     }
 
     @Override
     public void detach() {
         mHomeViewContract = null;
+        mPreferenceHelper.unregisterOnChangeListener(this);
         mEventBus.unregister(this);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(PreferenceHelper.KEY_PREF_DRAWER_HEADER_DISPLAY)) {
+            String planCount = getPlanCount();
+            mHomeViewContract.changeDrawerHeaderDisplay(planCount, getPlanCountTextSize(planCount), getPlanCountDscpt());
+        }
     }
 
     public void notifyStartingUpCompleted() {
         if (mPreferenceHelper.getNeedGuideValue()) {
             mHomeViewContract.enterActivity(Constant.GUIDE);
         }
-    }
-
-    public void notifyUcPlanCountTextClicked() {
-        mHomeViewContract.closeDrawer();
-        mHomeViewContract.showToast(getUcPlanCountStr());
     }
 
     public void notifyListScrolled(int variation) {
@@ -82,50 +93,89 @@ public class HomePresenter extends BasePresenter {
         }
     }
 
-    private String getUcPlanCount() {
-        return String.valueOf(mDataManager.getUcPlanCount());
+    private String getPlanCount() {
+        int planCount;
+        switch (mPreferenceHelper.getDrawerHeaderDisplayValue()) {
+            case PreferenceHelper.VALUE_PREF_DHD_UPC:
+                planCount = mDataManager.getUcPlanCount();
+                break;
+            case PreferenceHelper.VALUE_PREF_DHD_PC:
+                planCount = mDataManager.getPlanCount();
+                break;
+            case PreferenceHelper.VALUE_PREF_DHD_TUPC:
+                planCount = mDataManager.getTodayUcPlanCount();
+                break;
+            default:
+                return null;
+        }
+        return planCount > 99 ? "99+" : String.valueOf(planCount);
     }
 
-    private String getUcPlanCountStr() {
-        int count = mDataManager.getUcPlanCount();
-        switch (count) {
-            case 0:
-                return ResourceUtil.getString(R.string.toast_uc_plan_count_none);
-            case 1:
-                return ResourceUtil.getString(R.string.toast_uc_plan_count_one);
+    private String getPlanCountDscpt() {
+        int dscptResId;
+        switch (mPreferenceHelper.getDrawerHeaderDisplayValue()) {
+            case PreferenceHelper.VALUE_PREF_DHD_UPC:
+                dscptResId = R.string.text_uc_plan_count;
+                break;
+            case PreferenceHelper.VALUE_PREF_DHD_PC:
+                dscptResId = R.string.text_plan_count;
+                break;
+            case PreferenceHelper.VALUE_PREF_DHD_TUPC:
+                dscptResId = R.string.text_today_uc_plan_count;
+                break;
             default:
-                return String.format(ResourceUtil.getString(R.string.toast_uc_plan_count_multi_format), count);
+                return null;
         }
+        return ResourceUtil.getString(dscptResId);
+    }
+
+    private int getPlanCountTextSize(String planCount) {
+        int textSize;
+        switch (planCount.length()) {
+            case 1:
+                textSize = mPlanCountTextSizes[0];
+                break;
+            case 2:
+                textSize = mPlanCountTextSizes[1];
+                break;
+            default:
+                textSize = mPlanCountTextSizes[2];
+                break;
+        }
+        return textSize;
+    }
+
+    private void changePlanCount() {
+        String planCount = getPlanCount();
+        mHomeViewContract.changePlanCount(planCount, getPlanCountTextSize(planCount));
     }
 
     @Subscribe
     public void onDataLoaded(DataLoadedEvent event) {
-        mHomeViewContract.changeUcPlanCount(getUcPlanCount());
+        changePlanCount();
     }
 
     @Subscribe
     public void onPlanCreated(PlanCreatedEvent event) {
         if (event.getEventSource().equals(getPresenterName())) return;
-        if (!mDataManager.getPlan(event.getPosition()).isCompleted()) {
-            //若创建的是一个未完成的计划，需要更新侧边栏
-            mHomeViewContract.changeUcPlanCount(getUcPlanCount());
-        }
+        //由于判断是否需要更新的逻辑略麻烦，简单起见，就不进行判断，直接更新了
+        changePlanCount();
     }
 
     @Subscribe
     public void onPlanDeleted(PlanDeletedEvent event) {
         if (event.getEventSource().equals(getPresenterName())) return;
-        if (!event.getDeletedPlan().isCompleted()) {
-            //若删除的是一个未完成的计划，需要更新侧边栏
-            mHomeViewContract.changeUcPlanCount(getUcPlanCount());
-        }
+        changePlanCount();
     }
 
     @Subscribe
     public void onPlanDetailChanged(PlanDetailChangedEvent event) {
         if (event.getEventSource().equals(getPresenterName())) return;
-        if (event.getChangedField() == PlanDetailChangedEvent.FIELD_PLAN_STATUS) {
-            mHomeViewContract.changeUcPlanCount(getUcPlanCount());
+        switch (event.getChangedField()) {
+            case PlanDetailChangedEvent.FIELD_PLAN_STATUS:
+            case PlanDetailChangedEvent.FIELD_DEADLINE:
+                changePlanCount();
+                break;
         }
     }
 }

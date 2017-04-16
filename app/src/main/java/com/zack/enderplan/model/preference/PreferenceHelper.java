@@ -12,13 +12,18 @@ public class PreferenceHelper {
 
     public static final String KEY_PREF_NEED_GUIDE = "need_guide";
     public static final String KEY_PREF_NIGHT_MODE = "night_mode";
+    public static final String KEY_PREF_DRAWER_HEADER_DISPLAY = "drawer_header_display";
 
-    private SharedPreferences sharedPreferences;
+    public static final String VALUE_PREF_DHD_UPC = "uc_plan_count";
+    public static final String VALUE_PREF_DHD_PC = "plan_count";
+    public static final String VALUE_PREF_DHD_TUPC = "today_uc_plan_count";
+
+    private SharedPreferences mSharedPreferences;
 
     private static PreferenceHelper ourInstance = new PreferenceHelper();
 
     private PreferenceHelper() {
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(App.getContext());
     }
 
     public static PreferenceHelper getInstance() {
@@ -26,23 +31,27 @@ public class PreferenceHelper {
     }
 
     public boolean getNeedGuideValue() {
-        return getBooleanValue(KEY_PREF_NEED_GUIDE, true);
+        return getValue(KEY_PREF_NEED_GUIDE, true);
     }
 
     public boolean getNightModeValue() {
-        return getBooleanValue(KEY_PREF_NIGHT_MODE, false);
+        return getValue(KEY_PREF_NIGHT_MODE, false);
     }
 
-    public boolean getBooleanValue(String key, boolean defValue) {
-        return sharedPreferences.getBoolean(key, defValue);
+    public String getDrawerHeaderDisplayValue() {
+        return getValue(KEY_PREF_DRAWER_HEADER_DISPLAY, VALUE_PREF_DHD_UPC);
+    }
+
+    private boolean getValue(String key, boolean defValue) {
+        return mSharedPreferences.getBoolean(key, defValue);
+    }
+
+    private String getValue(String key, String defValue) {
+        return mSharedPreferences.getString(key, defValue);
     }
 
     public Map<String, ?> getAllValues() {
-        return sharedPreferences.getAll();
-    }
-
-    public String getStringValue(String key) {
-        return sharedPreferences.getString(key, null);
+        return mSharedPreferences.getAll();
     }
 
     public void setNeedGuideValue(boolean value) {
@@ -53,16 +62,28 @@ public class PreferenceHelper {
         setValue(KEY_PREF_NIGHT_MODE, value);
     }
 
-    public void setValue(String key, boolean value) {
-        sharedPreferences.edit().putBoolean(key, value).apply();
+    public void setDrawerHeaderDisplayValue(String value) {
+        setValue(KEY_PREF_DRAWER_HEADER_DISPLAY, value);
     }
 
-    public void setValue(String key, String value) {
-        sharedPreferences.edit().putString(key, value).apply();
+    private void setValue(String key, boolean value) {
+        mSharedPreferences.edit().putBoolean(key, value).apply();
+    }
+
+    private void setValue(String key, String value) {
+        mSharedPreferences.edit().putString(key, value).apply();
     }
 
     public void resetValues() {
-        sharedPreferences.edit().clear().putBoolean(KEY_PREF_NEED_GUIDE, false).apply();
+        mSharedPreferences.edit().clear().putBoolean(KEY_PREF_NEED_GUIDE, false).apply();
         PreferenceManager.setDefaultValues(App.getContext(), R.xml.preferences, true);
+    }
+
+    public void registerOnChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        mSharedPreferences.registerOnSharedPreferenceChangeListener(listener);
+    }
+
+    public void unregisterOnChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        mSharedPreferences.unregisterOnSharedPreferenceChangeListener(listener);
     }
 }

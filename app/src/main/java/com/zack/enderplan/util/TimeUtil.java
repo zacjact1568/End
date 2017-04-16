@@ -95,4 +95,25 @@ public class TimeUtil {
         //TODO 添加星期显示
         return String.format(ResourceUtil.getString(R.string.dscpt_time_general), dateStr, timeStr);
     }
+
+    public static boolean isToday(long timeInMillis) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timeInMillis);
+        //获取当前时间
+        Calendar standardCal = Calendar.getInstance();
+        //标准时间设为今天零点
+        standardCal.set(Calendar.HOUR_OF_DAY, 0);
+        standardCal.set(Calendar.MINUTE, 0);
+        standardCal.set(Calendar.SECOND, 0);
+        standardCal.set(Calendar.MILLISECOND, 0);
+        if (calendar.after(standardCal)) {
+            //不在昨天及以前，标准时间设为明天零点
+            standardCal.add(Calendar.DAY_OF_MONTH, 1);
+            if (calendar.before(standardCal)) {
+                //在今天
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -23,4 +23,8 @@ public class CommonUtil {
     public static int convertDpToPx(int dp) {
         return (int) (dp * App.getContext().getResources().getDisplayMetrics().density + 0.5f);
     }
+
+    public static int convertSpToPx(int sp) {
+        return (int) (sp * App.getContext().getResources().getDisplayMetrics().scaledDensity + 0.5f);
+    }
 }

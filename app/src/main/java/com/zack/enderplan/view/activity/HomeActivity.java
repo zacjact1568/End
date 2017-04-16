@@ -49,7 +49,8 @@ public class HomeActivity extends BaseActivity implements HomeViewContract {
     @Inject
     HomePresenter mHomePresenter;
 
-    private TextView mUcPlanCountText;
+    private TextView mPlanCountText;
+    private TextView mPlanCountDscptText;
 
     public static void start(Context context) {
         context.startActivity(new Intent(context, HomeActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
@@ -143,11 +144,13 @@ public class HomeActivity extends BaseActivity implements HomeViewContract {
     }
 
     @Override
-    public void showInitialView(String ucPlanCount) {
+    public void showInitialView(String planCount, int textSize, String planCountDscpt) {
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
-        mUcPlanCountText = ButterKnife.findById(mNavigator.getHeaderView(0), R.id.text_uc_plan_count);
+        View navHeader = mNavigator.getHeaderView(0);
+        mPlanCountText = ButterKnife.findById(navHeader, R.id.text_plan_count);
+        mPlanCountDscptText = ButterKnife.findById(navHeader, R.id.text_plan_count_dscpt);
 
         setSupportActionBar(mToolbar);
 
@@ -179,18 +182,19 @@ public class HomeActivity extends BaseActivity implements HomeViewContract {
             }
         });
 
-        mUcPlanCountText.setText(ucPlanCount);
-        mUcPlanCountText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mHomePresenter.notifyUcPlanCountTextClicked();
-            }
-        });
+        changeDrawerHeaderDisplay(planCount, textSize, planCountDscpt);
     }
 
     @Override
-    public void changeUcPlanCount(String ucPlanCount) {
-        mUcPlanCountText.setText(ucPlanCount);
+    public void changePlanCount(String planCount, int textSize) {
+        mPlanCountText.setText(planCount);
+        mPlanCountText.setTextSize(textSize);
+    }
+
+    @Override
+    public void changeDrawerHeaderDisplay(String planCount, int textSize, String planCountDscpt) {
+        changePlanCount(planCount, textSize);
+        mPlanCountDscptText.setText(planCountDscpt);
     }
 
     @Override

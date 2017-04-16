@@ -157,9 +157,6 @@
     <string name="toast_delay_10_minutes">在10分钟后</string>
     <string name="transition_type_name_text">类型名称文本转换</string>
     <string name="toast_data_loading_unfinished">数据还未载入完成，请稍等……</string>
-    <string name="toast_uc_plan_count_multi_format">你还有%d个计划需要完成</string>
-    <string name="toast_uc_plan_count_none">所有计划都已完成！</string>
-    <string name="toast_uc_plan_count_one">你只有一个计划需要完成了</string>
     <string name="toast_shortcut_disabled">快捷方式已禁用</string>
     <string name="title_dialog_no_email_app_found">没有找到email应用程序</string>
     <string name="subject_email">来自EnderPlan用户的电子邮件</string>
@@ -206,4 +203,8 @@
     <string name="toast_no_link_app_found">没有可以打开链接的应用</string>
     <string name="app_name">Ender计划</string>
     <string name="title_dialog_common_problems">常见问题</string>
+    <string name="pref_title_drawer_header_display">抽屉顶部显示</string>
+    <string name="text_plan_count">所有</string>
+    <string name="text_today_uc_plan_count">今天</string>
+    <string name="text_uc_plan_count">未完成</string>
 </resources>

@@ -2,9 +2,11 @@ package com.zack.enderplan.view.contract;
 
 public interface HomeViewContract extends BaseViewContract {
 
-    void showInitialView(String ucPlanCount);
+    void showInitialView(String planCount, int textSize, String planCountDscpt);
 
-    void changeUcPlanCount(String ucPlanCount);
+    void changePlanCount(String planCount, int textSize);
+
+    void changeDrawerHeaderDisplay(String planCount, int textSize, String planCountDscpt);
 
     void closeDrawer();
 

@@ -20,4 +20,16 @@
         <item>Reminder can\'t work?</item>
     </string-array>
 
+    <string-array name="pref_drawer_header_display_entries">
+        <item>The number of uncompleted plans</item>
+        <item>The number of all plans</item>
+        <item>The number of today\'s uncompleted plans</item>
+    </string-array>
+
+    <string-array name="pref_drawer_header_display_values" translatable="false">
+        <item>uc_plan_count</item>
+        <item>plan_count</item>
+        <item>today_uc_plan_count</item>
+    </string-array>
+
 </resources>

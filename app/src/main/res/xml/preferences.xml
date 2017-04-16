@@ -8,4 +8,11 @@
         android:summaryOff="@string/pref_summary_off"
         android:defaultValue="false"/>
 
+    <ListPreference
+        android:key="drawer_header_display"
+        android:title="@string/pref_title_drawer_header_display"
+        android:entries="@array/pref_drawer_header_display_entries"
+        android:entryValues="@array/pref_drawer_header_display_values"
+        android:defaultValue="uc_plan_count"/>
+
 </PreferenceScreen>

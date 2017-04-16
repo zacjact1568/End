@@ -78,9 +78,9 @@
 
     <string name="nav_sub_header">Others</string>
 
-    <string name="toast_uc_plan_count_none">All plans have been completed!</string>
-    <string name="toast_uc_plan_count_one">You have only one plan to complete</string>
-    <string name="toast_uc_plan_count_multi_format">You have %d plans to complete</string>
+    <string name="text_uc_plan_count">Uncompleted</string>
+    <string name="text_plan_count">Total</string>
+    <string name="text_today_uc_plan_count">Today</string>
 
     <string name="create_plan">Create a new plan</string>
     <string name="content">Content</string>
@@ -199,6 +199,7 @@
     <string name="pref_summary_on">On</string>
     <string name="pref_summary_off">Off</string>
     <string name="pref_title_language">Language</string>
+    <string name="pref_title_drawer_header_display">Drawer Header Display</string>
     <string name="title_dialog_reset_settings">Reset Settings?</string>
     <string name="msg_dialog_reset_settings">Settings will be reset to default, EnderPlan will restart.</string>
     <string name="btn_dialog_reset_settings">Reset And Restart</string>

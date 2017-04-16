@@ -603,6 +603,19 @@ public class DataManager {
         mUcPlanCount += variation;
     }
 
+    //****************TodayUncompletedPlanCount****************
+
+    /** 获取今天截止的未完成计划的数量 */
+    public int getTodayUcPlanCount() {
+        int count = 0;
+        for (Plan plan : mPlanList) {
+            if (TimeUtil.isToday(plan.getDeadline())) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     //****************TypeCodeAndTypeMarkMap****************
 
     /** 获取TypeCode和TypeMark的对应表 */

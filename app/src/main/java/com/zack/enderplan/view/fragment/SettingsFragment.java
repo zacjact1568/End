@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
@@ -19,6 +20,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     PreferenceHelper mPreferenceHelper;
     DataManager mDataManager;
     SwitchPreference mNightModePreference;
+    ListPreference mDrawerHeaderDisplayPreference;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         mDataManager = DataManager.getInstance();
 
         mNightModePreference = (SwitchPreference) findPreference(PreferenceHelper.KEY_PREF_NIGHT_MODE);
+        mDrawerHeaderDisplayPreference = (ListPreference) findPreference(PreferenceHelper.KEY_PREF_DRAWER_HEADER_DISPLAY);
 
         mNightModePreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
@@ -48,6 +51,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 return false;
             }
         });
+
+        setDrawerHeaderDisplaySummary();
     }
 
     @Override
@@ -70,6 +75,13 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 //返回并重新创建HomeActivity
                 HomeActivity.start(getActivity());
                 break;
+            case PreferenceHelper.KEY_PREF_DRAWER_HEADER_DISPLAY:
+                setDrawerHeaderDisplaySummary();
+                break;
         }
+    }
+
+    private void setDrawerHeaderDisplaySummary() {
+        mDrawerHeaderDisplayPreference.setSummary(mDrawerHeaderDisplayPreference.getEntries()[mDrawerHeaderDisplayPreference.findIndexOfValue(mPreferenceHelper.getDrawerHeaderDisplayValue())]);
     }
 }
