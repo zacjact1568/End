@@ -13,7 +13,7 @@ import com.zack.enderplan.util.ViewUtil;
 import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
 import com.zack.enderplan.model.bean.Plan;
-import com.zack.enderplan.model.database.DatabaseManager;
+import com.zack.enderplan.model.database.DatabaseHelper;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.view.widget.CircleColorView;
@@ -41,10 +41,10 @@ public class ReminderReceiver extends BaseReceiver {
     public void onReceive(Context context, Intent intent) {
 
         //直接从数据库获取plan（若通过DataManager获取，可能需要异步加载，而在receiver中不要做异步操作）
-        DatabaseManager databaseManager = DatabaseManager.getInstance();
-        Plan plan = databaseManager.queryPlan(intent.getStringExtra(Constant.PLAN_CODE));
-        Type type = databaseManager.queryType(plan.getTypeCode());
-        databaseManager.updateReminderTime(plan.getPlanCode(), Constant.UNDEFINED_TIME);
+        DatabaseHelper databaseHelper = DatabaseHelper.getInstance();
+        Plan plan = databaseHelper.queryPlan(intent.getStringExtra(Constant.PLAN_CODE));
+        Type type = databaseHelper.queryType(plan.getTypeCode());
+        databaseHelper.updateReminderTime(plan.getPlanCode(), Constant.UNDEFINED_TIME);
 
         DataManager dataManager = DataManager.getInstance();
         int position = -1;

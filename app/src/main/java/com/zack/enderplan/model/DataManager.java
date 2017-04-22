@@ -1,5 +1,6 @@
 package com.zack.enderplan.model;
 
+import com.zack.enderplan.model.preference.PreferenceHelper;
 import com.zack.enderplan.util.ColorUtil;
 import com.zack.enderplan.util.CommonUtil;
 import com.zack.enderplan.util.SystemUtil;
@@ -8,7 +9,7 @@ import com.zack.enderplan.model.bean.TypeMarkColor;
 import com.zack.enderplan.model.bean.TypeMarkPattern;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.bean.Type;
-import com.zack.enderplan.model.database.DatabaseManager;
+import com.zack.enderplan.model.database.DatabaseHelper;
 import com.zack.enderplan.event.DataLoadedEvent;
 import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.util.TimeUtil;
@@ -23,7 +24,8 @@ import java.util.Map;
 
 public class DataManager {
 
-    private DatabaseManager mDatabaseManager;
+    private DatabaseHelper mDatabaseHelper;
+    private PreferenceHelper mPreferenceHelper;
     private List<Plan> mPlanList;
     private List<Type> mTypeList;
     private int mUcPlanCount;
@@ -34,7 +36,8 @@ public class DataManager {
     private static DataManager ourInstance = new DataManager();
 
     private DataManager() {
-        mDatabaseManager = DatabaseManager.getInstance();
+        mDatabaseHelper = DatabaseHelper.getInstance();
+        mPreferenceHelper = PreferenceHelper.getInstance();
         mPlanList = new ArrayList<>();
         mTypeList = new ArrayList<>();
         mUcPlanCount = 0;
@@ -50,7 +53,7 @@ public class DataManager {
 
     /** 从数据库中加载 */
     private void loadFromDatabase() {
-        mDatabaseManager.loadDataAsync(new DatabaseManager.DataLoadedCallback() {
+        mDatabaseHelper.loadDataAsync(new DatabaseHelper.DataLoadedCallback() {
             @Override
             public void onDataLoaded(List<Plan> planList, List<Type> typeList) {
                 //以下代码都是在主线程中执行的，所以如果在主线程访问mPlanList或mTypeList，只有两种情况：空或满数据
@@ -121,15 +124,15 @@ public class DataManager {
             long oneCompletionTime = onePlan.getCompletionTime();
             onePlan.setCompletionTime(anotherPlan.getCompletionTime());
             anotherPlan.setCompletionTime(oneCompletionTime);
-            mDatabaseManager.updateCompletionTime(onePlan.getPlanCode(), onePlan.getCompletionTime());
-            mDatabaseManager.updateCompletionTime(anotherPlan.getPlanCode(), anotherPlan.getCompletionTime());
+            mDatabaseHelper.updateCompletionTime(onePlan.getPlanCode(), onePlan.getCompletionTime());
+            mDatabaseHelper.updateCompletionTime(anotherPlan.getPlanCode(), anotherPlan.getCompletionTime());
         } else if (!onePlan.isCompleted() && !anotherPlan.isCompleted()) {
             //未完成->未完成，交换creation time
             long oneCreationTime = onePlan.getCreationTime();
             onePlan.setCreationTime(anotherPlan.getCreationTime());
             anotherPlan.setCreationTime(oneCreationTime);
-            mDatabaseManager.updateCreationTime(onePlan.getPlanCode(), onePlan.getCreationTime());
-            mDatabaseManager.updateCreationTime(anotherPlan.getPlanCode(), anotherPlan.getCreationTime());
+            mDatabaseHelper.updateCreationTime(onePlan.getPlanCode(), onePlan.getCreationTime());
+            mDatabaseHelper.updateCreationTime(anotherPlan.getPlanCode(), anotherPlan.getCreationTime());
         } else {
             return;
         }
@@ -242,7 +245,7 @@ public class DataManager {
             SystemUtil.setReminder(newPlan.getPlanCode(), newPlan.getReminderTime());
         }
         //存储至数据库
-        mDatabaseManager.savePlan(newPlan);
+        mDatabaseHelper.savePlan(newPlan);
     }
 
     /** 删除计划 */
@@ -259,7 +262,7 @@ public class DataManager {
         }
         removeFromPlanList(location);
         //更新数据库
-        mDatabaseManager.deletePlan(plan.getPlanCode());
+        mDatabaseHelper.deletePlan(plan.getPlanCode());
     }
 
     //TODO notify***全部改为动宾形式
@@ -277,7 +280,7 @@ public class DataManager {
     public void notifyPlanContentChanged(int location, String newContent) {
         Plan plan = getPlan(location);
         plan.setContent(newContent);
-        mDatabaseManager.updateContent(plan.getPlanCode(), newContent);
+        mDatabaseHelper.updateContent(plan.getPlanCode(), newContent);
     }
 
     /** 编辑计划类型 */
@@ -289,21 +292,21 @@ public class DataManager {
         }
         //再来改变typeCode
         plan.setTypeCode(newTypeCode);
-        mDatabaseManager.updateTypeOfPlan(plan.getPlanCode(), newTypeCode);
+        mDatabaseHelper.updateTypeOfPlan(plan.getPlanCode(), newTypeCode);
     }
 
     /** 编辑计划星标状态 */
     public void notifyStarStatusChanged(int location) {
         Plan plan = getPlan(location);
         plan.invertStarStatus();
-        mDatabaseManager.updateStarStatus(plan.getPlanCode(), plan.getStarStatus());
+        mDatabaseHelper.updateStarStatus(plan.getPlanCode(), plan.getStarStatus());
     }
 
     /** 编辑计划截止时间 */
     public void notifyDeadlineChanged(int location, long newDeadline) {
         Plan plan = getPlan(location);
         plan.setDeadline(newDeadline);
-        mDatabaseManager.updateDeadline(plan.getPlanCode(), newDeadline);
+        mDatabaseHelper.updateDeadline(plan.getPlanCode(), newDeadline);
     }
 
     /** 编辑计划提醒时间 */
@@ -311,7 +314,7 @@ public class DataManager {
         Plan plan = getPlan(location);
         SystemUtil.setReminder(plan.getPlanCode(), newReminderTime);
         plan.setReminderTime(newReminderTime);
-        mDatabaseManager.updateReminderTime(plan.getPlanCode(), newReminderTime);
+        mDatabaseHelper.updateReminderTime(plan.getPlanCode(), newReminderTime);
     }
 
     /** 编辑计划完成状态 */
@@ -337,7 +340,7 @@ public class DataManager {
         int newPosition = isCompletedPast ? 0 : getUcPlanCount();
         addToPlanList(newPosition, plan);
 
-        mDatabaseManager.updatePlanStatus(plan.getPlanCode(), newCreationTime, newCompletionTime);
+        mDatabaseHelper.updatePlanStatus(plan.getPlanCode(), newCreationTime, newCompletionTime);
     }
 
     //****************TypeList****************
@@ -398,8 +401,8 @@ public class DataManager {
         int oneTypeSequence = oneType.getTypeSequence();
         oneType.setTypeSequence(anotherType.getTypeSequence());
         anotherType.setTypeSequence(oneTypeSequence);
-        mDatabaseManager.updateTypeSequence(oneType.getTypeCode(), oneType.getTypeSequence());
-        mDatabaseManager.updateTypeSequence(anotherType.getTypeCode(), anotherType.getTypeSequence());
+        mDatabaseHelper.updateTypeSequence(oneType.getTypeCode(), oneType.getTypeSequence());
+        mDatabaseHelper.updateTypeSequence(anotherType.getTypeCode(), anotherType.getTypeSequence());
         Collections.swap(mTypeList, oneLocation, anotherLocation);
     }
 
@@ -441,7 +444,7 @@ public class DataManager {
                 new TypeMark(newType.getTypeMarkColor(), newType.getTypeMarkPattern())
         );
         //储存至数据库
-        mDatabaseManager.saveType(newType);
+        mDatabaseHelper.saveType(newType);
     }
 
     /** 删除类型 */
@@ -451,14 +454,14 @@ public class DataManager {
         deletePlanOfOneType(type.getTypeCode());
         removeFromTypeList(location);
         mTypeCodeAndTypeMarkMap.remove(type.getTypeCode());
-        mDatabaseManager.deleteType(type.getTypeCode());
+        mDatabaseHelper.deleteType(type.getTypeCode());
     }
 
     /** 更新类型名称 */
     public void notifyUpdatingTypeName(int location, String newTypeName) {
         Type type = getType(location);
         type.setTypeName(newTypeName);
-        mDatabaseManager.updateTypeName(type.getTypeCode(), newTypeName);
+        mDatabaseHelper.updateTypeName(type.getTypeCode(), newTypeName);
     }
 
     /** 更新类型标记颜色 */
@@ -466,7 +469,7 @@ public class DataManager {
         Type type = getType(location);
         type.setTypeMarkColor(newTypeMarkColor);
         mTypeCodeAndTypeMarkMap.get(type.getTypeCode()).setColorHex(newTypeMarkColor);
-        mDatabaseManager.updateTypeMarkColor(type.getTypeCode(), newTypeMarkColor);
+        mDatabaseHelper.updateTypeMarkColor(type.getTypeCode(), newTypeMarkColor);
     }
 
     /** 更新类型标记图案 */
@@ -474,7 +477,7 @@ public class DataManager {
         Type type = getType(location);
         type.setTypeMarkPattern(newTypeMarkPattern);
         mTypeCodeAndTypeMarkMap.get(type.getTypeCode()).setPatternFn(newTypeMarkPattern);
-        mDatabaseManager.updateTypeMarkPattern(type.getTypeCode(), newTypeMarkPattern);
+        mDatabaseHelper.updateTypeMarkPattern(type.getTypeCode(), newTypeMarkPattern);
     }
 
     /** 重排类型（集中重排）*/
@@ -486,7 +489,7 @@ public class DataManager {
                 //在移动typeList的item的时候只是交换了items在list中的位置，并没有改变item中的type_sequence
                 type.setTypeSequence(i);
                 //更新数据库
-                mDatabaseManager.updateTypeSequence(type.getTypeCode(), i);
+                mDatabaseHelper.updateTypeSequence(type.getTypeCode(), i);
             }
         }
     }
@@ -535,17 +538,17 @@ public class DataManager {
 
     /** 获取全部TypeMark颜色 */
     public List<TypeMarkColor> getTypeMarkColorList() {
-        return mDatabaseManager.loadTypeMarkColor();
+        return mDatabaseHelper.loadTypeMarkColor();
     }
 
     /** 获取全部TypeMark图案 */
     public List<TypeMarkPattern> getTypeMarkPatternList() {
-        return mDatabaseManager.loadTypeMarkPattern();
+        return mDatabaseHelper.loadTypeMarkPattern();
     }
 
     /** 获取可用的TypeMark颜色（添加类型时使用）*/
     public List<TypeMarkColor> getValidTypeMarkColorList() {
-        List<TypeMarkColor> typeMarkColorList = mDatabaseManager.loadTypeMarkColor();
+        List<TypeMarkColor> typeMarkColorList = mDatabaseHelper.loadTypeMarkColor();
         for (int i = 0; i < typeMarkColorList.size(); i++) {
             if (isTypeMarkColorUsed(typeMarkColorList.get(i).getColorHex())) {
                 //此颜色已被使用
@@ -558,7 +561,7 @@ public class DataManager {
 
     /** 获取可用的TypeMark颜色（编辑类型时使用）*/
     public List<TypeMarkColor> getValidTypeMarkColorList(String includedColorHex) {
-        List<TypeMarkColor> typeMarkColorList = mDatabaseManager.loadTypeMarkColor();
+        List<TypeMarkColor> typeMarkColorList = mDatabaseHelper.loadTypeMarkColor();
         for (int i = 0; i < typeMarkColorList.size(); i++) {
             String colorHex = typeMarkColorList.get(i).getColorHex();
             if (isTypeMarkColorUsed(colorHex) && !colorHex.equals(includedColorHex)) {
@@ -572,13 +575,13 @@ public class DataManager {
 
     /** 数据库获取颜色名称 */
     public String getTypeMarkColorName(String colorHex) {
-        String colorName = mDatabaseManager.queryTypeMarkColorNameByTypeMarkColorHex(colorHex);
+        String colorName = mDatabaseHelper.queryTypeMarkColorNameByTypeMarkColorHex(colorHex);
         return colorName == null ? colorHex : colorName;
     }
 
     /** 数据库获取图案名称 */
     public String getTypeMarkPatternName(String patternFn) {
-        return patternFn == null ? null : mDatabaseManager.queryTypeMarkPatternNameByTypeMarkPatternFn(patternFn);
+        return patternFn == null ? null : mDatabaseHelper.queryTypeMarkPatternNameByTypeMarkPatternFn(patternFn);
     }
 
     /** 获取一个随机的TypeMark颜色 */
@@ -659,5 +662,11 @@ public class DataManager {
     /** 查询某个类型是否有未完成的计划 */
     public boolean isUcPlanOfOneTypeExists(String typeCode) {
         return mUcPlanCountOfEachTypeMap.containsKey(typeCode);
+    }
+
+    //****************PreferenceHelper****************
+
+    public PreferenceHelper getPreferenceHelper() {
+        return mPreferenceHelper;
     }
 }

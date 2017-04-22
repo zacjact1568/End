@@ -1,7 +1,6 @@
 package com.zack.enderplan.model.database;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -28,23 +27,21 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-public class DatabaseManager {
+public class DatabaseHelper {
 
     private static final String DB_NAME = "com.zack.enderplan.db";
 
     private static final int DB_VERSION = 1;
 
-    private SQLiteDatabase database;
+    private SQLiteDatabase mDatabase;
 
-    private static DatabaseManager ourInstance = new DatabaseManager();
+    private static DatabaseHelper ourInstance = new DatabaseHelper();
 
-    private DatabaseManager() {
-        Context context = App.getContext();
-        DatabaseOpenHelper dbHelper = new DatabaseOpenHelper(context, DB_NAME, null, DB_VERSION);
-        database = dbHelper.getWritableDatabase();
+    private DatabaseHelper() {
+        mDatabase = new DatabaseOpenHelper(App.getContext(), DB_NAME, null, DB_VERSION).getWritableDatabase();
     }
 
-    public static DatabaseManager getInstance() {
+    public static DatabaseHelper getInstance() {
         return ourInstance;
     }
 
@@ -76,13 +73,13 @@ public class DatabaseManager {
             values.put(Constant.TYPE_MARK_COLOR, type.getTypeMarkColor());
             values.put(Constant.TYPE_MARK_PATTERN, type.getTypeMarkPattern());
             values.put(Constant.TYPE_SEQUENCE, type.getTypeSequence());
-            database.insert(Constant.TYPE, null, values);
+            mDatabase.insert(Constant.TYPE, null, values);
         }
     }
 
     public List<Type> loadType() {
         List<Type> typeList = new ArrayList<>();
-        Cursor cursor = database.query(Constant.TYPE, null, null, null, null, null, Constant.TYPE_SEQUENCE);
+        Cursor cursor = mDatabase.query(Constant.TYPE, null, null, null, null, null, Constant.TYPE_SEQUENCE);
         if (cursor.moveToFirst()) {
             do {
                 typeList.add(new Type(
@@ -100,7 +97,7 @@ public class DatabaseManager {
 
     public TypeMark queryTypeMarkByTypeCode(String typeCode) {
         TypeMark typeMark = null;
-        Cursor cursor = database.query(Constant.TYPE, new String[]{Constant.TYPE_MARK_COLOR, Constant.TYPE_MARK_PATTERN},
+        Cursor cursor = mDatabase.query(Constant.TYPE, new String[]{Constant.TYPE_MARK_COLOR, Constant.TYPE_MARK_PATTERN},
                 Constant.TYPE_CODE + " = ?", new String[]{typeCode}, null, null, null);
         if (cursor.moveToFirst()) {
             typeMark = new TypeMark(
@@ -113,7 +110,7 @@ public class DatabaseManager {
     }
 
     public void updateType(String typeCode, ContentValues values) {
-        database.update(Constant.TYPE, values, Constant.TYPE_CODE + " = ?", new String[]{typeCode});
+        mDatabase.update(Constant.TYPE, values, Constant.TYPE_CODE + " = ?", new String[]{typeCode});
     }
 
     public void updateTypeBase(String typeCode, String typeName, String typeMarkColor, String typeMarkPattern) {
@@ -156,12 +153,12 @@ public class DatabaseManager {
     }
 
     public void deleteType(String typeCode) {
-        database.delete(Constant.TYPE, Constant.TYPE_CODE + " = ?", new String[]{typeCode});
+        mDatabase.delete(Constant.TYPE, Constant.TYPE_CODE + " = ?", new String[]{typeCode});
     }
 
     public Type queryType(String typeCode) {
         Type type = null;
-        Cursor cursor = database.query(Constant.TYPE, null, Constant.TYPE_CODE + " = ?", new String[]{typeCode},
+        Cursor cursor = mDatabase.query(Constant.TYPE, null, Constant.TYPE_CODE + " = ?", new String[]{typeCode},
                 null, null, null);
         if (cursor.moveToFirst()) {
             type = new Type(
@@ -189,7 +186,7 @@ public class DatabaseManager {
             values.put(Constant.COMPLETION_TIME, plan.getCompletionTime());
             values.put(Constant.STAR_STATUS, plan.getStarStatus());
             values.put(Constant.REMINDER_TIME, plan.getReminderTime());
-            database.insert(Constant.PLAN, null, values);
+            mDatabase.insert(Constant.PLAN, null, values);
         }
     }
 
@@ -199,7 +196,7 @@ public class DatabaseManager {
         int starStatus;
         List<Plan> planList = new ArrayList<>();
         String orderBy = Constant.CREATION_TIME + " desc, " + Constant.COMPLETION_TIME + " desc";
-        Cursor cursor = database.query(Constant.PLAN, null, null, null, null, null, orderBy);
+        Cursor cursor = mDatabase.query(Constant.PLAN, null, null, null, null, null, orderBy);
         if (cursor.moveToFirst()) {
             do {
                 planCode = cursor.getString(cursor.getColumnIndex(Constant.PLAN_CODE));
@@ -219,7 +216,7 @@ public class DatabaseManager {
     }
 
     public void updatePlan(String planCode, ContentValues values) {
-        database.update(Constant.PLAN, values, Constant.PLAN_CODE + " = ?", new String[]{planCode});
+        mDatabase.update(Constant.PLAN, values, Constant.PLAN_CODE + " = ?", new String[]{planCode});
     }
 
     public void updateContent(String planCode, String content) {
@@ -272,12 +269,12 @@ public class DatabaseManager {
     }
 
     public void deletePlan(String planCode) {
-        database.delete(Constant.PLAN, Constant.PLAN_CODE + " = ?", new String[]{planCode});
+        mDatabase.delete(Constant.PLAN, Constant.PLAN_CODE + " = ?", new String[]{planCode});
     }
 
     public Plan queryPlan(String planCode) {
         Plan plan = null;
-        Cursor cursor = database.query(Constant.PLAN, null, Constant.PLAN_CODE + " = ?", new String[]{planCode},
+        Cursor cursor = mDatabase.query(Constant.PLAN, null, Constant.PLAN_CODE + " = ?", new String[]{planCode},
                 null, null, null);
         if (cursor.moveToFirst()) {
             plan = new Plan(
@@ -297,7 +294,7 @@ public class DatabaseManager {
 
     public String queryContentByPlanCode(String planCode) {
         String content = "";
-        Cursor cursor = database.query(Constant.PLAN, new String[]{Constant.CONTENT}, Constant.PLAN_CODE + " = ?",
+        Cursor cursor = mDatabase.query(Constant.PLAN, new String[]{Constant.CONTENT}, Constant.PLAN_CODE + " = ?",
                 new String[]{planCode}, null, null, null);
         if (cursor.moveToFirst()) {
             content = cursor.getString(cursor.getColumnIndex(Constant.CONTENT));
@@ -310,7 +307,7 @@ public class DatabaseManager {
         String planCode;
         Long reminderTime;
         Map<String, Long> reminderTimeMap = new HashMap<>();
-        Cursor cursor = database.query(Constant.PLAN, new String[]{Constant.PLAN_CODE, Constant.REMINDER_TIME},
+        Cursor cursor = mDatabase.query(Constant.PLAN, new String[]{Constant.PLAN_CODE, Constant.REMINDER_TIME},
                 Constant.REMINDER_TIME + " > ?", new String[]{"0"}, null, null, null);
         if (cursor.moveToFirst()) {
             do {

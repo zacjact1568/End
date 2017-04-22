@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.zack.enderplan.injector.module.AppModule;
 import com.zack.enderplan.model.DataManager;
-import com.zack.enderplan.model.preference.PreferenceHelper;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -19,8 +18,6 @@ public interface AppComponent {
     Context getContext();
 
     DataManager getDataManager();
-
-    PreferenceHelper getPreferenceHelper();
 
     EventBus getEventBus();
 }

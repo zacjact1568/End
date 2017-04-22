@@ -11,13 +11,12 @@ import android.preference.SwitchPreference;
 import android.support.v7.app.AppCompatDelegate;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.model.DataManager;
-import com.zack.enderplan.model.preference.PreferenceHelper;
 import com.zack.enderplan.view.activity.HomeActivity;
 
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    PreferenceHelper mPreferenceHelper;
     DataManager mDataManager;
     SwitchPreference mNightModePreference;
     ListPreference mDrawerHeaderDisplayPreference;
@@ -27,11 +26,10 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
 
-        mPreferenceHelper = PreferenceHelper.getInstance();
         mDataManager = DataManager.getInstance();
 
-        mNightModePreference = (SwitchPreference) findPreference(PreferenceHelper.KEY_PREF_NIGHT_MODE);
-        mDrawerHeaderDisplayPreference = (ListPreference) findPreference(PreferenceHelper.KEY_PREF_DRAWER_HEADER_DISPLAY);
+        mNightModePreference = (SwitchPreference) findPreference(Constant.PREF_KEY_NIGHT_MODE);
+        mDrawerHeaderDisplayPreference = (ListPreference) findPreference(Constant.PREF_KEY_DRAWER_HEADER_DISPLAY);
 
         mNightModePreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
@@ -70,18 +68,18 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         switch (key) {
-            case PreferenceHelper.KEY_PREF_NIGHT_MODE:
-                AppCompatDelegate.setDefaultNightMode(mPreferenceHelper.getNightModeValue() ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+            case Constant.PREF_KEY_NIGHT_MODE:
+                AppCompatDelegate.setDefaultNightMode(mDataManager.getPreferenceHelper().getNightModeValue() ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
                 //返回并重新创建HomeActivity
                 HomeActivity.start(getActivity());
                 break;
-            case PreferenceHelper.KEY_PREF_DRAWER_HEADER_DISPLAY:
+            case Constant.PREF_KEY_DRAWER_HEADER_DISPLAY:
                 setDrawerHeaderDisplaySummary();
                 break;
         }
     }
 
     private void setDrawerHeaderDisplaySummary() {
-        mDrawerHeaderDisplayPreference.setSummary(mDrawerHeaderDisplayPreference.getEntries()[mDrawerHeaderDisplayPreference.findIndexOfValue(mPreferenceHelper.getDrawerHeaderDisplayValue())]);
+        mDrawerHeaderDisplayPreference.setSummary(mDrawerHeaderDisplayPreference.getEntries()[mDrawerHeaderDisplayPreference.findIndexOfValue(mDataManager.getPreferenceHelper().getDrawerHeaderDisplayValue())]);
     }
 }

@@ -73,4 +73,12 @@ public class Constant {
     public static final String ACTION_PREFIX = "com.zack.enderplan.action.";
     public static final String ACTION_REMINDER = ACTION_PREFIX + "REMINDER_%s";
     public static final String ACTION_REMINDER_NOTIFICATION_ACTION = ACTION_PREFIX + "REMINDER_%s_NOTIFICATION_ACTION_%s";
+
+    public static final String PREF_KEY_NEED_GUIDE = "need_guide";
+    public static final String PREF_KEY_NIGHT_MODE = "night_mode";
+    public static final String PREF_KEY_DRAWER_HEADER_DISPLAY = "drawer_header_display";
+
+    public static final String PREF_VALUE_DHD_UPC = "uc_plan_count";
+    public static final String PREF_VALUE_DHD_PC = "plan_count";
+    public static final String PREF_VALUE_DHD_TUPC = "today_uc_plan_count";
 }

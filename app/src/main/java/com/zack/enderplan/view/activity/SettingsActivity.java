@@ -10,7 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.model.preference.PreferenceHelper;
+import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.view.fragment.SettingsFragment;
 
 public class SettingsActivity extends BaseActivity {
@@ -51,7 +51,7 @@ public class SettingsActivity extends BaseActivity {
                         .setPositiveButton(R.string.btn_dialog_reset_settings, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                PreferenceHelper.getInstance().resetValues();
+                                DataManager.getInstance().getPreferenceHelper().resetAllValues();
                             }
                         })
                         .setNegativeButton(R.string.button_cancel, null)

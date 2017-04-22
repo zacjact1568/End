@@ -9,7 +9,6 @@ import com.zack.enderplan.injector.component.AppComponent;
 import com.zack.enderplan.injector.component.DaggerAppComponent;
 import com.zack.enderplan.injector.module.AppModule;
 import com.zack.enderplan.model.DataManager;
-import com.zack.enderplan.model.preference.PreferenceHelper;
 import com.zack.enderplan.common.Constant;
 
 import java.io.File;
@@ -53,9 +52,8 @@ public class App extends Application {
 
     /** 通过Preference中的数据初始化某些设置 */
     private void initFromPreferences() {
-        PreferenceHelper helper = PreferenceHelper.getInstance();
         //设定白天夜间模式
-        AppCompatDelegate.setDefaultNightMode(helper.getNightModeValue() ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+        AppCompatDelegate.setDefaultNightMode(getDataManager().getPreferenceHelper().getNightModeValue() ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
     }
 
     /** 初始化类型标记数据库 */

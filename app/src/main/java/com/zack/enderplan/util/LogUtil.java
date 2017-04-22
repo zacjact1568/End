@@ -2,6 +2,10 @@ package com.zack.enderplan.util;
 
 import android.util.Log;
 
+import com.zack.enderplan.model.DataManager;
+
+import java.util.Map;
+
 public class LogUtil {
 
     private static final String DEF_TAG = "Default Tag";
@@ -63,5 +67,16 @@ public class LogUtil {
 
     public static void here() {
         d("****HERE****");
+    }
+
+    public static void logAllSharedPreferences(String tag) {
+        Map<String, ?> pm = DataManager.getInstance().getPreferenceHelper().getAllValues();
+        if (pm.isEmpty()) {
+            d("No shared preferences");
+        } else {
+            for (Map.Entry<String, ?> entry : pm.entrySet()) {
+                d(tag, entry.getKey() + ": " + entry.getValue());
+            }
+        }
     }
 }

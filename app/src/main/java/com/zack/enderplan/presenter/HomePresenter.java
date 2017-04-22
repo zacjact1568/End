@@ -9,7 +9,6 @@ import com.zack.enderplan.event.DataLoadedEvent;
 import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDeletedEvent;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
-import com.zack.enderplan.model.preference.PreferenceHelper;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.view.contract.HomeViewContract;
 
@@ -22,17 +21,15 @@ public class HomePresenter extends BasePresenter implements SharedPreferences.On
 
     private HomeViewContract mHomeViewContract;
     private DataManager mDataManager;
-    private PreferenceHelper mPreferenceHelper;
     private EventBus mEventBus;
     private int[] mPlanCountTextSizes;
     private int mLastListScrollingVariation;
     private long mLastBackKeyPressedTime;
 
     @Inject
-    HomePresenter(HomeViewContract homeViewContract, DataManager dataManager, PreferenceHelper preferenceHelper, EventBus eventBus) {
+    HomePresenter(HomeViewContract homeViewContract, DataManager dataManager, EventBus eventBus) {
         mHomeViewContract = homeViewContract;
         mDataManager = dataManager;
-        mPreferenceHelper = preferenceHelper;
         mEventBus = eventBus;
 
         //setTextSize传入的就是sp
@@ -42,7 +39,7 @@ public class HomePresenter extends BasePresenter implements SharedPreferences.On
     @Override
     public void attach() {
         mEventBus.register(this);
-        mPreferenceHelper.registerOnChangeListener(this);
+        mDataManager.getPreferenceHelper().registerOnChangeListener(this);
         String planCount = getPlanCount();
         mHomeViewContract.showInitialView(planCount, getPlanCountTextSize(planCount), getPlanCountDscpt());
     }
@@ -50,20 +47,20 @@ public class HomePresenter extends BasePresenter implements SharedPreferences.On
     @Override
     public void detach() {
         mHomeViewContract = null;
-        mPreferenceHelper.unregisterOnChangeListener(this);
+        mDataManager.getPreferenceHelper().unregisterOnChangeListener(this);
         mEventBus.unregister(this);
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(PreferenceHelper.KEY_PREF_DRAWER_HEADER_DISPLAY)) {
+        if (key.equals(Constant.PREF_KEY_DRAWER_HEADER_DISPLAY)) {
             String planCount = getPlanCount();
             mHomeViewContract.changeDrawerHeaderDisplay(planCount, getPlanCountTextSize(planCount), getPlanCountDscpt());
         }
     }
 
     public void notifyStartingUpCompleted() {
-        if (mPreferenceHelper.getNeedGuideValue()) {
+        if (mDataManager.getPreferenceHelper().getNeedGuideValue()) {
             mHomeViewContract.enterActivity(Constant.GUIDE);
         }
     }
@@ -95,14 +92,14 @@ public class HomePresenter extends BasePresenter implements SharedPreferences.On
 
     private String getPlanCount() {
         int planCount;
-        switch (mPreferenceHelper.getDrawerHeaderDisplayValue()) {
-            case PreferenceHelper.VALUE_PREF_DHD_UPC:
+        switch (mDataManager.getPreferenceHelper().getDrawerHeaderDisplayValue()) {
+            case Constant.PREF_VALUE_DHD_UPC:
                 planCount = mDataManager.getUcPlanCount();
                 break;
-            case PreferenceHelper.VALUE_PREF_DHD_PC:
+            case Constant.PREF_VALUE_DHD_PC:
                 planCount = mDataManager.getPlanCount();
                 break;
-            case PreferenceHelper.VALUE_PREF_DHD_TUPC:
+            case Constant.PREF_VALUE_DHD_TUPC:
                 planCount = mDataManager.getTodayUcPlanCount();
                 break;
             default:
@@ -113,14 +110,14 @@ public class HomePresenter extends BasePresenter implements SharedPreferences.On
 
     private String getPlanCountDscpt() {
         int dscptResId;
-        switch (mPreferenceHelper.getDrawerHeaderDisplayValue()) {
-            case PreferenceHelper.VALUE_PREF_DHD_UPC:
+        switch (mDataManager.getPreferenceHelper().getDrawerHeaderDisplayValue()) {
+            case Constant.PREF_VALUE_DHD_UPC:
                 dscptResId = R.string.text_uc_plan_count;
                 break;
-            case PreferenceHelper.VALUE_PREF_DHD_PC:
+            case Constant.PREF_VALUE_DHD_PC:
                 dscptResId = R.string.text_plan_count;
                 break;
-            case PreferenceHelper.VALUE_PREF_DHD_TUPC:
+            case Constant.PREF_VALUE_DHD_TUPC:
                 dscptResId = R.string.text_today_uc_plan_count;
                 break;
             default:

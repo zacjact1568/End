@@ -3,7 +3,6 @@ package com.zack.enderplan.injector.module;
 import android.content.Context;
 
 import com.zack.enderplan.model.DataManager;
-import com.zack.enderplan.model.preference.PreferenceHelper;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -31,12 +30,6 @@ public class AppModule {
     @Singleton
     DataManager provideDataManager() {
         return DataManager.getInstance();
-    }
-
-    @Provides
-    @Singleton
-    PreferenceHelper providePreferenceHelper() {
-        return PreferenceHelper.getInstance();
     }
 
     @Provides

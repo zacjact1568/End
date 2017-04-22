@@ -10,7 +10,6 @@ import com.zack.enderplan.event.TypeCreatedEvent;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.bean.Type;
-import com.zack.enderplan.model.preference.PreferenceHelper;
 import com.zack.enderplan.util.ColorUtil;
 import com.zack.enderplan.util.CommonUtil;
 import com.zack.enderplan.util.ResourceUtil;
@@ -29,16 +28,14 @@ public class GuidePresenter extends BasePresenter {
 
     private GuideViewContract mGuideViewContract;
     private DataManager mDataManager;
-    private PreferenceHelper mPreferenceHelper;
     private EventBus mEventBus;
     private GuidePagerAdapter mGuidePagerAdapter;
     private long mLastBackKeyPressedTime;
 
     @Inject
-    GuidePresenter(GuideViewContract guideViewContract, FragmentManager fragmentManager, DataManager dataManager, PreferenceHelper preferenceHelper, EventBus eventBus) {
+    GuidePresenter(GuideViewContract guideViewContract, FragmentManager fragmentManager, DataManager dataManager, EventBus eventBus) {
         mGuideViewContract = guideViewContract;
         mDataManager = dataManager;
-        mPreferenceHelper = preferenceHelper;
         mEventBus = eventBus;
 
         mGuidePagerAdapter = new GuidePagerAdapter(fragmentManager, getGuidePages());
@@ -142,7 +139,7 @@ public class GuidePresenter extends BasePresenter {
     private void endGuide(boolean isNormally) {
         if (isNormally) {
             createDefaultData();
-            mPreferenceHelper.setNeedGuideValue(false);
+            mDataManager.getPreferenceHelper().setNeedGuideValue(false);
         }
         mGuideViewContract.exitWithResult(isNormally);
     }
