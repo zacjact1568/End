@@ -86,10 +86,11 @@ public class PlanListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                 Plan plan = mDataManager.getPlan(position);
 
-                setTypeMarkView(itemViewHolder.mTypeMarkView, plan.getTypeCode(), plan.hasDeadline(), plan.hasReminder(), plan.isCompleted());
+                setTypeMarkView(itemViewHolder.mTypeMarkView, plan.getTypeCode(), plan.isCompleted(), plan.hasDeadline(), plan.hasReminder());
                 setContentText(itemViewHolder.mContentText, plan.getContent(), plan.isCompleted());
-                setTimeLayout(itemViewHolder.mDeadlineLayout, plan.hasDeadline(), plan.getDeadline());
-                setTimeLayout(itemViewHolder.mReminderLayout, plan.hasReminder(), plan.getReminderTime());
+                setSpaceView(itemViewHolder.mSpaceView, plan.isCompleted(), plan.hasDeadline(), plan.hasReminder());
+                setTimeLayout(itemViewHolder.mDeadlineLayout, plan.isCompleted(), plan.hasDeadline(), plan.getDeadline());
+                setTimeLayout(itemViewHolder.mReminderLayout, plan.isCompleted(), plan.hasReminder(), plan.getReminderTime());
                 setStarButton(itemViewHolder.mStarButton, plan.isStarred(), plan.isCompleted(), holder.getLayoutPosition());
                 setItemView(holder.itemView, holder.getLayoutPosition());
                 break;
@@ -130,12 +131,12 @@ public class PlanListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    private void setTypeMarkView(View typeMarkView, String typeCode, boolean hasDeadline, boolean hasReminder, boolean isCompleted) {
+    private void setTypeMarkView(View typeMarkView, String typeCode, boolean isCompleted, boolean hasDeadline, boolean hasReminder) {
         int height;
-        if (hasDeadline && hasReminder) {
+        if (!isCompleted && hasDeadline && hasReminder) {
             //最长
             height = mTypeMarkViewHeights[2];
-        } else if (!hasDeadline && !hasReminder) {
+        } else if (isCompleted || (!hasDeadline && !hasReminder)) {
             //最短
             height = mTypeMarkViewHeights[0];
         } else {
@@ -151,8 +152,12 @@ public class PlanListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         contentText.setText(isCompleted ? StringUtil.addSpan(content, StringUtil.SPAN_STRIKETHROUGH) : content);
     }
 
-    private void setTimeLayout(ImageTextView timeLayout, boolean hasTime, long time) {
-        timeLayout.setVisibility(hasTime ? View.VISIBLE : View.GONE);
+    private void setSpaceView(View spaceView, boolean isCompleted, boolean hasDeadline, boolean hasReminder) {
+        spaceView.setVisibility(isCompleted || (!hasDeadline && !hasReminder) ? View.GONE : View.VISIBLE);
+    }
+
+    private void setTimeLayout(ImageTextView timeLayout, boolean isCompleted, boolean hasTime, long time) {
+        timeLayout.setVisibility(!isCompleted && hasTime ? View.VISIBLE : View.GONE);
         timeLayout.setText(hasTime ? TimeUtil.formatTime(time) : null);
     }
 
@@ -206,6 +211,8 @@ public class PlanListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         View mTypeMarkView;
         @BindView(R.id.text_content)
         TextView mContentText;
+        @BindView(R.id.view_space)
+        View mSpaceView;
         @BindView(R.id.layout_deadline)
         ImageTextView mDeadlineLayout;
         @BindView(R.id.layout_reminder)

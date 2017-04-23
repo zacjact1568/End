@@ -30,7 +30,6 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/view_type_mark"
         android:layout_toStartOf="@+id/btn_star"
-        android:layout_marginBottom="2dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="8dp"
         android:textSize="16sp"
@@ -38,12 +37,19 @@
         android:ellipsize="end"
         tools:text="Buy Joanne on iTunes"/>
 
+    <View
+        android:id="@+id/view_space"
+        android:layout_width="0dp"
+        android:layout_height="4dp"
+        android:layout_below="@id/text_content"
+        android:layout_alignStart="@id/text_content"/>
+
     <com.zack.enderplan.view.widget.ImageTextView
         android:id="@+id/layout_deadline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/text_content"
-        android:layout_alignStart="@id/text_content"
+        android:layout_below="@id/view_space"
+        android:layout_alignStart="@id/view_space"
         app:image="@drawable/ic_schedule_black_24dp"
         app:size="12dp"
         app:color="@color/grey_600"/>
