@@ -1,6 +1,6 @@
 # EnderPlan
 
-<img src="ic_launcher-web.png"/>
+<img src="app/src/main/res/drawable-xxhdpi/img_logo_no_bg.png" width="200" align="right"/>
 
 EnderPlan is a simple to-do app, written by Zack Zhang.
 

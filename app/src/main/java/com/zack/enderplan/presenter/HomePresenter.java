@@ -86,7 +86,7 @@ public class HomePresenter extends BasePresenter implements SharedPreferences.On
         } else {
             //否则更新上次点击back键的时间，并显示一个toast
             mLastBackKeyPressedTime = currentTime;
-            mHomeViewContract.showToast(R.string.toast_double_click_exit);
+            mHomeViewContract.showToast(R.string.toast_double_press_exit);
         }
     }
 

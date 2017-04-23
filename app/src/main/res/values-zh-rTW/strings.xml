@@ -60,11 +60,7 @@
     <string name="text_make_plan_uc">未完成</string>
     <string name="developer">開發者</string>
     <string name="me">\@zacjact1568</string>
-    <string name="plan_uc_multi">個任務未完成</string>
-    <string name="plan_uc_none">所有任務都完成了</string>
-    <string name="plan_uc_one">個任務未完成</string>
     <string name="text_view_details">查看詳細</string>
-    <string name="toast_double_click_exit">再次點擊退出EnderPlan</string>
     <string name="toast_reminder_delayed_5min">我將會在5分鐘之後提醒你</string>
     <string name="toast_reminder_canceled">提醒已取消</string>
     <string name="toast_plan_completed">計劃已標記為完成</string>
@@ -117,11 +113,7 @@
     <string name="button_select">選擇</string>
     <string name="action_star">星標</string>
     <string name="title_star">星標</string>
-    <string name="dscpt_click_to_set">點按來設置</string>
     <string name="hint_editor_content_format">在「%s」中新建一個計劃</string>
-    <string name="text_uc_plan_count_multi_format">%d個計劃未完成</string>
-    <string name="text_uc_plan_count_none">沒有未完成的計劃</string>
-    <string name="text_uc_plan_count_one">1個計劃未完成</string>
     <string name="button_undo">撤銷</string>
     <string name="snackbar_delete_format">「%s」已刪除</string>
     <string name="snackbar_create_format">「%s」已創建</string>

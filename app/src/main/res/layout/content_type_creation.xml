@@ -68,7 +68,7 @@
         android:clickable="true"
         app:iconImageSrc="@drawable/ic_image_black_24dp"
         app:titleText="@string/title_pattern"
-        app:descriptionText="@string/dscpt_click_to_set"/>
+        app:descriptionText="@string/dscpt_touch_to_set"/>
 
     <include layout="@layout/divider"/>
 

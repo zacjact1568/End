@@ -34,7 +34,7 @@
     <string name="title_pattern">Pattern</string>
 
     <string name="dscpt_unsettled">Unsettled</string>
-    <string name="dscpt_click_to_set">Click to set</string>
+    <string name="dscpt_touch_to_set">Touch to set</string>
 
     <string name="date_format">E, MMM dd, yyyy</string>
     <string name="date_time_format">E, MMM dd, yyyy kk:mm</string>
@@ -102,8 +102,8 @@
     <string name="plan_operation">Plan Operation</string>
     <string name="text_view_details">View Details</string>
     <string name="text_empty_plan_list_1">No plans here</string>
-    <string name="text_empty_plan_list_2">Click \"+\" button to create one</string>
-    <string name="toast_double_click_exit">Click once again to exit EnderPlan</string>
+    <string name="text_empty_plan_list_2">Touch \"+\" button to create one</string>
+    <string name="toast_double_press_exit">Press once again to exit EnderPlan</string>
 
     <!--MyPlansFragment-->
     <string name="title_fragment_my_plans">My Plans</string>

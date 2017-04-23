@@ -114,6 +114,6 @@ public class PlanCreationPresenter extends BasePresenter {
 
     private String formatDateTime(long timeInMillis) {
         String time = TimeUtil.formatTime(timeInMillis);
-        return time != null ? time : ResourceUtil.getString(R.string.dscpt_click_to_set);
+        return time != null ? time : ResourceUtil.getString(R.string.dscpt_touch_to_set);
     }
 }

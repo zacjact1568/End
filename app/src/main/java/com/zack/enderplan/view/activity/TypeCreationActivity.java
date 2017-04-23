@@ -55,7 +55,7 @@ public class TypeCreationActivity extends BaseActivity implements TypeCreationVi
     @BindColor(R.color.colorPrimaryLight)
     int mPrimaryLightColor;
 
-    @BindString(R.string.dscpt_click_to_set)
+    @BindString(R.string.dscpt_touch_to_set)
     String mClickToSetDscpt;
 
     @Inject

@@ -39,7 +39,7 @@
         android:clickable="true"
         app:iconImageSrc="@drawable/ic_schedule_black_24dp"
         app:titleText="@string/title_deadline"
-        app:descriptionText="@string/dscpt_click_to_set"/>
+        app:descriptionText="@string/dscpt_touch_to_set"/>
 
     <include layout="@layout/divider"/>
 
@@ -51,7 +51,7 @@
         android:clickable="true"
         app:iconImageSrc="@drawable/ic_notifications_none_black_24dp"
         app:titleText="@string/title_reminder"
-        app:descriptionText="@string/dscpt_click_to_set"/>
+        app:descriptionText="@string/dscpt_touch_to_set"/>
 
     <include layout="@layout/divider"/>
 

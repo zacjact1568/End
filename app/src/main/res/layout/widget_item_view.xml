@@ -35,7 +35,7 @@
         android:textSize="12sp"
         android:layout_below="@id/text_title"
         android:layout_alignStart="@id/text_title"
-        tools:text="@string/dscpt_click_to_set"/>
+        tools:text="@string/dscpt_touch_to_set"/>
 
     <ImageView
         android:layout_width="wrap_content"

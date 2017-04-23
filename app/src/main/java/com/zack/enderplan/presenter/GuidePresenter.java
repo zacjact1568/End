@@ -77,7 +77,7 @@ public class GuidePresenter extends BasePresenter {
             endGuide(false);
         } else {
             mLastBackKeyPressedTime = currentTime;
-            mGuideViewContract.showToast(R.string.toast_double_click_exit);
+            mGuideViewContract.showToast(R.string.toast_double_press_exit);
         }
     }
 
