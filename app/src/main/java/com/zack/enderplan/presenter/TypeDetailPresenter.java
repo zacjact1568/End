@@ -211,17 +211,18 @@ public class TypeDetailPresenter extends BasePresenter {
         Plan plan = mSingleTypePlanList.get(position);
         int planListPos = mDataManager.getPlanLocationInPlanList(plan.getPlanCode());
 
+        //刷新全局列表
+        mDataManager.notifyPlanDeleted(planListPos);
+
         //刷新此界面上的列表
         mSingleTypePlanList.remove(position);
         mSingleTypePlanListAdapter.notifyItemRemoved(position);
         mTypeDetailViewContract.onPlanDeleted(plan, position, planListPos, mViewVisible);
+        //下面这句一定要在「刷新全局列表」后
         if (!plan.isCompleted()) {
             //说明刚才删除的是个未完成的计划，需要修改界面上的内容
             mTypeDetailViewContract.onUcPlanCountChanged(getUcPlanCountStr(mType.getTypeCode()));
         }
-
-        //刷新全局列表
-        mDataManager.notifyPlanDeleted(planListPos);
 
         //刷新其他组件
         mEventBus.post(new PlanDeletedEvent(getPresenterName(), plan.getPlanCode(), planListPos, plan));
@@ -241,7 +242,7 @@ public class TypeDetailPresenter extends BasePresenter {
         //刷新全局列表
         mDataManager.notifyPlanStatusChanged(planListPos);
 
-        //刷新此列表
+        //刷新此界面上的列表
         mSingleTypePlanList.remove(position);
         mSingleTypePlanListAdapter.notifyItemRemoved(position);
         //下面这句一定要在「刷新全局列表」后
