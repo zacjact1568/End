@@ -2,9 +2,15 @@
 <resources>
 
     <plurals name="text_plan_count">
+        <item quantity="one">%d plan</item>
         <!--中文环境下默认other-->
-        <item quantity="one">%d PLAN</item>
-        <item quantity="other">%d PLANS</item>
+        <item quantity="other">%d plans</item>
+    </plurals>
+
+    <plurals name="text_uc_plan_count">
+        <!--英文环境下zero无效-->
+        <item quantity="one">%d plan uncompleted</item>
+        <item quantity="other">%d plans uncompleted</item>
     </plurals>
 
 </resources>

@@ -101,9 +101,6 @@
     <string name="deleted_prompt">has been deleted</string>
     <string name="plan_operation">Plan Operation</string>
     <string name="text_view_details">View Details</string>
-    <string name="plan_uc_none">All plans completed</string>
-    <string name="plan_uc_one">plan uncompleted</string>
-    <string name="plan_uc_multi">plans uncompleted</string>
     <string name="text_empty_plan_list_1">No plans here</string>
     <string name="text_empty_plan_list_2">Click \"+\" button to create one</string>
     <string name="toast_double_click_exit">Click once again to exit EnderPlan</string>
@@ -113,9 +110,6 @@
 
     <!--AllTypesFragment-->
     <string name="title_fragment_all_types">All Types</string>
-    <string name="text_uc_plan_count_none">No plan uncompleted</string>
-    <string name="text_uc_plan_count_one">1 plan uncompleted</string>
-    <string name="text_uc_plan_count_multi_format">%d plans uncompleted</string>
     <string name="type_name_hint">The name of your new type</string>
 
     <!--PlanCreationActivity-->

@@ -6,4 +6,8 @@
         <item quantity="other">%d个计划</item>
     </plurals>
 
+    <plurals name="text_uc_plan_count">
+        <item quantity="other">%d个计划未完成</item>
+    </plurals>
+
 </resources>

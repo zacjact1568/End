@@ -331,14 +331,7 @@ public class TypeDetailPresenter extends BasePresenter {
         if (count == null) {
             count = 0;
         }
-        switch (count) {
-            case 0:
-                return ResourceUtil.getString(R.string.text_uc_plan_count_none);
-            case 1:
-                return ResourceUtil.getString(R.string.text_uc_plan_count_one);
-            default:
-                return String.format(ResourceUtil.getString(R.string.text_uc_plan_count_multi_format), count);
-        }
+        return ResourceUtil.getQuantityString(R.plurals.text_uc_plan_count, count);
     }
 
     /** 计算给定planCode的计划在singleTypePlanList中的位置 */
