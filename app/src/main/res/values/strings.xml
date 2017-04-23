@@ -44,6 +44,7 @@
     <string name="toast_empty_type_name">Cannot save an empty type name</string>
     <string name="toast_type_name_exists">Type name exists</string>
     <string name="toast_type_mark_exists">Type mark exists</string>
+    <string name="toast_type_mark_color_exists">Type mark color exists</string>
 
     <string name="snackbar_create_format">\"%s\" has been created</string>
     <string name="snackbar_delete_format">\"%s\" has been deleted</string>

@@ -25,7 +25,7 @@ public class TypeCreationPresenter extends BasePresenter {
     private Type mType;
 
     @Inject
-    public TypeCreationPresenter(TypeCreationViewContract typeCreationViewContract, Type type, DataManager dataManager) {
+    TypeCreationPresenter(TypeCreationViewContract typeCreationViewContract, Type type, DataManager dataManager) {
         mTypeCreationViewContract = typeCreationViewContract;
         mType = type;
         mDataManager = dataManager;
@@ -61,8 +61,13 @@ public class TypeCreationPresenter extends BasePresenter {
 
     public void notifyTypeMarkColorSelected(TypeMarkColor typeMarkColor) {
         String colorHex = typeMarkColor.getColorHex();
-        mType.setTypeMarkColor(colorHex);
-        mTypeCreationViewContract.onTypeMarkColorChanged(Color.parseColor(colorHex), typeMarkColor.getColorName());
+        //颜色必须唯一
+        if (mDataManager.isTypeMarkColorUsed(colorHex)) {
+            mTypeCreationViewContract.showToast(R.string.toast_type_mark_color_exists);
+        } else {
+            mType.setTypeMarkColor(colorHex);
+            mTypeCreationViewContract.onTypeMarkColorChanged(Color.parseColor(colorHex), typeMarkColor.getColorName());
+        }
     }
 
     public void notifySettingTypeMarkPattern() {
@@ -85,8 +90,6 @@ public class TypeCreationPresenter extends BasePresenter {
             mTypeCreationViewContract.showToast(R.string.toast_empty_type_name);
         } else if (mDataManager.isTypeNameUsed(mType.getTypeName())) {
             mTypeCreationViewContract.showToast(R.string.toast_type_name_exists);
-        } else if (mDataManager.isTypeMarkUsed(mType.getTypeMarkColor(), mType.getTypeMarkPattern())) {
-            mTypeCreationViewContract.showToast(R.string.toast_type_mark_exists);
         } else {
             mDataManager.notifyTypeCreated(mType);
             EventBus.getDefault().post(new TypeCreatedEvent(

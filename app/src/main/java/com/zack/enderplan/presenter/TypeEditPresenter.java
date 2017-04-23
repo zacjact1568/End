@@ -28,7 +28,7 @@ public class TypeEditPresenter extends BasePresenter {
     private int mTypeListPosition;
 
     @Inject
-    public TypeEditPresenter(TypeEditViewContract typeEditViewContract, int typeListPosition, DataManager dataManager, EventBus eventBus) {
+    TypeEditPresenter(TypeEditViewContract typeEditViewContract, int typeListPosition, DataManager dataManager, EventBus eventBus) {
         mTypeEditViewContract = typeEditViewContract;
         mTypeListPosition = typeListPosition;
         mDataManager = dataManager;
@@ -68,9 +68,10 @@ public class TypeEditPresenter extends BasePresenter {
     }
 
     public void notifyUpdatingTypeName(String newTypeName) {
+        if (mType.getTypeName().equals(newTypeName)) return;
         if (TextUtils.isEmpty(newTypeName)) {
             mTypeEditViewContract.showToast(R.string.toast_empty_type_name);
-        } else if (!mType.getTypeName().equals(newTypeName) && mDataManager.isTypeNameUsed(newTypeName)) {
+        } else if (mDataManager.isTypeNameUsed(newTypeName)) {
             mTypeEditViewContract.showToast(R.string.toast_type_name_exists);
         } else {
             mDataManager.notifyUpdatingTypeName(mTypeListPosition, newTypeName);
@@ -82,8 +83,9 @@ public class TypeEditPresenter extends BasePresenter {
     public void notifyTypeMarkColorSelected(TypeMarkColor typeMarkColor) {
         String colorHex = typeMarkColor.getColorHex();
         if (mType.getTypeMarkColor().equals(colorHex)) return;
-        if (mDataManager.isTypeMarkUsed(colorHex, mType.getTypeMarkPattern())) {
-            mTypeEditViewContract.showToast(R.string.toast_type_mark_exists);
+        //上一行已经把此类型当前的颜色排除了，所以不存在选择相同的颜色还弹toast的问题
+        if (mDataManager.isTypeMarkColorUsed(colorHex)) {
+            mTypeEditViewContract.showToast(R.string.toast_type_mark_color_exists);
         } else {
             mDataManager.notifyUpdatingTypeMarkColor(mTypeListPosition, colorHex);
             mTypeEditViewContract.onTypeMarkColorChanged(Color.parseColor(colorHex), typeMarkColor.getColorName());
@@ -95,17 +97,13 @@ public class TypeEditPresenter extends BasePresenter {
         boolean hasPattern = typeMarkPattern != null;
         String patternFn = hasPattern ? typeMarkPattern.getPatternFn() : null;
         if (CommonUtil.isObjectEqual(mType.getTypeMarkPattern(), patternFn)) return;
-        if (mDataManager.isTypeMarkUsed(mType.getTypeMarkColor(), patternFn)) {
-            mTypeEditViewContract.showToast(R.string.toast_type_mark_exists);
-        } else {
-            mDataManager.notifyUpdatingTypeMarkPattern(mTypeListPosition, patternFn);
-            mTypeEditViewContract.onTypeMarkPatternChanged(
-                    hasPattern,
-                    ResourceUtil.getDrawableResourceId(patternFn),
-                    hasPattern ? typeMarkPattern.getPatternName() : null
-            );
-            postTypeDetailChangedEvent(TypeDetailChangedEvent.FIELD_TYPE_MARK_PATTERN);
-        }
+        mDataManager.notifyUpdatingTypeMarkPattern(mTypeListPosition, patternFn);
+        mTypeEditViewContract.onTypeMarkPatternChanged(
+                hasPattern,
+                ResourceUtil.getDrawableResourceId(patternFn),
+                hasPattern ? typeMarkPattern.getPatternName() : null
+        );
+        postTypeDetailChangedEvent(TypeDetailChangedEvent.FIELD_TYPE_MARK_PATTERN);
     }
 
     private void postTypeDetailChangedEvent(int changedField) {

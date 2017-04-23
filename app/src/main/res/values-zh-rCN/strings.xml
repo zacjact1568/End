@@ -201,4 +201,5 @@
     <string name="text_plan_count">所有</string>
     <string name="text_today_uc_plan_count">今天</string>
     <string name="text_uc_plan_count">未完成</string>
+    <string name="toast_type_mark_color_exists">类型标记颜色已存在</string>
 </resources>
