@@ -13,13 +13,6 @@ public class PlanDetailChangedEvent extends BasePlanEvent {
     /** 改变的字段 */
     private int changedField;
 
-    /** 类型是否发生改变 */
-    private boolean isTypeOfPlanChanged;
-    /** 完成情况是否发生改变 */
-    private boolean isPlanStatusChanged;
-    /** 在singleTypeUcPlanList中的位置 */
-    private int posInStUcPlanList;
-
     public PlanDetailChangedEvent(String eventSource, String planCode, int position, int changedField) {
         super(eventSource, planCode, position);
         this.changedField = changedField;

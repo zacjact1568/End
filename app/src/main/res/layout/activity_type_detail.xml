@@ -101,6 +101,7 @@
             android:inputType="text"
             android:imeOptions="actionDone"
             android:background="@drawable/bg_rounded_rectangle"
+            android:backgroundTint="@android:color/white"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:paddingStart="8dp"

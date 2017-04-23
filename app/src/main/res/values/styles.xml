@@ -1,31 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="FlatButtonStyle">
-
-        <item name="android:textColor">?attr/colorPrimary</item>
-        <item name="android:background">@drawable/bg_ripple_flat_button</item>
-        <item name="android:clickable">true</item>
-        <item name="android:paddingTop">@dimen/button_vertical_padding</item>
-        <item name="android:paddingBottom">@dimen/button_vertical_padding</item>
-        <item name="android:paddingStart">@dimen/button_horizontal_padding</item>
-        <item name="android:paddingEnd">@dimen/button_horizontal_padding</item>
-
-    </style>
-
-    <style name="FloatButtonStyle">
-
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:background">@drawable/bg_ripple_rounded_rectangle</item>
-        <item name="android:backgroundTint">@color/colorAccent</item>
-        <item name="android:gravity">center</item>
-        <item name="android:clickable">true</item>
-        <item name="android:paddingTop">@dimen/button_vertical_padding</item>
-        <item name="android:paddingBottom">@dimen/button_vertical_padding</item>
-        <item name="android:paddingStart">@dimen/button_horizontal_padding</item>
-        <item name="android:paddingEnd">@dimen/button_horizontal_padding</item>
-        <item name="android:elevation">@dimen/button_elevation</item>
-
-    </style>
-
 </resources>
