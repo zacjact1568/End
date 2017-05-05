@@ -23,7 +23,6 @@ public class HomePresenter extends BasePresenter implements SharedPreferences.On
     private DataManager mDataManager;
     private EventBus mEventBus;
     private int[] mPlanCountTextSizes;
-    private int mLastListScrollingVariation;
     private long mLastBackKeyPressedTime;
 
     @Inject
@@ -62,14 +61,6 @@ public class HomePresenter extends BasePresenter implements SharedPreferences.On
     public void notifyStartingUpCompleted() {
         if (mDataManager.getPreferenceHelper().getNeedGuideValue()) {
             mHomeViewContract.enterActivity(Constant.GUIDE);
-        }
-    }
-
-    public void notifyListScrolled(int variation) {
-        if (variation != 0 && mLastListScrollingVariation > 0 == variation < 0) {
-            //滑动经过临界点
-            mHomeViewContract.changeFabVisibility(variation < 0);
-            mLastListScrollingVariation = variation;
         }
     }
 

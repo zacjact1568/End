@@ -10,8 +10,6 @@ public interface HomeViewContract extends BaseViewContract {
 
     void closeDrawer();
 
-    void changeFabVisibility(boolean isVisible);
-
     void showFragment(String tag);
 
     void onPressBackKey();

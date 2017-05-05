@@ -203,13 +203,6 @@ public class HomeActivity extends BaseActivity implements HomeViewContract {
     }
 
     @Override
-    public void changeFabVisibility(boolean isVisible) {
-        ObjectAnimator.ofFloat(mCreateFab, "translationY", mCreateFab.getTranslationY(), isVisible ? 0f : CommonUtil.convertDpToPx(Constant.FAB_COORDINATE) + mCreateFab.getHeight() / 2f)
-                .setDuration(200)
-                .start();
-    }
-
-    @Override
     public void showFragment(String tag) {
         if (!isFragmentShowing(tag)) {
             BaseListFragment fragment;
@@ -223,12 +216,6 @@ public class HomeActivity extends BaseActivity implements HomeViewContract {
                 default:
                     throw new IllegalArgumentException("The argument tag cannot be " + tag);
             }
-            fragment.setOnListScrolledListener(new BaseListFragment.OnListScrolledListener() {
-                @Override
-                public void onListScrolled(int variation) {
-                    mHomePresenter.notifyListScrolled(variation);
-                }
-            });
             getSupportFragmentManager().beginTransaction().replace(R.id.layout_fragment, fragment, tag).commit();
         }
         //在切换相同fragment时，下面的语句是不必要的
