@@ -240,7 +240,7 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
 
     @Override
     public void onPlanStatusChanged(boolean isCompleted) {
-        mToolbarBackground.setImageResource(isCompleted ? R.drawable.bg_c_plan_detail : R.drawable.bg_uc_plan_detail);
+        //mToolbarBackground.setImageResource(isCompleted ? R.drawable.bg_c_plan_detail : R.drawable.bg_uc_plan_detail);
         mContentCollapsedText.setBackgroundColor(isCompleted ? Color.LTGRAY : mPrimaryLightColor);
         mDeadlineItem.setClickable(!isCompleted);
         mDeadlineItem.setAlpha(isCompleted ? 0.6f : 1);
