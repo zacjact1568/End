@@ -91,8 +91,8 @@ public class PlanListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 setSpaceView(itemViewHolder.mSpaceView, plan.isCompleted(), plan.hasDeadline(), plan.hasReminder());
                 setTimeLayout(itemViewHolder.mDeadlineLayout, plan.isCompleted(), plan.hasDeadline(), plan.getDeadline());
                 setTimeLayout(itemViewHolder.mReminderLayout, plan.isCompleted(), plan.hasReminder(), plan.getReminderTime());
-                setStarButton(itemViewHolder.mStarButton, plan.isStarred(), plan.isCompleted(), holder.getLayoutPosition());
-                setItemView(holder.itemView, holder.getLayoutPosition());
+                setStarButton(itemViewHolder.mStarButton, plan.isStarred(), plan.isCompleted(), itemViewHolder);
+                setItemView(itemViewHolder);
                 break;
             case TYPE_FOOTER:
                 FooterViewHolder footerViewHolder = (FooterViewHolder) holder;
@@ -161,11 +161,12 @@ public class PlanListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         timeLayout.setText(hasTime ? TimeUtil.formatTime(time) : null);
     }
 
-    private void setStarButton(final ImageView starButton, boolean isStarred, boolean isCompleted, final int layoutPosition) {
+    private void setStarButton(final ImageView starButton, boolean isStarred, boolean isCompleted, final ItemViewHolder itemViewHolder) {
         setStarButtonImage(starButton, isStarred, isCompleted);
         starButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int layoutPosition = itemViewHolder.getLayoutPosition();
                 if (mOnStarStatusChangedListener != null) {
                     mOnStarStatusChangedListener.onStarStatusChanged(layoutPosition);
                 }
@@ -181,20 +182,20 @@ public class PlanListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         starButton.setImageTintList(ColorStateList.valueOf(!isStarred || isCompleted ? mGrey600Color : mAccentColor));
     }
 
-    private void setItemView(View itemView, final int layoutPosition) {
+    private void setItemView(final ItemViewHolder itemViewHolder) {
         if (mOnPlanItemClickListener != null) {
-            itemView.setOnClickListener(new View.OnClickListener() {
+            itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mOnPlanItemClickListener.onPlanItemClick(layoutPosition);
+                    mOnPlanItemClickListener.onPlanItemClick(itemViewHolder.getLayoutPosition());
                 }
             });
         }
         if (mOnPlanItemLongClickListener != null) {
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            itemViewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    mOnPlanItemLongClickListener.onPlanItemLongClick(layoutPosition);
+                    mOnPlanItemLongClickListener.onPlanItemLongClick(itemViewHolder.getLayoutPosition());
                     return true;
                 }
             });
