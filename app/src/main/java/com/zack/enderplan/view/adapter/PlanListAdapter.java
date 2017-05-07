@@ -22,6 +22,7 @@ import com.zack.enderplan.view.widget.ImageTextView;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,6 +31,12 @@ public class PlanListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private static final int TYPE_ITEM = 1;
     private static final int TYPE_FOOTER = 2;
+
+    public static final int PAYLOAD_TYPE_MARK = 0;
+    public static final int PAYLOAD_CONTENT = 1;
+    public static final int PAYLOAD_DEADLINE = 2;
+    public static final int PAYLOAD_REMINDER = 3;
+    public static final int PAYLOAD_STAR = 4;
 
     @IntDef({SCROLL_EDGE_TOP, SCROLL_EDGE_MIDDLE, SCROLL_EDGE_BOTTOM})
     @Retention(RetentionPolicy.SOURCE)
@@ -98,6 +105,37 @@ public class PlanListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 FooterViewHolder footerViewHolder = (FooterViewHolder) holder;
                 setPlanCountText(footerViewHolder.mPlanCountText);
                 break;
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List<Object> payloads) {
+        if (payloads.isEmpty()) {
+            onBindViewHolder(holder, position);
+        } else if (getItemViewType(position) == TYPE_ITEM) {
+            ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
+            Plan plan = mDataManager.getPlan(position);
+            for (Object payload : payloads) {
+                switch ((int) payload) {
+                    case PAYLOAD_TYPE_MARK:
+                        setTypeMarkView(itemViewHolder.mTypeMarkView, plan.getTypeCode(), plan.isCompleted(), plan.hasDeadline(), plan.hasReminder());
+                        break;
+                    case PAYLOAD_CONTENT:
+                        setContentText(itemViewHolder.mContentText, plan.getContent(), plan.isCompleted());
+                        break;
+                    case PAYLOAD_DEADLINE:
+                        setSpaceView(itemViewHolder.mSpaceView, plan.isCompleted(), plan.hasDeadline(), plan.hasReminder());
+                        setTimeLayout(itemViewHolder.mDeadlineLayout, plan.isCompleted(), plan.hasDeadline(), plan.getDeadline());
+                        break;
+                    case PAYLOAD_REMINDER:
+                        setSpaceView(itemViewHolder.mSpaceView, plan.isCompleted(), plan.hasDeadline(), plan.hasReminder());
+                        setTimeLayout(itemViewHolder.mReminderLayout, plan.isCompleted(), plan.hasReminder(), plan.getReminderTime());
+                        break;
+                    case PAYLOAD_STAR:
+                        setStarButton(itemViewHolder.mStarButton, plan.isStarred(), plan.isCompleted(), itemViewHolder);
+                        break;
+                }
+            }
         }
     }
 

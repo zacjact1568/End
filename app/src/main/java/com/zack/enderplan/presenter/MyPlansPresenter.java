@@ -151,7 +151,7 @@ public class MyPlansPresenter extends BasePresenter {
         //首先检测此计划是否有提醒
         if (plan.hasReminder()) {
             mDataManager.notifyReminderTimeChanged(position, Constant.UNDEFINED_TIME);
-            mPlanListAdapter.notifyItemChanged(position);
+            mPlanListAdapter.notifyItemChanged(position, PlanListAdapter.PAYLOAD_REMINDER);
             mEventBus.post(new PlanDetailChangedEvent(getPresenterName(), plan.getPlanCode(), position, PlanDetailChangedEvent.FIELD_REMINDER_TIME));
         }
         //执行以下语句时，只是在view上让position处的plan删除了，实际上还未被删除但也即将被删除
@@ -198,7 +198,7 @@ public class MyPlansPresenter extends BasePresenter {
         List<Integer> singleTypeUcPlanPosList = mDataManager.getPlanLocationListOfOneType(event.getTypeCode());
         for (int position : singleTypeUcPlanPosList) {
             //所有属于这个类型的计划都需要刷新
-            mPlanListAdapter.notifyItemChanged(position);
+            mPlanListAdapter.notifyItemChanged(position, PlanListAdapter.PAYLOAD_TYPE_MARK);
         }
     }
 
@@ -209,7 +209,7 @@ public class MyPlansPresenter extends BasePresenter {
             //有完成情况的改变，直接全部刷新
             mPlanListAdapter.notifyDataSetChanged();
         } else {
-            //普通、类型改变的刷新
+            //其他改变的刷新，不加payload，直接刷新整个item
             mPlanListAdapter.notifyItemChanged(event.getPosition());
         }
     }
