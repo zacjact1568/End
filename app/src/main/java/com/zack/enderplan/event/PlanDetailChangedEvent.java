@@ -11,14 +11,14 @@ public class PlanDetailChangedEvent extends BasePlanEvent {
     public static final int FIELD_REMINDER_TIME = 5;
 
     /** 改变的字段 */
-    private int changedField;
+    private int mChangedField;
 
     public PlanDetailChangedEvent(String eventSource, String planCode, int position, int changedField) {
         super(eventSource, planCode, position);
-        this.changedField = changedField;
+        mChangedField = changedField;
     }
 
     public int getChangedField() {
-        return changedField;
+        return mChangedField;
     }
 }

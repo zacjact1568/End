@@ -345,6 +345,20 @@ public class TypeDetailPresenter extends BasePresenter {
         return -1;
     }
 
+    /** 计算新加的plan在singleTypePlanList中的插入位置 */
+    private int getInsertionPosInSingleTypePlanList(long creationTime, long completionTime) {
+        for (int i = 0; i < mSingleTypePlanList.size(); i++) {
+            Plan plan = mSingleTypePlanList.get(i);
+            long creationTimeInList = plan.getCreationTime();
+            long completionTimeInList = plan.getCompletionTime();
+            if ((creationTimeInList != Constant.UNDEFINED_TIME && completionTimeInList == Constant.UNDEFINED_TIME && creationTimeInList < creationTime)
+                    || (creationTimeInList == Constant.UNDEFINED_TIME && completionTimeInList != Constant.UNDEFINED_TIME && completionTimeInList < completionTime)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     @Subscribe
     public void onTypeDetailChanged(TypeDetailChangedEvent event) {
         if (!mType.getTypeCode().equals(event.getTypeCode()) || event.getEventSource().equals(getPresenterName())) return;
@@ -368,19 +382,37 @@ public class TypeDetailPresenter extends BasePresenter {
 
         //刚才发生变化的计划在singleTypePlanList中的位置
         int position = getPosInSingleTypePlanList(event.getPlanCode());
+        //Plan从DataManager中取，因为上面的position可能为-1
+        Plan plan = mDataManager.getPlan(event.getPosition());
 
-        if (event.getChangedField() == PlanDetailChangedEvent.FIELD_TYPE_OF_PLAN || event.getChangedField() == PlanDetailChangedEvent.FIELD_PLAN_STATUS) {
-            //说明有类型或完成情况的更新，需要从singleTypePlanList中移除
+        //若变化的plan不在mSingleTypePlanList中（position == -1），则说明此plan是外来的
+        //则还需要判断【类型】是否由【其他类型】变为【当前类型】，则判断（改变的是不是【类型】&& 改变后的类型是不是【当前类型】）
+        if (position == -1 && !(event.getChangedField() == PlanDetailChangedEvent.FIELD_TYPE_OF_PLAN && plan.getTypeCode().equals(mType.getTypeCode()))) return;
 
-            //更新此列表
-            mSingleTypePlanList.remove(position);
-            mSingleTypePlanListAdapter.notifyItemRemoved(position);
-
-            //更新显示的未完成计划数量
-            mTypeDetailViewContract.onUcPlanCountChanged(getUcPlanCountStr(mType.getTypeCode()));
-        } else {
-            //其他更新，需要刷新singleTypeUcPlanList
-            mSingleTypePlanListAdapter.notifyItemChanged(position);
+        switch (event.getChangedField()) {
+            case PlanDetailChangedEvent.FIELD_TYPE_OF_PLAN:
+                if (plan.getTypeCode().equals(mType.getTypeCode())) {
+                    //某个plan由其他类型变成了当前页的类型，需要添加到singleTypePlanList中
+                    //计算插入位置
+                    position = getInsertionPosInSingleTypePlanList(plan.getCreationTime(), plan.getCompletionTime());
+                    mSingleTypePlanList.add(position, plan);
+                    mSingleTypePlanListAdapter.notifyItemInserted(position);
+                } else {
+                    //某个plan由当前页的类型变成了其他类型，需要从singleTypePlanList中移除
+                    mSingleTypePlanList.remove(position);
+                    mSingleTypePlanListAdapter.notifyItemRemoved(position);
+                }
+                //更新显示的未完成计划数量
+                mTypeDetailViewContract.onUcPlanCountChanged(getUcPlanCountStr(mType.getTypeCode()));
+                break;
+            case PlanDetailChangedEvent.FIELD_PLAN_STATUS:
+                //有完成情况的改变，直接全部刷新
+                mSingleTypePlanListAdapter.notifyDataSetChanged();
+                break;
+            default:
+                //其他改变的刷新，不加payload，直接刷新整个item
+                mSingleTypePlanListAdapter.notifyItemChanged(position);
+                break;
         }
     }
 

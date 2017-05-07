@@ -20,12 +20,18 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SingleTypePlanListAdapter extends RecyclerView.Adapter<SingleTypePlanListAdapter.ViewHolder> {
+public class SingleTypePlanListAdapter extends RecyclerView.Adapter<SingleTypePlanListAdapter.ItemViewHolder> {
+
+    public static final int PAYLOAD_CONTENT = 0;
+    public static final int PAYLOAD_DEADLINE = 1;
+    public static final int PAYLOAD_REMINDER = 2;
+    public static final int PAYLOAD_STAR = 3;
 
     private List<Plan> mSingleTypePlanList;
     private int mAccentColor, mGrey600Color;
 
     private OnStarStatusChangedListener mOnStarStatusChangedListener;
+    private OnPlanItemLongClickListener mOnPlanItemLongClickListener;
     private OnPlanItemClickListener mOnPlanItemClickListener;
 
     public SingleTypePlanListAdapter(List<Plan> singleTypePlanList) {
@@ -36,40 +42,47 @@ public class SingleTypePlanListAdapter extends RecyclerView.Adapter<SingleTypePl
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_single_type_plan, parent, false);
-        return new ViewHolder(itemView);
+        return new ItemViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(ItemViewHolder holder, int position) {
         Plan plan = mSingleTypePlanList.get(position);
 
-        holder.mContentText.setText(plan.isCompleted() ? StringUtil.addSpan(plan.getContent(), StringUtil.SPAN_STRIKETHROUGH) : plan.getContent());
-        holder.mDeadlineLayout.setVisibility(plan.hasDeadline() ? View.VISIBLE : View.GONE);
-        holder.mDeadlineLayout.setText(plan.hasDeadline() ? TimeUtil.formatTime(plan.getDeadline()) : null);
-        holder.mReminderIcon.setVisibility(plan.hasReminder() ? View.VISIBLE : View.INVISIBLE);
-        setStarButtonImage(holder.mStarButton, plan.isStarred(), plan.isCompleted());
-        holder.mStarButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int layoutPosition = holder.getLayoutPosition();
-                if (mOnStarStatusChangedListener != null) {
-                    mOnStarStatusChangedListener.onStarStatusChanged(layoutPosition);
-                }
-                //必须放到这里，根据新数据更新界面
-                Plan plan = mSingleTypePlanList.get(layoutPosition);
-                setStarButtonImage(holder.mStarButton, plan.isStarred(), plan.isCompleted());
-            }
-        });
+        setContentText(holder.mContentText, plan.getContent(), plan.isCompleted());
+        setSpaceView(holder.mSpaceView, plan.isCompleted(), plan.hasDeadline(), plan.hasReminder());
+        setTimeLayout(holder.mDeadlineLayout, plan.isCompleted(), plan.hasDeadline(), plan.getDeadline());
+        setTimeLayout(holder.mReminderLayout, plan.isCompleted(), plan.hasReminder(), plan.getReminderTime());
+        setStarButton(holder.mStarButton, plan.isStarred(), plan.isCompleted(), holder);
+        setItemView(holder);
+    }
 
-        if (mOnPlanItemClickListener != null) {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mOnPlanItemClickListener.onPlanItemClick(holder.getLayoutPosition());
+    @Override
+    public void onBindViewHolder(ItemViewHolder holder, int position, List<Object> payloads) {
+        if (payloads.isEmpty()) {
+            onBindViewHolder(holder, position);
+        } else {
+            Plan plan = mSingleTypePlanList.get(position);
+            for (Object payload : payloads) {
+                switch ((int) payload) {
+                    case PAYLOAD_CONTENT:
+                        setContentText(holder.mContentText, plan.getContent(), plan.isCompleted());
+                        break;
+                    case PAYLOAD_DEADLINE:
+                        setSpaceView(holder.mSpaceView, plan.isCompleted(), plan.hasDeadline(), plan.hasReminder());
+                        setTimeLayout(holder.mDeadlineLayout, plan.isCompleted(), plan.hasDeadline(), plan.getDeadline());
+                        break;
+                    case PAYLOAD_REMINDER:
+                        setSpaceView(holder.mSpaceView, plan.isCompleted(), plan.hasDeadline(), plan.hasReminder());
+                        setTimeLayout(holder.mReminderLayout, plan.isCompleted(), plan.hasReminder(), plan.getReminderTime());
+                        break;
+                    case PAYLOAD_STAR:
+                        setStarButton(holder.mStarButton, plan.isStarred(), plan.isCompleted(), holder);
+                        break;
                 }
-            });
+            }
         }
     }
 
@@ -78,22 +91,72 @@ public class SingleTypePlanListAdapter extends RecyclerView.Adapter<SingleTypePl
         return mSingleTypePlanList.size();
     }
 
+    private void setContentText(TextView contentText, String content, boolean isCompleted) {
+        contentText.setText(isCompleted ? StringUtil.addSpan(content, StringUtil.SPAN_STRIKETHROUGH) : content);
+    }
+
+    private void setSpaceView(View spaceView, boolean isCompleted, boolean hasDeadline, boolean hasReminder) {
+        spaceView.setVisibility(isCompleted || (!hasDeadline && !hasReminder) ? View.GONE : View.VISIBLE);
+    }
+
+    private void setTimeLayout(ImageTextView timeLayout, boolean isCompleted, boolean hasTime, long time) {
+        timeLayout.setVisibility(!isCompleted && hasTime ? View.VISIBLE : View.GONE);
+        timeLayout.setText(hasTime ? TimeUtil.formatTime(time) : null);
+    }
+
+    private void setStarButton(final ImageView starButton, boolean isStarred, boolean isCompleted, final ItemViewHolder itemViewHolder) {
+        setStarButtonImage(starButton, isStarred, isCompleted);
+        starButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int layoutPosition = itemViewHolder.getLayoutPosition();
+                if (mOnStarStatusChangedListener != null) {
+                    mOnStarStatusChangedListener.onStarStatusChanged(layoutPosition);
+                }
+                Plan plan = mSingleTypePlanList.get(layoutPosition);
+                setStarButtonImage(starButton, plan.isStarred(), plan.isCompleted());
+            }
+        });
+    }
+
     private void setStarButtonImage(ImageView starButton, boolean isStarred, boolean isCompleted) {
         starButton.setImageResource(isStarred ? R.drawable.ic_star_black_24dp : R.drawable.ic_star_border_black_24dp);
         starButton.setImageTintList(ColorStateList.valueOf(!isStarred || isCompleted ? mGrey600Color : mAccentColor));
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    private void setItemView(final ItemViewHolder itemViewHolder) {
+        if (mOnPlanItemClickListener != null) {
+            itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnPlanItemClickListener.onPlanItemClick(itemViewHolder.getLayoutPosition());
+                }
+            });
+        }
+        if (mOnPlanItemLongClickListener != null) {
+            itemViewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    mOnPlanItemLongClickListener.onPlanItemLongClick(itemViewHolder.getLayoutPosition());
+                    return true;
+                }
+            });
+        }
+    }
+
+    class ItemViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.text_content)
         TextView mContentText;
+        @BindView(R.id.view_space)
+        View mSpaceView;
         @BindView(R.id.layout_deadline)
         ImageTextView mDeadlineLayout;
-        @BindView(R.id.ic_reminder)
-        ImageView mReminderIcon;
+        @BindView(R.id.layout_reminder)
+        ImageTextView mReminderLayout;
         @BindView(R.id.btn_star)
         ImageView mStarButton;
 
-        public ViewHolder(View itemView) {
+        public ItemViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
@@ -105,6 +168,14 @@ public class SingleTypePlanListAdapter extends RecyclerView.Adapter<SingleTypePl
 
     public void setOnPlanItemClickListener(OnPlanItemClickListener listener) {
         mOnPlanItemClickListener = listener;
+    }
+
+    public interface OnPlanItemLongClickListener {
+        void onPlanItemLongClick(int position);
+    }
+
+    public void setOnPlanItemLongClickListener(OnPlanItemLongClickListener listener) {
+        mOnPlanItemLongClickListener = listener;
     }
 
     public interface OnStarStatusChangedListener {

@@ -635,7 +635,7 @@ public class DataManager {
 
     /** 获取指定类型未完成计划的数量 */
     public int getUcPlanCountOfOneType(String typeCode) {
-        return mUcPlanCountOfEachTypeMap.get(typeCode);
+        return mUcPlanCountOfEachTypeMap.containsKey(typeCode) ? mUcPlanCountOfEachTypeMap.get(typeCode) : 0;
     }
 
     /** 更新每个类型未完成计划的数量（添加或删除计划时）*/
