@@ -64,6 +64,7 @@ public class Constant {
     public static final String CURRENT_FRAGMENT = "current_fragment";
 
     public static final String TRANSITION_NAME = "transition_name";
+    public static final String ENABLE_TRANSITION = "enable_transition";
 
     /** 128是刚好合适的大小，小的话在通知中会很模糊，大的话会有锯齿（系统会把图片缩放到固定的大小） */
     public static final int NOTIFICATION_LARGE_ICON_SIZE = 128;

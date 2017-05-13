@@ -1,8 +1,7 @@
 package com.zack.enderplan.view.activity;
 
-import android.app.Activity;
-import android.app.ActivityOptions;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -87,10 +86,11 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
 
     private MenuItem mStarMenuItem;
 
-    public static void start(Activity activity, int planListPosition, boolean transition) {
-        Intent intent = new Intent(activity, PlanDetailActivity.class);
-        intent.putExtra(Constant.PLAN_LIST_POSITION, planListPosition);
-        activity.startActivity(intent, transition ? ActivityOptions.makeSceneTransitionAnimation(activity).toBundle() : null);
+    public static void start(Context context, int planListPosition) {
+        context.startActivity(
+                new Intent(context, PlanDetailActivity.class)
+                        .putExtra(Constant.PLAN_LIST_POSITION, planListPosition)
+        );
     }
 
     @Override

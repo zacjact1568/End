@@ -34,7 +34,7 @@ public interface TypeDetailViewContract extends BaseViewContract {
 
     void pressBack();
 
-    void enterEditType(int position, boolean shouldPlaySharedElementTransition);
+    void enterEditType(int position, boolean enableTransition);
 
     void onDetectedDeletingLastType();
 

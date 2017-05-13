@@ -9,6 +9,7 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
 
 import com.zack.enderplan.App;
@@ -55,17 +56,23 @@ public class TypeEditActivity extends BaseActivity implements TypeEditViewContra
     @Inject
     TypeEditPresenter mTypeEditPresenter;
 
-    public static void start(Activity activity, int typeListPosition, boolean sharedElementTransition,
-                             View typeMarkIconSharedElement, String typeMarkIconTransitionName, View typeNameTextSharedElement, String typeNameTextTransitionName) {
+    public static void start(Activity activity, int typeListPosition, boolean enableTransition, View typeMarkIconSharedElement,
+                             String typeMarkIconTransitionName, View typeNameTextSharedElement, String typeNameTextTransitionName) {
         Intent intent = new Intent(activity, TypeEditActivity.class);
         intent.putExtra(Constant.TYPE_LIST_POSITION, typeListPosition);
-        ActivityOptions options;
-        if (sharedElementTransition) {
-            options = ActivityOptions.makeSceneTransitionAnimation(activity, Pair.create(typeMarkIconSharedElement, typeMarkIconTransitionName), Pair.create(typeNameTextSharedElement, typeNameTextTransitionName));
+        intent.putExtra(Constant.ENABLE_TRANSITION, enableTransition);
+        if (enableTransition) {
+            activity.startActivity(
+                    intent,
+                    ActivityOptions.makeSceneTransitionAnimation(
+                            activity,
+                            Pair.create(typeMarkIconSharedElement, typeMarkIconTransitionName),
+                            Pair.create(typeNameTextSharedElement, typeNameTextTransitionName)
+                    ).toBundle()
+            );
         } else {
-            options = ActivityOptions.makeSceneTransitionAnimation(activity);
+            activity.startActivity(intent);
         }
-        activity.startActivity(intent, options.toBundle());
     }
 
     @Override
@@ -77,7 +84,11 @@ public class TypeEditActivity extends BaseActivity implements TypeEditViewContra
     @Override
     protected void onInjectPresenter() {
         DaggerTypeEditComponent.builder()
-                .typeEditPresenterModule(new TypeEditPresenterModule(this, getIntent().getIntExtra(Constant.TYPE_LIST_POSITION, -1)))
+                .typeEditPresenterModule(new TypeEditPresenterModule(
+                        this,
+                        getIntent().getIntExtra(Constant.TYPE_LIST_POSITION, -1),
+                        getIntent().getBooleanExtra(Constant.ENABLE_TRANSITION, false)
+                ))
                 .appComponent(App.getAppComponent())
                 .build()
                 .inject(this);
@@ -110,7 +121,11 @@ public class TypeEditActivity extends BaseActivity implements TypeEditViewContra
     }
 
     @Override
-    public void showInitialView(FormattedType formattedType) {
+    public void showInitialView(FormattedType formattedType, boolean enableTransition) {
+        if (enableTransition) {
+            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        }
+
         setContentView(R.layout.activity_type_edit);
         ButterKnife.bind(this);
 

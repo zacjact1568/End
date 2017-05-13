@@ -10,7 +10,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -19,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -153,6 +153,8 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
 
     @Override
     public void showInitialView(FormattedType formattedType, String ucPlanCountStr, SingleTypePlanListAdapter singleTypePlanListAdapter, ItemTouchHelper itemTouchHelper) {
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+
         setContentView(R.layout.activity_type_detail);
         ButterKnife.bind(this);
 
@@ -250,7 +252,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
 
     @Override
     public void onPlanItemClicked(int posInPlanList) {
-        PlanDetailActivity.start(this, posInPlanList, true);
+        PlanDetailActivity.start(this, posInPlanList);
     }
 
     @Override
@@ -279,11 +281,11 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     }
 
     @Override
-    public void enterEditType(int position, boolean shouldPlaySharedElementTransition) {
+    public void enterEditType(int position, boolean enableTransition) {
         TypeEditActivity.start(
                 this,
                 position,
-                shouldPlaySharedElementTransition,
+                enableTransition,
                 mTypeMarkIcon,
                 mTypeMarkIconSetName,
                 mTypeNameText,

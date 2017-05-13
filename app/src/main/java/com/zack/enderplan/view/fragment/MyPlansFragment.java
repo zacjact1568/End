@@ -108,7 +108,7 @@ public class MyPlansFragment extends BaseListFragment implements MyPlansViewCont
 
     @Override
     public void onPlanItemClicked(int position) {
-        PlanDetailActivity.start(getActivity(), position, true);
+        PlanDetailActivity.start(getContext(), position);
     }
 
     @Override

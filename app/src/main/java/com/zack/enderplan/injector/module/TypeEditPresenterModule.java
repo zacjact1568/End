@@ -10,10 +10,12 @@ public class TypeEditPresenterModule {
 
     private final TypeEditViewContract mTypeEditViewContract;
     private final int mTypeListPosition;
+    private final boolean mEnableTransition;
 
-    public TypeEditPresenterModule(TypeEditViewContract typeEditViewContract, int typeListPosition) {
+    public TypeEditPresenterModule(TypeEditViewContract typeEditViewContract, int typeListPosition, boolean enableTransition) {
         mTypeEditViewContract = typeEditViewContract;
         mTypeListPosition = typeListPosition;
+        mEnableTransition = enableTransition;
     }
 
     @Provides
@@ -24,5 +26,10 @@ public class TypeEditPresenterModule {
     @Provides
     int provideTypeListPosition() {
         return mTypeListPosition;
+    }
+
+    @Provides
+    boolean provideEnableTransition() {
+        return mEnableTransition;
     }
 }

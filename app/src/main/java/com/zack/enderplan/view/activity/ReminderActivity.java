@@ -116,7 +116,7 @@ public class ReminderActivity extends BaseActivity implements ReminderViewContra
     @Override
     public void enterPlanDetail(int position) {
         //可能会有两个PlanDetailActivity同时存在
-        PlanDetailActivity.start(this, position, false);
+        PlanDetailActivity.start(this, position);
     }
 
     @OnClick({R.id.btn_delay, R.id.btn_detail, R.id.btn_complete, R.id.btn_back, R.id.btn_1_hour, R.id.btn_tomorrow, R.id.btn_more})
