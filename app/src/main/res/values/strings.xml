@@ -146,7 +146,7 @@
     <string name="toast_create_plan_success">Create successfully</string>
     <string name="title_dialog_content_editor">Content Editor</string>
     <string name="title_dialog_type_not_empty">Type Is Not Empty</string>
-    <string name="msg_dialog_type_not_empty">There are some plans belong to this type, you can MOVE them to another type, DELETE them all, or CANCEL.</string>
+    <string name="msg_dialog_type_not_empty">There are some plans belong to this type, you can move them to another type, delete them all, or cancel.</string>
     <string name="title_dialog_move_plan_pt1">Move</string>
     <string name="title_dialog_move_plan_pt2_sg">Plan To</string>
     <string name="title_dialog_move_plan_pt2_pl">Plans To</string>

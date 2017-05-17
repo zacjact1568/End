@@ -304,26 +304,27 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
 
     @Override
     public void onDetectedTypeNotEmpty() {
+        String[] buttons = {getString(R.string.button_move), getString(R.string.button_delete), getString(R.string.button_cancel)};
         new AlertDialog.Builder(this)
                 .setTitle(R.string.title_dialog_type_not_empty)
                 .setMessage(StringUtil.addSpan(
-                        getString(R.string.msg_dialog_type_not_empty),
-                        new String[]{getString(R.string.button_move), getString(R.string.button_delete), getString(R.string.button_cancel)},
+                        StringUtil.toUpperCase(getString(R.string.msg_dialog_type_not_empty), buttons),
+                        buttons,
                         StringUtil.SPAN_BOLD_STYLE
                 ))
-                .setPositiveButton(R.string.button_move, new DialogInterface.OnClickListener() {
+                .setPositiveButton(buttons[0], new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mTypeDetailPresenter.notifyMovePlanButtonClicked();
                     }
                 })
-                .setNeutralButton(R.string.button_delete, new DialogInterface.OnClickListener() {
+                .setNeutralButton(buttons[1], new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mTypeDetailPresenter.notifyTypeDeletionButtonClicked(true);
                     }
                 })
-                .setNegativeButton(R.string.button_cancel, null)
+                .setNegativeButton(buttons[2], null)
                 .show();
     }
 
