@@ -143,6 +143,9 @@ public class MyPlansPresenter extends BasePresenter {
     public void notifyCreatingPlan(Plan newPlan, int position) {
         mDataManager.notifyPlanCreated(position, newPlan);
         mPlanListAdapter.notifyItemInserted(position);
+
+        checkPlanItemEmptyState();
+
         mEventBus.post(new PlanCreatedEvent(getPresenterName(), newPlan.getPlanCode(), position));
     }
 
