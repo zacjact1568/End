@@ -15,7 +15,6 @@ public class PlanListItemTouchCallback extends BaseItemTouchCallback {
     @Override
     public int getMoveDirs(int position) {
         //其实移动已完成计划到未完成计划区域（或相反）的限制也可以在这里完成，但是为了有拖动特效，就不在这里完成了
-        //TODO 也可考虑就在这里完成，不然在plan detail界面向下拖动item会消失
         //first item
         if (position == 0) return ItemTouchHelper.DOWN;
         //last item

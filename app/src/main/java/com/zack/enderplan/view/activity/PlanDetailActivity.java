@@ -69,8 +69,8 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
     ItemView mDeadlineItem;
     @BindView(R.id.item_reminder)
     ItemView mReminderItem;
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
+    @BindView(R.id.fab_star)
+    FloatingActionButton mStarFab;
     @BindView(R.id.btn_switch_plan_status)
     TextView switchPlanStatusButton;
 
@@ -271,7 +271,8 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
     public void onStarStatusChanged(boolean isStarred) {
         updateStarMenuItem(isStarred);
         starIcon.setVisibility(isStarred ? View.VISIBLE : View.GONE);
-        fab.setImageTintList(ColorStateList.valueOf(isStarred ? mAccentColor : mGrey600Color));
+        mStarFab.setImageResource(isStarred ? R.drawable.ic_star_black_24dp : R.drawable.ic_star_border_black_24dp);
+        mStarFab.setImageTintList(ColorStateList.valueOf(isStarred ? mAccentColor : mGrey600Color));
     }
 
     @Override
@@ -325,7 +326,7 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
         super.onBackPressed();
     }
 
-    @OnClick({R.id.item_deadline, R.id.item_reminder, R.id.fab, R.id.btn_switch_plan_status})
+    @OnClick({R.id.item_deadline, R.id.item_reminder, R.id.fab_star, R.id.btn_switch_plan_status})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.item_deadline:
@@ -334,7 +335,7 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
             case R.id.item_reminder:
                 planDetailPresenter.notifySettingReminder();
                 break;
-            case R.id.fab:
+            case R.id.fab_star:
                 planDetailPresenter.notifyStarStatusChanged();
                 break;
             case R.id.btn_switch_plan_status:
