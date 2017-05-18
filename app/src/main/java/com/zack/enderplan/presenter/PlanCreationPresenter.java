@@ -4,15 +4,17 @@ import android.text.TextUtils;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.event.TypeCreatedEvent;
 import com.zack.enderplan.util.ResourceUtil;
 import com.zack.enderplan.util.TimeUtil;
 import com.zack.enderplan.event.PlanCreatedEvent;
-import com.zack.enderplan.view.adapter.SimpleTypeListAdapter;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.model.DataManager;
+import com.zack.enderplan.view.adapter.TypeGalleryAdapter;
 import com.zack.enderplan.view.contract.PlanCreationViewContract;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import javax.inject.Inject;
 
@@ -21,22 +23,41 @@ public class PlanCreationPresenter extends BasePresenter {
     private PlanCreationViewContract mPlanCreationViewContract;
     private DataManager mDataManager;
     private Plan mPlan;
+    private EventBus mEventBus;
+    private TypeGalleryAdapter mTypeGalleryAdapter;
 
     @Inject
-    public PlanCreationPresenter(PlanCreationViewContract planCreationViewContract, Plan plan, DataManager dataManager) {
+    PlanCreationPresenter(PlanCreationViewContract planCreationViewContract, Plan plan, DataManager dataManager, EventBus eventBus) {
         mPlanCreationViewContract = planCreationViewContract;
         mPlan = plan;
         mDataManager = dataManager;
+        mEventBus = eventBus;
+
+        mTypeGalleryAdapter = new TypeGalleryAdapter(mDataManager);
+        mTypeGalleryAdapter.setOnItemClickListener(new TypeGalleryAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                notifyTypeOfPlanChanged(position);
+            }
+        });
+        mTypeGalleryAdapter.setOnFooterClickListener(new TypeGalleryAdapter.OnFooterClickListener() {
+            @Override
+            public void onFooterClick() {
+                mPlanCreationViewContract.onTypeCreationItemClicked();
+            }
+        });
     }
 
     @Override
     public void attach() {
-        mPlanCreationViewContract.showInitialView(new SimpleTypeListAdapter(mDataManager.getTypeList(), SimpleTypeListAdapter.STYLE_SPINNER));
+        mEventBus.register(this);
+        mPlanCreationViewContract.showInitialView(mTypeGalleryAdapter);
     }
 
     @Override
     public void detach() {
         mPlanCreationViewContract = null;
+        mEventBus.unregister(this);
     }
 
     public void notifyContentChanged(String content) {
@@ -44,8 +65,8 @@ public class PlanCreationPresenter extends BasePresenter {
         mPlanCreationViewContract.onContentChanged(!TextUtils.isEmpty(content));
     }
 
-    public void notifyTypeCodeChanged(int spinnerPos) {
-        mPlan.setTypeCode(mDataManager.getType(spinnerPos).getTypeCode());
+    public void notifyTypeOfPlanChanged(int typeListPos) {
+        mPlan.setTypeCode(mDataManager.getType(typeListPos).getTypeCode());
     }
 
     public void notifyDeadlineChanged(long deadline) {
@@ -115,5 +136,12 @@ public class PlanCreationPresenter extends BasePresenter {
     private String formatDateTime(long timeInMillis) {
         String time = TimeUtil.formatTime(timeInMillis);
         return time != null ? time : ResourceUtil.getString(R.string.dscpt_touch_to_set);
+    }
+
+    @Subscribe
+    public void onTypeCreated(TypeCreatedEvent event) {
+        int position = mDataManager.getRecentlyCreatedTypeLocation();
+        mTypeGalleryAdapter.notifyItemInsertedAndNeedingSelection(position);
+        notifyTypeOfPlanChanged(position);
     }
 }

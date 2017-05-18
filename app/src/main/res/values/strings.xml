@@ -116,6 +116,7 @@
     <!--PlanCreationActivity-->
     <string name="title_activity_plan_creation">Plan Creation</string>
     <string name="toast_shortcut_disabled">Shortcut disabled</string>
+    <string name="text_new_type">New Type</string>
 
     <!--PlanDetailActivity-->
     <string name="title_activity_plan_detail">Plan Detail</string>

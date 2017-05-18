@@ -150,6 +150,18 @@ public class CircleColorView extends View {
         invalidate();
     }
 
+    public void setEdgeWidth(float edgeWidth) {
+        if (edgeWidth == mEdgeWidth) return;
+        mEdgeWidth = edgeWidth;
+        invalidate();
+    }
+
+    public void setEdgeColor(int edgeColor) {
+        if (edgeColor == mEdgeColor) return;
+        mEdgeColor = edgeColor;
+        invalidate();
+    }
+
     public void setInnerText(String innerText) {
         if (CommonUtil.isObjectEqual(innerText, mInnerText)) return;
         mInnerText = innerText;
@@ -162,6 +174,12 @@ public class CircleColorView extends View {
         if (mInnerIcon != null) {
             mInnerIcon.setTint(mInnerIconTintColor);
         }
+        invalidate();
+    }
+
+    public void setInnerIconTintColor(int innerIconTintColor) {
+        if (innerIconTintColor == mInnerIconTintColor) return;
+        mInnerIconTintColor = innerIconTintColor;
         invalidate();
     }
 }

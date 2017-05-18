@@ -21,13 +21,11 @@
 
     <include layout="@layout/divider"/>
 
-    <Spinner
-        android:id="@+id/spinner_type"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/gallery_type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
-        android:spinnerMode="dialog"
-        tools:layout_height="40dp"/>
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"/>
 
     <include layout="@layout/divider"/>
 

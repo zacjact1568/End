@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,7 +22,7 @@ import com.zack.enderplan.R;
 import com.zack.enderplan.util.SystemUtil;
 import com.zack.enderplan.injector.component.DaggerPlanCreationComponent;
 import com.zack.enderplan.injector.module.PlanCreationPresenterModule;
-import com.zack.enderplan.view.adapter.SimpleTypeListAdapter;
+import com.zack.enderplan.view.adapter.TypeGalleryAdapter;
 import com.zack.enderplan.view.contract.PlanCreationViewContract;
 import com.zack.enderplan.view.dialog.DateTimePickerDialogFragment;
 import com.zack.enderplan.presenter.PlanCreationPresenter;
@@ -40,8 +42,8 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
     Toolbar mToolbar;
     @BindView(R.id.editor_content)
     EditText mContentEditor;
-    @BindView(R.id.spinner_type)
-    Spinner mTypeSpinner;
+    @BindView(R.id.gallery_type)
+    RecyclerView mTypeGallery;
     @BindView(R.id.item_deadline)
     ItemView mDeadlineItem;
     @BindView(R.id.item_reminder)
@@ -120,7 +122,7 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
     }
 
     @Override
-    public void showInitialView(SimpleTypeListAdapter simpleTypeListAdapter) {
+    public void showInitialView(TypeGalleryAdapter typeGalleryAdapter) {
         //overridePendingTransition(0, 0);
         setContentView(R.layout.activity_plan_creation);
         ButterKnife.bind(this);
@@ -157,18 +159,9 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
             }
         });
 
-        mTypeSpinner.setAdapter(simpleTypeListAdapter);
-        mTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mPlanCreationPresenter.notifyTypeCodeChanged(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+        ((LinearLayoutManager) mTypeGallery.getLayoutManager()).setOrientation(LinearLayoutManager.HORIZONTAL);
+        mTypeGallery.setAdapter(typeGalleryAdapter);
+        mTypeGallery.setHasFixedSize(true);
 
         onStarStatusChanged(false);
         onContentChanged(false);
@@ -187,6 +180,11 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
             mStarMenuItem.setIcon(isStarred ? R.drawable.ic_star_black_24dp : R.drawable.ic_star_border_black_24dp);
             mStarMenuItem.getIcon().setTint(Color.WHITE);
         }
+    }
+
+    @Override
+    public void onTypeCreationItemClicked() {
+        TypeCreationActivity.start(this);
     }
 
     @Override

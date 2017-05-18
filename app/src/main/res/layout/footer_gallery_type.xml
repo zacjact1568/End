@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_rectangle_ripple"
+    android:backgroundTint="?android:attr/colorBackground"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp">
+
+    <com.zack.enderplan.view.widget.CircleColorView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:fillColor="@color/colorWhiteBackground"
+        app:edgeWidth="1dp"
+        app:edgeColor="@color/colorPrimary"
+        app:innerIcon="@drawable/ic_playlist_add_black_24dp"
+        app:innerIconTintColor="@color/colorPrimary"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/text_new_type"
+        android:textSize="12sp"
+        android:ems="4"
+        android:lines="1"
+        android:ellipsize="end"
+        android:gravity="center"/>
+
+</LinearLayout>

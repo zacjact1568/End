@@ -80,7 +80,7 @@ public class AllTypesPresenter extends BasePresenter {
 
     @Subscribe
     public void onTypeCreated(TypeCreatedEvent event) {
-        int position = mDataManager.getTypeCount() - 1;
+        int position = mDataManager.getRecentlyCreatedTypeLocation();
         mTypeListAdapter.notifyItemInserted(position);
         mAllTypesViewContract.onTypeCreated(position);
     }

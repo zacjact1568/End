@@ -1,14 +1,16 @@
 package com.zack.enderplan.view.contract;
 
-import com.zack.enderplan.view.adapter.SimpleTypeListAdapter;
+import com.zack.enderplan.view.adapter.TypeGalleryAdapter;
 
 public interface PlanCreationViewContract extends BaseViewContract {
 
-    void showInitialView(SimpleTypeListAdapter simpleTypeListAdapter);
+    void showInitialView(TypeGalleryAdapter typeGalleryAdapter);
 
     void onContentChanged(boolean isValid);
 
     void onStarStatusChanged(boolean isStarred);
+
+    void onTypeCreationItemClicked();
 
     void showDeadlinePickerDialog(long defaultDeadline);
 
