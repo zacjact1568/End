@@ -114,7 +114,7 @@
     <string name="type_name_hint">The name of your new type</string>
 
     <!--PlanCreationActivity-->
-    <string name="title_activity_plan_creation">Plan Creation</string>
+    <string name="title_activity_plan_creation">New Plan</string>
     <string name="toast_shortcut_disabled">Shortcut disabled</string>
     <string name="text_new_type">New Type</string>
 

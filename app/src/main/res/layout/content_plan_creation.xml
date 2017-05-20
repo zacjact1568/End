@@ -9,15 +9,51 @@
     tools:context=".view.activity.PlanCreationActivity"
     tools:showIn="@layout/activity_plan_creation">
 
-    <EditText
-        android:id="@+id/editor_content"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/hint_content_editor"
-        android:lines="3"
-        android:background="@android:color/transparent"
-        android:gravity="top"
-        android:padding="16dp"/>
+        android:padding="16dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_event_black_24dp"
+            android:tint="@color/grey_600"/>
+
+        <EditText
+            android:id="@+id/editor_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:hint="@string/hint_content_editor"
+            android:lines="3"
+            android:background="@android:color/transparent"
+            android:gravity="top"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center_vertical">
+
+        <com.zack.enderplan.view.widget.CircleColorView
+            android:id="@+id/ic_type_mark"
+            android:layout_width="20dp"
+            android:layout_height="20dp"/>
+
+        <TextView
+            android:id="@+id/text_type_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textSize="12sp"
+            tools:text="Home"/>
+
+    </LinearLayout>
 
     <include layout="@layout/divider"/>
 

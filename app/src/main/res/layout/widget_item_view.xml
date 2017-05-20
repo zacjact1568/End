@@ -22,7 +22,7 @@
         android:id="@+id/text_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:textSize="12sp"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@id/image_icon"
         android:layout_marginStart="@dimen/image_text_spacing"
@@ -32,17 +32,9 @@
         android:id="@+id/text_dscpt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="12sp"
+        android:textStyle="bold"
         android:layout_below="@id/text_title"
         android:layout_alignStart="@id/text_title"
         tools:text="@string/dscpt_touch_to_set"/>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_chevron_right_black_24dp"
-        android:tint="@color/grey_600"
-        android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true"/>
 
 </RelativeLayout>

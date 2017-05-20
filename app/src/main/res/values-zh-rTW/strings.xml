@@ -37,7 +37,6 @@
     <string name="text_empty_plan_list_1">這裡還沒有計劃呢</string>
     <string name="edit_content_hint">在這兒修改你計劃的內容</string>
     <string name="action_delete">刪除</string>
-    <string name="title_activity_plan_creation">創建計劃</string>
     <string name="date_format">yyyy年MM月dd日 E</string>
     <string name="date_time_format">yyyy年MM月dd日 E kk:mm</string>
     <string name="text_date_picker_switcher">設置日期</string>

@@ -63,4 +63,8 @@ public class Type {
     public void setTypeSequence(int typeSequence) {
         this.typeSequence = typeSequence;
     }
+
+    public boolean hasTypeMarkPattern() {
+        return typeMarkPattern != null;
+    }
 }

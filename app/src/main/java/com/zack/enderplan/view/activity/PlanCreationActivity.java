@@ -16,9 +16,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
+import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.util.SystemUtil;
 import com.zack.enderplan.injector.component.DaggerPlanCreationComponent;
 import com.zack.enderplan.injector.module.PlanCreationPresenterModule;
@@ -27,6 +29,7 @@ import com.zack.enderplan.view.contract.PlanCreationViewContract;
 import com.zack.enderplan.view.dialog.DateTimePickerDialogFragment;
 import com.zack.enderplan.presenter.PlanCreationPresenter;
 import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.view.widget.CircleColorView;
 import com.zack.enderplan.view.widget.ItemView;
 
 import javax.inject.Inject;
@@ -42,6 +45,10 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
     Toolbar mToolbar;
     @BindView(R.id.editor_content)
     EditText mContentEditor;
+    @BindView(R.id.ic_type_mark)
+    CircleColorView mTypeMarkIcon;
+    @BindView(R.id.text_type_name)
+    TextView mTypeNameText;
     @BindView(R.id.gallery_type)
     RecyclerView mTypeGallery;
     @BindView(R.id.item_deadline)
@@ -122,7 +129,7 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
     }
 
     @Override
-    public void showInitialView(TypeGalleryAdapter typeGalleryAdapter) {
+    public void showInitialView(TypeGalleryAdapter typeGalleryAdapter, FormattedType formattedType) {
         //overridePendingTransition(0, 0);
         setContentView(R.layout.activity_plan_creation);
         ButterKnife.bind(this);
@@ -163,8 +170,9 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
         mTypeGallery.setAdapter(typeGalleryAdapter);
         mTypeGallery.setHasFixedSize(true);
 
-        onStarStatusChanged(false);
         onContentChanged(false);
+        onStarStatusChanged(false);
+        onTypeOfPlanChanged(formattedType);
     }
 
     @Override
@@ -180,6 +188,14 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
             mStarMenuItem.setIcon(isStarred ? R.drawable.ic_star_black_24dp : R.drawable.ic_star_border_black_24dp);
             mStarMenuItem.getIcon().setTint(Color.WHITE);
         }
+    }
+
+    @Override
+    public void onTypeOfPlanChanged(FormattedType formattedType) {
+        mTypeMarkIcon.setFillColor(formattedType.getTypeMarkColorInt());
+        mTypeMarkIcon.setInnerIcon(formattedType.isHasTypeMarkPattern() ? getDrawable(formattedType.getTypeMarkPatternResId()) : null);
+        mTypeMarkIcon.setInnerText(formattedType.getFirstChar());
+        mTypeNameText.setText(formattedType.getTypeName());
     }
 
     @Override

@@ -35,11 +35,9 @@ public class TypeGalleryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private int mWhiteBackgroundColor;
     private int mPxFor1Dp;
 
-    public TypeGalleryAdapter(DataManager dataManager) {
+    public TypeGalleryAdapter(DataManager dataManager, int selectedPosition) {
         mDataManager = dataManager;
-
-        //默认选中第一个
-        mSelectedPosition = 0;
+        mSelectedPosition = selectedPosition;
 
         mWhiteBackgroundColor = ResourceUtil.getColor(R.color.colorWhiteBackground);
         mPxFor1Dp = CommonUtil.convertDpToPx(1);

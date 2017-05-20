@@ -1,11 +1,15 @@
 package com.zack.enderplan.presenter;
 
+import android.graphics.Color;
 import android.text.TextUtils;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.event.TypeCreatedEvent;
+import com.zack.enderplan.model.bean.FormattedType;
+import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.util.ResourceUtil;
+import com.zack.enderplan.util.StringUtil;
 import com.zack.enderplan.util.TimeUtil;
 import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.model.bean.Plan;
@@ -25,6 +29,7 @@ public class PlanCreationPresenter extends BasePresenter {
     private Plan mPlan;
     private EventBus mEventBus;
     private TypeGalleryAdapter mTypeGalleryAdapter;
+    private FormattedType mFormattedType;
 
     @Inject
     PlanCreationPresenter(PlanCreationViewContract planCreationViewContract, Plan plan, DataManager dataManager, EventBus eventBus) {
@@ -33,7 +38,10 @@ public class PlanCreationPresenter extends BasePresenter {
         mDataManager = dataManager;
         mEventBus = eventBus;
 
-        mTypeGalleryAdapter = new TypeGalleryAdapter(mDataManager);
+        //默认选中第一个
+        int typeListPos = 0;
+
+        mTypeGalleryAdapter = new TypeGalleryAdapter(mDataManager, typeListPos);
         mTypeGalleryAdapter.setOnItemClickListener(new TypeGalleryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
@@ -46,12 +54,15 @@ public class PlanCreationPresenter extends BasePresenter {
                 mPlanCreationViewContract.onTypeCreationItemClicked();
             }
         });
+
+        mFormattedType = new FormattedType();
+        updateFormattedType(mDataManager.getType(typeListPos));
     }
 
     @Override
     public void attach() {
         mEventBus.register(this);
-        mPlanCreationViewContract.showInitialView(mTypeGalleryAdapter);
+        mPlanCreationViewContract.showInitialView(mTypeGalleryAdapter, mFormattedType);
     }
 
     @Override
@@ -66,7 +77,10 @@ public class PlanCreationPresenter extends BasePresenter {
     }
 
     public void notifyTypeOfPlanChanged(int typeListPos) {
-        mPlan.setTypeCode(mDataManager.getType(typeListPos).getTypeCode());
+        Type type = mDataManager.getType(typeListPos);
+        mPlan.setTypeCode(type.getTypeCode());
+        updateFormattedType(type);
+        mPlanCreationViewContract.onTypeOfPlanChanged(mFormattedType);
     }
 
     public void notifyDeadlineChanged(long deadline) {
@@ -131,6 +145,14 @@ public class PlanCreationPresenter extends BasePresenter {
     public void notifyPlanCreationCanceled() {
         //TODO 判断是否已编辑过
         mPlanCreationViewContract.exit();
+    }
+
+    private void updateFormattedType(Type type) {
+        mFormattedType.setTypeMarkColorInt(Color.parseColor(type.getTypeMarkColor()));
+        mFormattedType.setHasTypeMarkPattern(type.hasTypeMarkPattern());
+        mFormattedType.setTypeMarkPatternResId(ResourceUtil.getDrawableResourceId(type.getTypeMarkPattern()));
+        mFormattedType.setTypeName(type.getTypeName());
+        mFormattedType.setFirstChar(StringUtil.getFirstChar(type.getTypeName()));
     }
 
     private String formatDateTime(long timeInMillis) {

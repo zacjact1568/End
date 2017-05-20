@@ -1,5 +1,7 @@
 package com.zack.enderplan.model.bean;
 
+import com.zack.enderplan.common.Constant;
+
 public class FormattedType {
 
     private int typeMarkColorInt;
@@ -9,6 +11,10 @@ public class FormattedType {
     private String typeMarkPatternName;
     private String typeName;
     private String firstChar;
+
+    public FormattedType() {
+
+    }
 
     /** 编辑类型时使用 */
     public FormattedType(int typeMarkColorInt, String typeMarkColorName, boolean hasTypeMarkPattern,
@@ -25,24 +31,12 @@ public class FormattedType {
     /** 显示类型详情时使用 */
     public FormattedType(int typeMarkColorInt, boolean hasTypeMarkPattern, int typeMarkPatternResId,
                          String typeName, String firstChar) {
-        this.typeMarkColorInt = typeMarkColorInt;
-        this.typeMarkColorName = null;
-        this.hasTypeMarkPattern = hasTypeMarkPattern;
-        this.typeMarkPatternResId = typeMarkPatternResId;
-        this.typeMarkPatternName = null;
-        this.typeName = typeName;
-        this.firstChar = firstChar;
+        this(typeMarkColorInt, null, hasTypeMarkPattern, typeMarkPatternResId, null, typeName, firstChar);
     }
 
     /** 创建类型时使用 */
     public FormattedType(int typeMarkColorInt, String typeMarkColorName, String typeName, String firstChar) {
-        this.typeMarkColorInt = typeMarkColorInt;
-        this.typeMarkColorName = typeMarkColorName;
-        this.hasTypeMarkPattern = false;
-        this.typeMarkPatternResId = -1;
-        this.typeMarkPatternName = null;
-        this.typeName = typeName;
-        this.firstChar = firstChar;
+        this(typeMarkColorInt, typeMarkColorName, false, Constant.UNDEFINED_RES_ID, null, typeName, firstChar);
     }
 
     public int getTypeMarkColorInt() {
