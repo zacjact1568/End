@@ -219,23 +219,20 @@ public class HomeActivity extends BaseActivity implements HomeViewContract {
             getSupportFragmentManager().beginTransaction().replace(R.id.layout_fragment, fragment, tag).commit();
         }
         //在切换相同fragment时，下面的语句是不必要的
-        int titleResId, fabResId, navViewCheckedItemId;
+        int titleResId, navViewCheckedItemId;
         switch (tag) {
             case Constant.MY_PLANS:
                 titleResId = R.string.title_fragment_my_plans;
-                fabResId = R.drawable.ic_add_black_24dp;
                 navViewCheckedItemId = R.id.nav_my_plans;
                 break;
             case Constant.ALL_TYPES:
                 titleResId = R.string.title_fragment_all_types;
-                fabResId = R.drawable.ic_playlist_add_black_24dp;
                 navViewCheckedItemId = R.id.nav_all_types;
                 break;
             default:
                 throw new IllegalArgumentException("The argument tag cannot be " + tag);
         }
         mToolbar.setTitle(titleResId);
-        mCreateFab.setImageResource(fabResId);
         mCreateFab.setTranslationY(0f);
         mNavigator.setCheckedItem(navViewCheckedItemId);
     }

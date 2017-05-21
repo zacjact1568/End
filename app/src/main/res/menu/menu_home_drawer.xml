@@ -5,12 +5,12 @@
 
         <item
             android:id="@+id/nav_my_plans"
-            android:icon="@drawable/ic_event_black_24dp"
+            android:icon="@drawable/ic_list_black_24dp"
             android:title="@string/action_my_plans" />
 
         <item
             android:id="@+id/nav_all_types"
-            android:icon="@drawable/ic_subject_black_24dp"
+            android:icon="@drawable/ic_folder_open_black_24dp"
             android:title="@string/action_all_types" />
 
     </group>

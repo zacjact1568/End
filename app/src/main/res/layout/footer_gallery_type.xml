@@ -19,7 +19,7 @@
         app:fillColor="@color/colorWhiteBackground"
         app:edgeWidth="1dp"
         app:edgeColor="@color/colorPrimary"
-        app:innerIcon="@drawable/ic_playlist_add_black_24dp"
+        app:innerIcon="@drawable/ic_create_new_folder_black_24dp"
         app:innerIconTintColor="@color/colorPrimary"/>
 
     <TextView

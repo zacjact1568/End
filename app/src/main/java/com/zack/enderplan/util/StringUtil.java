@@ -83,6 +83,7 @@ public class StringUtil {
     }
 
     /** 获取所有子串在主串中的起始位置（暴力算法），无视大小写，允许重叠 */
+    //TODO String.replaceAll
     private static List<Integer> getSubstringLocationList(String str, String sub) {
         List<Integer> locationList = new ArrayList<>();
         char[] strChs = str.toCharArray();
