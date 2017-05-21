@@ -42,7 +42,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="16dp"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -62,11 +62,11 @@
                 android:typeface="monospace"
                 tools:text="#FF543B4A"/>
 
-            <!--不要设置ColorPicker的任何layout属性，因为运行时动态设置LayoutParams的时候会清空这些属性-->
             <com.zack.enderplan.view.widget.ColorPicker
                 android:id="@+id/picker_type_mark_color"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"/>
 
         </LinearLayout>
 

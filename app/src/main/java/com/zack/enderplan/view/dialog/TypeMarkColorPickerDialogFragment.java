@@ -98,7 +98,7 @@ public class TypeMarkColorPickerDialogFragment extends DialogFragment {
             public boolean onPreDraw() {
                 mTypeMarkColorGrid.getViewTreeObserver().removeOnPreDrawListener(this);
                 //运行时设置宽度（在xml文件中宽度设置成match_parent不行）
-                mTypeMarkColorPicker.setLayoutParams(new LinearLayout.LayoutParams(mTypeMarkColorGrid.getWidth(), ViewGroup.LayoutParams.WRAP_CONTENT));
+                mTypeMarkColorPicker.getLayoutParams().width = mTypeMarkColorGrid.getWidth();
                 return false;
             }
         });

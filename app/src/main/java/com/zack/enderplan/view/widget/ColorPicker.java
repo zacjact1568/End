@@ -16,10 +16,6 @@ import butterknife.ButterKnife;
 
 public class ColorPicker extends FrameLayout implements SeekBar.OnSeekBarChangeListener {
 
-    @BindView(R.id.bar_alpha)
-    SeekBar mAlphaBar;
-    @BindView(R.id.text_alpha)
-    TextView mAlphaText;
     @BindView(R.id.bar_red)
     SeekBar mRedBar;
     @BindView(R.id.text_red)
@@ -34,7 +30,7 @@ public class ColorPicker extends FrameLayout implements SeekBar.OnSeekBarChangeL
     TextView mBlueText;
 
     private int mColor;
-    private int mAlpha, mRed, mGreen, mBlue;
+    private int mRed, mGreen, mBlue;
     private OnColorChangedListener mOnColorChangedListener;
 
     public ColorPicker(Context context) {
@@ -70,7 +66,6 @@ public class ColorPicker extends FrameLayout implements SeekBar.OnSeekBarChangeL
 
         setColor(mColor);
 
-        mAlphaBar.setOnSeekBarChangeListener(this);
         mRedBar.setOnSeekBarChangeListener(this);
         mGreenBar.setOnSeekBarChangeListener(this);
         mBlueBar.setOnSeekBarChangeListener(this);
@@ -80,10 +75,6 @@ public class ColorPicker extends FrameLayout implements SeekBar.OnSeekBarChangeL
         if (mColor == color) return;
 
         mColor = color;
-
-        mAlpha = Color.alpha(color);
-        mAlphaBar.setProgress(mAlpha - 156);
-        mAlphaText.setText(ColorUtil.parseColorChannel(mAlpha));
 
         mRed = Color.red(color);
         mRedBar.setProgress(mRed);
@@ -101,10 +92,6 @@ public class ColorPicker extends FrameLayout implements SeekBar.OnSeekBarChangeL
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         switch (seekBar.getId()) {
-            case R.id.bar_alpha:
-                mAlpha = progress + 156;
-                mAlphaText.setText(ColorUtil.parseColorChannel(mAlpha));
-                break;
             case R.id.bar_red:
                 mRed = progress;
                 mRedText.setText(ColorUtil.parseColorChannel(mRed));
@@ -118,7 +105,7 @@ public class ColorPicker extends FrameLayout implements SeekBar.OnSeekBarChangeL
                 mBlueText.setText(ColorUtil.parseColorChannel(mBlue));
                 break;
         }
-        mColor = Color.argb(mAlpha, mRed, mGreen, mBlue);
+        mColor = Color.rgb(mRed, mGreen, mBlue);
         if (mOnColorChangedListener != null) {
             mOnColorChangedListener.onColorChanged(mColor);
         }

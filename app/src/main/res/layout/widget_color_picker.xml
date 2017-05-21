@@ -9,30 +9,6 @@
     <TextView
         android:layout_columnWeight="1"
         android:gravity="center"
-        android:text="A"
-        android:textSize="20sp"
-        android:textStyle="bold"/>
-
-    <SeekBar
-        android:id="@+id/bar_alpha"
-        android:layout_columnWeight="5"
-        android:layout_gravity="center_vertical"
-        android:max="99"
-        android:progressTint="@color/colorPrimary"
-        android:thumbTint="@color/colorPrimary"/>
-
-    <TextView
-        android:id="@+id/text_alpha"
-        android:layout_columnWeight="1"
-        android:gravity="center"
-        android:textSize="16sp"
-        android:typeface="monospace"
-        tools:text="FF"/>
-
-    <TextView
-        android:layout_columnWeight="1"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
         android:text="R"
         android:textSize="20sp"
         android:textStyle="bold"/>
@@ -40,7 +16,6 @@
     <SeekBar
         android:id="@+id/bar_red"
         android:layout_columnWeight="5"
-        android:layout_marginTop="8dp"
         android:layout_gravity="center_vertical"
         android:max="255"
         android:progressTint="@color/colorPrimary"
@@ -49,7 +24,6 @@
     <TextView
         android:id="@+id/text_red"
         android:layout_columnWeight="1"
-        android:layout_marginTop="8dp"
         android:gravity="center"
         android:textSize="16sp"
         android:typeface="monospace"
@@ -57,7 +31,7 @@
 
     <TextView
         android:layout_columnWeight="1"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:gravity="center"
         android:text="G"
         android:textSize="20sp"
@@ -66,7 +40,7 @@
     <SeekBar
         android:id="@+id/bar_green"
         android:layout_columnWeight="5"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:layout_gravity="center_vertical"
         android:max="255"
         android:progressTint="@color/colorPrimary"
@@ -75,7 +49,7 @@
     <TextView
         android:id="@+id/text_green"
         android:layout_columnWeight="1"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:gravity="center"
         android:textSize="16sp"
         android:typeface="monospace"
@@ -83,7 +57,7 @@
 
     <TextView
         android:layout_columnWeight="1"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:gravity="center"
         android:text="B"
         android:textSize="20sp"
@@ -92,7 +66,7 @@
     <SeekBar
         android:id="@+id/bar_blue"
         android:layout_columnWeight="5"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:layout_gravity="center_vertical"
         android:max="255"
         android:progressTint="@color/colorPrimary"
@@ -101,7 +75,7 @@
     <TextView
         android:id="@+id/text_blue"
         android:layout_columnWeight="1"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:gravity="center"
         android:textSize="16sp"
         android:typeface="monospace"
