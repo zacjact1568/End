@@ -13,14 +13,13 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
 import com.zack.enderplan.model.bean.FormattedType;
+import com.zack.enderplan.util.ColorUtil;
 import com.zack.enderplan.util.SystemUtil;
 import com.zack.enderplan.injector.component.DaggerPlanCreationComponent;
 import com.zack.enderplan.injector.module.PlanCreationPresenterModule;
@@ -34,7 +33,6 @@ import com.zack.enderplan.view.widget.ItemView;
 
 import javax.inject.Inject;
 
-import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -56,14 +54,14 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
     @BindView(R.id.item_reminder)
     ItemView mReminderItem;
 
-    @BindColor(R.color.colorPrimaryLight)
-    int mPrimaryLightColor;
-
     @Inject
     PlanCreationPresenter mPlanCreationPresenter;
 
     private MenuItem mStarMenuItem;
     private MenuItem mCreateMenuItem;
+
+    public static final int ALPHA_OPACITY = 255;
+    public static final int ALPHA_TRANSLUCENCE = 155;
 
     public static void start(Context context) {
         context.startActivity(new Intent(context, PlanCreationActivity.class));
@@ -102,7 +100,8 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
         mCreateMenuItem = menu.findItem(R.id.action_create);
         //在这里改变图标的tint，因为没法在xml文件中改
         mStarMenuItem.getIcon().setTint(Color.WHITE);
-        mCreateMenuItem.getIcon().setTint(mPrimaryLightColor);
+        mCreateMenuItem.getIcon().setTint(Color.WHITE);
+        mCreateMenuItem.getIcon().setAlpha(ALPHA_TRANSLUCENCE);
         return true;
     }
 
@@ -178,7 +177,7 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
     @Override
     public void onContentChanged(boolean isValid) {
         if (mCreateMenuItem != null) {
-            mCreateMenuItem.getIcon().setTint(isValid ? Color.WHITE : mPrimaryLightColor);
+            mCreateMenuItem.getIcon().setAlpha(isValid ? ALPHA_OPACITY : ALPHA_TRANSLUCENCE);
         }
     }
 
@@ -192,7 +191,11 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
 
     @Override
     public void onTypeOfPlanChanged(FormattedType formattedType) {
-        mTypeMarkIcon.setFillColor(formattedType.getTypeMarkColorInt());
+        int typeMarkColorInt = formattedType.getTypeMarkColorInt();
+        getWindow().setNavigationBarColor(typeMarkColorInt);
+        getWindow().setStatusBarColor(typeMarkColorInt);
+        mToolbar.setBackgroundColor(ColorUtil.reduceSaturation(typeMarkColorInt, 0.85f));
+        mTypeMarkIcon.setFillColor(typeMarkColorInt);
         mTypeMarkIcon.setInnerIcon(formattedType.isHasTypeMarkPattern() ? getDrawable(formattedType.getTypeMarkPatternResId()) : null);
         mTypeMarkIcon.setInnerText(formattedType.getFirstChar());
         mTypeNameText.setText(formattedType.getTypeName());

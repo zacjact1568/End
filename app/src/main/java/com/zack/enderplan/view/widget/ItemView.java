@@ -2,8 +2,8 @@ package com.zack.enderplan.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -16,11 +16,12 @@ public class ItemView extends FrameLayout {
     private Drawable mIconDrawable;
     private String mTitleStr;
     private String mDscptStr;
+    private int mDscptActiveColor;
     private boolean mIsDscptActive;
 
     private TextView mDscptText;
 
-    private int mPrimaryColor, mTextLightGreyColor;
+    private int mDscptColor;
 
     public ItemView(Context context) {
         super(context);
@@ -39,7 +40,6 @@ public class ItemView extends FrameLayout {
 
     private void init(AttributeSet attrs, int defStyle) {
         loadAttrs(attrs, defStyle);
-        loadResources();
         initViews();
     }
 
@@ -48,13 +48,9 @@ public class ItemView extends FrameLayout {
         mIconDrawable = ta.getDrawable(R.styleable.ItemView_iconImageSrc);
         mTitleStr = ta.getString(R.styleable.ItemView_titleText);
         mDscptStr = ta.getString(R.styleable.ItemView_descriptionText);
+        mDscptActiveColor = ta.getColor(R.styleable.ItemView_descriptionActiveColor, Color.BLACK);
         mIsDscptActive = ta.getBoolean(R.styleable.ItemView_descriptionTextActive, false);
         ta.recycle();
-    }
-
-    private void loadResources() {
-        mPrimaryColor = ContextCompat.getColor(getContext(), R.color.colorPrimary);
-        mTextLightGreyColor = ContextCompat.getColor(getContext(), R.color.grey_text_light);
     }
 
     private void initViews() {
@@ -64,6 +60,7 @@ public class ItemView extends FrameLayout {
         ((TextView) findViewById(R.id.text_title)).setText(mTitleStr);
 
         mDscptText = (TextView) findViewById(R.id.text_dscpt);
+        mDscptColor = mDscptText.getCurrentTextColor();
         setDescriptionText(mDscptStr, mIsDscptActive);
     }
 
@@ -72,7 +69,7 @@ public class ItemView extends FrameLayout {
     }
 
     public void setDescriptionActive(boolean isActive) {
-        mDscptText.setTextColor(isActive ? mPrimaryColor : mTextLightGreyColor);
+        mDscptText.setTextColor(isActive ? mDscptActiveColor : mDscptColor);
     }
 
     public void setDescriptionText(String text, boolean isActive) {
