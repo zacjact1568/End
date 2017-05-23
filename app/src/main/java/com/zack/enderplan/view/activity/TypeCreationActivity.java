@@ -5,20 +5,18 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
-import com.zack.enderplan.util.SystemUtil;
+import com.zack.enderplan.util.ColorUtil;
 import com.zack.enderplan.injector.component.DaggerTypeCreationComponent;
 import com.zack.enderplan.injector.module.TypeCreationPresenterModule;
 import com.zack.enderplan.view.contract.TypeCreationViewContract;
+import com.zack.enderplan.view.dialog.EditorDialogFragment;
 import com.zack.enderplan.view.dialog.TypeMarkColorPickerDialogFragment;
 import com.zack.enderplan.view.dialog.TypeMarkPatternPickerDialogFragment;
 import com.zack.enderplan.presenter.TypeCreationPresenter;
@@ -31,7 +29,6 @@ import com.zack.enderplan.view.widget.ItemView;
 
 import javax.inject.Inject;
 
-import butterknife.BindColor;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,15 +42,12 @@ public class TypeCreationActivity extends BaseActivity implements TypeCreationVi
     CircleColorView mTypeMarkIcon;
     @BindView(R.id.text_type_name)
     TextView mTypeNameText;
-    @BindView(R.id.editor_type_name)
-    EditText mTypeNameEditor;
+    @BindView(R.id.item_type_name)
+    ItemView mTypeNameItem;
     @BindView(R.id.item_type_mark_color)
     ItemView mTypeMarkColorItem;
     @BindView(R.id.item_type_mark_pattern)
     ItemView mTypeMarkPatternItem;
-
-    @BindColor(R.color.colorPrimaryLight)
-    int mPrimaryLightColor;
 
     @BindString(R.string.dscpt_touch_to_set)
     String mClickToSetDscpt;
@@ -135,48 +129,42 @@ public class TypeCreationActivity extends BaseActivity implements TypeCreationVi
         setSupportActionBar(mToolbar);
         setupActionBar();
 
-        SystemUtil.showSoftInput(mTypeNameEditor, 100);
-        mTypeNameEditor.setText(formattedType.getTypeName());
-        mTypeNameEditor.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                mTypeCreationPresenter.notifyTypeNameTextChanged(s.toString());
-            }
-        });
-
-        onTypeNameChanged(formattedType.getTypeName(), formattedType.getFirstChar(), true);
+        onTypeNameChanged(formattedType.getTypeName(), formattedType.getFirstChar());
         onTypeMarkColorChanged(formattedType.getTypeMarkColorInt(), formattedType.getTypeMarkColorName());
     }
 
     @Override
+    public void onTypeNameChanged(String typeName, String firstChar) {
+        mTypeNameText.setText(typeName);
+        mTypeMarkIcon.setInnerText(firstChar);
+        mTypeNameItem.setDescriptionText(typeName, true);
+    }
+
+    @Override
     public void onTypeMarkColorChanged(int colorInt, String colorName) {
+        getWindow().setNavigationBarColor(colorInt);
+        getWindow().setStatusBarColor(colorInt);
+        mToolbar.setBackgroundColor(ColorUtil.reduceSaturation(colorInt, 0.85f));
         mTypeMarkIcon.setFillColor(colorInt);
-        mTypeMarkColorItem.setDescriptionText(colorName);
+        mTypeMarkColorItem.setDescriptionText(colorName, true);
     }
 
     @Override
     public void onTypeMarkPatternChanged(boolean hasPattern, int patternResId, String patternName) {
         mTypeMarkIcon.setInnerIcon(hasPattern ? getDrawable(patternResId) : null);
-        mTypeMarkPatternItem.setDescriptionText(hasPattern ? patternName : mClickToSetDscpt);
+        mTypeMarkPatternItem.setDescriptionText(hasPattern ? patternName : mClickToSetDscpt, hasPattern);
     }
 
     @Override
-    public void onTypeNameChanged(String typeName, String firstChar, boolean isValid) {
-        mTypeNameText.setText(typeName);
-        mTypeMarkIcon.setInnerText(firstChar);
-        if (mCreateMenuItem != null) {
-            mCreateMenuItem.getIcon().setTint(isValid ? Color.WHITE : mPrimaryLightColor);
-        }
+    public void showTypeNameEditorDialog(String defaultName) {
+        EditorDialogFragment fragment = EditorDialogFragment.newInstance(getString(R.string.title_dialog_type_name_editor), defaultName);
+        fragment.setOnPositiveButtonClickListener(new EditorDialogFragment.OnPositiveButtonClickListener() {
+            @Override
+            public void onPositiveButtonClick(String editorText) {
+                mTypeCreationPresenter.notifyTypeNameEdited(editorText);
+            }
+        });
+        fragment.show(getSupportFragmentManager(), Constant.TYPE_NAME);
     }
 
     @Override
@@ -203,9 +191,12 @@ public class TypeCreationActivity extends BaseActivity implements TypeCreationVi
         fragment.show(getSupportFragmentManager(), Constant.TYPE_MARK_PATTERN);
     }
 
-    @OnClick({R.id.item_type_mark_color, R.id.item_type_mark_pattern})
+    @OnClick({R.id.item_type_name, R.id.item_type_mark_color, R.id.item_type_mark_pattern})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.item_type_name:
+                mTypeCreationPresenter.notifySettingTypeName();
+                break;
             case R.id.item_type_mark_color:
                 mTypeCreationPresenter.notifySettingTypeMarkColor();
                 break;

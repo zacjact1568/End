@@ -75,7 +75,6 @@
     <string name="toast_type_not_empty">類型非空，不能刪除</string>
     <string name="msg_dialog_delete_type">此類型和與之相關的所有計劃將被刪除。</string>
     <string name="action_save">存儲</string>
-    <string name="title_activity_type_creation">創建類型</string>
     <string name="title_activity_type_edit">編輯類型</string>
     <string name="button_cancel">取消</string>
     <string name="button_ok">確認</string>

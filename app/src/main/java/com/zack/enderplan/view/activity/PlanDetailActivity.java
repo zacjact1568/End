@@ -251,7 +251,7 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
 
     @Override
     public void showContentEditorDialog(String content) {
-        EditorDialogFragment fragment = EditorDialogFragment.newInstance(App.getContext().getString(R.string.title_dialog_content_editor), content);
+        EditorDialogFragment fragment = EditorDialogFragment.newInstance(getString(R.string.title_dialog_content_editor), content);
         fragment.setOnPositiveButtonClickListener(new EditorDialogFragment.OnPositiveButtonClickListener() {
             @Override
             public void onPositiveButtonClick(String editorText) {

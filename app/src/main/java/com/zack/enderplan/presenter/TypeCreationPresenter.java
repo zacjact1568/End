@@ -46,12 +46,18 @@ public class TypeCreationPresenter extends BasePresenter {
         mTypeCreationViewContract = null;
     }
 
-    public void notifyTypeNameTextChanged(String typeName) {
-        mType.setTypeName(typeName);
+    public void notifySettingTypeName() {
+        mTypeCreationViewContract.showTypeNameEditorDialog(mType.getTypeName());
+    }
+
+    public void notifyTypeNameEdited(String typeName) {
         if (TextUtils.isEmpty(typeName)) {
-            mTypeCreationViewContract.onTypeNameChanged(ResourceUtil.getString(R.string.text_empty_type_name), "-", false);
+            mTypeCreationViewContract.showToast(R.string.toast_empty_type_name);
+        } else if (mDataManager.isTypeNameUsed(typeName)) {
+            mTypeCreationViewContract.showToast(R.string.toast_type_name_exists);
         } else {
-            mTypeCreationViewContract.onTypeNameChanged(typeName, StringUtil.getFirstChar(typeName), true);
+            mType.setTypeName(typeName);
+            mTypeCreationViewContract.onTypeNameChanged(typeName, StringUtil.getFirstChar(typeName));
         }
     }
 
@@ -86,19 +92,13 @@ public class TypeCreationPresenter extends BasePresenter {
     }
 
     public void notifyCreateButtonClicked() {
-        if (TextUtils.isEmpty(mType.getTypeName())) {
-            mTypeCreationViewContract.showToast(R.string.toast_empty_type_name);
-        } else if (mDataManager.isTypeNameUsed(mType.getTypeName())) {
-            mTypeCreationViewContract.showToast(R.string.toast_type_name_exists);
-        } else {
-            mDataManager.notifyTypeCreated(mType);
-            EventBus.getDefault().post(new TypeCreatedEvent(
-                    getPresenterName(),
-                    mDataManager.getRecentlyCreatedType().getTypeCode(),
-                    mDataManager.getRecentlyCreatedTypeLocation()
-            ));
-            mTypeCreationViewContract.exit();
-        }
+        mDataManager.notifyTypeCreated(mType);
+        EventBus.getDefault().post(new TypeCreatedEvent(
+                getPresenterName(),
+                mDataManager.getRecentlyCreatedType().getTypeCode(),
+                mDataManager.getRecentlyCreatedTypeLocation()
+        ));
+        mTypeCreationViewContract.exit();
     }
 
     public void notifyCancelButtonClicked() {

@@ -79,7 +79,7 @@
     <string name="transition_type_mark_icon">类型标记图标转换</string>
     <string name="msg_dialog_delete_type">此类型和与之相关的所有计划将被删除。</string>
     <string name="action_save">保存</string>
-    <string name="title_activity_type_creation">创建类型</string>
+    <string name="title_activity_type_creation">新类型</string>
     <string name="title_activity_type_edit">编辑类型</string>
     <string name="button_cancel">取消</string>
     <string name="button_ok">确定</string>

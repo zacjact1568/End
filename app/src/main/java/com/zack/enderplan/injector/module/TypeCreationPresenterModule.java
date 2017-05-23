@@ -28,9 +28,20 @@ public class TypeCreationPresenterModule {
     @Provides
     Type provideType() {
         DataManager dataManager = App.getDataManager();
+        String base = ResourceUtil.getString(R.string.text_new_type_name);
+        StringBuilder typeName = new StringBuilder(base);
+        int i = 1;
+        while (dataManager.isTypeNameUsed(typeName.toString())) {
+            if (base.length() == typeName.length()) {
+                //还没加空格
+                typeName.append(" ");
+            }
+            typeName.replace(base.length() + 1, typeName.length(), String.valueOf(i));
+            i++;
+        }
         return new Type(
                 CommonUtil.makeCode(),
-                ResourceUtil.getString(R.string.text_new_type_name),
+                typeName.toString(),
                 dataManager.getRandomTypeMarkColor(),
                 dataManager.getTypeCount()
         );

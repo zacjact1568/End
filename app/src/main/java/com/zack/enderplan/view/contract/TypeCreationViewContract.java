@@ -9,11 +9,13 @@ public interface TypeCreationViewContract extends BaseViewContract {
 
     void showInitialView(FormattedType formattedType);
 
+    void onTypeNameChanged(String typeName, String firstChar);
+
     void onTypeMarkColorChanged(int colorInt, String colorName);
 
     void onTypeMarkPatternChanged(boolean hasPattern, @DrawableRes int patternResId, String patternName);
 
-    void onTypeNameChanged(String typeName, String firstChar, boolean isValid);
+    void showTypeNameEditorDialog(String defaultName);
 
     void showTypeMarkColorPickerDialog(String defaultColor);
 
