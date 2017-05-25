@@ -2,7 +2,6 @@ package com.zack.enderplan.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -98,9 +97,7 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
         getMenuInflater().inflate(R.menu.menu_plan_creation, menu);
         mStarMenuItem = menu.findItem(R.id.action_star);
         mCreateMenuItem = menu.findItem(R.id.action_create);
-        //在这里改变图标的tint，因为没法在xml文件中改
-        mStarMenuItem.getIcon().setTint(Color.WHITE);
-        mCreateMenuItem.getIcon().setTint(Color.WHITE);
+        //在这里改变图标的alpha，因为没法在xml文件中改
         mCreateMenuItem.getIcon().setAlpha(ALPHA_TRANSLUCENCE);
         return true;
     }
@@ -185,7 +182,6 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
     public void onStarStatusChanged(boolean isStarred) {
         if (mStarMenuItem != null) {
             mStarMenuItem.setIcon(isStarred ? R.drawable.ic_star_black_24dp : R.drawable.ic_star_border_black_24dp);
-            mStarMenuItem.getIcon().setTint(Color.WHITE);
         }
     }
 

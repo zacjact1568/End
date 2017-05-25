@@ -55,8 +55,6 @@ public class TypeCreationActivity extends BaseActivity implements TypeCreationVi
     @Inject
     TypeCreationPresenter mTypeCreationPresenter;
 
-    private MenuItem mCreateMenuItem;
-
     public static void start(Context context) {
         context.startActivity(new Intent(context, TypeCreationActivity.class));
     }
@@ -85,9 +83,6 @@ public class TypeCreationActivity extends BaseActivity implements TypeCreationVi
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_type_creation, menu);
-        mCreateMenuItem = menu.findItem(R.id.action_create);
-        //在这里改变图标的tint，因为没法在xml文件中改
-        mCreateMenuItem.getIcon().setTint(Color.WHITE);
         return true;
     }
 
