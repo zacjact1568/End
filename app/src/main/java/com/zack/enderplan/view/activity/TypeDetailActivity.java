@@ -73,18 +73,18 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     String mSnackbarDeleteFormat;
     @BindString(R.string.transition_type_mark_icon)
     String mTypeMarkIconSetName;
-    @BindString(R.string.transition_type_name_text)
-    String mTypeNameTextSetName;
 
     @Inject
     TypeDetailPresenter mTypeDetailPresenter;
 
-    public static void start(Activity activity, int typeListPosition, String transitionName, View sharedElement) {
+    public static void start(Activity activity, int typeListPosition, View sharedElement, String transitionName) {
         Intent intent = new Intent(activity, TypeDetailActivity.class);
         intent.putExtra(Constant.TYPE_LIST_POSITION, typeListPosition);
         intent.putExtra(Constant.TRANSITION_NAME, transitionName);
-        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity, sharedElement, transitionName);
-        activity.startActivity(intent, options.toBundle());
+        activity.startActivity(
+                intent,
+                ActivityOptions.makeSceneTransitionAnimation(activity, sharedElement, transitionName).toBundle()
+        );
     }
 
     @Override
@@ -287,9 +287,7 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
                 position,
                 enableTransition,
                 mTypeMarkIcon,
-                mTypeMarkIconSetName,
-                mTypeNameText,
-                mTypeNameTextSetName
+                mTypeMarkIconSetName
         );
     }
 

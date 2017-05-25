@@ -17,6 +17,7 @@ import com.zack.enderplan.R;
 import com.zack.enderplan.injector.component.DaggerTypeEditComponent;
 import com.zack.enderplan.injector.module.TypeEditPresenterModule;
 import com.zack.enderplan.presenter.TypeEditPresenter;
+import com.zack.enderplan.util.ColorUtil;
 import com.zack.enderplan.view.dialog.TypeMarkColorPickerDialogFragment;
 import com.zack.enderplan.view.dialog.EditorDialogFragment;
 import com.zack.enderplan.view.dialog.TypeMarkPatternPickerDialogFragment;
@@ -56,19 +57,14 @@ public class TypeEditActivity extends BaseActivity implements TypeEditViewContra
     @Inject
     TypeEditPresenter mTypeEditPresenter;
 
-    public static void start(Activity activity, int typeListPosition, boolean enableTransition, View typeMarkIconSharedElement,
-                             String typeMarkIconTransitionName, View typeNameTextSharedElement, String typeNameTextTransitionName) {
+    public static void start(Activity activity, int typeListPosition, boolean enableTransition, View sharedElement, String transitionName) {
         Intent intent = new Intent(activity, TypeEditActivity.class);
         intent.putExtra(Constant.TYPE_LIST_POSITION, typeListPosition);
         intent.putExtra(Constant.ENABLE_TRANSITION, enableTransition);
         if (enableTransition) {
             activity.startActivity(
                     intent,
-                    ActivityOptions.makeSceneTransitionAnimation(
-                            activity,
-                            Pair.create(typeMarkIconSharedElement, typeMarkIconTransitionName),
-                            Pair.create(typeNameTextSharedElement, typeNameTextTransitionName)
-                    ).toBundle()
+                    ActivityOptions.makeSceneTransitionAnimation(activity, sharedElement, transitionName).toBundle()
             );
         } else {
             activity.startActivity(intent);
@@ -153,19 +149,22 @@ public class TypeEditActivity extends BaseActivity implements TypeEditViewContra
     public void onTypeNameChanged(String typeName, String firstChar) {
         mTypeMarkIcon.setInnerText(firstChar);
         mTypeNameText.setText(typeName);
-        mTypeNameItem.setDescriptionText(typeName);
+        mTypeNameItem.setDescriptionText(typeName, true);
     }
 
     @Override
     public void onTypeMarkColorChanged(int colorInt, String colorName) {
+        getWindow().setNavigationBarColor(colorInt);
+        getWindow().setStatusBarColor(colorInt);
+        mToolbar.setBackgroundColor(ColorUtil.reduceSaturation(colorInt, 0.85f));
         mTypeMarkIcon.setFillColor(colorInt);
-        mTypeMarkColorItem.setDescriptionText(colorName);
+        mTypeMarkColorItem.setDescriptionText(colorName, true);
     }
 
     @Override
     public void onTypeMarkPatternChanged(boolean hasPattern, int patternResId, String patternName) {
         mTypeMarkIcon.setInnerIcon(hasPattern ? getDrawable(patternResId) : null);
-        mTypeMarkPatternItem.setDescriptionText(hasPattern ? patternName : mUnsettledDscpt);
+        mTypeMarkPatternItem.setDescriptionText(hasPattern ? patternName : mUnsettledDscpt, hasPattern);
     }
 
     @Override

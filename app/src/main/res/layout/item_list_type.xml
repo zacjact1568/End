@@ -17,7 +17,9 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_centerVertical="true"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true"
+        app:edgeWidth="1dp"/>
+    <!--这里加白边是为了使 shared element transition 更自然-->
 
     <TextView
         android:id="@+id/text_type_name"

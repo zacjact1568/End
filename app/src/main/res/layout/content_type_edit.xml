@@ -12,11 +12,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="12dp"
-        android:elevation="@dimen/elevation_toolbar">
+        android:padding="20dp">
 
         <com.zack.enderplan.view.widget.CircleColorView
             android:id="@+id/ic_type_mark"
@@ -24,6 +22,7 @@
             android:layout_height="56dp"
             android:transitionName="@string/transition_type_mark_icon"
             app:edgeWidth="1dp"/>
+        <!--这里加白边是为了使 shared element transition 更自然-->
 
         <TextView
             android:id="@+id/text_type_name"
@@ -31,12 +30,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:textSize="16sp"
-            android:textColor="@android:color/white"
             android:textStyle="bold"
-            android:transitionName="@string/transition_type_name_text"
             tools:text="Work"/>
 
     </LinearLayout>
+
+    <include layout="@layout/divider"/>
 
     <com.zack.enderplan.view.widget.ItemView
         android:id="@+id/item_type_name"
@@ -44,7 +43,7 @@
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
-        app:iconImageSrc="@drawable/ic_edit_black_24dp"
+        app:iconImageSrc="@drawable/ic_folder_black_24dp"
         app:titleText="@string/title_name"/>
 
     <include layout="@layout/divider"/>

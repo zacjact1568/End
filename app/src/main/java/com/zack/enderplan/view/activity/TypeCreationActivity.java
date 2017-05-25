@@ -130,8 +130,8 @@ public class TypeCreationActivity extends BaseActivity implements TypeCreationVi
 
     @Override
     public void onTypeNameChanged(String typeName, String firstChar) {
-        mTypeNameText.setText(typeName);
         mTypeMarkIcon.setInnerText(firstChar);
+        mTypeNameText.setText(typeName);
         mTypeNameItem.setDescriptionText(typeName, true);
     }
 
