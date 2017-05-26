@@ -7,8 +7,10 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -22,11 +24,13 @@ import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
+import com.zack.enderplan.util.ColorUtil;
 import com.zack.enderplan.util.StringUtil;
 import com.zack.enderplan.injector.component.DaggerTypeDetailComponent;
 import com.zack.enderplan.injector.module.TypeDetailPresenterModule;
@@ -50,6 +54,10 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
 
     @BindView(R.id.layout_app_bar)
     AppBarLayout mAppBarLayout;
+    @BindView(R.id.layout_collapsing_toolbar)
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
+    @BindView(R.id.bg_header)
+    ImageView mHeaderBackground;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.layout_header)
@@ -217,6 +225,11 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
 
     @Override
     public void onTypeMarkColorChanged(int colorInt) {
+        getWindow().setNavigationBarColor(colorInt);
+        int headerColorInt = ColorUtil.reduceSaturation(colorInt, 0.85f);
+        mCollapsingToolbarLayout.setContentScrimColor(headerColorInt);
+        mCollapsingToolbarLayout.setStatusBarScrimColor(colorInt);
+        mHeaderBackground.setImageDrawable(new ColorDrawable(headerColorInt));
         mTypeMarkIcon.setFillColor(colorInt);
     }
 
