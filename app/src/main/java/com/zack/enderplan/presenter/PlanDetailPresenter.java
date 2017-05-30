@@ -1,12 +1,16 @@
 package com.zack.enderplan.presenter;
 
+import android.graphics.Color;
 import android.text.TextUtils;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.event.TypeCreatedEvent;
+import com.zack.enderplan.model.bean.FormattedType;
+import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.util.ResourceUtil;
+import com.zack.enderplan.util.StringUtil;
 import com.zack.enderplan.util.TimeUtil;
 import com.zack.enderplan.event.PlanDeletedEvent;
-import com.zack.enderplan.view.adapter.SimpleTypeListAdapter;
 import com.zack.enderplan.model.bean.FormattedPlan;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.event.PlanDetailChangedEvent;
@@ -30,18 +34,24 @@ public class PlanDetailPresenter extends BasePresenter {
     private EventBus mEventBus;
     private int mPlanListPosition;
     private Plan mPlan;
-    private int mAppBarMaxRange, mContentCollapsedTextHeight;
+    private int mTypeListPosition;
+    private FormattedType mFormattedType;
+    private int mAppBarMaxRange;
     private float mLastHeaderAlpha = 1f;
     private int mAppBarState = APP_BAR_STATE_EXPANDED;
 
     @Inject
-    public PlanDetailPresenter(PlanDetailViewContract planDetailViewContract, int planListPosition, DataManager dataManager, EventBus eventBus) {
+    PlanDetailPresenter(PlanDetailViewContract planDetailViewContract, int planListPosition, DataManager dataManager, EventBus eventBus) {
         mPlanDetailViewContract = planDetailViewContract;
         mPlanListPosition = planListPosition;
         mDataManager = dataManager;
         mEventBus = eventBus;
 
         mPlan = mDataManager.getPlan(mPlanListPosition);
+
+        mFormattedType = new FormattedType();
+        mTypeListPosition = mDataManager.getTypeLocationInTypeList(mPlan.getTypeCode());
+        updateFormattedType();
     }
 
     @Override
@@ -56,7 +66,7 @@ public class PlanDetailPresenter extends BasePresenter {
                 mPlan.hasReminder(),
                 formatDateTime(mPlan.getReminderTime()),
                 mPlan.isCompleted()
-        ), new SimpleTypeListAdapter(mDataManager.getTypeList(), SimpleTypeListAdapter.STYLE_SPINNER));
+        ), mFormattedType);
     }
 
     @Override
@@ -65,18 +75,8 @@ public class PlanDetailPresenter extends BasePresenter {
         mEventBus.unregister(this);
     }
 
-    public void notifyMenuCreated() {
-        mPlanDetailViewContract.updateStarMenuItem(mPlan.isStarred());
-    }
-
     public void notifyPreDrawingAppBar(int appBarMaxRange) {
         mAppBarMaxRange = appBarMaxRange;
-    }
-
-    public void notifyPreDrawingContentCollapsedText(int contentCollapsedTextHeight) {
-        mContentCollapsedTextHeight = contentCollapsedTextHeight;
-        //借用这个回调方法，初始化ContentLayout的位置（向上平移ContentLayout）
-        mPlanDetailViewContract.onAppBarScrolled(1, -mContentCollapsedTextHeight);
     }
 
     public void notifyContentEditingButtonClicked() {
@@ -89,7 +89,7 @@ public class PlanDetailPresenter extends BasePresenter {
 
     public void notifyAppBarScrolled(int offset) {
 
-        if (mAppBarMaxRange == 0 || mContentCollapsedTextHeight == 0) return;
+        if (mAppBarMaxRange == 0) return;
 
         int absOffset = Math.abs(offset);
         float headerAlpha = 1f - absOffset * 1.3f / mAppBarMaxRange;
@@ -97,12 +97,12 @@ public class PlanDetailPresenter extends BasePresenter {
 
         if ((headerAlpha == 0 || mLastHeaderAlpha == 0) && headerAlpha != mLastHeaderAlpha) {
             //刚退出透明状态或刚进入透明状态
-            mPlanDetailViewContract.onAppBarScrolledToCriticalPoint(headerAlpha == 0 ? ResourceUtil.getString(R.string.title_activity_plan_detail) : " ", headerAlpha == 0);
+            mPlanDetailViewContract.onAppBarScrolledToCriticalPoint(headerAlpha == 0 ? ResourceUtil.getString(R.string.title_activity_plan_detail) : " ");
             mLastHeaderAlpha = headerAlpha;
         }
 
-        //调整ContentLayout的透明度，下移ContentLayout，使ContentCollapsedLayout显示出来
-        mPlanDetailViewContract.onAppBarScrolled(headerAlpha, (float) absOffset * mContentCollapsedTextHeight / mAppBarMaxRange - mContentCollapsedTextHeight);
+        //调整HeaderLayout的透明度
+        mPlanDetailViewContract.onAppBarScrolled(headerAlpha);
 
         //更新AppBar状态
         if (absOffset == 0) {
@@ -122,11 +122,14 @@ public class PlanDetailPresenter extends BasePresenter {
         }
     }
 
-    public void notifyTypeCodeChanged(int spinnerPos) {
+    public void notifyTypeOfPlanChanged(int typeListPos) {
         String oldTypeCode = mPlan.getTypeCode();
-        String newTypeCode = mDataManager.getType(spinnerPos).getTypeCode();
+        String newTypeCode = mDataManager.getType(typeListPos).getTypeCode();
         if (!newTypeCode.equals(oldTypeCode)) {
             mDataManager.notifyTypeOfPlanChanged(mPlanListPosition, oldTypeCode, newTypeCode);
+            mTypeListPosition = typeListPos;
+            updateFormattedType();
+            mPlanDetailViewContract.onTypeOfPlanChanged(mFormattedType);
             postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_TYPE_OF_PLAN);
         }
     }
@@ -171,6 +174,10 @@ public class PlanDetailPresenter extends BasePresenter {
         postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_PLAN_STATUS);
     }
 
+    public void notifySettingTypeOfPlan() {
+        mPlanDetailViewContract.showTypePickerDialog(mTypeListPosition);
+    }
+
     public void notifySettingDeadline() {
         mPlanDetailViewContract.showDeadlinePickerDialog(TimeUtil.getDateTimePickerDefaultTime(mPlan.getDeadline()));
     }
@@ -201,6 +208,16 @@ public class PlanDetailPresenter extends BasePresenter {
         }
     }
 
+    /** NOTE: 需要在更新mTypeListPosition后，调用此方法更新mFormattedType */
+    private void updateFormattedType() {
+        Type type = mDataManager.getType(mTypeListPosition);
+        mFormattedType.setTypeMarkColorInt(Color.parseColor(type.getTypeMarkColor()));
+        mFormattedType.setHasTypeMarkPattern(type.hasTypeMarkPattern());
+        mFormattedType.setTypeMarkPatternResId(ResourceUtil.getDrawableResourceId(type.getTypeMarkPattern()));
+        mFormattedType.setTypeName(type.getTypeName());
+        mFormattedType.setFirstChar(StringUtil.getFirstChar(type.getTypeName()));
+    }
+
     private void postPlanDetailChangedEvent(int changedField) {
         mEventBus.post(new PlanDetailChangedEvent(getPresenterName(), mPlan.getPlanCode(), mPlanListPosition, changedField));
     }
@@ -219,7 +236,9 @@ public class PlanDetailPresenter extends BasePresenter {
                     mPlanDetailViewContract.onContentChanged(mPlan.getContent());
                     break;
                 case PlanDetailChangedEvent.FIELD_TYPE_OF_PLAN:
-                    mPlanDetailViewContract.onTypeOfPlanChanged(mDataManager.getTypeLocationInTypeList(mPlan.getTypeCode()));
+                    mTypeListPosition = mDataManager.getTypeLocationInTypeList(mPlan.getTypeCode());
+                    updateFormattedType();
+                    mPlanDetailViewContract.onTypeOfPlanChanged(mFormattedType);
                     break;
                 case PlanDetailChangedEvent.FIELD_PLAN_STATUS:
                     //更新界面
@@ -238,5 +257,11 @@ public class PlanDetailPresenter extends BasePresenter {
                     break;
             }
         }
+    }
+
+    @Subscribe
+    public void onTypeCreated(TypeCreatedEvent event) {
+        //TODO 判断是从TypePickerDialog里进入创建类型的才执行以下语句（暂时不需要）
+        notifyTypeOfPlanChanged(event.getPosition());
     }
 }

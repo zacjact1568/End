@@ -27,6 +27,7 @@
     <string name="button_start">Start</string>
 
     <string name="title_star">Star</string>
+    <string name="title_type">Type</string>
     <string name="title_deadline">Deadline</string>
     <string name="title_reminder">Reminder</string>
     <string name="title_name">Name</string>
@@ -266,5 +267,9 @@
     <!--TypeMarkPatternPickerDialogFragment-->
     <string name="title_dialog_fragment_type_mark_pattern_picker">Pattern Picker</string>
     <string name="btn_dialog_select_none">Select None</string>
+
+    <!--TypePickerDialogFragment-->
+    <string name="title_dialog_fragment_type_picker">Type Picker</string>
+    <string name="btn_new_type">New Type</string>
 
 </resources>

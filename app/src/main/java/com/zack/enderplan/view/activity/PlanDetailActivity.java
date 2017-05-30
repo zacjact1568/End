@@ -6,32 +6,34 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
 import com.zack.enderplan.injector.component.DaggerPlanDetailComponent;
 import com.zack.enderplan.injector.module.PlanDetailPresenterModule;
+import com.zack.enderplan.model.bean.FormattedType;
+import com.zack.enderplan.util.ColorUtil;
 import com.zack.enderplan.view.dialog.DateTimePickerDialogFragment;
 import com.zack.enderplan.view.dialog.EditorDialogFragment;
-import com.zack.enderplan.view.adapter.SimpleTypeListAdapter;
 import com.zack.enderplan.presenter.PlanDetailPresenter;
 import com.zack.enderplan.view.contract.PlanDetailViewContract;
 import com.zack.enderplan.model.bean.FormattedPlan;
 import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.view.dialog.TypePickerDialogFragment;
+import com.zack.enderplan.view.widget.CircleColorView;
 import com.zack.enderplan.view.widget.ItemView;
 
 import javax.inject.Inject;
@@ -45,32 +47,28 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
 
     @BindView(R.id.layout_app_bar)
     AppBarLayout mAppBarLayout;
-    @BindView(R.id.bg_toolbar)
-    ImageView mToolbarBackground;
+    @BindView(R.id.layout_collapsing_toolbar)
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
+    @BindView(R.id.bg_header)
+    ImageView mHeaderBackground;
     @BindView(R.id.layout_header)
-    RelativeLayout mHeaderLayout;
+    LinearLayout mHeaderLayout;
     @BindView(R.id.text_content)
     TextView contentText;
-    @BindView(R.id.ic_star)
-    ImageView starIcon;
-    @BindView(R.id.ic_deadline)
-    ImageView deadlineIcon;
-    @BindView(R.id.ic_reminder)
-    ImageView reminderIcon;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.layout_content)
-    LinearLayout mContentLayout;
-    @BindView(R.id.text_content_collapsed)
-    TextView mContentCollapsedText;
-    @BindView(R.id.spinner_type)
-    Spinner mTypeSpinner;
+    @BindView(R.id.ic_type_mark)
+    CircleColorView mTypeMarkIcon;
+    @BindView(R.id.text_type_name)
+    TextView mTypeNameText;
+    @BindView(R.id.fab_star)
+    FloatingActionButton mStarFab;
+    @BindView(R.id.item_type)
+    ItemView mTypeItem;
     @BindView(R.id.item_deadline)
     ItemView mDeadlineItem;
     @BindView(R.id.item_reminder)
     ItemView mReminderItem;
-    @BindView(R.id.fab_star)
-    FloatingActionButton mStarFab;
     @BindView(R.id.btn_switch_plan_status)
     TextView switchPlanStatusButton;
 
@@ -78,13 +76,9 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
     int mAccentColor;
     @BindColor(R.color.grey_600)
     int mGrey600Color;
-    @BindColor(R.color.colorPrimaryLight)
-    int mPrimaryLightColor;
 
     @Inject
     PlanDetailPresenter planDetailPresenter;
-
-    private MenuItem mStarMenuItem;
 
     public static void start(Context context, int planListPosition) {
         context.startActivity(
@@ -117,11 +111,9 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_plan_detail, menu);
-        mStarMenuItem = menu.findItem(R.id.action_star);
         //在这里改变图标的tint，因为没法在xml文件中改
         (menu.findItem(R.id.action_edit)).getIcon().setTint(Color.WHITE);
         (menu.findItem(R.id.action_delete)).getIcon().setTint(Color.WHITE);
-        planDetailPresenter.notifyMenuCreated();
         return true;
     }
 
@@ -150,13 +142,16 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
     }
 
     @Override
-    public void showInitialView(FormattedPlan formattedPlan, SimpleTypeListAdapter simpleTypeListAdapter) {
+    public void showInitialView(FormattedPlan formattedPlan, FormattedType formattedType) {
 
         setContentView(R.layout.activity_plan_detail);
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
         setupActionBar();
+
+        //注释掉这一句使AppBar可折叠
+        ((AppBarLayout.LayoutParams) mCollapsingToolbarLayout.getLayoutParams()).setScrollFlags(0);
 
         mAppBarLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
@@ -174,53 +169,22 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
             }
         });
 
-        mContentCollapsedText.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                mContentCollapsedText.getViewTreeObserver().removeOnPreDrawListener(this);
-                planDetailPresenter.notifyPreDrawingContentCollapsedText(mContentCollapsedText.getHeight());
-                return false;
-            }
-        });
-
-        mTypeSpinner.setAdapter(simpleTypeListAdapter);
-        mTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                planDetailPresenter.notifyTypeCodeChanged(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
         onContentChanged(formattedPlan.getContent());
         onStarStatusChanged(formattedPlan.isStarred());
-        onTypeOfPlanChanged(formattedPlan.getSpinnerPos());
+        onTypeOfPlanChanged(formattedType);
         onDeadlineChanged(formattedPlan.isHasDeadline(), formattedPlan.getDeadline());
         onReminderTimeChanged(formattedPlan.isHasReminder(), formattedPlan.getReminderTime());
         onPlanStatusChanged(formattedPlan.isCompleted());
     }
 
     @Override
-    public void updateStarMenuItem(boolean isStarred) {
-        if (mStarMenuItem == null) return;
-        mStarMenuItem.setIcon(isStarred ? R.drawable.ic_star_black_24dp : R.drawable.ic_star_border_black_24dp);
-        mStarMenuItem.getIcon().setTint(Color.WHITE);
-    }
-
-    @Override
-    public void onAppBarScrolled(float headerLayoutAlpha, float contentLayoutTransY) {
+    public void onAppBarScrolled(float headerLayoutAlpha) {
         mHeaderLayout.setAlpha(headerLayoutAlpha);
-        mContentLayout.setTranslationY(contentLayoutTransY);
     }
 
     @Override
-    public void onAppBarScrolledToCriticalPoint(String toolbarTitle, boolean isStarMenuItemVisible) {
+    public void onAppBarScrolledToCriticalPoint(String toolbarTitle) {
         toolbar.setTitle(toolbarTitle);
-        mStarMenuItem.setVisible(isStarMenuItemVisible);
     }
 
     @Override
@@ -240,8 +204,6 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
 
     @Override
     public void onPlanStatusChanged(boolean isCompleted) {
-        //mToolbarBackground.setImageResource(isCompleted ? R.drawable.bg_c_plan_detail : R.drawable.bg_uc_plan_detail);
-        mContentCollapsedText.setBackgroundColor(isCompleted ? Color.LTGRAY : mPrimaryLightColor);
         mDeadlineItem.setClickable(!isCompleted);
         mDeadlineItem.setAlpha(isCompleted ? 0.6f : 1);
         mReminderItem.setClickable(!isCompleted);
@@ -264,20 +226,39 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
     @Override
     public void onContentChanged(String newContent) {
         contentText.setText(newContent);
-        mContentCollapsedText.setText(newContent);
     }
 
     @Override
     public void onStarStatusChanged(boolean isStarred) {
-        updateStarMenuItem(isStarred);
-        starIcon.setVisibility(isStarred ? View.VISIBLE : View.GONE);
         mStarFab.setImageResource(isStarred ? R.drawable.ic_star_black_24dp : R.drawable.ic_star_border_black_24dp);
         mStarFab.setImageTintList(ColorStateList.valueOf(isStarred ? mAccentColor : mGrey600Color));
     }
 
     @Override
-    public void onTypeOfPlanChanged(int posInTypeList) {
-        mTypeSpinner.setSelection(posInTypeList);
+    public void onTypeOfPlanChanged(FormattedType formattedType) {
+        int typeMarkColorInt = formattedType.getTypeMarkColorInt();
+        int headerColorInt = ColorUtil.reduceSaturation(typeMarkColorInt, 0.85f);
+        getWindow().setNavigationBarColor(typeMarkColorInt);
+        mCollapsingToolbarLayout.setContentScrimColor(headerColorInt);
+        mCollapsingToolbarLayout.setStatusBarScrimColor(typeMarkColorInt);
+        mHeaderBackground.setImageDrawable(new ColorDrawable(headerColorInt));
+        mTypeMarkIcon.setFillColor(typeMarkColorInt);
+        mTypeMarkIcon.setInnerIcon(formattedType.isHasTypeMarkPattern() ? getDrawable(formattedType.getTypeMarkPatternResId()) : null);
+        mTypeMarkIcon.setInnerText(formattedType.getFirstChar());
+        mTypeNameText.setText(formattedType.getTypeName());
+        mTypeItem.setDescriptionText(formattedType.getTypeName(), true);
+    }
+
+    @Override
+    public void showTypePickerDialog(int defaultTypeListPos) {
+        TypePickerDialogFragment fragment = TypePickerDialogFragment.newInstance(defaultTypeListPos);
+        fragment.setOnTypePickedListener(new TypePickerDialogFragment.OnTypePickedListener() {
+            @Override
+            public void onTypePicked(int position) {
+                planDetailPresenter.notifyTypeOfPlanChanged(position);
+            }
+        });
+        fragment.show(getSupportFragmentManager(), Constant.TYPE);
     }
 
     @Override
@@ -306,13 +287,11 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
 
     @Override
     public void onDeadlineChanged(boolean hasDeadline, String newDeadline) {
-        deadlineIcon.setVisibility(hasDeadline ? View.VISIBLE : View.GONE);
         mDeadlineItem.setDescriptionText(newDeadline, hasDeadline);
     }
 
     @Override
     public void onReminderTimeChanged(boolean hasReminder, String newReminderTime) {
-        reminderIcon.setVisibility(hasReminder ? View.VISIBLE : View.GONE);
         mReminderItem.setDescriptionText(newReminderTime, hasReminder);
     }
 
@@ -326,9 +305,12 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
         super.onBackPressed();
     }
 
-    @OnClick({R.id.item_deadline, R.id.item_reminder, R.id.fab_star, R.id.btn_switch_plan_status})
+    @OnClick({R.id.item_type, R.id.item_deadline, R.id.item_reminder, R.id.fab_star, R.id.btn_switch_plan_status})
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.item_type:
+                planDetailPresenter.notifySettingTypeOfPlan();
+                break;
             case R.id.item_deadline:
                 planDetailPresenter.notifySettingDeadline();
                 break;

@@ -203,4 +203,7 @@
     <string name="text_uc_plan_count">未完成</string>
     <string name="toast_type_mark_color_exists">类型标记颜色已存在</string>
     <string name="text_new_type">新类型</string>
+    <string name="title_type">类型</string>
+    <string name="btn_new_type">新类型</string>
+    <string name="title_dialog_fragment_type_picker">选择类型</string>
 </resources>

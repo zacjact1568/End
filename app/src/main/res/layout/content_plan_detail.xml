@@ -10,39 +10,18 @@
     tools:showIn="@layout/activity_plan_detail">
 
     <LinearLayout
-        android:id="@+id/layout_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/text_content_collapsed"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:textColor="@color/colorWhiteBackground"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:gravity="start"
-            android:padding="16dp"
-            tools:text="Buy Joanne on iTunes"
-            tools:background="@color/colorPrimaryLight"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/other_info"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="16sp"
-            android:layout_margin="16dp"/>
-
-        <Spinner
-            android:id="@+id/spinner_type"
+        <com.zack.enderplan.view.widget.ItemView
+            android:id="@+id/item_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?android:attr/selectableItemBackground"
-            android:spinnerMode="dialog"
-            tools:layout_height="40dp"/>
+            android:clickable="true"
+            app:iconImageSrc="@drawable/ic_folder_open_black_24dp"
+            app:titleText="@string/title_type"/>
 
         <include layout="@layout/divider"/>
 

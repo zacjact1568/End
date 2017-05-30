@@ -1,16 +1,8 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".view.activity.PlanDetailActivity">
-
-    <item
-        android:id="@+id/action_star"
-        android:title="@string/action_star"
-        android:orderInCategory="80"
-        android:visible="false"
-        app:showAsAction="ifRoom"
-        tools:icon="@drawable/ic_star_border_black_24dp"
-        tools:visible="true"/>
 
     <item
         android:id="@+id/action_edit"

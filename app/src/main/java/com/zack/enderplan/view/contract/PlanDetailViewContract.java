@@ -1,17 +1,15 @@
 package com.zack.enderplan.view.contract;
 
-import com.zack.enderplan.view.adapter.SimpleTypeListAdapter;
+import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.FormattedPlan;
 
 public interface PlanDetailViewContract extends BaseViewContract {
 
-    void showInitialView(FormattedPlan formattedPlan, SimpleTypeListAdapter simpleTypeListAdapter);
+    void showInitialView(FormattedPlan formattedPlan, FormattedType formattedType);
 
-    void updateStarMenuItem(boolean isStarred);
+    void onAppBarScrolled(float headerLayoutAlpha);
 
-    void onAppBarScrolled(float headerLayoutAlpha, float contentLayoutTransY);
-
-    void onAppBarScrolledToCriticalPoint(String toolbarTitle, boolean isStarMenuItemVisible);
+    void onAppBarScrolledToCriticalPoint(String toolbarTitle);
 
     void showPlanDeletionDialog(String content);
 
@@ -23,7 +21,9 @@ public interface PlanDetailViewContract extends BaseViewContract {
 
     void onStarStatusChanged(boolean isStarred);
 
-    void onTypeOfPlanChanged(int posInTypeList);
+    void onTypeOfPlanChanged(FormattedType formattedType);
+
+    void showTypePickerDialog(int defaultTypeListPos);
 
     void showDeadlinePickerDialog(long defaultDeadline);
 
