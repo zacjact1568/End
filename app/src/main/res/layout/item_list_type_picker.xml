@@ -4,24 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground"
-    android:paddingTop="12dp"
-    android:paddingBottom="12dp"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp"
-    android:gravity="center_vertical">
+    android:layout_marginTop="24dp"
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
+    android:background="?android:attr/selectableItemBackgroundBorderless"
+    android:gravity="center"
+    android:orientation="vertical">
 
     <com.zack.enderplan.view.widget.CircleColorView
         android:id="@+id/ic_type_mark"
-        android:layout_width="28dp"
-        android:layout_height="28dp"/>
+        android:layout_width="40dp"
+        android:layout_height="40dp"/>
 
     <TextView
         android:id="@+id/text_type_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:lines="1"
+        android:maxEms="5"
         android:ellipsize="end"
         tools:text="Work"/>
 
