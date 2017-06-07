@@ -63,9 +63,9 @@ public class PlanListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         mGrey600Color = ResourceUtil.getColor(R.color.grey_600);
 
         mTypeMarkViewHeights = new int[]{
-                CommonUtil.convertDpToPx(20),
                 CommonUtil.convertDpToPx(32),
-                CommonUtil.convertDpToPx(48)
+                CommonUtil.convertDpToPx(48),
+                CommonUtil.convertDpToPx(64)
         };
 
         //其实list创建的的时候notifyListScrolled会被调用一次并更新此变量为TOP，在这里事先初始化一次，以防万一

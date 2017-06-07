@@ -12,6 +12,7 @@
 
     <color name="colorWhiteBackground">@android:color/white</color>
     <color name="colorBlackBackground">@android:color/black</color>
+    <color name="colorGreyBackground">#FFF0F0F0</color>
 
     <!--Type mark colors-->
     <color name="red">#FFE51C23</color>
