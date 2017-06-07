@@ -80,7 +80,7 @@
                         android:textSize="12sp"
                         android:textColor="@color/colorWhiteBackground"
                         android:lines="1"
-                        android:maxEms="8"
+                        android:maxEms="10"
                         android:ellipsize="end"
                         tools:text="Home"/>
 

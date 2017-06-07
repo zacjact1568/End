@@ -43,6 +43,7 @@
     
     <string name="toast_empty_content">Cannot save an empty content</string>
     <string name="toast_empty_type_name">Cannot save an empty type name</string>
+    <string name="toast_longer_type_name">Type name should not longer than 20 characters</string>
     <string name="toast_type_name_exists">Type name exists</string>
     <string name="toast_type_mark_exists">Type mark exists</string>
     <string name="toast_type_mark_color_exists">Type mark color exists</string>

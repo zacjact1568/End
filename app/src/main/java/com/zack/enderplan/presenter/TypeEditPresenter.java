@@ -73,6 +73,8 @@ public class TypeEditPresenter extends BasePresenter {
         if (mType.getTypeName().equals(newTypeName)) return;
         if (TextUtils.isEmpty(newTypeName)) {
             mTypeEditViewContract.showToast(R.string.toast_empty_type_name);
+        } else if (StringUtil.getLength(newTypeName) > 20) {
+            mTypeEditViewContract.showToast(R.string.toast_longer_type_name);
         } else if (mDataManager.isTypeNameUsed(newTypeName)) {
             mTypeEditViewContract.showToast(R.string.toast_type_name_exists);
         } else {

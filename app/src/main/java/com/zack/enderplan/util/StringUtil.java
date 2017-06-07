@@ -98,4 +98,20 @@ public class StringUtil {
         }
         return locationList;
     }
+
+    /** 字符串长度，英文算1位，中文算2位 */
+    public static int getLength(String str) {
+        int n = 0;
+        char chs[] = str.toCharArray();
+        for (char ch : chs) {
+            if (ch <= 0x00FF) {
+                //英文字符
+                n = n + 1;
+            } else if ((ch >= 0x0391 && ch <= 0xFFE5)) {
+                //中文字符
+                n = n + 2;
+            }
+        }
+        return n;
+    }
 }

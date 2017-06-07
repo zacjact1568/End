@@ -53,6 +53,8 @@ public class TypeCreationPresenter extends BasePresenter {
     public void notifyTypeNameEdited(String typeName) {
         if (TextUtils.isEmpty(typeName)) {
             mTypeCreationViewContract.showToast(R.string.toast_empty_type_name);
+        } else if (StringUtil.getLength(typeName) > 20) {
+            mTypeCreationViewContract.showToast(R.string.toast_longer_type_name);
         } else if (mDataManager.isTypeNameUsed(typeName)) {
             mTypeCreationViewContract.showToast(R.string.toast_type_name_exists);
         } else {

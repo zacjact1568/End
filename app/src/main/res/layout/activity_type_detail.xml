@@ -65,6 +65,9 @@
                     android:textSize="16sp"
                     android:textColor="@android:color/white"
                     android:textStyle="bold"
+                    android:lines="1"
+                    android:maxEms="10"
+                    android:ellipsize="end"
                     tools:text="学习"/>
 
                 <TextView
