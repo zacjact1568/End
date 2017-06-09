@@ -2,26 +2,23 @@ package com.zack.enderplan.view.dialog;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 import android.widget.ViewAnimator;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.util.ResourceUtil;
 import com.zack.enderplan.util.TimeUtil;
 
 import java.util.Calendar;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
-public class DateTimePickerDialogFragment extends DialogFragment {
+public class DateTimePickerDialogFragment extends BaseDialogFragment {
 
     @BindView(R.id.picker_date)
     DatePicker mDatePicker;
@@ -29,8 +26,6 @@ public class DateTimePickerDialogFragment extends DialogFragment {
     TimePicker mTimePicker;
     @BindView(R.id.switcher_date_time_picker)
     ViewAnimator mDateTimePickerSwitcher;
-    @BindView(R.id.btn_picker_switcher)
-    Button mPickerSwitcherButton;
 
     private static final String ARG_DEFAULT_TIME = "default_time";
 
@@ -38,12 +33,15 @@ public class DateTimePickerDialogFragment extends DialogFragment {
     private OnDateTimePickedListener mOnDateTimePickedListener;
 
     public DateTimePickerDialogFragment() {
-        //Empty constructor
+
     }
 
     public static DateTimePickerDialogFragment newInstance(long defaultTime) {
         DateTimePickerDialogFragment fragment = new DateTimePickerDialogFragment();
         Bundle args = new Bundle();
+        args.putString(ARG_NEU_BTN, ResourceUtil.getString(R.string.text_time_picker_switcher));
+        args.putString(ARG_NEG_BTN, ResourceUtil.getString(R.string.button_remove));
+        args.putString(ARG_POS_BTN, ResourceUtil.getString(R.string.button_select));
         args.putLong(ARG_DEFAULT_TIME, defaultTime);
         fragment.setArguments(args);
         return fragment;
@@ -61,15 +59,13 @@ public class DateTimePickerDialogFragment extends DialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.dialog_fragment_date_time_picker, container, false);
+    public View onCreateContentView(LayoutInflater inflater, ViewGroup root) {
+        return inflater.inflate(R.layout.dialog_fragment_date_time_picker, root, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
 
         mDatePicker.init(
                 mCalendar.get(Calendar.YEAR),
@@ -101,31 +97,30 @@ public class DateTimePickerDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mOnDateTimePickedListener = null;
-    }
-
-    @OnClick({R.id.btn_picker_switcher, R.id.btn_select, R.id.btn_remove})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_picker_switcher:
+    public boolean onButtonClicked(int which) {
+        switch (which) {
+            case BTN_NEU:
                 mDateTimePickerSwitcher.showNext();
-                mPickerSwitcherButton.setText(mDateTimePickerSwitcher.getCurrentView().getId() == R.id.picker_time ? R.string.text_date_picker_switcher : R.string.text_time_picker_switcher);
-                break;
-            case R.id.btn_select:
-                if (mOnDateTimePickedListener != null) {
-                    mOnDateTimePickedListener.onDateTimePicked(mCalendar.getTimeInMillis());
-                }
-                getDialog().dismiss();
-                break;
-            case R.id.btn_remove:
+                setNeutralButtonString(getString(mDateTimePickerSwitcher.getCurrentView().getId() == R.id.picker_time ? R.string.text_date_picker_switcher : R.string.text_time_picker_switcher));
+                return false;
+            case BTN_NEG:
                 if (mOnDateTimePickedListener != null) {
                     mOnDateTimePickedListener.onDateTimePicked(Constant.UNDEFINED_TIME);
                 }
-                getDialog().dismiss();
+                break;
+            case BTN_POS:
+                if (mOnDateTimePickedListener != null) {
+                    mOnDateTimePickedListener.onDateTimePicked(mCalendar.getTimeInMillis());
+                }
                 break;
         }
+        return true;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mOnDateTimePickedListener = null;
     }
 
     public interface OnDateTimePickedListener {

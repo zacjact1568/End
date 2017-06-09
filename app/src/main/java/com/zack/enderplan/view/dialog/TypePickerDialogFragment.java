@@ -1,7 +1,6 @@
 package com.zack.enderplan.view.dialog;
 
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,14 +8,13 @@ import android.view.ViewGroup;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.model.DataManager;
+import com.zack.enderplan.util.ResourceUtil;
 import com.zack.enderplan.view.activity.TypeCreationActivity;
 import com.zack.enderplan.view.adapter.TypePickerListAdapter;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
-public class TypePickerDialogFragment extends DialogFragment {
+public class TypePickerDialogFragment extends BaseDialogFragment {
 
     @BindView(R.id.list_type_picker)
     RecyclerView mTypePickerList;
@@ -33,6 +31,10 @@ public class TypePickerDialogFragment extends DialogFragment {
     public static TypePickerDialogFragment newInstance(int defaultTypeListPosition) {
         TypePickerDialogFragment fragment = new TypePickerDialogFragment();
         Bundle args = new Bundle();
+        args.putString(ARG_TITLE, ResourceUtil.getString(R.string.title_dialog_fragment_type_picker));
+        args.putString(ARG_NEU_BTN, ResourceUtil.getString(R.string.btn_new_type));
+        args.putString(ARG_NEG_BTN, ResourceUtil.getString(R.string.button_cancel));
+        args.putString(ARG_POS_BTN, ResourceUtil.getString(R.string.button_select));
         args.putInt(ARG_DEFAULT_TYPE_LIST_POSITION, defaultTypeListPosition);
         fragment.setArguments(args);
         return fragment;
@@ -49,15 +51,13 @@ public class TypePickerDialogFragment extends DialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.dialog_fragment_type_picker, container, false);
+    public View onCreateContentView(LayoutInflater inflater, ViewGroup root) {
+        return inflater.inflate(R.layout.dialog_fragment_type_picker, root, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
 
         TypePickerListAdapter typePickerListAdapter = new TypePickerListAdapter(DataManager.getInstance(), mTypeListPosition);
         typePickerListAdapter.setOnItemClickListener(new TypePickerListAdapter.OnItemClickListener() {
@@ -72,26 +72,26 @@ public class TypePickerDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mOnTypePickedListener = null;
-    }
-
-    @OnClick({R.id.btn_new_type, R.id.btn_select, R.id.btn_cancel})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_new_type:
+    public boolean onButtonClicked(int which) {
+        switch (which) {
+            case BTN_NEU:
                 TypeCreationActivity.start(getContext());
                 break;
-            case R.id.btn_select:
+            case BTN_NEG:
+                break;
+            case BTN_POS:
                 if (mOnTypePickedListener != null) {
                     mOnTypePickedListener.onTypePicked(mTypeListPosition);
                 }
                 break;
-            case R.id.btn_cancel:
-                break;
         }
-        getDialog().dismiss();
+        return true;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mOnTypePickedListener = null;
     }
 
     public interface OnTypePickedListener {

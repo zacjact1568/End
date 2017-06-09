@@ -1,7 +1,6 @@
 package com.zack.enderplan.view.dialog;
 
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,17 +8,16 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.view.adapter.TypeMarkPatternGridAdapter;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.bean.TypeMarkPattern;
+import com.zack.enderplan.util.ResourceUtil;
+import com.zack.enderplan.view.adapter.TypeMarkPatternGridAdapter;
 
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
-public class TypeMarkPatternPickerDialogFragment extends DialogFragment {
+public class TypeMarkPatternPickerDialogFragment extends BaseDialogFragment {
 
     @BindView(R.id.grid_type_mark_pattern)
     GridView mTypeMarkPatternGrid;
@@ -32,12 +30,15 @@ public class TypeMarkPatternPickerDialogFragment extends DialogFragment {
     private OnTypeMarkPatternPickedListener mOnTypeMarkPatternPickedListener;
 
     public TypeMarkPatternPickerDialogFragment() {
-        // Required empty public constructor
+
     }
 
     public static TypeMarkPatternPickerDialogFragment newInstance(String defaultPattern) {
         TypeMarkPatternPickerDialogFragment fragment = new TypeMarkPatternPickerDialogFragment();
         Bundle args = new Bundle();
+        args.putString(ARG_TITLE, ResourceUtil.getString(R.string.title_dialog_fragment_type_mark_pattern_picker));
+        args.putString(ARG_NEG_BTN, ResourceUtil.getString(R.string.button_remove));
+        args.putString(ARG_POS_BTN, ResourceUtil.getString(R.string.button_select));
         args.putString(ARG_DEFAULT_PATTERN, defaultPattern);
         fragment.setArguments(args);
         return fragment;
@@ -70,15 +71,13 @@ public class TypeMarkPatternPickerDialogFragment extends DialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.dialog_fragment_type_mark_pattern_picker, container, false);
+    public View onCreateContentView(LayoutInflater inflater, ViewGroup root) {
+        return inflater.inflate(R.layout.dialog_fragment_type_mark_pattern_picker, root, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
 
         mTypeMarkPatternGrid.setAdapter(new TypeMarkPatternGridAdapter(mTypeMarkPatternList));
 
@@ -97,27 +96,26 @@ public class TypeMarkPatternPickerDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mOnTypeMarkPatternPickedListener = null;
-    }
-
-    @OnClick({R.id.btn_remove, R.id.btn_select})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_remove:
+    public boolean onButtonClicked(int which) {
+        switch (which) {
+            case BTN_NEG:
                 if (mOnTypeMarkPatternPickedListener != null) {
                     mOnTypeMarkPatternPickedListener.onTypeMarkPatternPicked(null);
                 }
-                getDialog().dismiss();
                 break;
-            case R.id.btn_select:
+            case BTN_POS:
                 if (mOnTypeMarkPatternPickedListener != null) {
                     mOnTypeMarkPatternPickedListener.onTypeMarkPatternPicked(mTypeMarkPattern.getPatternFn() == null ? null : mTypeMarkPattern);
                 }
-                getDialog().dismiss();
                 break;
         }
+        return true;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mOnTypeMarkPatternPickedListener = null;
     }
 
     public interface OnTypeMarkPatternPickedListener {

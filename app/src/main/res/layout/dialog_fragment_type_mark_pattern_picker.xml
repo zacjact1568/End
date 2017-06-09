@@ -1,64 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<GridView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/grid_type_mark_pattern"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    tools:context=".view.dialog.TypeMarkPatternPickerDialogFragment">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/title_dialog_fragment_type_mark_pattern_picker"
-        android:textSize="@dimen/dialog_title_text_size"
-        android:textStyle="bold"
-        android:textColor="@android:color/white"
-        android:background="@color/colorPrimary"
-        android:gravity="center"
-        android:padding="16dp"
-        android:elevation="2dp"/>
-
-    <GridView
-        android:id="@+id/grid_type_mark_pattern"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:gravity="center"
-        android:numColumns="4"
-        android:scrollbars="none"
-        android:listSelector="@android:color/transparent"
-        android:choiceMode="singleChoice"
-        tools:layout_height="300dp"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"
-        android:gravity="end"
-        style="?android:attr/buttonBarStyle">
-
-        <!--TODO 这里应该是button？-->
-
-        <TextView
-            android:id="@+id/btn_remove"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_remove"
-            android:textColor="@color/colorPrimary"
-            style="?android:attr/buttonBarButtonStyle"/>
-
-        <TextView
-            android:id="@+id/btn_select"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="12dp"
-            android:text="@string/button_select"
-            android:textColor="@color/colorPrimary"
-            style="?android:attr/buttonBarButtonStyle"/>
-
-    </LinearLayout>
-
-</LinearLayout>
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    android:layout_marginTop="12dp"
+    android:gravity="center"
+    android:numColumns="4"
+    android:scrollbars="none"
+    android:listSelector="@android:color/transparent"
+    android:choiceMode="singleChoice"
+    tools:layout_height="wrap_content"
+    tools:context=".view.dialog.TypeMarkPatternPickerDialogFragment"/>

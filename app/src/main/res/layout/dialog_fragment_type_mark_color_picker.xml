@@ -1,110 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ViewAnimator
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/switcher_color_picker"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    android:layout_marginTop="12dp"
+    android:inAnimation="@android:anim/slide_in_left"
+    android:outAnimation="@android:anim/slide_out_right"
+    tools:layout_height="wrap_content"
     tools:context=".view.dialog.TypeMarkColorPickerDialogFragment">
 
-    <TextView
+    <GridView
+        android:id="@+id/grid_type_mark_color"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/title_dialog_fragment_type_mark_color_picker"
-        android:textSize="@dimen/dialog_title_text_size"
-        android:textStyle="bold"
-        android:textColor="@android:color/white"
-        android:background="@color/colorPrimary"
+        android:layout_gravity="center"
         android:gravity="center"
-        android:padding="16dp"
-        android:elevation="2dp"/>
+        android:numColumns="3"
+        android:scrollbars="none"
+        android:listSelector="@android:color/transparent"
+        android:choiceMode="singleChoice"
+        tools:layout_height="300dp"/>
 
-    <ViewAnimator
-        android:id="@+id/switcher_color_picker"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:inAnimation="@android:anim/slide_in_left"
-        android:outAnimation="@android:anim/slide_out_right">
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:orientation="vertical">
 
-        <GridView
-            android:id="@+id/grid_type_mark_color"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:numColumns="3"
-            android:scrollbars="none"
-            android:listSelector="@android:color/transparent"
-            android:choiceMode="singleChoice"
-            tools:layout_height="300dp"/>
+        <com.zack.enderplan.view.widget.CircleColorView
+            android:id="@+id/ic_type_mark_color"
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <com.zack.enderplan.view.widget.CircleColorView
-                android:id="@+id/ic_type_mark_color"
-                android:layout_width="40dp"
-                android:layout_height="40dp"/>
-
-            <TextView
-                android:id="@+id/text_type_mark_color"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="12dp"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:typeface="monospace"
-                tools:text="#FF543B4A"/>
-
-            <com.zack.enderplan.view.widget.ColorPicker
-                android:id="@+id/picker_type_mark_color"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"/>
-
-        </LinearLayout>
-
-    </ViewAnimator>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        style="?android:attr/buttonBarStyle">
-
-        <Button
-            android:id="@+id/btn_picker_switcher"
+        <TextView
+            android:id="@+id/text_type_mark_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/btn_custom"
-            android:textColor="@color/colorPrimary"
-            style="?android:attr/buttonBarButtonStyle"/>
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="12dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:typeface="monospace"
+            tools:text="#FF543B4A"/>
 
-        <Button
-            android:id="@+id/btn_select"
+        <com.zack.enderplan.view.widget.ColorPicker
+            android:id="@+id/picker_type_mark_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:text="@string/button_select"
-            android:textColor="@color/colorPrimary"
-            style="?android:attr/buttonBarButtonStyle"/>
+            android:layout_marginTop="16dp"/>
 
-        <Button
-            android:id="@+id/btn_cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toStartOf="@id/btn_select"
-            android:layout_marginEnd="4dp"
-            android:text="@string/button_cancel"
-            android:textColor="@color/colorPrimary"
-            style="?android:attr/buttonBarButtonStyle"/>
+    </LinearLayout>
 
-    </RelativeLayout>
-
-</LinearLayout>
+</ViewAnimator>

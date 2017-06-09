@@ -2,33 +2,29 @@ package com.zack.enderplan.view.dialog;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewAnimator;
 
 import com.zack.enderplan.R;
-import com.zack.enderplan.util.ColorUtil;
-import com.zack.enderplan.view.adapter.TypeMarkColorGridAdapter;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.bean.TypeMarkColor;
+import com.zack.enderplan.util.ColorUtil;
+import com.zack.enderplan.util.ResourceUtil;
+import com.zack.enderplan.view.adapter.TypeMarkColorGridAdapter;
 import com.zack.enderplan.view.widget.CircleColorView;
 import com.zack.enderplan.view.widget.ColorPicker;
 
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
-public class TypeMarkColorPickerDialogFragment extends DialogFragment {
+public class TypeMarkColorPickerDialogFragment extends BaseDialogFragment {
 
     @BindView(R.id.switcher_color_picker)
     ViewAnimator mColorPickerSwitcher;
@@ -40,8 +36,6 @@ public class TypeMarkColorPickerDialogFragment extends DialogFragment {
     TextView mTypeMarkColorText;
     @BindView(R.id.ic_type_mark_color)
     CircleColorView mTypeMarkColorIcon;
-    @BindView(R.id.btn_picker_switcher)
-    Button mPickerSwitcherButton;
 
     private static final String ARG_DEFAULT_COLOR = "default_color";
 
@@ -52,12 +46,16 @@ public class TypeMarkColorPickerDialogFragment extends DialogFragment {
     private OnTypeMarkColorPickedListener mOnTypeMarkColorPickedListener;
 
     public TypeMarkColorPickerDialogFragment() {
-        // Required empty public constructor
+
     }
 
     public static TypeMarkColorPickerDialogFragment newInstance(String defaultColor) {
         TypeMarkColorPickerDialogFragment fragment = new TypeMarkColorPickerDialogFragment();
         Bundle args = new Bundle();
+        args.putString(ARG_TITLE, ResourceUtil.getString(R.string.title_dialog_fragment_type_mark_color_picker));
+        args.putString(ARG_NEU_BTN, ResourceUtil.getString(R.string.btn_custom));
+        args.putString(ARG_NEG_BTN, ResourceUtil.getString(R.string.button_cancel));
+        args.putString(ARG_POS_BTN, ResourceUtil.getString(R.string.button_select));
         args.putString(ARG_DEFAULT_COLOR, defaultColor);
         fragment.setArguments(args);
         return fragment;
@@ -83,15 +81,13 @@ public class TypeMarkColorPickerDialogFragment extends DialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.dialog_fragment_type_mark_color_picker, container, false);
+    public View onCreateContentView(LayoutInflater inflater, ViewGroup root) {
+        return inflater.inflate(R.layout.dialog_fragment_type_mark_color_picker, root, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
 
         mTypeMarkColorGrid.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
@@ -129,15 +125,9 @@ public class TypeMarkColorPickerDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mOnTypeMarkColorPickedListener = null;
-    }
-
-    @OnClick({R.id.btn_picker_switcher, R.id.btn_cancel, R.id.btn_select})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_picker_switcher:
+    public boolean onButtonClicked(int which) {
+        switch (which) {
+            case BTN_NEU:
                 mColorPickerSwitcher.showNext();
                 if (mColorPickerSwitcher.getCurrentView().getId() == R.id.grid_type_mark_color) {
                     //切换到了grid界面，此时mPosition一定为-1
@@ -146,7 +136,7 @@ public class TypeMarkColorPickerDialogFragment extends DialogFragment {
                         //若picker界面选中的颜色在grid界面也有，选中它
                         mTypeMarkColorGrid.setItemChecked(mPosition, true);
                     }
-                    mPickerSwitcherButton.setText(R.string.btn_custom);
+                    setNeutralButtonString(getString(R.string.btn_custom));
                 } else {
                     //切换到了picker界面
                     if (mPosition != -1) {
@@ -158,22 +148,27 @@ public class TypeMarkColorPickerDialogFragment extends DialogFragment {
                     mTypeMarkColorText.setText(mTypeMarkColor.getColorHex());
                     mTypeMarkColorIcon.setFillColor(Color.parseColor(mTypeMarkColor.getColorHex()));
                     mTypeMarkColorPicker.setColor(Color.parseColor(mTypeMarkColor.getColorHex()));
-                    mPickerSwitcherButton.setText(R.string.btn_preset);
+                    setNeutralButtonString(getString(R.string.btn_preset));
                 }
+                return false;
+            case BTN_NEG:
                 break;
-            case R.id.btn_cancel:
-                getDialog().dismiss();
-                break;
-            case R.id.btn_select:
+            case BTN_POS:
                 mPosition = getPositionInTypeMarkColorList(mTypeMarkColor.getColorHex());
                 //若position为-1，说明颜色在grid中不存在，是在picker中设置的，无名称，用hex代替；反之说明颜色在grid中存在，有名称
                 mTypeMarkColor.setColorName(mPosition == -1 ? mTypeMarkColor.getColorHex() : mTypeMarkColorList.get(mPosition).getColorName());
                 if (mOnTypeMarkColorPickedListener != null) {
                     mOnTypeMarkColorPickedListener.onTypeMarkColorPicked(mTypeMarkColor);
                 }
-                getDialog().dismiss();
                 break;
         }
+        return true;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mOnTypeMarkColorPickedListener = null;
     }
 
     private int getPositionInTypeMarkColorList(String color) {
