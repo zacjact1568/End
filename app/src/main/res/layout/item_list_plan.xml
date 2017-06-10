@@ -27,7 +27,7 @@
         android:layout_marginStart="12dp"
         android:layout_marginEnd="1dp"
         android:background="@drawable/bg_rounded_rectangle_ripple"
-        android:backgroundTint="@color/colorGreyBackground"
+        android:backgroundTint="@color/colorWhiteBackground"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:paddingStart="16dp"
