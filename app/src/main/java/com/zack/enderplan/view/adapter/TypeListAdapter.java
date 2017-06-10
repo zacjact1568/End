@@ -1,6 +1,8 @@
 package com.zack.enderplan.view.adapter;
 
 import android.graphics.Color;
+import android.os.Handler;
+import android.support.annotation.IntDef;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,51 +17,158 @@ import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.bean.Type;
 import com.zack.enderplan.view.widget.CircleColorView;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TypeListAdapter extends RecyclerView.Adapter<TypeListAdapter.ViewHolder> {
+public class TypeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private static final int TYPE_ITEM = 1;
+    private static final int TYPE_FOOTER = 2;
+
+    public static final int PAYLOAD_TYPE_MARK_COLOR = 0;
+    public static final int PAYLOAD_TYPE_MARK_PATTERN = 1;
+    public static final int PAYLOAD_TYPE_NAME = 2;
+    public static final int PAYLOAD_UC_PLAN_COUNT = 3;
+
+    @IntDef({SCROLL_EDGE_TOP, SCROLL_EDGE_MIDDLE, SCROLL_EDGE_BOTTOM})
+    @Retention(RetentionPolicy.SOURCE)
+    private @interface ScrollEdge {}
+
+    public static final int SCROLL_EDGE_TOP = -1;
+    public static final int SCROLL_EDGE_MIDDLE = 0;
+    public static final int SCROLL_EDGE_BOTTOM = 1;
 
     private DataManager mDataManager;
     private OnTypeItemClickListener mOnTypeItemClickListener;
 
+    private int mScrollEdge;
+
     public TypeListAdapter(DataManager dataManager) {
         mDataManager = dataManager;
+
+        mScrollEdge = SCROLL_EDGE_TOP;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_type, parent, false);
-        return new ViewHolder(itemView);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        switch (viewType) {
+            case TYPE_ITEM:
+                return new ItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_type, parent, false));
+            case TYPE_FOOTER:
+                return new FooterViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.footer_list_type, parent, false));
+            default:
+                throw new IllegalArgumentException("The argument viewType cannot be " + viewType);
+        }
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        Type type = mDataManager.getType(position);
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        switch (getItemViewType(position)) {
+            case TYPE_ITEM:
+                final ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
 
-        holder.mTypeMarkIcon.setFillColor(Color.parseColor(type.getTypeMarkColor()));
-        holder.mTypeMarkIcon.setInnerIcon(type.getTypeMarkPattern() == null ? null : App.getContext().getDrawable(ResourceUtil.getDrawableResourceId(type.getTypeMarkPattern())));
-        holder.mTypeMarkIcon.setInnerText(StringUtil.getFirstChar(type.getTypeName()));
-        holder.mTypeMarkIcon.setTransitionName(String.format(ResourceUtil.getString(R.string.transition_type_mark_icon_format), position));
-        holder.mTypeNameText.setText(type.getTypeName());
+                Type type = mDataManager.getType(position);
 
-        String ucPlanCountStr = getUcPlanCountStr(type.getTypeCode());
-        holder.mUcPlanCountIcon.setVisibility(ucPlanCountStr == null ? View.INVISIBLE : View.VISIBLE);
-        holder.mUcPlanCountIcon.setInnerText(ucPlanCountStr == null ? "" : ucPlanCountStr);
+                onTypeMarkColorChanged(itemViewHolder.mTypeMarkIcon, type.getTypeMarkColor());
+                onTypeMarkPatternChanged(itemViewHolder.mTypeMarkIcon, type.getTypeMarkPattern());
+                onTypeNameChanged(itemViewHolder.mTypeMarkIcon, itemViewHolder.mTypeNameText, type.getTypeName());
+                onUcPlanCountOfOneTypeChanged(itemViewHolder.mUcPlanCountIcon, type.getTypeCode());
 
-        if (mOnTypeItemClickListener != null) {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mOnTypeItemClickListener.onTypeItemClick(holder.getLayoutPosition(), holder.itemView);
+                itemViewHolder.mTypeMarkIcon.setTransitionName(String.format(ResourceUtil.getString(R.string.transition_type_mark_icon_format), position));
+
+                if (mOnTypeItemClickListener != null) {
+                    itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mOnTypeItemClickListener.onTypeItemClick(itemViewHolder.getLayoutPosition(), itemViewHolder.itemView);
+                        }
+                    });
                 }
-            });
+                break;
+            case TYPE_FOOTER:
+                FooterViewHolder footerViewHolder = (FooterViewHolder) holder;
+
+                footerViewHolder.mTypeCountText.setVisibility(mScrollEdge == SCROLL_EDGE_BOTTOM ? View.VISIBLE : View.INVISIBLE);
+                footerViewHolder.mTypeCountText.setText(ResourceUtil.getQuantityString(R.plurals.text_type_count, mDataManager.getTypeCount()));
+                break;
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List<Object> payloads) {
+        if (payloads.isEmpty()) {
+            onBindViewHolder(holder, position);
+        } else if (getItemViewType(position) == TYPE_ITEM) {
+            ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
+            Type type = mDataManager.getType(position);
+            for (Object payload : payloads) {
+                switch ((int) payload) {
+                    case PAYLOAD_TYPE_MARK_COLOR:
+                        onTypeMarkColorChanged(itemViewHolder.mTypeMarkIcon, type.getTypeMarkColor());
+                        break;
+                    case PAYLOAD_TYPE_MARK_PATTERN:
+                        onTypeMarkPatternChanged(itemViewHolder.mTypeMarkIcon, type.getTypeMarkPattern());
+                        break;
+                    case PAYLOAD_TYPE_NAME:
+                        onTypeNameChanged(itemViewHolder.mTypeMarkIcon, itemViewHolder.mTypeNameText, type.getTypeName());
+                        break;
+                    case PAYLOAD_UC_PLAN_COUNT:
+                        onUcPlanCountOfOneTypeChanged(itemViewHolder.mUcPlanCountIcon, type.getTypeCode());
+                        break;
+                }
+            }
         }
     }
 
     @Override
     public int getItemCount() {
-        return mDataManager.getTypeCount();
+        return mDataManager.getTypeCount() + 1;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position == mDataManager.getTypeCount() ? TYPE_FOOTER : TYPE_ITEM;
+    }
+
+    public void notifyFooterChanged() {
+        notifyItemChanged(mDataManager.getTypeCount());
+    }
+
+    public void notifyListScrolled(@ScrollEdge int scrollEdge) {
+        if (mScrollEdge == scrollEdge) return;
+        int lastScrollEdge = mScrollEdge;
+        mScrollEdge = scrollEdge;
+        if (lastScrollEdge == SCROLL_EDGE_BOTTOM || mScrollEdge == SCROLL_EDGE_BOTTOM) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    notifyFooterChanged();
+                }
+            }, 10);
+        }
+    }
+
+    private void onTypeMarkColorChanged(CircleColorView typeMarkIcon, String typeMarkColor) {
+        typeMarkIcon.setFillColor(Color.parseColor(typeMarkColor));
+    }
+
+    private void onTypeMarkPatternChanged(CircleColorView typeMarkIcon, String typeMarkPattern) {
+        typeMarkIcon.setInnerIcon(typeMarkPattern == null ? null : App.getContext().getDrawable(ResourceUtil.getDrawableResourceId(typeMarkPattern)));
+    }
+
+    private void onTypeNameChanged(CircleColorView typeMarkIcon, TextView typeNameText, String typeName) {
+        typeMarkIcon.setInnerText(StringUtil.getFirstChar(typeName));
+        typeNameText.setText(typeName);
+    }
+
+    private void onUcPlanCountOfOneTypeChanged(CircleColorView ucPlanCountIcon, String typeCode) {
+        String ucPlanCountStr = getUcPlanCountStr(typeCode);
+        ucPlanCountIcon.setVisibility(ucPlanCountStr == null ? View.INVISIBLE : View.VISIBLE);
+        ucPlanCountIcon.setInnerText(ucPlanCountStr == null ? "" : ucPlanCountStr);
     }
 
     private String getUcPlanCountStr(String typeCode) {
@@ -73,7 +182,7 @@ public class TypeListAdapter extends RecyclerView.Adapter<TypeListAdapter.ViewHo
         }
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ItemViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.ic_type_mark)
         CircleColorView mTypeMarkIcon;
         @BindView(R.id.text_type_name)
@@ -81,7 +190,17 @@ public class TypeListAdapter extends RecyclerView.Adapter<TypeListAdapter.ViewHo
         @BindView(R.id.ic_uc_plan_count)
         CircleColorView mUcPlanCountIcon;
 
-        public ViewHolder(View itemView) {
+        public ItemViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
+    class FooterViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.text_type_count)
+        TextView mTypeCountText;
+
+        public FooterViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

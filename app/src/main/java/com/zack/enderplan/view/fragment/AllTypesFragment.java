@@ -76,6 +76,10 @@ public class AllTypesFragment extends BaseListFragment implements AllTypesViewCo
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 onListScrolled(dy);
+                mAllTypesPresenter.notifyPlanListScrolled(
+                        !mTypeList.canScrollVertically(-1),
+                        !mTypeList.canScrollVertically(1)
+                );
             }
         });
         itemTouchHelper.attachToRecyclerView(mTypeList);

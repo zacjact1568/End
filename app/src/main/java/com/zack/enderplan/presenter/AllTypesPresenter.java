@@ -29,7 +29,7 @@ public class AllTypesPresenter extends BasePresenter {
     private EventBus mEventBus;
 
     @Inject
-    public AllTypesPresenter(AllTypesViewContract allTypesViewContract, DataManager dataManager, EventBus eventBus) {
+    AllTypesPresenter(AllTypesViewContract allTypesViewContract, DataManager dataManager, EventBus eventBus) {
         mAllTypesViewContract = allTypesViewContract;
         mDataManager = dataManager;
         mEventBus = eventBus;
@@ -38,7 +38,7 @@ public class AllTypesPresenter extends BasePresenter {
         mTypeListAdapter.setOnTypeItemClickListener(new TypeListAdapter.OnTypeItemClickListener() {
             @Override
             public void onTypeItemClick(int position, View typeItem) {
-                notifyTypeItemClicked(position, typeItem);
+                mAllTypesViewContract.onTypeItemClicked(position, typeItem);
             }
         });
     }
@@ -51,7 +51,8 @@ public class AllTypesPresenter extends BasePresenter {
         typeListItemTouchCallback.setOnItemMovedListener(new TypeListItemTouchCallback.OnItemMovedListener() {
             @Override
             public void onItemMoved(int fromPosition, int toPosition) {
-                notifyTypeSequenceChanged(fromPosition, toPosition);
+                mDataManager.swapTypesInTypeList(fromPosition, toPosition);
+                mTypeListAdapter.notifyItemMoved(fromPosition, toPosition);
             }
         });
 
@@ -64,13 +65,19 @@ public class AllTypesPresenter extends BasePresenter {
         mEventBus.unregister(this);
     }
 
-    public void notifyTypeItemClicked(int position, View typeItem) {
-        mAllTypesViewContract.onTypeItemClicked(position, typeItem);
-    }
-
-    public void notifyTypeSequenceChanged(int fromPosition, int toPosition) {
-        mDataManager.swapTypesInTypeList(fromPosition, toPosition);
-        mTypeListAdapter.notifyItemMoved(fromPosition, toPosition);
+    public void notifyPlanListScrolled(boolean top, boolean bottom) {
+        int scrollEdge;
+        if (top) {
+            //触顶
+            scrollEdge = TypeListAdapter.SCROLL_EDGE_TOP;
+        } else if (bottom) {
+            //触底
+            scrollEdge = TypeListAdapter.SCROLL_EDGE_BOTTOM;
+        } else {
+            //中间
+            scrollEdge = TypeListAdapter.SCROLL_EDGE_MIDDLE;
+        }
+        mTypeListAdapter.notifyListScrolled(scrollEdge);
     }
 
     @Subscribe
@@ -82,6 +89,7 @@ public class AllTypesPresenter extends BasePresenter {
     public void onTypeCreated(TypeCreatedEvent event) {
         int position = mDataManager.getRecentlyCreatedTypeLocation();
         mTypeListAdapter.notifyItemInserted(position);
+        mTypeListAdapter.notifyFooterChanged();
         mAllTypesViewContract.onTypeCreated(position);
     }
 
@@ -90,19 +98,32 @@ public class AllTypesPresenter extends BasePresenter {
         Plan newPlan = mDataManager.getPlan(event.getPosition());
         if (!newPlan.isCompleted()) {
             //新计划是一个未完成的计划
-            mTypeListAdapter.notifyItemChanged(mDataManager.getTypeLocationInTypeList(newPlan.getTypeCode()));
+            mTypeListAdapter.notifyItemChanged(mDataManager.getTypeLocationInTypeList(newPlan.getTypeCode()), TypeListAdapter.PAYLOAD_UC_PLAN_COUNT);
         }
     }
 
     @Subscribe
     public void onTypeDetailChanged(TypeDetailChangedEvent event) {
         if (event.getEventSource().equals(getPresenterName())) return;
-        mTypeListAdapter.notifyItemChanged(event.getPosition());
+        Object payload = null;
+        switch (event.getChangedField()) {
+            case TypeDetailChangedEvent.FIELD_TYPE_NAME:
+                payload = TypeListAdapter.PAYLOAD_TYPE_NAME;
+                break;
+            case TypeDetailChangedEvent.FIELD_TYPE_MARK_COLOR:
+                payload = TypeListAdapter.PAYLOAD_TYPE_MARK_COLOR;
+                break;
+            case TypeDetailChangedEvent.FIELD_TYPE_MARK_PATTERN:
+                payload = TypeListAdapter.PAYLOAD_TYPE_MARK_PATTERN;
+                break;
+        }
+        mTypeListAdapter.notifyItemChanged(event.getPosition(), payload);
     }
 
     @Subscribe
     public void onTypeDeleted(TypeDeletedEvent event) {
         mTypeListAdapter.notifyItemRemoved(event.getPosition());
+        mTypeListAdapter.notifyFooterChanged();
     }
 
     @Subscribe
@@ -119,7 +140,7 @@ public class AllTypesPresenter extends BasePresenter {
         Plan deletedPlan = event.getDeletedPlan();
         if (!deletedPlan.isCompleted()) {
             //删除的计划是一个未完成的计划
-            mTypeListAdapter.notifyItemChanged(mDataManager.getTypeLocationInTypeList(deletedPlan.getTypeCode()));
+            mTypeListAdapter.notifyItemChanged(mDataManager.getTypeLocationInTypeList(deletedPlan.getTypeCode()), TypeListAdapter.PAYLOAD_UC_PLAN_COUNT);
         }
     }
 }

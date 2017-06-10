@@ -10,4 +10,8 @@
         <item quantity="other">%d个计划未完成</item>
     </plurals>
 
+    <plurals name="text_type_count">
+        <item quantity="other">%d个类型</item>
+    </plurals>
+
 </resources>

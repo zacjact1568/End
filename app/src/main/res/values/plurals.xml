@@ -13,4 +13,9 @@
         <item quantity="other">%d plans uncompleted</item>
     </plurals>
 
+    <plurals name="text_type_count">
+        <item quantity="one">%d type</item>
+        <item quantity="other">%d types</item>
+    </plurals>
+
 </resources>
