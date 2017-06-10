@@ -221,5 +221,6 @@ public class MyPlansPresenter extends BasePresenter {
     public void onPlanDeleted(PlanDeletedEvent event) {
         if (event.getEventSource().equals(getPresenterName())) return;
         mPlanListAdapter.notifyItemRemoved(event.getPosition());
+        mPlanListAdapter.notifyFooterChanged();
     }
 }
