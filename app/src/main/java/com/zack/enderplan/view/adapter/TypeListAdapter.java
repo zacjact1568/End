@@ -134,8 +134,14 @@ public class TypeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return position == mDataManager.getTypeCount() ? TYPE_FOOTER : TYPE_ITEM;
     }
 
-    public void notifyFooterChanged() {
-        notifyItemChanged(mDataManager.getTypeCount());
+    public void notifyItemInsertedAndChangingFooter(int position) {
+        notifyItemInserted(position);
+        notifyFooterChanged();
+    }
+
+    public void notifyItemRemovedAndChangingFooter(int position) {
+        notifyItemRemoved(position);
+        notifyFooterChanged();
     }
 
     public void notifyListScrolled(@ScrollEdge int scrollEdge) {
@@ -169,6 +175,10 @@ public class TypeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         String ucPlanCountStr = getUcPlanCountStr(typeCode);
         ucPlanCountIcon.setVisibility(ucPlanCountStr == null ? View.INVISIBLE : View.VISIBLE);
         ucPlanCountIcon.setInnerText(ucPlanCountStr == null ? "" : ucPlanCountStr);
+    }
+
+    private void notifyFooterChanged() {
+        notifyItemChanged(mDataManager.getTypeCount());
     }
 
     private String getUcPlanCountStr(String typeCode) {

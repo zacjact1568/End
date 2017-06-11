@@ -48,7 +48,6 @@ public class PlanListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private DataManager mDataManager;
     private OnPlanItemClickListener mOnPlanItemClickListener;
-    private OnPlanItemLongClickListener mOnPlanItemLongClickListener;
     private OnStarStatusChangedListener mOnStarStatusChangedListener;
 
     private int mAccentColor, mGrey600Color;
@@ -149,8 +148,14 @@ public class PlanListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return position == mDataManager.getPlanCount() ? TYPE_FOOTER : TYPE_ITEM;
     }
 
-    public void notifyFooterChanged() {
-        notifyItemChanged(mDataManager.getPlanCount());
+    public void notifyItemInsertedAndChangingFooter(int position) {
+        notifyItemInserted(position);
+        notifyFooterChanged();
+    }
+
+    public void notifyItemRemovedAndChangingFooter(int position) {
+        notifyItemRemoved(position);
+        notifyFooterChanged();
     }
 
     public void notifyListScrolled(@ScrollEdge int scrollEdge) {
@@ -229,20 +234,15 @@ public class PlanListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             });
         }
-        if (mOnPlanItemLongClickListener != null) {
-            itemViewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    mOnPlanItemLongClickListener.onPlanItemLongClick(itemViewHolder.getLayoutPosition());
-                    return true;
-                }
-            });
-        }
     }
 
     private void setPlanCountText(TextView planCountText) {
         planCountText.setVisibility(mScrollEdge == SCROLL_EDGE_BOTTOM ? View.VISIBLE : View.INVISIBLE);
         planCountText.setText(ResourceUtil.getQuantityString(R.plurals.text_plan_count, mDataManager.getPlanCount()));
+    }
+
+    private void notifyFooterChanged() {
+        notifyItemChanged(mDataManager.getPlanCount());
     }
 
     class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -281,14 +281,6 @@ public class PlanListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void setOnPlanItemClickListener(OnPlanItemClickListener listener) {
         mOnPlanItemClickListener = listener;
-    }
-
-    public interface OnPlanItemLongClickListener {
-        void onPlanItemLongClick(int position);
-    }
-
-    public void setOnPlanItemLongClickListener(OnPlanItemLongClickListener listener) {
-        mOnPlanItemLongClickListener = listener;
     }
 
     public interface OnStarStatusChangedListener {

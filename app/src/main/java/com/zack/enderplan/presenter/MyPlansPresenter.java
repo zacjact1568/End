@@ -3,7 +3,6 @@ package com.zack.enderplan.presenter;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
 import com.zack.enderplan.common.Constant;
-import com.zack.enderplan.util.LogUtil;
 import com.zack.enderplan.util.SystemUtil;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.event.DataLoadedEvent;
@@ -45,12 +44,6 @@ public class MyPlansPresenter extends BasePresenter {
             @Override
             public void onPlanItemClick(int position) {
                 mMyPlansViewContract.onPlanItemClicked(position);
-            }
-        });
-        mPlanListAdapter.setOnPlanItemLongClickListener(new PlanListAdapter.OnPlanItemLongClickListener() {
-            @Override
-            public void onPlanItemLongClick(int position) {
-                LogUtil.d("Long click at position" + position);
             }
         });
         mPlanListAdapter.setOnStarStatusChangedListener(new PlanListAdapter.OnStarStatusChangedListener() {
@@ -131,8 +124,7 @@ public class MyPlansPresenter extends BasePresenter {
         Plan plan = mDataManager.getPlan(position);
 
         mDataManager.notifyPlanDeleted(position);
-        mPlanListAdapter.notifyItemRemoved(position);
-        mPlanListAdapter.notifyFooterChanged();
+        mPlanListAdapter.notifyItemRemovedAndChangingFooter(position);
         mMyPlansViewContract.onPlanDeleted(plan, position, mViewVisible);
 
         checkPlanItemEmptyState();
@@ -142,7 +134,7 @@ public class MyPlansPresenter extends BasePresenter {
 
     public void notifyCreatingPlan(Plan newPlan, int position) {
         mDataManager.notifyPlanCreated(position, newPlan);
-        mPlanListAdapter.notifyItemInserted(position);
+        mPlanListAdapter.notifyItemInsertedAndChangingFooter(position);
 
         checkPlanItemEmptyState();
 
@@ -154,7 +146,6 @@ public class MyPlansPresenter extends BasePresenter {
         //首先检测此计划是否有提醒
         if (plan.hasReminder()) {
             mDataManager.notifyReminderTimeChanged(position, Constant.UNDEFINED_TIME);
-            mPlanListAdapter.notifyItemChanged(position, PlanListAdapter.PAYLOAD_REMINDER);
             mEventBus.post(new PlanDetailChangedEvent(getPresenterName(), plan.getPlanCode(), position, PlanDetailChangedEvent.FIELD_REMINDER_TIME));
         }
         //执行以下语句时，只是在view上让position处的plan删除了，实际上还未被删除但也即将被删除
@@ -191,8 +182,7 @@ public class MyPlansPresenter extends BasePresenter {
     public void onPlanCreated(PlanCreatedEvent event) {
         if (event.getEventSource().equals(getPresenterName())) return;
         checkPlanItemEmptyState();
-        mPlanListAdapter.notifyItemInserted(event.getPosition());
-        mPlanListAdapter.notifyFooterChanged();
+        mPlanListAdapter.notifyItemInsertedAndChangingFooter(event.getPosition());
         mMyPlansViewContract.onPlanCreated();
     }
 
@@ -220,7 +210,6 @@ public class MyPlansPresenter extends BasePresenter {
     @Subscribe
     public void onPlanDeleted(PlanDeletedEvent event) {
         if (event.getEventSource().equals(getPresenterName())) return;
-        mPlanListAdapter.notifyItemRemoved(event.getPosition());
-        mPlanListAdapter.notifyFooterChanged();
+        mPlanListAdapter.notifyItemRemovedAndChangingFooter(event.getPosition());
     }
 }

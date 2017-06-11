@@ -88,8 +88,7 @@ public class AllTypesPresenter extends BasePresenter {
     @Subscribe
     public void onTypeCreated(TypeCreatedEvent event) {
         int position = mDataManager.getRecentlyCreatedTypeLocation();
-        mTypeListAdapter.notifyItemInserted(position);
-        mTypeListAdapter.notifyFooterChanged();
+        mTypeListAdapter.notifyItemInsertedAndChangingFooter(position);
         mAllTypesViewContract.onTypeCreated(position);
     }
 
@@ -122,8 +121,7 @@ public class AllTypesPresenter extends BasePresenter {
 
     @Subscribe
     public void onTypeDeleted(TypeDeletedEvent event) {
-        mTypeListAdapter.notifyItemRemoved(event.getPosition());
-        mTypeListAdapter.notifyFooterChanged();
+        mTypeListAdapter.notifyItemRemovedAndChangingFooter(event.getPosition());
     }
 
     @Subscribe
