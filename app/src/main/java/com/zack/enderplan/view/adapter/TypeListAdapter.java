@@ -172,11 +172,11 @@ public class TypeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private String getUcPlanCountStr(String typeCode) {
-        Integer count = mDataManager.getUcPlanCountOfEachTypeMap().get(typeCode);
-        if (count == null) {
+        int count = mDataManager.getUcPlanCountOfOneType(typeCode);
+        if (count == 0) {
             return null;
         } else if (count < 10) {
-            return count.toString();
+            return String.valueOf(count);
         } else {
             return "9+";
         }

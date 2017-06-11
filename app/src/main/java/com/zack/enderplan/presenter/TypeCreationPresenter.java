@@ -95,10 +95,11 @@ public class TypeCreationPresenter extends BasePresenter {
 
     public void notifyCreateButtonClicked() {
         mDataManager.notifyTypeCreated(mType);
+        int position = mDataManager.getRecentlyCreatedTypeLocation();
         EventBus.getDefault().post(new TypeCreatedEvent(
                 getPresenterName(),
-                mDataManager.getRecentlyCreatedType().getTypeCode(),
-                mDataManager.getRecentlyCreatedTypeLocation()
+                mDataManager.getType(position).getTypeCode(),
+                position
         ));
         mTypeCreationViewContract.exit();
     }

@@ -2,6 +2,7 @@ package com.zack.enderplan.injector.module;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
+import com.zack.enderplan.util.ColorUtil;
 import com.zack.enderplan.util.ResourceUtil;
 import com.zack.enderplan.util.CommonUtil;
 import com.zack.enderplan.model.DataManager;
@@ -28,6 +29,7 @@ public class TypeCreationPresenterModule {
     @Provides
     Type provideType() {
         DataManager dataManager = App.getDataManager();
+        //按顺序产生未使用过的新类型名称
         String base = ResourceUtil.getString(R.string.text_new_type_name);
         StringBuilder typeName = new StringBuilder(base);
         int i = 1;
@@ -39,10 +41,16 @@ public class TypeCreationPresenterModule {
             typeName.replace(base.length() + 1, typeName.length(), String.valueOf(i));
             i++;
         }
+        //随机产生未使用过的颜色
+        String color;
+        while (true) {
+            color = ColorUtil.makeColor();
+            if (!dataManager.isTypeMarkColorUsed(color)) break;
+        }
         return new Type(
                 CommonUtil.makeCode(),
                 typeName.toString(),
-                dataManager.getRandomTypeMarkColor(),
+                color,
                 dataManager.getTypeCount()
         );
     }

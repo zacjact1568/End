@@ -183,7 +183,7 @@ public class PlanListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
         //这样直接设置可行，是因为此时view还未绘制？
         typeMarkView.getLayoutParams().height = height;
-        typeMarkView.setBackgroundTintList(ColorStateList.valueOf(isCompleted ? Color.GRAY : Color.parseColor(mDataManager.getTypeCodeAndTypeMarkMap().get(typeCode).getColorHex())));
+        typeMarkView.setBackgroundTintList(ColorStateList.valueOf(isCompleted ? Color.GRAY : Color.parseColor(mDataManager.getTypeMarkColor(typeCode))));
     }
 
     private void setContentText(TextView contentText, String content, boolean isCompleted) {

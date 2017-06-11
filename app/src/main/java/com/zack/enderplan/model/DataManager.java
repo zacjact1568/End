@@ -1,10 +1,8 @@
 package com.zack.enderplan.model;
 
+import com.zack.enderplan.model.bean.PlanCount;
 import com.zack.enderplan.model.preference.PreferenceHelper;
-import com.zack.enderplan.util.ColorUtil;
-import com.zack.enderplan.util.CommonUtil;
 import com.zack.enderplan.util.SystemUtil;
-import com.zack.enderplan.model.bean.TypeMark;
 import com.zack.enderplan.model.bean.TypeMarkColor;
 import com.zack.enderplan.model.bean.TypeMarkPattern;
 import com.zack.enderplan.model.bean.Plan;
@@ -28,9 +26,7 @@ public class DataManager {
     private PreferenceHelper mPreferenceHelper;
     private List<Plan> mPlanList;
     private List<Type> mTypeList;
-    private int mUcPlanCount;
-    private Map<String, TypeMark> mTypeCodeAndTypeMarkMap;
-    private Map<String, Integer> mUcPlanCountOfEachTypeMap;
+    private Map<String, PlanCount> mTypeCodePlanCountMap;
     private boolean isDataLoaded = false;
 
     private static DataManager ourInstance = new DataManager();
@@ -40,9 +36,7 @@ public class DataManager {
         mPreferenceHelper = PreferenceHelper.getInstance();
         mPlanList = new ArrayList<>();
         mTypeList = new ArrayList<>();
-        mUcPlanCount = 0;
-        mTypeCodeAndTypeMarkMap = new HashMap<>();
-        mUcPlanCountOfEachTypeMap = new HashMap<>();
+        mTypeCodePlanCountMap = new HashMap<>();
 
         loadFromDatabase();
     }
@@ -61,24 +55,18 @@ public class DataManager {
                 mTypeList.addAll(typeList);
                 for (int i = 0; i < getPlanCount(); i++) {
                     Plan plan = getPlan(i);
-                    //说明已经遍历到已完成的计划的部分了，可以不再遍历下去了
-                    if (plan.isCompleted()) break;
-                    //初始化（计算）未完成计划的数量
-                    mUcPlanCount++;
-                    //初始化（计算）每个类型具有的未完成计划数量map
-                    updateUcPlanCountOfEachTypeMap(plan.getTypeCode(), 1);
+                    //初始化每个类型具有的计划数量map
+                    String typeCode = plan.getTypeCode();
+                    if (!mTypeCodePlanCountMap.containsKey(typeCode)) {
+                        //若此类型还没有添加进map
+                        mTypeCodePlanCountMap.put(typeCode, new PlanCount());
+                    }
+                    mTypeCodePlanCountMap.get(typeCode).increase(1, plan.isCompleted());
                     //将过期的reminder移除（在某些rom中，如果未开启后台运行权限，杀死进程后无法被系统唤醒）
                     if (plan.hasReminder() && !TimeUtil.isFutureTime(plan.getReminderTime())) {
                         //有reminder且已过时
                         notifyReminderTimeChanged(i, Constant.UNDEFINED_TIME);
                     }
-                }
-                for (Type type : mTypeList) {
-                    //初始化TypeCode和TypeMark的对应表
-                    mTypeCodeAndTypeMarkMap.put(
-                            type.getTypeCode(),
-                            new TypeMark(type.getTypeMarkColor(), type.getTypeMarkPattern())
-                    );
                 }
                 //已加载数据
                 isDataLoaded = true;
@@ -93,26 +81,11 @@ public class DataManager {
         return isDataLoaded;
     }
 
-    //****************PlanList****************
-
-    //获取planList
-    public List<Plan> getPlanList() {
-        return mPlanList;
-    }
+    //**************** PlanList ****************
 
     //获取某个计划
     public Plan getPlan(int location) {
         return mPlanList.get(location);
-    }
-
-    //添加计划到list
-    public void addToPlanList(int location, Plan newPlan) {
-        mPlanList.add(location, newPlan);
-    }
-
-    //从list删除计划
-    public void removeFromPlanList(int location) {
-        mPlanList.remove(location);
     }
 
     /** 交换计划列表中的两个元素（只能在两个相同完成状态的计划之间交换）*/
@@ -142,11 +115,6 @@ public class DataManager {
     /** 获取最近创建的计划位置 */
     public int getRecentlyCreatedPlanLocation() {
         return 0;
-    }
-
-    /** 获取最近创建的计划 */
-    public Plan getRecentlyCreatedPlan() {
-        return getPlan(getRecentlyCreatedPlanLocation());
     }
 
     /** 获取当前计划的数量 */
@@ -207,16 +175,6 @@ public class DataManager {
         return count;
     }
 
-    /** 将一个类型中的所有计划迁移到另一个类型 */
-    public void migratePlan(String fromTypeCode, String toTypeCode) {
-        if (fromTypeCode.equals(toTypeCode)) return;
-        for (int i = 0; i < getPlanCount(); i++) {
-            if (getPlan(i).getTypeCode().equals(fromTypeCode)) {
-                notifyTypeOfPlanChanged(i, fromTypeCode, toTypeCode);
-            }
-        }
-    }
-
     /** 将fromLocationList提供的位置上的计划迁移到另一个类型 */
     public void migratePlan(List<Integer> fromLocationList, String toTypeCode) {
         for (int fromLocation : fromLocationList) {
@@ -231,14 +189,8 @@ public class DataManager {
 
     /** 创建计划 (Inserted at a specified location of mPlanList) */
     public void notifyPlanCreated(int location, Plan newPlan) {
-        addToPlanList(location, newPlan);
-        if (!newPlan.isCompleted()) {
-            //说明该计划还未完成
-            //更新未完成计划的数量
-            updateUcPlanCount(1);
-            //更新每个类型具有的计划数量map
-            updateUcPlanCountOfEachTypeMap(newPlan.getTypeCode(), 1);
-        }
+        mPlanList.add(location, newPlan);
+        mTypeCodePlanCountMap.get(newPlan.getTypeCode()).increase(1, newPlan.isCompleted());
         //设置提醒
         if (newPlan.hasReminder()) {
             //有提醒，需要设置
@@ -251,29 +203,14 @@ public class DataManager {
     /** 删除计划 */
     public void notifyPlanDeleted(int location) {
         Plan plan = getPlan(location);
-        if (!plan.isCompleted()) {
-            //That means this plan is uncompleted
-            updateUcPlanCountOfEachTypeMap(plan.getTypeCode(), -1);
-            updateUcPlanCount(-1);
-        }
+        mTypeCodePlanCountMap.get(plan.getTypeCode()).increase(-1, plan.isCompleted());
         if (plan.hasReminder()) {
             //This plan has registered a reminder that need to be canceled
             SystemUtil.setReminder(plan.getPlanCode(), Constant.UNDEFINED_TIME);
         }
-        removeFromPlanList(location);
+        mPlanList.remove(location);
         //更新数据库
         mDatabaseHelper.deletePlan(plan.getPlanCode());
-    }
-
-    //TODO notify***全部改为动宾形式
-    /** 删除某类型的全部计划 */
-    public void deletePlanOfOneType(String typeCode) {
-        for (int i = 0; i < getPlanCount(); i++) {
-            if (getPlan(i).getTypeCode().equals(typeCode)) {
-                notifyPlanDeleted(i);
-                i--;
-            }
-        }
     }
 
     /** 编辑计划内容 */
@@ -285,12 +222,11 @@ public class DataManager {
 
     /** 编辑计划类型 */
     public void notifyTypeOfPlanChanged(int location, String oldTypeCode, String newTypeCode) {
+        if (oldTypeCode.equals(newTypeCode)) return;
         Plan plan = getPlan(location);
-        if (!plan.isCompleted()) {
-            //说明此计划还未完成，把此Uc计划的类型改变反映到UcMap
-            updateUcPlanCountOfEachTypeMap(oldTypeCode, newTypeCode);
-        }
-        //再来改变typeCode
+        boolean completed = plan.isCompleted();
+        mTypeCodePlanCountMap.get(oldTypeCode).increase(-1, completed);
+        mTypeCodePlanCountMap.get(newTypeCode).increase(1, completed);
         plan.setTypeCode(newTypeCode);
         mDatabaseHelper.updateTypeOfPlan(plan.getPlanCode(), newTypeCode);
     }
@@ -323,12 +259,11 @@ public class DataManager {
 
         //旧的完成状态
         boolean isCompletedPast = plan.isCompleted();
-        //更新Maps
-        updateUcPlanCountOfEachTypeMap(plan.getTypeCode(), isCompletedPast ? 1 : -1);
-        updateUcPlanCount(isCompletedPast ? 1 : -1);
+        //更新Map
+        mTypeCodePlanCountMap.get(plan.getTypeCode()).exchange(1, !isCompletedPast);
 
         //操作list
-        removeFromPlanList(location);
+        mPlanList.remove(location);
 
         long currentTimeMillis = System.currentTimeMillis();
         long newCreationTime = isCompletedPast ? currentTimeMillis : Constant.UNDEFINED_TIME;
@@ -338,22 +273,28 @@ public class DataManager {
         plan.setCompletionTime(newCompletionTime);
 
         int newPosition = isCompletedPast ? 0 : getUcPlanCount();
-        addToPlanList(newPosition, plan);
+        mPlanList.add(newPosition, plan);
 
         mDatabaseHelper.updatePlanStatus(plan.getPlanCode(), newCreationTime, newCompletionTime);
     }
 
-    //****************TypeList****************
-
-    //获取typeList
-    public List<Type> getTypeList() {
-        return mTypeList;
+    /** 获取今天截止的未完成计划的数量 */
+    public int getTodayUcPlanCount() {
+        int count = 0;
+        for (Plan plan : mPlanList) {
+            if (TimeUtil.isToday(plan.getDeadline())) {
+                count++;
+            }
+        }
+        return count;
     }
+
+    //**************** TypeList ****************
 
     /** 获取一个新的typeList，不包含指定的type */
     public List<Type> getTypeList(String exclude) {
         List<Type> typeList = new ArrayList<>();
-        for (Type type : this.mTypeList) {//TODO 去掉this
+        for (Type type : mTypeList) {
             if (!type.getTypeCode().equals(exclude)) {
                 typeList.add(type);
             }
@@ -364,34 +305,6 @@ public class DataManager {
     //获取某个类型
     public Type getType(int location) {
         return mTypeList.get(location);
-    }
-
-    //添加类型到list
-    public void addToTypeList(int location, Type newType) {
-        mTypeList.add(location, newType);
-    }
-
-    //添加类型到list的最后
-    public void addToTypeList(Type newType) {
-        mTypeList.add(newType);
-    }
-
-    //从list删除类型
-    public void removeFromTypeList(int location) {
-        mTypeList.remove(location);
-    }
-
-    /** 移动类型列表中的元素 */
-    public void moveTypeInTypeList(int fromLocation, int toLocation) {
-        if (fromLocation < toLocation) {
-            for (int i = fromLocation; i < toLocation; i++) {
-                Collections.swap(mTypeList, i, i + 1);
-            }
-        } else {
-            for (int i = fromLocation; i > toLocation; i--) {
-                Collections.swap(mTypeList, i, i - 1);
-            }
-        }
     }
 
     /** 交换类型列表中的两个元素 */
@@ -411,11 +324,6 @@ public class DataManager {
         return getTypeCount() - 1;
     }
 
-    /** 获取最近创建的类型 */
-    public Type getRecentlyCreatedType() {
-        return getType(getRecentlyCreatedTypeLocation());
-    }
-
     /** 获取当前类型的数量 */
     public int getTypeCount() {
         return mTypeList.size();
@@ -431,18 +339,9 @@ public class DataManager {
         return -1;
     }
 
-    /** 创建类型 (Inserted at the end of mTypeList) */
+    /** 创建类型（插入到末尾）*/
     public void notifyTypeCreated(Type newType) {
-        notifyTypeCreated(getTypeCount(), newType);
-    }
-
-    /** 创建类型 (Inserted at a specified location of mTypeList) */
-    public void notifyTypeCreated(int location, Type newType) {
-        addToTypeList(location, newType);
-        mTypeCodeAndTypeMarkMap.put(
-                newType.getTypeCode(),
-                new TypeMark(newType.getTypeMarkColor(), newType.getTypeMarkPattern())
-        );
+        mTypeList.add(getTypeCount(), newType);
         //储存至数据库
         mDatabaseHelper.saveType(newType);
     }
@@ -451,9 +350,13 @@ public class DataManager {
     public void notifyTypeDeleted(int location) {
         Type type = getType(location);
         //删除对应的计划
-        deletePlanOfOneType(type.getTypeCode());
-        removeFromTypeList(location);
-        mTypeCodeAndTypeMarkMap.remove(type.getTypeCode());
+        for (int i = 0; i < getPlanCount(); i++) {
+            if (getPlan(i).getTypeCode().equals(type.getTypeCode())) {
+                notifyPlanDeleted(i);
+                i--;
+            }
+        }
+        mTypeList.remove(location);
         mDatabaseHelper.deleteType(type.getTypeCode());
     }
 
@@ -468,7 +371,6 @@ public class DataManager {
     public void notifyUpdatingTypeMarkColor(int location, String newTypeMarkColor) {
         Type type = getType(location);
         type.setTypeMarkColor(newTypeMarkColor);
-        mTypeCodeAndTypeMarkMap.get(type.getTypeCode()).setColorHex(newTypeMarkColor);
         mDatabaseHelper.updateTypeMarkColor(type.getTypeCode(), newTypeMarkColor);
     }
 
@@ -476,7 +378,6 @@ public class DataManager {
     public void notifyUpdatingTypeMarkPattern(int location, String newTypeMarkPattern) {
         Type type = getType(location);
         type.setTypeMarkPattern(newTypeMarkPattern);
-        mTypeCodeAndTypeMarkMap.get(type.getTypeCode()).setPatternFn(newTypeMarkPattern);
         mDatabaseHelper.updateTypeMarkPattern(type.getTypeCode(), newTypeMarkPattern);
     }
 
@@ -494,22 +395,20 @@ public class DataManager {
         }
     }
 
-    //****************TypeName & TypeMark****************
+    /** 获取TypeMarkColor */
+    public String getTypeMarkColor(String typeCode) {
+        for (Type type : mTypeList) {
+            if (type.getTypeCode().equals(typeCode)) {
+                return type.getTypeMarkColor();
+            }
+        }
+        return null;
+    }
 
     /** 判断给定类型名称是否已使用过 */
     public boolean isTypeNameUsed(String typeName) {
-        for (int i = 0; i < getTypeCount(); i++) {
-            if (getType(i).getTypeName().equals(typeName)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /** 判断给定类型是否已使用过 */
-    public boolean isTypeMarkUsed(String typeMarkColor, String typeMarkPattern) {
         for (Type type : mTypeList) {
-            if (CommonUtil.isObjectEqual(type.getTypeMarkPattern(), typeMarkPattern) && type.getTypeMarkColor().equals(typeMarkColor)) {
+            if (type.getTypeName().equals(typeName)) {
                 return true;
             }
         }
@@ -526,15 +425,7 @@ public class DataManager {
         return false;
     }
 
-    /** 判断给定类型图案是否已使用过 */
-    public boolean isTypeMarkPatternUsed(String typeMarkPattern) {
-        for (Type type : mTypeList) {
-            if (CommonUtil.isObjectEqual(type.getTypeMarkPattern(), typeMarkPattern)) {
-                return true;
-            }
-        }
-        return false;
-    }
+    //**************** Database (TypeName & TypeMark) ****************
 
     /** 获取全部TypeMark颜色 */
     public List<TypeMarkColor> getTypeMarkColorList() {
@@ -544,33 +435,6 @@ public class DataManager {
     /** 获取全部TypeMark图案 */
     public List<TypeMarkPattern> getTypeMarkPatternList() {
         return mDatabaseHelper.loadTypeMarkPattern();
-    }
-
-    /** 获取可用的TypeMark颜色（添加类型时使用）*/
-    public List<TypeMarkColor> getValidTypeMarkColorList() {
-        List<TypeMarkColor> typeMarkColorList = mDatabaseHelper.loadTypeMarkColor();
-        for (int i = 0; i < typeMarkColorList.size(); i++) {
-            if (isTypeMarkColorUsed(typeMarkColorList.get(i).getColorHex())) {
-                //此颜色已被使用
-                typeMarkColorList.remove(i);
-                i--;
-            }
-        }
-        return typeMarkColorList;
-    }
-
-    /** 获取可用的TypeMark颜色（编辑类型时使用）*/
-    public List<TypeMarkColor> getValidTypeMarkColorList(String includedColorHex) {
-        List<TypeMarkColor> typeMarkColorList = mDatabaseHelper.loadTypeMarkColor();
-        for (int i = 0; i < typeMarkColorList.size(); i++) {
-            String colorHex = typeMarkColorList.get(i).getColorHex();
-            if (isTypeMarkColorUsed(colorHex) && !colorHex.equals(includedColorHex)) {
-                //此颜色已被使用，且不等于给定的颜色
-                typeMarkColorList.remove(i);
-                i--;
-            }
-        }
-        return typeMarkColorList;
     }
 
     /** 数据库获取颜色名称 */
@@ -584,87 +448,23 @@ public class DataManager {
         return patternFn == null ? null : mDatabaseHelper.queryTypeMarkPatternNameByTypeMarkPatternFn(patternFn);
     }
 
-    /** 获取一个随机的TypeMark颜色 */
-    public String getRandomTypeMarkColor() {
-        while (true) {
-            String color = ColorUtil.makeColor();
-            if (!isTypeMarkColorUsed(color)) {
-                return color;
-            }
-        }
-    }
-
-    //****************UncompletedPlanCount****************
+    //**************** TypeCodePlanCountMap ****************
 
     /** 获取未完成计划的数量 */
     public int getUcPlanCount() {
-        return mUcPlanCount;
-    }
-
-    /** 更新未完成计划的数量 */
-    public void updateUcPlanCount(int variation) {
-        mUcPlanCount += variation;
-    }
-
-    //****************TodayUncompletedPlanCount****************
-
-    /** 获取今天截止的未完成计划的数量 */
-    public int getTodayUcPlanCount() {
         int count = 0;
-        for (Plan plan : mPlanList) {
-            if (TimeUtil.isToday(plan.getDeadline())) {
-                count++;
-            }
+        for (Map.Entry<String, PlanCount> entry : mTypeCodePlanCountMap.entrySet()) {
+            count += entry.getValue().getUncompleted();
         }
         return count;
     }
 
-    //****************TypeCodeAndTypeMarkMap****************
-
-    /** 获取TypeCode和TypeMark的对应表 */
-    public Map<String, TypeMark> getTypeCodeAndTypeMarkMap() {
-        return mTypeCodeAndTypeMarkMap;
-    }
-
-    //****************UcPlanCountOfEachTypeMap****************
-
-    /** 获取每个类型未完成计划的数量 */
-    public Map<String, Integer> getUcPlanCountOfEachTypeMap() {
-        return mUcPlanCountOfEachTypeMap;
-    }
-
-    /** 获取指定类型未完成计划的数量 */
+    /** 获取指定类型中未完成计划的数量 */
     public int getUcPlanCountOfOneType(String typeCode) {
-        return mUcPlanCountOfEachTypeMap.containsKey(typeCode) ? mUcPlanCountOfEachTypeMap.get(typeCode) : 0;
+        return mTypeCodePlanCountMap.containsKey(typeCode) ? mTypeCodePlanCountMap.get(typeCode).getUncompleted() : 0;
     }
 
-    /** 更新每个类型未完成计划的数量（添加或删除计划时）*/
-    public void updateUcPlanCountOfEachTypeMap(String typeCode, int variation) {
-        Integer count = mUcPlanCountOfEachTypeMap.get(typeCode);
-        if (count == null) {
-            count = 0;
-        } else if (count == 1 && variation == -1) {
-            //结果为0，需要删除该键
-            mUcPlanCountOfEachTypeMap.remove(typeCode);
-            return;
-        }
-        mUcPlanCountOfEachTypeMap.put(typeCode, count + variation);
-    }
-
-    /** 更新每个类型未完成计划的数量（修改计划时）*/
-    public void updateUcPlanCountOfEachTypeMap(String fromTypeCode, String toTypeCode) {
-        if (!fromTypeCode.equals(toTypeCode)) {
-            updateUcPlanCountOfEachTypeMap(fromTypeCode, -1);
-            updateUcPlanCountOfEachTypeMap(toTypeCode, 1);
-        }
-    }
-
-    /** 查询某个类型是否有未完成的计划 */
-    public boolean isUcPlanOfOneTypeExists(String typeCode) {
-        return mUcPlanCountOfEachTypeMap.containsKey(typeCode);
-    }
-
-    //****************PreferenceHelper****************
+    //**************** PreferenceHelper ****************
 
     public PreferenceHelper getPreferenceHelper() {
         return mPreferenceHelper;
