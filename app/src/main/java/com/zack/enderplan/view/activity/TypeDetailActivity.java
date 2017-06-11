@@ -197,7 +197,15 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
         });
 
         mSingleTypePlanList.setAdapter(singleTypePlanListAdapter);
-
+        mSingleTypePlanList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                mTypeDetailPresenter.notifyPlanListScrolled(
+                        !mSingleTypePlanList.canScrollVertically(-1),
+                        !mSingleTypePlanList.canScrollVertically(1)
+                );
+            }
+        });
         itemTouchHelper.attachToRecyclerView(mSingleTypePlanList);
 
         mContentEditor.setOnEditorActionListener(new TextView.OnEditorActionListener() {

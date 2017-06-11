@@ -165,6 +165,21 @@ public class TypeDetailPresenter extends BasePresenter {
         }
     }
 
+    public void notifyPlanListScrolled(boolean top, boolean bottom) {
+        int scrollEdge;
+        if (top) {
+            //触顶
+            scrollEdge = SingleTypePlanListAdapter.SCROLL_EDGE_TOP;
+        } else if (bottom) {
+            //触底
+            scrollEdge = SingleTypePlanListAdapter.SCROLL_EDGE_BOTTOM;
+        } else {
+            //中间
+            scrollEdge = SingleTypePlanListAdapter.SCROLL_EDGE_MIDDLE;
+        }
+        mSingleTypePlanListAdapter.notifyListScrolled(scrollEdge);
+    }
+
     public void notifyBackPressed() {
         if (mAppBarState == APP_BAR_STATE_EXPANDED) {
             mTypeDetailViewContract.pressBack();
@@ -179,7 +194,7 @@ public class TypeDetailPresenter extends BasePresenter {
 
         //刷新此界面
         mSingleTypePlanList.add(position, newPlan);
-        mSingleTypePlanListAdapter.notifyItemInserted(position);
+        mSingleTypePlanListAdapter.notifyItemInsertedAndChangingFooter(position);
         //下面这句一定要在「刷新全局列表」后
         mTypeDetailViewContract.onUcPlanCountChanged(getUcPlanCountStr(newPlan.getTypeCode()));
 
@@ -216,7 +231,7 @@ public class TypeDetailPresenter extends BasePresenter {
 
         //刷新此界面上的列表
         mSingleTypePlanList.remove(position);
-        mSingleTypePlanListAdapter.notifyItemRemoved(position);
+        mSingleTypePlanListAdapter.notifyItemRemovedAndChangingFooter(position);
         mTypeDetailViewContract.onPlanDeleted(plan, position, planListPos, mViewVisible);
         //下面这句一定要在「刷新全局列表」后
         if (!plan.isCompleted()) {
@@ -236,7 +251,6 @@ public class TypeDetailPresenter extends BasePresenter {
         //检测是否设置了提醒
         if (plan.hasReminder()) {
             mDataManager.notifyReminderTimeChanged(planListPos, Constant.UNDEFINED_TIME);
-            //TODO mSingleTypePlanListAdapter.notifyItemChanged(position)这句不要，MyPlansPresenter也要删去这一句
             mEventBus.post(new PlanDetailChangedEvent(getPresenterName(), plan.getPlanCode(), planListPos, PlanDetailChangedEvent.FIELD_REMINDER_TIME));
         }
         //刷新全局列表
@@ -376,7 +390,6 @@ public class TypeDetailPresenter extends BasePresenter {
 
     @Subscribe
     public void onPlanDetailChanged(PlanDetailChangedEvent event) {
-
         if (event.getEventSource().equals(getPresenterName())) return;
 
         //刚才发生变化的计划在singleTypePlanList中的位置
@@ -395,11 +408,11 @@ public class TypeDetailPresenter extends BasePresenter {
                     //计算插入位置
                     position = getInsertionPosInSingleTypePlanList(plan.getCreationTime(), plan.getCompletionTime());
                     mSingleTypePlanList.add(position, plan);
-                    mSingleTypePlanListAdapter.notifyItemInserted(position);
+                    mSingleTypePlanListAdapter.notifyItemInsertedAndChangingFooter(position);
                 } else {
                     //某个plan由当前页的类型变成了其他类型，需要从singleTypePlanList中移除
                     mSingleTypePlanList.remove(position);
-                    mSingleTypePlanListAdapter.notifyItemRemoved(position);
+                    mSingleTypePlanListAdapter.notifyItemRemovedAndChangingFooter(position);
                 }
                 //更新显示的未完成计划数量
                 mTypeDetailViewContract.onUcPlanCountChanged(getUcPlanCountStr(mType.getTypeCode()));
@@ -417,7 +430,6 @@ public class TypeDetailPresenter extends BasePresenter {
 
     @Subscribe
     public void onPlanDeleted(PlanDeletedEvent event) {
-
         if (event.getEventSource().equals(getPresenterName())) return;
 
         //计算刚才删除的计划在这个list中的位置
@@ -425,7 +437,7 @@ public class TypeDetailPresenter extends BasePresenter {
 
         //刷新list
         mSingleTypePlanList.remove(position);
-        mSingleTypePlanListAdapter.notifyItemRemoved(position);
+        mSingleTypePlanListAdapter.notifyItemRemovedAndChangingFooter(position);
 
         if (!event.getDeletedPlan().isCompleted()) {
             //说明刚才删除的是个未完成的计划，需要修改界面上的内容

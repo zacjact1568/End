@@ -14,4 +14,8 @@
         <item quantity="other">%d个类型</item>
     </plurals>
 
+    <plurals name="text_single_type_plan_count">
+        <item quantity="other">%d个计划</item>
+    </plurals>
+
 </resources>

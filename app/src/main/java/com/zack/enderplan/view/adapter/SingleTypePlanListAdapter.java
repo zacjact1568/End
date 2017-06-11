@@ -1,6 +1,8 @@
 package com.zack.enderplan.view.adapter;
 
 import android.content.res.ColorStateList;
+import android.os.Handler;
+import android.support.annotation.IntDef;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,71 +17,104 @@ import com.zack.enderplan.util.TimeUtil;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.view.widget.ImageTextView;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SingleTypePlanListAdapter extends RecyclerView.Adapter<SingleTypePlanListAdapter.ItemViewHolder> {
+public class SingleTypePlanListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private static final int TYPE_ITEM = 1;
+    private static final int TYPE_FOOTER = 2;
 
     public static final int PAYLOAD_CONTENT = 0;
     public static final int PAYLOAD_DEADLINE = 1;
     public static final int PAYLOAD_REMINDER = 2;
     public static final int PAYLOAD_STAR = 3;
 
+    @IntDef({SCROLL_EDGE_TOP, SCROLL_EDGE_MIDDLE, SCROLL_EDGE_BOTTOM})
+    @Retention(RetentionPolicy.SOURCE)
+    private @interface ScrollEdge {}
+
+    public static final int SCROLL_EDGE_TOP = -1;
+    public static final int SCROLL_EDGE_MIDDLE = 0;
+    public static final int SCROLL_EDGE_BOTTOM = 1;
+
     private List<Plan> mSingleTypePlanList;
+    private OnStarStatusChangedListener mOnStarStatusChangedListener;
+    private OnPlanItemClickListener mOnPlanItemClickListener;
+
     private int mAccentColor, mGrey600Color;
 
-    private OnStarStatusChangedListener mOnStarStatusChangedListener;
-    private OnPlanItemLongClickListener mOnPlanItemLongClickListener;
-    private OnPlanItemClickListener mOnPlanItemClickListener;
+    private int mScrollEdge;
 
     public SingleTypePlanListAdapter(List<Plan> singleTypePlanList) {
         mSingleTypePlanList = singleTypePlanList;
 
         mAccentColor = ResourceUtil.getColor(R.color.colorAccent);
         mGrey600Color = ResourceUtil.getColor(R.color.grey_600);
+
+        mScrollEdge = SCROLL_EDGE_TOP;
     }
 
     @Override
-    public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_single_type_plan, parent, false);
-        return new ItemViewHolder(itemView);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        switch (viewType) {
+            case TYPE_ITEM:
+                return new ItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_single_type_plan, parent, false));
+            case TYPE_FOOTER:
+                return new FooterViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.footer_list_single_type_plan, parent, false));
+            default:
+                throw new IllegalArgumentException("The argument viewType cannot be " + viewType);
+        }
     }
 
     @Override
-    public void onBindViewHolder(ItemViewHolder holder, int position) {
-        Plan plan = mSingleTypePlanList.get(position);
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        switch (getItemViewType(position)) {
+            case TYPE_ITEM:
+                ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
 
-        setContentText(holder.mContentText, plan.getContent(), plan.isCompleted());
-        setSpaceView(holder.mSpaceView, plan.isCompleted(), plan.hasDeadline(), plan.hasReminder());
-        setTimeLayout(holder.mDeadlineLayout, plan.isCompleted(), plan.hasDeadline(), plan.getDeadline());
-        setTimeLayout(holder.mReminderLayout, plan.isCompleted(), plan.hasReminder(), plan.getReminderTime());
-        setStarButton(holder.mStarButton, plan.isStarred(), plan.isCompleted(), holder);
-        setItemView(holder);
+                Plan plan = mSingleTypePlanList.get(position);
+
+                setContentText(itemViewHolder.mContentText, plan.getContent(), plan.isCompleted());
+                setSpaceView(itemViewHolder.mSpaceView, plan.isCompleted(), plan.hasDeadline(), plan.hasReminder());
+                setTimeLayout(itemViewHolder.mDeadlineLayout, plan.isCompleted(), plan.hasDeadline(), plan.getDeadline());
+                setTimeLayout(itemViewHolder.mReminderLayout, plan.isCompleted(), plan.hasReminder(), plan.getReminderTime());
+                setStarButton(itemViewHolder.mStarButton, plan.isStarred(), plan.isCompleted(), itemViewHolder);
+                setItemView(itemViewHolder);
+                break;
+            case TYPE_FOOTER:
+                FooterViewHolder footerViewHolder = (FooterViewHolder) holder;
+                setSingleTypePlanCountText(footerViewHolder.mSingleTypePlanCountText);
+                break;
+        }
     }
 
     @Override
-    public void onBindViewHolder(ItemViewHolder holder, int position, List<Object> payloads) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List<Object> payloads) {
         if (payloads.isEmpty()) {
             onBindViewHolder(holder, position);
         } else {
+            ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
             Plan plan = mSingleTypePlanList.get(position);
             for (Object payload : payloads) {
                 switch ((int) payload) {
                     case PAYLOAD_CONTENT:
-                        setContentText(holder.mContentText, plan.getContent(), plan.isCompleted());
+                        setContentText(itemViewHolder.mContentText, plan.getContent(), plan.isCompleted());
                         break;
                     case PAYLOAD_DEADLINE:
-                        setSpaceView(holder.mSpaceView, plan.isCompleted(), plan.hasDeadline(), plan.hasReminder());
-                        setTimeLayout(holder.mDeadlineLayout, plan.isCompleted(), plan.hasDeadline(), plan.getDeadline());
+                        setSpaceView(itemViewHolder.mSpaceView, plan.isCompleted(), plan.hasDeadline(), plan.hasReminder());
+                        setTimeLayout(itemViewHolder.mDeadlineLayout, plan.isCompleted(), plan.hasDeadline(), plan.getDeadline());
                         break;
                     case PAYLOAD_REMINDER:
-                        setSpaceView(holder.mSpaceView, plan.isCompleted(), plan.hasDeadline(), plan.hasReminder());
-                        setTimeLayout(holder.mReminderLayout, plan.isCompleted(), plan.hasReminder(), plan.getReminderTime());
+                        setSpaceView(itemViewHolder.mSpaceView, plan.isCompleted(), plan.hasDeadline(), plan.hasReminder());
+                        setTimeLayout(itemViewHolder.mReminderLayout, plan.isCompleted(), plan.hasReminder(), plan.getReminderTime());
                         break;
                     case PAYLOAD_STAR:
-                        setStarButton(holder.mStarButton, plan.isStarred(), plan.isCompleted(), holder);
+                        setStarButton(itemViewHolder.mStarButton, plan.isStarred(), plan.isCompleted(), itemViewHolder);
                         break;
                 }
             }
@@ -88,7 +123,36 @@ public class SingleTypePlanListAdapter extends RecyclerView.Adapter<SingleTypePl
 
     @Override
     public int getItemCount() {
-        return mSingleTypePlanList.size();
+        return mSingleTypePlanList.size() + 1;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position == mSingleTypePlanList.size() ? TYPE_FOOTER : TYPE_ITEM;
+    }
+
+    public void notifyItemInsertedAndChangingFooter(int position) {
+        notifyItemInserted(position);
+        notifyFooterChanged();
+    }
+
+    public void notifyItemRemovedAndChangingFooter(int position) {
+        notifyItemRemoved(position);
+        notifyFooterChanged();
+    }
+
+    public void notifyListScrolled(@ScrollEdge int scrollEdge) {
+        if (mScrollEdge == scrollEdge) return;
+        int lastScrollEdge = mScrollEdge;
+        mScrollEdge = scrollEdge;
+        if (lastScrollEdge == SCROLL_EDGE_BOTTOM || mScrollEdge == SCROLL_EDGE_BOTTOM) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    notifyFooterChanged();
+                }
+            }, 10);
+        }
     }
 
     private void setContentText(TextView contentText, String content, boolean isCompleted) {
@@ -133,15 +197,15 @@ public class SingleTypePlanListAdapter extends RecyclerView.Adapter<SingleTypePl
                 }
             });
         }
-        if (mOnPlanItemLongClickListener != null) {
-            itemViewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    mOnPlanItemLongClickListener.onPlanItemLongClick(itemViewHolder.getLayoutPosition());
-                    return true;
-                }
-            });
-        }
+    }
+
+    private void setSingleTypePlanCountText(TextView singleTypePlanCountText) {
+        singleTypePlanCountText.setVisibility(mScrollEdge == SCROLL_EDGE_BOTTOM ? View.VISIBLE : View.INVISIBLE);
+        singleTypePlanCountText.setText(ResourceUtil.getQuantityString(R.plurals.text_single_type_plan_count, mSingleTypePlanList.size()));
+    }
+
+    private void notifyFooterChanged() {
+        notifyItemChanged(mSingleTypePlanList.size());
     }
 
     class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -162,20 +226,22 @@ public class SingleTypePlanListAdapter extends RecyclerView.Adapter<SingleTypePl
         }
     }
 
+    class FooterViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.text_single_type_plan_count)
+        TextView mSingleTypePlanCountText;
+
+        public FooterViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
     public interface OnPlanItemClickListener {
         void onPlanItemClick(int position);
     }
 
     public void setOnPlanItemClickListener(OnPlanItemClickListener listener) {
         mOnPlanItemClickListener = listener;
-    }
-
-    public interface OnPlanItemLongClickListener {
-        void onPlanItemLongClick(int position);
-    }
-
-    public void setOnPlanItemLongClickListener(OnPlanItemLongClickListener listener) {
-        mOnPlanItemLongClickListener = listener;
     }
 
     public interface OnStarStatusChangedListener {

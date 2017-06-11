@@ -18,4 +18,9 @@
         <item quantity="other">%d types</item>
     </plurals>
 
+    <plurals name="text_single_type_plan_count">
+        <item quantity="one">%d plan</item>
+        <item quantity="other">%d plans</item>
+    </plurals>
+
 </resources>
