@@ -78,8 +78,12 @@ public class Constant {
     public static final String PREF_KEY_NEED_GUIDE = "need_guide";
     public static final String PREF_KEY_NIGHT_MODE = "night_mode";
     public static final String PREF_KEY_DRAWER_HEADER_DISPLAY = "drawer_header_display";
+    public static final String PREF_KEY_TYPE_LIST_ITEM_END_DISPLAY = "type_list_item_end_display";
 
     public static final String PREF_VALUE_DHD_UPC = "uc_plan_count";
     public static final String PREF_VALUE_DHD_PC = "plan_count";
     public static final String PREF_VALUE_DHD_TUPC = "today_uc_plan_count";
+
+    public static final String PREF_VALUE_TLIED_STUPC = "single_type_uc_plan_count";
+    public static final String PREF_VALUE_TLIED_STPC = "single_type_plan_count";
 }

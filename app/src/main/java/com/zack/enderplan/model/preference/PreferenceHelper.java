@@ -35,6 +35,10 @@ public class PreferenceHelper {
         return mSharedPreferences.getString(Constant.PREF_KEY_DRAWER_HEADER_DISPLAY, Constant.PREF_VALUE_DHD_UPC);
     }
 
+    public String getTypeListItemEndDisplayValue() {
+        return mSharedPreferences.getString(Constant.PREF_KEY_TYPE_LIST_ITEM_END_DISPLAY, Constant.PREF_VALUE_TLIED_STUPC);
+    }
+
     public void setNeedGuideValue(boolean value) {
         mSharedPreferences.edit().putBoolean(Constant.PREF_KEY_NEED_GUIDE, value).apply();
     }

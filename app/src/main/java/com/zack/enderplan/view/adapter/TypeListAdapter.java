@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
+import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.util.ResourceUtil;
 import com.zack.enderplan.util.StringUtil;
 import com.zack.enderplan.model.DataManager;
@@ -32,7 +33,7 @@ public class TypeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public static final int PAYLOAD_TYPE_MARK_COLOR = 0;
     public static final int PAYLOAD_TYPE_MARK_PATTERN = 1;
     public static final int PAYLOAD_TYPE_NAME = 2;
-    public static final int PAYLOAD_UC_PLAN_COUNT = 3;
+    public static final int PAYLOAD_PLAN_COUNT = 3;
 
     @IntDef({SCROLL_EDGE_TOP, SCROLL_EDGE_MIDDLE, SCROLL_EDGE_BOTTOM})
     @Retention(RetentionPolicy.SOURCE)
@@ -76,7 +77,7 @@ public class TypeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 onTypeMarkColorChanged(itemViewHolder.mTypeMarkIcon, type.getTypeMarkColor());
                 onTypeMarkPatternChanged(itemViewHolder.mTypeMarkIcon, type.getTypeMarkPattern());
                 onTypeNameChanged(itemViewHolder.mTypeMarkIcon, itemViewHolder.mTypeNameText, type.getTypeName());
-                onUcPlanCountOfOneTypeChanged(itemViewHolder.mUcPlanCountIcon, type.getTypeCode());
+                onPlanCountOfOneTypeChanged(itemViewHolder.mPlanCountIcon, type.getTypeCode());
 
                 itemViewHolder.mTypeMarkIcon.setTransitionName(String.format(ResourceUtil.getString(R.string.transition_type_mark_icon_format), position));
 
@@ -116,8 +117,8 @@ public class TypeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     case PAYLOAD_TYPE_NAME:
                         onTypeNameChanged(itemViewHolder.mTypeMarkIcon, itemViewHolder.mTypeNameText, type.getTypeName());
                         break;
-                    case PAYLOAD_UC_PLAN_COUNT:
-                        onUcPlanCountOfOneTypeChanged(itemViewHolder.mUcPlanCountIcon, type.getTypeCode());
+                    case PAYLOAD_PLAN_COUNT:
+                        onPlanCountOfOneTypeChanged(itemViewHolder.mPlanCountIcon, type.getTypeCode());
                         break;
                 }
             }
@@ -171,18 +172,26 @@ public class TypeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         typeNameText.setText(typeName);
     }
 
-    private void onUcPlanCountOfOneTypeChanged(CircleColorView ucPlanCountIcon, String typeCode) {
-        String ucPlanCountStr = getUcPlanCountStr(typeCode);
-        ucPlanCountIcon.setVisibility(ucPlanCountStr == null ? View.INVISIBLE : View.VISIBLE);
-        ucPlanCountIcon.setInnerText(ucPlanCountStr == null ? "" : ucPlanCountStr);
+    private void onPlanCountOfOneTypeChanged(CircleColorView planCountIcon, String typeCode) {
+        String planCountStr = getPlanCountStr(typeCode);
+        planCountIcon.setVisibility(planCountStr == null ? View.INVISIBLE : View.VISIBLE);
+        planCountIcon.setInnerText(planCountStr);
     }
 
     private void notifyFooterChanged() {
         notifyItemChanged(mDataManager.getTypeCount());
     }
 
-    private String getUcPlanCountStr(String typeCode) {
-        int count = mDataManager.getUcPlanCountOfOneType(typeCode);
+    private String getPlanCountStr(String typeCode) {
+        int count = 0;
+        switch (mDataManager.getPreferenceHelper().getTypeListItemEndDisplayValue()) {
+            case Constant.PREF_VALUE_TLIED_STUPC:
+                count = mDataManager.getUcPlanCountOfOneType(typeCode);
+                break;
+            case Constant.PREF_VALUE_TLIED_STPC:
+                count = mDataManager.getPlanCountOfOneType(typeCode);
+                break;
+        }
         if (count == 0) {
             return null;
         } else if (count < 10) {
@@ -197,8 +206,8 @@ public class TypeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         CircleColorView mTypeMarkIcon;
         @BindView(R.id.text_type_name)
         TextView mTypeNameText;
-        @BindView(R.id.ic_uc_plan_count)
-        CircleColorView mUcPlanCountIcon;
+        @BindView(R.id.ic_plan_count)
+        CircleColorView mPlanCountIcon;
 
         public ItemViewHolder(View itemView) {
             super(itemView);

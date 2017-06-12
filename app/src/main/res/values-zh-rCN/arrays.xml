@@ -5,10 +5,15 @@
         <item>提醒不能正常工作？</item>
     </string-array>
 
-    <string-array name="pref_drawer_header_display_entries">
-        <item>未完成计划的数量</item>
+    <string-array name="pref_entries_drawer_header_display">
+        <item>所有未完成计划的数量</item>
         <item>计划总数</item>
-        <item>今天未完成计划的数量</item>
+        <item>今天截止的所有未完成计划的数量</item>
+    </string-array>
+
+    <string-array name="pref_entries_type_list_item_end_display">
+        <item>该类型未完成计划的数量</item>
+        <item>该类型的计划总数</item>
     </string-array>
 
 </resources>

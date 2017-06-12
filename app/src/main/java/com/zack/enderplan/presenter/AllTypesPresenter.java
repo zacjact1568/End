@@ -1,10 +1,11 @@
 package com.zack.enderplan.presenter;
 
+import android.content.SharedPreferences;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
+import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.event.TypeDeletedEvent;
-import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.event.DataLoadedEvent;
 import com.zack.enderplan.event.PlanCreatedEvent;
 import com.zack.enderplan.event.PlanDeletedEvent;
@@ -21,7 +22,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import javax.inject.Inject;
 
-public class AllTypesPresenter extends BasePresenter {
+public class AllTypesPresenter extends BasePresenter implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private AllTypesViewContract mAllTypesViewContract;
     private DataManager mDataManager;
@@ -46,6 +47,7 @@ public class AllTypesPresenter extends BasePresenter {
     @Override
     public void attach() {
         mEventBus.register(this);
+        mDataManager.getPreferenceHelper().registerOnChangeListener(this);
 
         TypeListItemTouchCallback typeListItemTouchCallback = new TypeListItemTouchCallback(mDataManager);
         typeListItemTouchCallback.setOnItemMovedListener(new TypeListItemTouchCallback.OnItemMovedListener() {
@@ -62,7 +64,16 @@ public class AllTypesPresenter extends BasePresenter {
     @Override
     public void detach() {
         mAllTypesViewContract = null;
+        mDataManager.getPreferenceHelper().unregisterOnChangeListener(this);
         mEventBus.unregister(this);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(Constant.PREF_KEY_TYPE_LIST_ITEM_END_DISPLAY)) {
+            //直接全部刷新
+            mTypeListAdapter.notifyDataSetChanged();
+        }
     }
 
     public void notifyPlanListScrolled(boolean top, boolean bottom) {
@@ -94,11 +105,9 @@ public class AllTypesPresenter extends BasePresenter {
 
     @Subscribe
     public void onPlanCreated(PlanCreatedEvent event) {
-        Plan newPlan = mDataManager.getPlan(event.getPosition());
-        if (!newPlan.isCompleted()) {
-            //新计划是一个未完成的计划
-            mTypeListAdapter.notifyItemChanged(mDataManager.getTypeLocationInTypeList(newPlan.getTypeCode()), TypeListAdapter.PAYLOAD_UC_PLAN_COUNT);
-        }
+        if (event.getEventSource().equals(getPresenterName())) return;
+        //由于判断是否需要更新的逻辑略麻烦，简单起见，就不进行判断，直接更新了
+        mTypeListAdapter.notifyItemChanged(mDataManager.getTypeLocationInTypeList(mDataManager.getPlan(event.getPosition()).getTypeCode()), TypeListAdapter.PAYLOAD_PLAN_COUNT);
     }
 
     @Subscribe
@@ -135,10 +144,8 @@ public class AllTypesPresenter extends BasePresenter {
 
     @Subscribe
     public void onPlanDeleted(PlanDeletedEvent event) {
-        Plan deletedPlan = event.getDeletedPlan();
-        if (!deletedPlan.isCompleted()) {
-            //删除的计划是一个未完成的计划
-            mTypeListAdapter.notifyItemChanged(mDataManager.getTypeLocationInTypeList(deletedPlan.getTypeCode()), TypeListAdapter.PAYLOAD_UC_PLAN_COUNT);
-        }
+        if (event.getEventSource().equals(getPresenterName())) return;
+        //由于判断是否需要更新的逻辑略麻烦，简单起见，就不进行判断，直接更新了
+        mTypeListAdapter.notifyItemChanged(mDataManager.getTypeLocationInTypeList(event.getDeletedPlan().getTypeCode()), TypeListAdapter.PAYLOAD_PLAN_COUNT);
     }
 }

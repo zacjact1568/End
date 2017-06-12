@@ -20,16 +20,26 @@
         <item>Reminder can\'t work?</item>
     </string-array>
 
-    <string-array name="pref_drawer_header_display_entries">
-        <item>The number of uncompleted plans</item>
-        <item>The number of all plans</item>
-        <item>The number of today\'s uncompleted plans</item>
+    <string-array name="pref_entries_drawer_header_display">
+        <item>Uncompleted plans</item>
+        <item>All plans</item>
+        <item>Uncompleted plans whose deadline is today</item>
     </string-array>
 
-    <string-array name="pref_drawer_header_display_values" translatable="false">
+    <string-array name="pref_values_drawer_header_display" translatable="false">
         <item>uc_plan_count</item>
         <item>plan_count</item>
         <item>today_uc_plan_count</item>
+    </string-array>
+
+    <string-array name="pref_entries_type_list_item_end_display">
+        <item>Uncompleted plans of this type</item>
+        <item>All plans of this type</item>
+    </string-array>
+
+    <string-array name="pref_values_type_list_item_end_display" translatable="false">
+        <item>single_type_uc_plan_count</item>
+        <item>single_type_plan_count</item>
     </string-array>
 
 </resources>

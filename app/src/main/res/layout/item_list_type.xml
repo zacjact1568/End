@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toEndOf="@id/ic_type_mark"
-        android:layout_toStartOf="@+id/ic_uc_plan_count"
+        android:layout_toStartOf="@+id/ic_plan_count"
         android:layout_marginStart="12dp"
         android:layout_marginEnd="8dp"
         android:textSize="16sp"
@@ -39,7 +39,7 @@
         tools:text="Work"/>
 
     <com.zack.enderplan.view.widget.CircleColorView
-        android:id="@+id/ic_uc_plan_count"
+        android:id="@+id/ic_plan_count"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_centerVertical="true"

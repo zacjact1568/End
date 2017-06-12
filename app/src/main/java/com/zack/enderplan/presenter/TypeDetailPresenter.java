@@ -295,8 +295,8 @@ public class TypeDetailPresenter extends BasePresenter {
             mTypeDetailViewContract.onDetectedDeletingLastType();
             return;
         }
-        if (!deletePlan && mDataManager.isPlanOfOneTypeExists(mType.getTypeCode())) {
-            //如果不删除类型连带的计划，且检测到类型有连带的计划，弹移动计划到其他类型的对话框
+        if (!deletePlan && !mDataManager.isTypeEmpty(mType.getTypeCode())) {
+            //如果不删除类型连带的计划，且检测到类型非空，弹移动计划到其他类型的对话框
             mTypeDetailViewContract.onDetectedTypeNotEmpty();
             //mTypeDetailViewContract.showToast(R.string.toast_type_not_empty);
         } else {

@@ -83,7 +83,7 @@ public class DataManager {
 
     //**************** PlanList ****************
 
-    //获取某个计划
+    /** 获取某个计划 */
     public Plan getPlan(int location) {
         return mPlanList.get(location);
     }
@@ -152,27 +152,6 @@ public class DataManager {
             }
         }
         return planLocationList;
-    }
-
-    /** 判断某类型是否有对应的计划 */
-    public boolean isPlanOfOneTypeExists(String typeCode) {
-        for (Plan plan : mPlanList) {
-            if (plan.getTypeCode().equals(typeCode)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /** 获取某类型的计划数量 */
-    public int getPlanCountOfOneType(String typeCode) {
-        int count = 0;
-        for (Plan plan : mPlanList) {
-            if (plan.getTypeCode().equals(typeCode)) {
-                count++;
-            }
-        }
-        return count;
     }
 
     /** 将fromLocationList提供的位置上的计划迁移到另一个类型 */
@@ -302,7 +281,7 @@ public class DataManager {
         return typeList;
     }
 
-    //获取某个类型
+    /** 获取某个类型 */
     public Type getType(int location) {
         return mTypeList.get(location);
     }
@@ -461,7 +440,17 @@ public class DataManager {
 
     /** 获取指定类型中未完成计划的数量 */
     public int getUcPlanCountOfOneType(String typeCode) {
-        return mTypeCodePlanCountMap.containsKey(typeCode) ? mTypeCodePlanCountMap.get(typeCode).getUncompleted() : 0;
+        return mTypeCodePlanCountMap.get(typeCode).getUncompleted();
+    }
+
+    /** 获取指定类型中所有计划的数量 */
+    public int getPlanCountOfOneType(String typeCode) {
+        return mTypeCodePlanCountMap.get(typeCode).getAll();
+    }
+
+    /** 判断某类型是否为空 */
+    public boolean isTypeEmpty(String typeCode) {
+        return mTypeCodePlanCountMap.get(typeCode).getAll() == 0;
     }
 
     //**************** PreferenceHelper ****************
