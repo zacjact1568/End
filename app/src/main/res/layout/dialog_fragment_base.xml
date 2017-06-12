@@ -9,16 +9,16 @@
 
     <TextView
         android:id="@+id/text_title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/dialog_title_text_size"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="@android:color/white"
-        android:background="@color/colorPrimary"
-        android:gravity="center"
-        android:padding="16dp"
-        android:elevation="2dp"
-        tools:text="@string/title_dialog_fragment_type_mark_color_picker"/>
+        android:textColor="@color/colorBlackBackground"
+        tools:text="Select A Color"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -30,7 +30,6 @@
             android:id="@+id/btn_neutral"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
             tools:text="@string/btn_custom"
             style="?android:attr/buttonBarButtonStyle"/>
 
@@ -40,7 +39,6 @@
             android:layout_height="wrap_content"
             android:layout_toStartOf="@+id/btn_positive"
             android:layout_marginEnd="4dp"
-            android:textColor="@color/colorPrimary"
             tools:text="@string/button_cancel"
             style="?android:attr/buttonBarButtonStyle"/>
 
@@ -49,7 +47,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:textColor="@color/colorPrimary"
             tools:text="@string/button_select"
             style="?android:attr/buttonBarButtonStyle"/>
 
