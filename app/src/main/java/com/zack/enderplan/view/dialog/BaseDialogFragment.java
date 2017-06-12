@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.util.SystemUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,6 +64,9 @@ public abstract class BaseDialogFragment extends DialogFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+
+        //通过动态设置内容区域的view宽度来设置dialog宽度（不能直接设置根view的宽度，因为它的LayoutParams为null）
+        ((ViewGroup) view).getChildAt(1).getLayoutParams().width = (int) (SystemUtil.getDisplayWidth() * 0.8f);
 
         setTitleString(mTitleString);
         setNeutralButtonString(mNeutralButtonString);

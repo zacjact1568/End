@@ -13,6 +13,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -21,6 +22,7 @@ import android.os.Vibrator;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 import android.support.v4.app.NotificationCompat;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -178,5 +180,11 @@ public class SystemUtil {
             versionName = "null";
         }
         return versionName;
+    }
+
+    public static int getDisplayWidth() {
+        Point point = new Point();
+        ((WindowManager) App.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getSize(point);
+        return point.x;
     }
 }
