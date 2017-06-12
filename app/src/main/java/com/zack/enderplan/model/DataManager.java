@@ -320,21 +320,22 @@ public class DataManager {
 
     /** 创建类型（插入到末尾）*/
     public void notifyTypeCreated(Type newType) {
-        mTypeList.add(getTypeCount(), newType);
-        //储存至数据库
+        mTypeList.add(newType);
+        mTypeCodePlanCountMap.put(newType.getTypeCode(), new PlanCount());
         mDatabaseHelper.saveType(newType);
     }
 
     /** 删除类型 */
     public void notifyTypeDeleted(int location) {
         Type type = getType(location);
-        //删除对应的计划
+        //删除所有对应的计划
         for (int i = 0; i < getPlanCount(); i++) {
             if (getPlan(i).getTypeCode().equals(type.getTypeCode())) {
                 notifyPlanDeleted(i);
                 i--;
             }
         }
+        mTypeCodePlanCountMap.remove(type.getTypeCode());
         mTypeList.remove(location);
         mDatabaseHelper.deleteType(type.getTypeCode());
     }
