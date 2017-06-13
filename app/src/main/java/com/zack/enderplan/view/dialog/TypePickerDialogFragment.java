@@ -10,32 +10,32 @@ import com.zack.enderplan.R;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.util.ResourceUtil;
 import com.zack.enderplan.view.activity.TypeCreationActivity;
-import com.zack.enderplan.view.adapter.TypePickerListAdapter;
+import com.zack.enderplan.view.adapter.TypePickerGridAdapter;
 
 import butterknife.BindView;
 
 public class TypePickerDialogFragment extends BaseDialogFragment {
 
-    @BindView(R.id.list_type_picker)
-    RecyclerView mTypePickerList;
+    @BindView(R.id.grid_type_picker)
+    RecyclerView mTypePickerGrid;
 
-    private static final String ARG_DEFAULT_TYPE_LIST_POSITION = "default_type_list_position";
+    private static final String ARG_DEFAULT_POSITION = "default_position";
 
     private OnTypePickedListener mOnTypePickedListener;
-    private int mTypeListPosition;
+    private int mPosition;
 
     public TypePickerDialogFragment() {
 
     }
 
-    public static TypePickerDialogFragment newInstance(int defaultTypeListPosition) {
+    public static TypePickerDialogFragment newInstance(int defaultPosition) {
         TypePickerDialogFragment fragment = new TypePickerDialogFragment();
         Bundle args = new Bundle();
         args.putString(ARG_TITLE, ResourceUtil.getString(R.string.title_dialog_fragment_type_picker));
         args.putString(ARG_NEU_BTN, ResourceUtil.getString(R.string.btn_new_type));
         args.putString(ARG_NEG_BTN, ResourceUtil.getString(R.string.button_cancel));
         args.putString(ARG_POS_BTN, ResourceUtil.getString(R.string.button_select));
-        args.putInt(ARG_DEFAULT_TYPE_LIST_POSITION, defaultTypeListPosition);
+        args.putInt(ARG_DEFAULT_POSITION, defaultPosition);
         fragment.setArguments(args);
         return fragment;
     }
@@ -46,7 +46,7 @@ public class TypePickerDialogFragment extends BaseDialogFragment {
 
         Bundle args = getArguments();
         if (args != null) {
-            mTypeListPosition = args.getInt(ARG_DEFAULT_TYPE_LIST_POSITION, -1);
+            mPosition = args.getInt(ARG_DEFAULT_POSITION, -1);
         }
     }
 
@@ -59,16 +59,16 @@ public class TypePickerDialogFragment extends BaseDialogFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        TypePickerListAdapter typePickerListAdapter = new TypePickerListAdapter(DataManager.getInstance(), mTypeListPosition);
-        typePickerListAdapter.setOnItemClickListener(new TypePickerListAdapter.OnItemClickListener() {
+        TypePickerGridAdapter typePickerGridAdapter = new TypePickerGridAdapter(DataManager.getInstance(), mPosition);
+        typePickerGridAdapter.setOnItemClickListener(new TypePickerGridAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                mTypeListPosition = position;
+                mPosition = position;
             }
         });
 
-        mTypePickerList.setAdapter(typePickerListAdapter);
-        mTypePickerList.setHasFixedSize(true);
+        mTypePickerGrid.setAdapter(typePickerGridAdapter);
+        mTypePickerGrid.setHasFixedSize(true);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class TypePickerDialogFragment extends BaseDialogFragment {
                 break;
             case BTN_POS:
                 if (mOnTypePickedListener != null) {
-                    mOnTypePickedListener.onTypePicked(mTypeListPosition);
+                    mOnTypePickedListener.onTypePicked(mPosition);
                 }
                 break;
         }

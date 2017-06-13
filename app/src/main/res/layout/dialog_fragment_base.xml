@@ -12,44 +12,53 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="20dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="@color/colorBlackBackground"
-        tools:text="Select A Color"/>
+        tools:text="Color Picker"/>
 
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="12dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
         style="?android:attr/buttonBarStyle">
 
         <Button
             android:id="@+id/btn_neutral"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="@string/btn_custom"
+            android:layout_gravity="start"
+            tools:text="Custom"
             style="?android:attr/buttonBarButtonStyle"/>
 
-        <Button
-            android:id="@+id/btn_negative"
+        <!--这样才能单独用negative按钮-->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toStartOf="@+id/btn_positive"
-            android:layout_marginEnd="4dp"
-            tools:text="@string/button_cancel"
-            style="?android:attr/buttonBarButtonStyle"/>
+            android:layout_gravity="end">
 
-        <Button
-            android:id="@+id/btn_positive"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            tools:text="@string/button_select"
-            style="?android:attr/buttonBarButtonStyle"/>
+            <Button
+                android:id="@+id/btn_negative"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Cancel"
+                style="?android:attr/buttonBarButtonStyle"/>
 
-    </RelativeLayout>
+            <Button
+                android:id="@+id/btn_positive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Select"
+                style="?android:attr/buttonBarButtonStyle"/>
+
+        </LinearLayout>
+
+    </FrameLayout>
 
 </LinearLayout>

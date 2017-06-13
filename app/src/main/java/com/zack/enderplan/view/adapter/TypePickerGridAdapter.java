@@ -20,7 +20,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TypePickerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class TypePickerGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public static final int PAYLOAD_SELECTOR = 0;
 
@@ -31,7 +31,7 @@ public class TypePickerListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private int mWhiteBackgroundColor;
     private int mPxFor1Dp;
 
-    public TypePickerListAdapter(DataManager dataManager, int selectedPosition) {
+    public TypePickerGridAdapter(DataManager dataManager, int selectedPosition) {
         mDataManager = dataManager;
         mSelectedPosition = selectedPosition;
 
@@ -41,7 +41,7 @@ public class TypePickerListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_type_picker, parent, false));
+        return new ItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_grid_type_picker, parent, false));
     }
 
     @Override
