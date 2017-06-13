@@ -31,16 +31,17 @@ import android.widget.TextView;
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
 import com.zack.enderplan.util.ColorUtil;
+import com.zack.enderplan.util.ResourceUtil;
 import com.zack.enderplan.util.StringUtil;
 import com.zack.enderplan.injector.component.DaggerTypeDetailComponent;
 import com.zack.enderplan.injector.module.TypeDetailPresenterModule;
-import com.zack.enderplan.view.adapter.SimpleTypeListAdapter;
 import com.zack.enderplan.view.adapter.SingleTypePlanListAdapter;
 import com.zack.enderplan.view.contract.TypeDetailViewContract;
 import com.zack.enderplan.presenter.TypeDetailPresenter;
 import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.view.dialog.TypePickerForPlanMigrationDialogFragment;
 import com.zack.enderplan.view.widget.CircleColorView;
 
 import javax.inject.Inject;
@@ -322,12 +323,12 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     }
 
     @Override
-    public void onDetectedTypeNotEmpty() {
+    public void onDetectedTypeNotEmpty(int planCount) {
         String[] buttons = {getString(R.string.button_move), getString(R.string.button_delete), getString(R.string.button_cancel)};
         new AlertDialog.Builder(this)
                 .setTitle(R.string.title_dialog_type_not_empty)
                 .setMessage(StringUtil.addSpan(
-                        StringUtil.toUpperCase(getString(R.string.msg_dialog_type_not_empty), buttons),
+                        StringUtil.toUpperCase(ResourceUtil.getQuantityString(R.string.msg_dialog_type_not_empty, R.plurals.text_plan_count, planCount), buttons),
                         buttons,
                         StringUtil.SPAN_BOLD_STYLE
                 ))
@@ -348,16 +349,15 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     }
 
     @Override
-    public void showMovePlanDialog(int planCount, SimpleTypeListAdapter simpleTypeListAdapter) {
-        new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.title_dialog_move_plan_pt1) + " " + planCount + " " + getString(planCount > 1 ? R.string.title_dialog_move_plan_pt2_pl : R.string.title_dialog_move_plan_pt2_sg))
-                .setAdapter(simpleTypeListAdapter, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mTypeDetailPresenter.notifyTypeItemInMovePlanDialogClicked(which);
-                    }
-                })
-                .show();
+    public void showMovePlanDialog(String typeCode) {
+        TypePickerForPlanMigrationDialogFragment fragment = TypePickerForPlanMigrationDialogFragment.newInstance(typeCode);
+        fragment.setOnTypePickedListener(new TypePickerForPlanMigrationDialogFragment.OnTypePickedListener() {
+            @Override
+            public void onTypePicked(String typeCode, String typeName) {
+                mTypeDetailPresenter.notifyTypeItemInMovePlanDialogClicked(typeCode, typeName);
+            }
+        });
+        fragment.show(getSupportFragmentManager(), Constant.TYPE);
     }
 
     @Override
@@ -376,12 +376,12 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     }
 
     @Override
-    public void showPlanMigrationConfirmationDialog(String fromTypeName, String toTypeName, final String toTypeCode) {
+    public void showPlanMigrationConfirmationDialog(String fromTypeName, int planCount, String toTypeName, final String toTypeCode) {
         new AlertDialog.Builder(this)
                 .setTitle(fromTypeName)
                 .setMessage(StringUtil.addSpan(
-                        getString(R.string.msg_dialog_migrate_plan_pt1) + " " + toTypeName + getString(R.string.msg_dialog_migrate_plan_pt2),
-                        new String[]{toTypeName},
+                        String.format(ResourceUtil.getString(R.string.msg_dialog_migrate_plan), ResourceUtil.getQuantityString(R.plurals.text_plan_count, planCount), toTypeName, fromTypeName),
+                        new String[]{toTypeName, fromTypeName},
                         StringUtil.SPAN_BOLD_STYLE
                 ))
                 .setPositiveButton(R.string.btn_dialog_move_and_delete, new DialogInterface.OnClickListener() {

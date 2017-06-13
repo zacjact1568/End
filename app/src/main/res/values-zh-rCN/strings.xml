@@ -51,7 +51,7 @@
     <string name="title_activity_reminder">提醒</string>
     <string name="action_all_types">所有类型</string>
     <string name="type_name_hint">你的新类型的名称</string>
-    <string name="msg_dialog_type_not_empty">有一些计划属于此类型，你可以将它们移动到另一个类型，删除它们，或者取消。</string>
+    <string name="msg_dialog_type_not_empty">有%s属于此类型，你可以将它们移动到另一个类型，删除它们，或者取消。</string>
     <string name="pref_title_theme">主题</string>
     <string name="pref_title_night_mode">夜间模式</string>
     <string name="show_c_plans">显示已完成的计划</string>
@@ -106,11 +106,7 @@
     <string name="btn_dialog_move_and_delete">移动并删除</string>
     <string name="button_delete">删除</string>
     <string name="button_move">移动</string>
-    <string name="msg_dialog_migrate_plan_pt1">此类型的所有计划都将被移动到</string>
-    <string name="msg_dialog_migrate_plan_pt2">，然后此类型将被删除。</string>
-    <string name="title_dialog_move_plan_pt1">移动</string>
-    <string name="title_dialog_move_plan_pt2_pl">个计划到</string>
-    <string name="title_dialog_move_plan_pt2_sg">个计划到</string>
+    <string name="msg_dialog_migrate_plan">%1$s将被移动到类型\"%2$s\"，然后类型\"%3$s\"将被删除。</string>
     <string name="msg_dialog_last_type">这是最后一个类型。</string>
     <string name="title_dialog_last_type">不能删除</string>
     <string name="button_select">选择</string>
@@ -208,4 +204,6 @@
     <string name="title_dialog_fragment_type_picker">选择类型</string>
     <string name="toast_longer_type_name">类型名称不能超过20个字符</string>
     <string name="pref_title_type_list_item_end_display">类型列表项末端显示</string>
+    <string name="msg_dialog_migrate_plan_pt2"></string>
+    <string name="title_dialog_type_picker_for_plan_migration">移动%s到</string>
 </resources>

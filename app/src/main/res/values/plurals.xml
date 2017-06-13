@@ -7,6 +7,11 @@
         <item quantity="other">%d plans</item>
     </plurals>
 
+    <plurals name="text_plan_count_upper_case">
+        <item quantity="one">%d Plan</item>
+        <item quantity="other">%d Plans</item>
+    </plurals>
+
     <plurals name="text_uc_plan_count">
         <!--英文环境下zero无效-->
         <item quantity="one">%d plan uncompleted</item>

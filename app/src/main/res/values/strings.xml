@@ -149,12 +149,9 @@
     <string name="toast_create_plan_success">Create successfully</string>
     <string name="title_dialog_content_editor">Content Editor</string>
     <string name="title_dialog_type_not_empty">Type Is Not Empty</string>
-    <string name="msg_dialog_type_not_empty">There are some plans belong to this type, you can move them to another type, delete them all, or cancel.</string>
-    <string name="title_dialog_move_plan_pt1">Move</string>
-    <string name="title_dialog_move_plan_pt2_sg">Plan To</string>
-    <string name="title_dialog_move_plan_pt2_pl">Plans To</string>
-    <string name="msg_dialog_migrate_plan_pt1">All the plans belong to this type will be moved to</string>
-    <string name="msg_dialog_migrate_plan_pt2">, then this type will be deleted.</string>
+    <string name="msg_dialog_type_not_empty">There are %s belong to this type, you can move them to another type, delete them all, or cancel.</string>
+    <string name="title_dialog_type_picker_for_plan_migration">Move %s To</string>
+    <string name="msg_dialog_migrate_plan">%1$s will be moved to type \"%2$s\", then type \"%3$s\" will be deleted.</string>
     <string name="btn_dialog_move_and_delete">Move And Delete</string>
     <string name="title_dialog_last_type">Cannot Delete</string>
     <string name="msg_dialog_last_type">This is the last type.</string>

@@ -49,7 +49,7 @@
     <string name="title_activity_reminder">提醒</string>
     <string name="action_all_types">所有類型</string>
     <string name="type_name_hint">你的新類型的名稱</string>
-    <string name="msg_dialog_type_not_empty">有一些計劃屬於此類型，你可以將它們移動到另一個類型，刪除它們，或者取消。</string>
+    <string name="msg_dialog_type_not_empty">有%s屬於此類型，你可以將它們移動到另一個類型，刪除它們，或者取消。</string>
     <string name="pref_title_theme">主題</string>
     <string name="pref_title_night_mode">夜間模式</string>
     <string name="show_c_plans">顯示已完成的計劃</string>
@@ -101,11 +101,6 @@
     <string name="btn_dialog_move_and_delete">轉移并刪除</string>
     <string name="button_delete">刪除</string>
     <string name="button_move">轉移</string>
-    <string name="msg_dialog_migrate_plan_pt1">此類型的所有計劃都將被移動到</string>
-    <string name="msg_dialog_migrate_plan_pt2">，然後此類型將被刪除。</string>
-    <string name="title_dialog_move_plan_pt1">移動</string>
-    <string name="title_dialog_move_plan_pt2_pl">個計劃到</string>
-    <string name="title_dialog_move_plan_pt2_sg">個計劃到</string>
     <string name="msg_dialog_last_type">這是最後一個類型。</string>
     <string name="title_dialog_last_type">不能刪除</string>
     <string name="button_select">選擇</string>
@@ -138,4 +133,5 @@
     <string name="toast_reminder_delayed_format">我將會%s提醒你</string>
     <string name="def_type_2">家庭</string>
     <string name="app_name">Ender計劃</string>
+    <string name="msg_dialog_migrate_plan_pt2"></string>
 </resources>

@@ -11,7 +11,6 @@ import com.zack.enderplan.util.StringUtil;
 import com.zack.enderplan.util.SystemUtil;
 import com.zack.enderplan.event.TypeDeletedEvent;
 import com.zack.enderplan.event.TypeDetailChangedEvent;
-import com.zack.enderplan.view.adapter.SimpleTypeListAdapter;
 import com.zack.enderplan.view.adapter.SingleTypePlanListAdapter;
 import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.Plan;
@@ -82,7 +81,7 @@ public class TypeDetailPresenter extends BasePresenter {
                 ));
             }
         });
-        mOtherTypeList = mDataManager.getTypeList(mType.getTypeCode());
+        mOtherTypeList = mDataManager.getExcludedTypeList(mType.getTypeCode());
     }
 
     @Override
@@ -297,8 +296,7 @@ public class TypeDetailPresenter extends BasePresenter {
         }
         if (!deletePlan && !mDataManager.isTypeEmpty(mType.getTypeCode())) {
             //如果不删除类型连带的计划，且检测到类型非空，弹移动计划到其他类型的对话框
-            mTypeDetailViewContract.onDetectedTypeNotEmpty();
-            //mTypeDetailViewContract.showToast(R.string.toast_type_not_empty);
+            mTypeDetailViewContract.onDetectedTypeNotEmpty(mDataManager.getPlanCountOfOneType(mType.getTypeCode()));
         } else {
             //如果决定要删除连带的计划，或检测到类型没有连带的计划，直接弹删除确认对话框
             mTypeDetailViewContract.showTypeDeletionConfirmationDialog(mType.getTypeName());
@@ -306,15 +304,11 @@ public class TypeDetailPresenter extends BasePresenter {
     }
 
     public void notifyMovePlanButtonClicked() {
-        mTypeDetailViewContract.showMovePlanDialog(
-                mDataManager.getPlanCountOfOneType(mType.getTypeCode()),
-                new SimpleTypeListAdapter(mOtherTypeList, SimpleTypeListAdapter.STYLE_DIALOG)
-        );
+        mTypeDetailViewContract.showMovePlanDialog(mType.getTypeCode());
     }
 
-    public void notifyTypeItemInMovePlanDialogClicked(int position) {
-        Type toType = mOtherTypeList.get(position);
-        mTypeDetailViewContract.showPlanMigrationConfirmationDialog(mType.getTypeName(), toType.getTypeName(), toType.getTypeCode());
+    public void notifyTypeItemInMovePlanDialogClicked(String typeCode, String typeName) {
+        mTypeDetailViewContract.showPlanMigrationConfirmationDialog(mType.getTypeName(), mDataManager.getPlanCountOfOneType(mType.getTypeCode()), typeName, typeCode);
     }
 
     /**

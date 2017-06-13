@@ -270,17 +270,6 @@ public class DataManager {
 
     //**************** TypeList ****************
 
-    /** 获取一个新的typeList，不包含指定的type */
-    public List<Type> getTypeList(String exclude) {
-        List<Type> typeList = new ArrayList<>();
-        for (Type type : mTypeList) {
-            if (!type.getTypeCode().equals(exclude)) {
-                typeList.add(type);
-            }
-        }
-        return typeList;
-    }
-
     /** 获取某个类型 */
     public Type getType(int location) {
         return mTypeList.get(location);
@@ -403,6 +392,17 @@ public class DataManager {
             }
         }
         return false;
+    }
+
+    /** 获取不包含指定type的list */
+    public List<Type> getExcludedTypeList(String excludedTypeCode) {
+        List<Type> excludedTypeList = new ArrayList<>();
+        for (Type type : mTypeList) {
+            if (!type.getTypeCode().equals(excludedTypeCode)) {
+                excludedTypeList.add(type);
+            }
+        }
+        return excludedTypeList;
     }
 
     //**************** Database (TypeName & TypeMark) ****************

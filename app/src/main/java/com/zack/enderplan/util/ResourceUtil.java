@@ -36,6 +36,10 @@ public class ResourceUtil {
         return App.getContext().getResources().getQuantityString(resId, quantity, quantity);
     }
 
+    public static String getQuantityString(@StringRes int formatResId, @PluralsRes int argResId, int quantity) {
+        return String.format(getString(formatResId), getQuantityString(argResId, quantity));
+    }
+
     public static Drawable getDrawable(@DrawableRes int resId) {
         return App.getContext().getDrawable(resId);
     }

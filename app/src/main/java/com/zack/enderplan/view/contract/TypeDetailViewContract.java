@@ -4,7 +4,6 @@ import android.support.annotation.DrawableRes;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
 import com.zack.enderplan.view.adapter.SingleTypePlanListAdapter;
-import com.zack.enderplan.view.adapter.SimpleTypeListAdapter;
 import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.Plan;
 
@@ -38,11 +37,11 @@ public interface TypeDetailViewContract extends BaseViewContract {
 
     void onDetectedDeletingLastType();
 
-    void onDetectedTypeNotEmpty();
+    void onDetectedTypeNotEmpty(int planCount);
 
-    void showMovePlanDialog(int planCount, SimpleTypeListAdapter simpleTypeListAdapter);
+    void showMovePlanDialog(String typeCode);
 
     void showTypeDeletionConfirmationDialog(String typeName);
 
-    void showPlanMigrationConfirmationDialog(String fromTypeName, String toTypeName, String toTypeCode);
+    void showPlanMigrationConfirmationDialog(String fromTypeName, int planCount, String toTypeName, String toTypeCode);
 }
