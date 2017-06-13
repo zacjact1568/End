@@ -155,6 +155,7 @@
     <string name="btn_dialog_move_and_delete">Move And Delete</string>
     <string name="title_dialog_last_type">Cannot Delete</string>
     <string name="msg_dialog_last_type">This is the last type.</string>
+    <string name="text_uncompleted_plan_count">%s uncompleted</string>
 
     <!--TypeCreationActivity-->
     <string name="title_activity_type_creation">New Type</string>

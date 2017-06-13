@@ -201,7 +201,7 @@ public class SingleTypePlanListAdapter extends RecyclerView.Adapter<RecyclerView
 
     private void setSingleTypePlanCountText(TextView singleTypePlanCountText) {
         singleTypePlanCountText.setVisibility(mScrollEdge == SCROLL_EDGE_BOTTOM ? View.VISIBLE : View.INVISIBLE);
-        singleTypePlanCountText.setText(ResourceUtil.getQuantityString(R.plurals.text_single_type_plan_count, mSingleTypePlanList.size()));
+        singleTypePlanCountText.setText(ResourceUtil.getQuantityString(R.plurals.text_plan_count, mSingleTypePlanList.size()));
     }
 
     private void notifyFooterChanged() {

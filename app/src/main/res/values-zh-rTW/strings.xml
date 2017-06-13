@@ -133,5 +133,4 @@
     <string name="toast_reminder_delayed_format">我將會%s提醒你</string>
     <string name="def_type_2">家庭</string>
     <string name="app_name">Ender計劃</string>
-    <string name="msg_dialog_migrate_plan_pt2"></string>
 </resources>

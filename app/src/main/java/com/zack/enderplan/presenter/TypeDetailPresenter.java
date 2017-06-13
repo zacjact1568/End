@@ -337,7 +337,8 @@ public class TypeDetailPresenter extends BasePresenter {
     /** 注意！必须在更新UcPlanCountOfEachTypeMap之后调用才有效果 */
     private String getUcPlanCountStr(String typeCode) {
         return ResourceUtil.getQuantityString(
-                R.plurals.text_uc_plan_count,
+                R.string.text_uncompleted_plan_count,
+                R.plurals.text_plan_count,
                 mDataManager.getUcPlanCountOfOneType(typeCode)
         );
     }

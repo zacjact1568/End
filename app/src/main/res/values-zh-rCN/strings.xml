@@ -204,6 +204,6 @@
     <string name="title_dialog_fragment_type_picker">选择类型</string>
     <string name="toast_longer_type_name">类型名称不能超过20个字符</string>
     <string name="pref_title_type_list_item_end_display">类型列表项末端显示</string>
-    <string name="msg_dialog_migrate_plan_pt2"></string>
     <string name="title_dialog_type_picker_for_plan_migration">移动%s到</string>
+    <string name="text_uncompleted_plan_count">%s未完成</string>
 </resources>
