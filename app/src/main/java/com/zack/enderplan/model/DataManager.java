@@ -53,15 +53,13 @@ public class DataManager {
                 //以下代码都是在主线程中执行的，所以如果在主线程访问mPlanList或mTypeList，只有两种情况：空或满数据
                 mPlanList.addAll(planList);
                 mTypeList.addAll(typeList);
+                for (Type type : mTypeList) {
+                    mTypeCodePlanCountMap.put(type.getTypeCode(), new PlanCount());
+                }
                 for (int i = 0; i < getPlanCount(); i++) {
                     Plan plan = getPlan(i);
                     //初始化每个类型具有的计划数量map
-                    String typeCode = plan.getTypeCode();
-                    if (!mTypeCodePlanCountMap.containsKey(typeCode)) {
-                        //若此类型还没有添加进map
-                        mTypeCodePlanCountMap.put(typeCode, new PlanCount());
-                    }
-                    mTypeCodePlanCountMap.get(typeCode).increase(1, plan.isCompleted());
+                    mTypeCodePlanCountMap.get(plan.getTypeCode()).increase(1, plan.isCompleted());
                     //将过期的reminder移除（在某些rom中，如果未开启后台运行权限，杀死进程后无法被系统唤醒）
                     if (plan.hasReminder() && !TimeUtil.isFutureTime(plan.getReminderTime())) {
                         //有reminder且已过时
