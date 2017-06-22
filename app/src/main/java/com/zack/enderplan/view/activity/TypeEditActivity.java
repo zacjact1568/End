@@ -5,7 +5,6 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -82,8 +81,7 @@ public class TypeEditActivity extends BaseActivity implements TypeEditViewContra
         DaggerTypeEditComponent.builder()
                 .typeEditPresenterModule(new TypeEditPresenterModule(
                         this,
-                        getIntent().getIntExtra(Constant.TYPE_LIST_POSITION, -1),
-                        getIntent().getBooleanExtra(Constant.ENABLE_TRANSITION, false)
+                        getIntent().getIntExtra(Constant.TYPE_LIST_POSITION, -1)
                 ))
                 .appComponent(App.getAppComponent())
                 .build()
@@ -117,8 +115,8 @@ public class TypeEditActivity extends BaseActivity implements TypeEditViewContra
     }
 
     @Override
-    public void showInitialView(FormattedType formattedType, boolean enableTransition) {
-        if (enableTransition) {
+    public void showInitialView(FormattedType formattedType) {
+        if (getIntent().getBooleanExtra(Constant.ENABLE_TRANSITION, false)) {
             getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         }
 

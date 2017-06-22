@@ -86,14 +86,19 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
     @Inject
     TypeDetailPresenter mTypeDetailPresenter;
 
-    public static void start(Activity activity, int typeListPosition, View sharedElement, String transitionName) {
+    public static void start(Activity activity, int typeListPosition, boolean enableTransition, View sharedElement, String transitionName) {
         Intent intent = new Intent(activity, TypeDetailActivity.class);
         intent.putExtra(Constant.TYPE_LIST_POSITION, typeListPosition);
+        intent.putExtra(Constant.ENABLE_TRANSITION, enableTransition);
         intent.putExtra(Constant.TRANSITION_NAME, transitionName);
-        activity.startActivity(
-                intent,
-                ActivityOptions.makeSceneTransitionAnimation(activity, sharedElement, transitionName).toBundle()
-        );
+        if (enableTransition) {
+            activity.startActivity(
+                    intent,
+                    ActivityOptions.makeSceneTransitionAnimation(activity, sharedElement, transitionName).toBundle()
+            );
+        } else {
+            activity.startActivity(intent);
+        }
     }
 
     @Override
@@ -162,7 +167,11 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
 
     @Override
     public void showInitialView(FormattedType formattedType, String ucPlanCountStr, SingleTypePlanListAdapter singleTypePlanListAdapter, ItemTouchHelper itemTouchHelper) {
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        boolean enableTransition = getIntent().getBooleanExtra(Constant.ENABLE_TRANSITION, false);
+
+        if (enableTransition) {
+            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        }
 
         setContentView(R.layout.activity_type_detail);
         ButterKnife.bind(this);
@@ -186,7 +195,9 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
             }
         });
 
-        mTypeMarkIcon.setTransitionName(getIntent().getStringExtra(Constant.TRANSITION_NAME));
+        if (enableTransition) {
+            mTypeMarkIcon.setTransitionName(getIntent().getStringExtra(Constant.TRANSITION_NAME));
+        }
 
         mEditorLayout.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override

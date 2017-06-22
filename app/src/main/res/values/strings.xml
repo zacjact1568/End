@@ -236,6 +236,18 @@
     <string name="title_guide_page_ready">Guide Ends</string>
     <string name="dscpt_guide_page_ready">Enjoy EnderPlan</string>
 
+    <!--PlanSearchActivity-->
+    <string name="title_activity_plan_search">Search Plans</string>
+    <string name="hint_editor_plan_search">Search in %s</string>
+    <string name="text_plan_search">%s found:</string>
+    <string name="text_plan_search_empty">No plans found</string>
+
+    <!--TypeSearchActivity-->
+    <string name="title_activity_type_search">Search Types</string>
+    <string name="hint_editor_type_search">Search in %s</string>
+    <string name="text_type_search">%s found:</string>
+    <string name="text_type_search_empty">No types found</string>
+
     <!--FirstPlanFragment-->
     <string name="hint_first_plan_content">Enter your first plan</string>
 

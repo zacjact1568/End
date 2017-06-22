@@ -206,4 +206,12 @@
     <string name="pref_title_type_list_item_end_display">类型列表项末端显示</string>
     <string name="title_dialog_type_picker_for_plan_migration">移动%s到</string>
     <string name="text_uncompleted_plan_count">%s未完成</string>
+    <string name="title_activity_plan_search">搜索计划</string>
+    <string name="hint_editor_plan_search">在%s中搜索</string>
+    <string name="text_plan_search">找到%s：</string>
+    <string name="text_plan_search_empty">未找到计划</string>
+    <string name="hint_editor_type_search">在%s中搜索</string>
+    <string name="text_type_search">找到%s：</string>
+    <string name="text_type_search_empty">未找到类型</string>
+    <string name="title_activity_type_search">搜索类型</string>
 </resources>

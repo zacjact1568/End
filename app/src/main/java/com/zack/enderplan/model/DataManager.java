@@ -1,5 +1,7 @@
 package com.zack.enderplan.model;
 
+import android.text.TextUtils;
+
 import com.zack.enderplan.model.bean.PlanCount;
 import com.zack.enderplan.model.preference.PreferenceHelper;
 import com.zack.enderplan.util.SystemUtil;
@@ -266,6 +268,17 @@ public class DataManager {
         return count;
     }
 
+    /** 获取搜索到的所有计划 */
+    public void searchPlan(List<Plan> planSearchList, String searchText) {
+        planSearchList.clear();
+        if (TextUtils.isEmpty(searchText)) return;
+        for (Plan plan : mPlanList) {
+            if (plan.getContent().toLowerCase().contains(searchText.toLowerCase())) {
+                planSearchList.add(plan);
+            }
+        }
+    }
+
     //**************** TypeList ****************
 
     /** 获取某个类型 */
@@ -401,6 +414,17 @@ public class DataManager {
             }
         }
         return excludedTypeList;
+    }
+
+    /** 获取搜索到的所有类型 */
+    public void searchType(List<Type> typeSearchList, String searchText) {
+        typeSearchList.clear();
+        if (TextUtils.isEmpty(searchText)) return;
+        for (Type type : mTypeList) {
+            if (type.getTypeName().toLowerCase().contains(searchText.toLowerCase())) {
+                typeSearchList.add(type);
+            }
+        }
     }
 
     //**************** Database (TypeName & TypeMark) ****************

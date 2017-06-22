@@ -1,8 +1,8 @@
 package com.zack.enderplan.view.activity;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.zack.enderplan.App;
 import com.zack.enderplan.R;
-import com.zack.enderplan.util.CommonUtil;
 import com.zack.enderplan.injector.component.DaggerHomeComponent;
 import com.zack.enderplan.injector.module.HomePresenterModule;
 import com.zack.enderplan.view.fragment.BaseListFragment;
@@ -107,24 +106,16 @@ public class HomeActivity extends BaseActivity implements HomeViewContract {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_home, menu);
+        (menu.findItem(R.id.action_search)).getIcon().setTint(Color.WHITE);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                SettingsActivity.start(this);
-                break;
-            case R.id.action_about:
-                AboutActivity.start(this);
-                break;
-            default:
+            case R.id.action_search:
+                enterActivity(isFragmentShowing(Constant.MY_PLANS) ? Constant.PLAN_SEARCH : Constant.TYPE_SEARCH);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -247,6 +238,12 @@ public class HomeActivity extends BaseActivity implements HomeViewContract {
         switch (tag) {
             case Constant.GUIDE:
                 GuideActivity.start(this);
+                break;
+            case Constant.PLAN_SEARCH:
+                PlanSearchActivity.start(this);
+                break;
+            case Constant.TYPE_SEARCH:
+                TypeSearchActivity.start(this);
                 break;
             case Constant.SETTINGS:
                 SettingsActivity.start(this);

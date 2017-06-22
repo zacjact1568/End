@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:background="@drawable/bg_rounded_rectangle_ripple"
+    android:backgroundTint="@color/colorWhiteBackground"
+    android:gravity="center_vertical"
+    android:padding="12dp"
+    android:elevation="0.5dp"
+    tools:context=".view.adapter.TypeSearchListAdapter">
+
+    <com.zack.enderplan.view.widget.CircleColorView
+        android:id="@+id/ic_type_mark"
+        android:layout_width="40dp"
+        android:layout_height="40dp"/>
+
+    <TextView
+        android:id="@+id/text_type_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:textSize="16sp"
+        android:lines="1"
+        android:ellipsize="end"
+        tools:text="Work"/>
+
+</LinearLayout>

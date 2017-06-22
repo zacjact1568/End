@@ -58,6 +58,8 @@ public class Constant {
     public static final String ALL_TYPES = "all_types";
     public static final String PLAN_CREATION = "plan_creation";
     public static final String TYPE_CREATION = "type_creation";
+    public static final String PLAN_SEARCH = "plan_search";
+    public static final String TYPE_SEARCH = "type_search";
     public static final String SETTINGS = "settings";
     public static final String ABOUT = "about";
 

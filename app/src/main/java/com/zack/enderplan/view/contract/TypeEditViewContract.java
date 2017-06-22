@@ -7,7 +7,7 @@ import com.zack.enderplan.model.bean.FormattedType;
 
 public interface TypeEditViewContract extends BaseViewContract {
 
-    void showInitialView(FormattedType formattedType, boolean enableTransition);
+    void showInitialView(FormattedType formattedType);
 
     void showTypeNameEditorDialog(String originalEditorText);
 

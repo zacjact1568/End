@@ -26,13 +26,11 @@ public class TypeEditPresenter extends BasePresenter {
     private EventBus mEventBus;
     private Type mType;
     private int mTypeListPosition;
-    private boolean mEnableTransition;
 
     @Inject
-    TypeEditPresenter(TypeEditViewContract typeEditViewContract, int typeListPosition, boolean enableTransition, DataManager dataManager, EventBus eventBus) {
+    TypeEditPresenter(TypeEditViewContract typeEditViewContract, int typeListPosition, DataManager dataManager, EventBus eventBus) {
         mTypeEditViewContract = typeEditViewContract;
         mTypeListPosition = typeListPosition;
-        mEnableTransition = enableTransition;
         mDataManager = dataManager;
         mEventBus = eventBus;
 
@@ -49,7 +47,7 @@ public class TypeEditPresenter extends BasePresenter {
                 mDataManager.getTypeMarkPatternName(mType.getTypeMarkPattern()),
                 mType.getTypeName(),
                 StringUtil.getFirstChar(mType.getTypeName())
-        ), mEnableTransition);
+        ));
     }
 
     @Override

@@ -91,6 +91,7 @@ public class AllTypesFragment extends BaseListFragment implements AllTypesViewCo
         TypeDetailActivity.start(
                 getActivity(),
                 position,
+                true,
                 typeMarkIcon,
                 typeMarkIcon.getTransitionName()
         );

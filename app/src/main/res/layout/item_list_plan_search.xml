@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    tools:context=".view.adapter.PlanSearchListAdapter">
+
+    <View
+        android:id="@+id/view_type_mark"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/bg_rounded_rectangle"
+        tools:backgroundTint="@color/indigo"/>
+
+    <TextView
+        android:id="@+id/text_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="1dp"
+        android:textSize="16sp"
+        android:lines="1"
+        android:ellipsize="end"
+        android:background="@drawable/bg_rounded_rectangle_ripple"
+        android:backgroundTint="@color/colorWhiteBackground"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:elevation="0.5dp"
+        tools:text="Buy Witness on iTunes"/>
+
+</FrameLayout>

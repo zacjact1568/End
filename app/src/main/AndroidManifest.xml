@@ -76,6 +76,18 @@
             android:label="@string/title_activity_guide"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".view.activity.PlanSearchActivity"
+            android:label="@string/title_activity_plan_search"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".view.activity.TypeSearchActivity"
+            android:label="@string/title_activity_type_search"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize"/>
 
         <receiver
             android:name=".receiver.ReminderReceiver"
