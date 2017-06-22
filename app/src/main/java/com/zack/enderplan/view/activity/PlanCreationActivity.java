@@ -219,8 +219,8 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
     }
 
     @Override
-    public void onDeadlineChanged(boolean hasDeadline, String deadline) {
-        mDeadlineItem.setDescriptionText(deadline, hasDeadline);
+    public void onDeadlineChanged(CharSequence deadline) {
+        mDeadlineItem.setDescriptionText(deadline);
     }
 
     @Override
@@ -236,8 +236,8 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
     }
 
     @Override
-    public void onReminderTimeChanged(boolean hasReminder, String reminderTime) {
-        mReminderItem.setDescriptionText(reminderTime, hasReminder);
+    public void onReminderTimeChanged(CharSequence reminderTime) {
+        mReminderItem.setDescriptionText(reminderTime);
     }
 
     @OnClick({R.id.item_deadline, R.id.item_reminder})

@@ -85,19 +85,15 @@ public class PlanCreationPresenter extends BasePresenter {
 
     public void notifyDeadlineChanged(long deadline) {
         if (mPlan.getDeadline() == deadline) return;
-        if (TimeUtil.isValidTime(deadline)) {
-            mPlan.setDeadline(deadline);
-            mPlanCreationViewContract.onDeadlineChanged(mPlan.hasDeadline(), formatDateTime(deadline));
-        } else {
-            mPlanCreationViewContract.showToast(R.string.toast_past_deadline);
-        }
+        mPlan.setDeadline(deadline);
+        mPlanCreationViewContract.onDeadlineChanged(formatDateTime(deadline));
     }
 
     public void notifyReminderTimeChanged(long reminderTime) {
         if (mPlan.getReminderTime() == reminderTime) return;
         if (TimeUtil.isValidTime(reminderTime)) {
             mPlan.setReminderTime(reminderTime);
-            mPlanCreationViewContract.onReminderTimeChanged(mPlan.hasReminder(), formatDateTime(reminderTime));
+            mPlanCreationViewContract.onReminderTimeChanged(formatDateTime(reminderTime));
         } else {
             mPlanCreationViewContract.showToast(R.string.toast_past_reminder_time);
         }
@@ -120,13 +116,6 @@ public class PlanCreationPresenter extends BasePresenter {
     public void notifyCreatingPlan() {
         if (TextUtils.isEmpty(mPlan.getContent())) {
             mPlanCreationViewContract.showToast(R.string.toast_empty_content);
-        } else if (!TimeUtil.isValidTime(mPlan.getDeadline()) && !TimeUtil.isValidTime(mPlan.getReminderTime())) {
-            mPlanCreationViewContract.showToast(R.string.toast_past_deadline_and_reminder_time);
-            notifyDeadlineChanged(Constant.UNDEFINED_TIME);
-            notifyReminderTimeChanged(Constant.UNDEFINED_TIME);
-        } else if (!TimeUtil.isValidTime(mPlan.getDeadline())) {
-            mPlanCreationViewContract.showToast(R.string.toast_past_deadline);
-            notifyDeadlineChanged(Constant.UNDEFINED_TIME);
         } else if (!TimeUtil.isValidTime(mPlan.getReminderTime())) {
             mPlanCreationViewContract.showToast(R.string.toast_past_reminder_time);
             notifyReminderTimeChanged(Constant.UNDEFINED_TIME);
@@ -155,9 +144,17 @@ public class PlanCreationPresenter extends BasePresenter {
         mFormattedType.setFirstChar(StringUtil.getFirstChar(type.getTypeName()));
     }
 
-    private String formatDateTime(long timeInMillis) {
+    private CharSequence formatDateTime(long timeInMillis) {
         String time = TimeUtil.formatTime(timeInMillis);
-        return time != null ? time : ResourceUtil.getString(R.string.dscpt_touch_to_set);
+        CharSequence formatted;
+        if (time == null) {
+            formatted = ResourceUtil.getString(R.string.dscpt_touch_to_set);
+        } else if (TimeUtil.isFutureTime(timeInMillis)) {
+            formatted = time;
+        } else {
+            formatted = StringUtil.addSpan(time, StringUtil.SPAN_STRIKETHROUGH);
+        }
+        return formatted;
     }
 
     @Subscribe

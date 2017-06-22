@@ -20,8 +20,6 @@
         <attr name="iconImageSrc" format="reference"/>
         <attr name="titleText" format="string"/>
         <attr name="descriptionText" format="string"/>
-        <attr name="descriptionActiveColor" format="color"/>
-        <attr name="descriptionTextActive" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="ColorPicker">

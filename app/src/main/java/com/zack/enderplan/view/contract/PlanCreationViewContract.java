@@ -17,9 +17,9 @@ public interface PlanCreationViewContract extends BaseViewContract {
 
     void showDeadlinePickerDialog(long defaultDeadline);
 
-    void onDeadlineChanged(boolean hasDeadline, String deadline);
+    void onDeadlineChanged(CharSequence deadline);
 
     void showReminderTimePickerDialog(long defaultReminderTime);
 
-    void onReminderTimeChanged(boolean hasReminder, String reminderTime);
+    void onReminderTimeChanged(CharSequence reminderTime);
 }

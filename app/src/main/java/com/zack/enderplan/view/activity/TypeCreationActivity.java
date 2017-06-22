@@ -134,7 +134,7 @@ public class TypeCreationActivity extends BaseActivity implements TypeCreationVi
     public void onTypeNameChanged(String typeName, String firstChar) {
         mTypeMarkIcon.setInnerText(firstChar);
         mTypeNameText.setText(typeName);
-        mTypeNameItem.setDescriptionText(typeName, true);
+        mTypeNameItem.setDescriptionText(typeName);
     }
 
     @Override
@@ -143,13 +143,13 @@ public class TypeCreationActivity extends BaseActivity implements TypeCreationVi
         getWindow().setStatusBarColor(colorInt);
         mToolbar.setBackgroundColor(ColorUtil.reduceSaturation(colorInt, 0.85f));
         mTypeMarkIcon.setFillColor(colorInt);
-        mTypeMarkColorItem.setDescriptionText(colorName, true);
+        mTypeMarkColorItem.setDescriptionText(colorName);
     }
 
     @Override
     public void onTypeMarkPatternChanged(boolean hasPattern, int patternResId, String patternName) {
         mTypeMarkIcon.setInnerIcon(hasPattern ? getDrawable(patternResId) : null);
-        mTypeMarkPatternItem.setDescriptionText(hasPattern ? patternName : mClickToSetDscpt, hasPattern);
+        mTypeMarkPatternItem.setDescriptionText(hasPattern ? patternName : mClickToSetDscpt);
     }
 
     @Override

@@ -61,9 +61,7 @@ public class PlanDetailPresenter extends BasePresenter {
                 mPlan.getContent(),
                 mPlan.isStarred(),
                 mDataManager.getTypeLocationInTypeList(mPlan.getTypeCode()),
-                mPlan.hasDeadline(),
                 formatDateTime(mPlan.getDeadline()),
-                mPlan.hasReminder(),
                 formatDateTime(mPlan.getReminderTime()),
                 mPlan.isCompleted()
         ), mFormattedType);
@@ -162,7 +160,7 @@ public class PlanDetailPresenter extends BasePresenter {
         //首先检测此计划是否有提醒
         if (mPlan.hasReminder()) {
             mDataManager.notifyReminderTimeChanged(mPlanListPosition, Constant.UNDEFINED_TIME);
-            mPlanDetailViewContract.onReminderTimeChanged(false, ResourceUtil.getString(R.string.dscpt_unsettled));
+            mPlanDetailViewContract.onReminderTimeChanged(ResourceUtil.getString(R.string.dscpt_unsettled));
             postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_REMINDER_TIME);
         }
         mDataManager.notifyPlanStatusChanged(mPlanListPosition);
@@ -188,20 +186,16 @@ public class PlanDetailPresenter extends BasePresenter {
 
     public void notifyDeadlineChanged(long deadline) {
         if (mPlan.getDeadline() == deadline) return;
-        if (TimeUtil.isValidTime(deadline)) {
-            mDataManager.notifyDeadlineChanged(mPlanListPosition, deadline);
-            mPlanDetailViewContract.onDeadlineChanged(mPlan.hasDeadline(), formatDateTime(deadline));
-            postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_DEADLINE);
-        } else {
-            mPlanDetailViewContract.showToast(R.string.toast_past_deadline);
-        }
+        mDataManager.notifyDeadlineChanged(mPlanListPosition, deadline);
+        mPlanDetailViewContract.onDeadlineChanged(formatDateTime(deadline));
+        postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_DEADLINE);
     }
 
     public void notifyReminderTimeChanged(long reminderTime) {
         if (mPlan.getReminderTime() == reminderTime) return;
         if (TimeUtil.isValidTime(reminderTime)) {
             mDataManager.notifyReminderTimeChanged(mPlanListPosition, reminderTime);
-            mPlanDetailViewContract.onReminderTimeChanged(mPlan.hasReminder(), formatDateTime(reminderTime));
+            mPlanDetailViewContract.onReminderTimeChanged(formatDateTime(reminderTime));
             postPlanDetailChangedEvent(PlanDetailChangedEvent.FIELD_REMINDER_TIME);
         } else {
             mPlanDetailViewContract.showToast(R.string.toast_past_reminder_time);
@@ -222,9 +216,17 @@ public class PlanDetailPresenter extends BasePresenter {
         mEventBus.post(new PlanDetailChangedEvent(getPresenterName(), mPlan.getPlanCode(), mPlanListPosition, changedField));
     }
 
-    private String formatDateTime(long timeInMillis) {
+    private CharSequence formatDateTime(long timeInMillis) {
         String time = TimeUtil.formatTime(timeInMillis);
-        return time != null ? time : ResourceUtil.getString(R.string.dscpt_unsettled);
+        CharSequence formatted;
+        if (time == null) {
+            formatted = ResourceUtil.getString(R.string.dscpt_touch_to_set);
+        } else if (TimeUtil.isFutureTime(timeInMillis)) {
+            formatted = time;
+        } else {
+            formatted = StringUtil.addSpan(time, StringUtil.SPAN_STRIKETHROUGH);
+        }
+        return formatted;
     }
 
     @Subscribe
@@ -247,13 +249,13 @@ public class PlanDetailPresenter extends BasePresenter {
                     mPlanListPosition = event.getPosition();
                     break;
                 case PlanDetailChangedEvent.FIELD_DEADLINE:
-                    mPlanDetailViewContract.onDeadlineChanged(mPlan.hasDeadline(), formatDateTime(mPlan.getDeadline()));
+                    mPlanDetailViewContract.onDeadlineChanged(formatDateTime(mPlan.getDeadline()));
                     break;
                 case PlanDetailChangedEvent.FIELD_STAR_STATUS:
                     mPlanDetailViewContract.onStarStatusChanged(mPlan.isStarred());
                     break;
                 case PlanDetailChangedEvent.FIELD_REMINDER_TIME:
-                    mPlanDetailViewContract.onReminderTimeChanged(mPlan.hasReminder(), formatDateTime(mPlan.getReminderTime()));
+                    mPlanDetailViewContract.onReminderTimeChanged(formatDateTime(mPlan.getReminderTime()));
                     break;
             }
         }

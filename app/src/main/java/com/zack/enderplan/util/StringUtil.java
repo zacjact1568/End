@@ -1,8 +1,10 @@
 package com.zack.enderplan.util;
 
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
@@ -15,6 +17,7 @@ public class StringUtil {
     public static final int SPAN_STRIKETHROUGH = 0;
     public static final int SPAN_BOLD_STYLE = 1;
     public static final int SPAN_UNDERLINE = 2;
+    public static final int SPAN_BLACK_COLOR = 3;
 
     /** 整个字符串都添加span */
     public static SpannableString addSpan(String str, int span) {
@@ -59,6 +62,9 @@ public class StringUtil {
                 break;
             case SPAN_UNDERLINE:
                 what = new UnderlineSpan();
+                break;
+            case SPAN_BLACK_COLOR:
+                what = new ForegroundColorSpan(Color.BLACK);
                 break;
             default:
                 throw new IllegalArgumentException("The argument span cannot be " + span);

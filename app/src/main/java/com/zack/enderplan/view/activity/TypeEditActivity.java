@@ -147,7 +147,7 @@ public class TypeEditActivity extends BaseActivity implements TypeEditViewContra
     public void onTypeNameChanged(String typeName, String firstChar) {
         mTypeMarkIcon.setInnerText(firstChar);
         mTypeNameText.setText(typeName);
-        mTypeNameItem.setDescriptionText(typeName, true);
+        mTypeNameItem.setDescriptionText(typeName);
     }
 
     @Override
@@ -156,13 +156,13 @@ public class TypeEditActivity extends BaseActivity implements TypeEditViewContra
         getWindow().setStatusBarColor(colorInt);
         mToolbar.setBackgroundColor(ColorUtil.reduceSaturation(colorInt, 0.85f));
         mTypeMarkIcon.setFillColor(colorInt);
-        mTypeMarkColorItem.setDescriptionText(colorName, true);
+        mTypeMarkColorItem.setDescriptionText(colorName);
     }
 
     @Override
     public void onTypeMarkPatternChanged(boolean hasPattern, int patternResId, String patternName) {
         mTypeMarkIcon.setInnerIcon(hasPattern ? getDrawable(patternResId) : null);
-        mTypeMarkPatternItem.setDescriptionText(hasPattern ? patternName : mUnsettledDscpt, hasPattern);
+        mTypeMarkPatternItem.setDescriptionText(hasPattern ? patternName : mUnsettledDscpt);
     }
 
     @Override
