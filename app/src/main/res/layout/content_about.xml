@@ -12,14 +12,18 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/pager_about"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:overScrollMode="never"/>
 
     <com.pixelcan.inkpageindicator.InkPageIndicator
         android:id="@+id/indicator_about"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center|top"
-        android:layout_marginTop="16dp"
+        android:background="?android:attr/colorBackground"
+        android:alpha="0.9"
+        android:padding="16dp"
+        app:dotDiameter="10dp"
         app:pageIndicatorColor="@android:color/darker_gray"
         app:currentPageIndicatorColor="@color/colorPrimary"/>
 

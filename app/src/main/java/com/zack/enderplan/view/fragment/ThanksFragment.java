@@ -12,7 +12,7 @@ import com.zack.enderplan.view.adapter.LibraryListAdapter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class LibrariesFragment extends BaseFragment {
+public class ThanksFragment extends BaseFragment {
 
     @BindView(R.id.list_library)
     RecyclerView mLibraryList;
@@ -24,7 +24,7 @@ public class LibrariesFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_libraries, container, false);
+        return inflater.inflate(R.layout.fragment_thanks, container, false);
     }
 
     @Override
@@ -33,6 +33,7 @@ public class LibrariesFragment extends BaseFragment {
         ButterKnife.bind(this, view);
 
         mLibraryList.setAdapter(new LibraryListAdapter(getActivity()));
+        mLibraryList.setHasFixedSize(true);
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
+import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
 
 import java.util.ArrayList;
@@ -18,46 +19,60 @@ public class StringUtil {
     public static final int SPAN_BOLD_STYLE = 1;
     public static final int SPAN_UNDERLINE = 2;
     public static final int SPAN_BLACK_COLOR = 3;
+    public static final int SPAN_URL = 4;
+    public static final int SPAN_CLICKABLE = 5;
+
+    public static SpannableString addSpan(String str, int span) {
+        return addSpan(str, span, null);
+    }
 
     /** 整个字符串都添加span */
-    public static SpannableString addSpan(String str, int span) {
+    public static SpannableString addSpan(String str, int span, Object extra) {
         SpannableString ss = new SpannableString(str);
-        addSpan(ss, span, 0, str.length());
+        addSpan(ss, span, extra, 0, str.length());
         return ss;
     }
 
-    /** 一个字符串不同段上添加span，参数segs只表示段的类型（每一种段可以在字符串中重复），无视大小写，允许重叠 */
     public static SpannableString addSpan(String str, String[] segs, int span) {
+        return addSpan(str, segs, span, null);
+    }
+
+    /** 一个字符串不同段上添加span，参数segs只表示段的类型（每一种段可以在字符串中重复），无视大小写，允许重叠 */
+    public static SpannableString addSpan(String str, String[] segs, int span, Object extra) {
         SpannableString ss = new SpannableString(str);
         for (String seg : segs) {
             List<Integer> segLocationList = getSubstringLocationList(str, seg);
             for (int segLocation : segLocationList) {
-                addSpan(ss, span, segLocation, seg.length());
+                addSpan(ss, span, extra, segLocation, seg.length());
             }
         }
         return ss;
     }
 
     /** 一个字符串不同段上添加不同的span，段必须和span一一对应，即不允许重复 */
-    public static SpannableString addSpan(String str, String[] segs, int[] spans) {
+    public static SpannableString addSpan(String str, String[] segs, int[] spans, Object[] extras) {
         if (segs.length != spans.length) {
             throw new RuntimeException("The length of string segment array and span type array should be equal");
+        }
+        if (spans.length != extras.length) {
+            throw new RuntimeException("The length of span type array and extra array should be equal");
         }
         SpannableString ss = new SpannableString(str);
         for (int i = 0; i < segs.length; i++) {
             String seg = segs[i];
-            addSpan(ss, spans[i], str.indexOf(seg), seg.length());
+            addSpan(ss, spans[i], extras[i], str.indexOf(seg), seg.length());
         }
         return ss;
     }
 
-    private static void addSpan(SpannableString ss, int span, int start, int length) {
+    private static void addSpan(SpannableString ss, int span, Object extra, int start, int length) {
         Object what;
         switch (span) {
             case SPAN_STRIKETHROUGH:
                 what = new StrikethroughSpan();
                 break;
             case SPAN_BOLD_STYLE:
+                //TODO 将int extra提取出来
                 what = new StyleSpan(Typeface.BOLD);
                 break;
             case SPAN_UNDERLINE:
@@ -65,6 +80,12 @@ public class StringUtil {
                 break;
             case SPAN_BLACK_COLOR:
                 what = new ForegroundColorSpan(Color.BLACK);
+                break;
+            case SPAN_URL:
+                what = new URLSpan((String) extra);
+                break;
+            case SPAN_CLICKABLE:
+                what = extra;
                 break;
             default:
                 throw new IllegalArgumentException("The argument span cannot be " + span);

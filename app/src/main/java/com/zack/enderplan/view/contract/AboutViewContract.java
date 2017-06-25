@@ -10,6 +10,10 @@ public interface AboutViewContract extends BaseViewContract {
 
     void onAppBarScrolledToCriticalPoint(String toolbarTitle);
 
+    void translateViewWhenIncline(boolean shouldTranslateX, float translationX, boolean shouldTranslateY, float translationY);
+
+    void resetViewTranslation();
+
     void backToTop();
 
     void pressBack();

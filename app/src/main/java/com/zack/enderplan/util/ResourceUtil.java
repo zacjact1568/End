@@ -2,11 +2,15 @@ package com.zack.enderplan.util;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.AnimRes;
+import android.support.annotation.ArrayRes;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.PluralsRes;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.zack.enderplan.App;
 
@@ -48,5 +52,13 @@ public class ResourceUtil {
         int resId = getDrawableResourceId(name);
         if (resId == 0) return null;
         return getDrawable(resId);
+    }
+
+    public static String[] getStringArray(@ArrayRes int resId) {
+        return App.getContext().getResources().getStringArray(resId);
+    }
+
+    public static Animation getAnimation(@AnimRes int resId) {
+        return AnimationUtils.loadAnimation(App.getContext(), resId);
     }
 }

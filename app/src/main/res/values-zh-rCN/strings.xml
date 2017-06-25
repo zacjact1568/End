@@ -17,7 +17,7 @@
     <string name="save">保存</string>
     <string name="type_prompt">选择类型</string>
     <string name="change">修改</string>
-    <string name="edited_prompt">您的修改已成功保存</string>
+    <string name="edited_prompt">你的修改已成功保存</string>
     <string name="delete">删除</string>
     <string name="done">完成</string>
     <string name="undone">未完成</string>
@@ -34,7 +34,6 @@
     <string name="title_activity_plan_detail">计划详情</string>
     <string name="title_activity_settings">设置</string>
     <string name="pref_title_language">语言</string>
-    <string name="version">版本</string>
     <string name="text_empty_plan_list_1">这里还没有计划呢</string>
     <string name="edit_content_hint">在这儿修改你计划的内容</string>
     <string name="action_delete">删除</string>
@@ -59,8 +58,6 @@
     <string name="toast_create_plan_success">创建成功</string>
     <string name="text_make_plan_c">完成</string>
     <string name="text_make_plan_uc">未完成</string>
-    <string name="developer">开发者</string>
-    <string name="me">\@全杰是也</string>
     <string name="text_view_details">查看详细</string>
     <string name="toast_double_press_exit">再次按下退出EnderPlan</string>
     <string name="toast_reminder_delayed_5min">我将会在5分钟之后提醒你</string>
@@ -169,7 +166,6 @@
     <string name="dscpt_guide_page_welcome">触摸右箭头以继续</string>
     <string name="title_guide_page_ready">向导结束</string>
     <string name="button_enable">启用</string>
-    <string name="msg_dialog_reminder_problem">EnderPlan使用系统级的服务来实现提醒功能，但由于部分设备预装了优化版的Android系统，提醒功能有时不能正常工作。如果您发现提醒时间不准确或无法收到提醒，请尝试开启EnderPlan的自启动及后台运行权限。</string>
     <string name="action_reset">重置</string>
     <string name="btn_dialog_reset_settings">重置并重启</string>
     <string name="button_disable">禁用</string>
@@ -182,17 +178,10 @@
     <string name="def_plan_2">触摸查看计划详情</string>
     <string name="def_plan_1">触摸\"+\"按钮创建一个计划</string>
     <string name="title_activity_guide">向导</string>
-    <string name="btn_common_problems">常见问题</string>
-    <string name="text_developer">EnderPlan 由 Zack Zhang 创造</string>
-    <string name="title_dialog_reminder_problem">关于提醒</string>
-    <string name="text_library">特别感谢以下这些库的开发者：</string>
-    <string name="text_store">商店</string>
-    <string name="text_intro">顾名思义，EnderPlan是一个简单的、能帮助你管理计划的应用程序。你可以创建计划，用类型将它们分组，你也可以为你的计划设定提醒，当提醒时间到了，你会收到通知。</string>
-    <string name="text_email">邮件</string>
+    <string name="text_intro">EnderPlan是一个简单的、能帮助你管理计划的应用程序。</string>
     <string name="toast_no_store_found">你好像没有安装应用商店</string>
     <string name="toast_no_link_app_found">没有可以打开链接的应用</string>
     <string name="app_name">Ender计划</string>
-    <string name="title_dialog_common_problems">常见问题</string>
     <string name="pref_title_drawer_header_display">抽屉顶部显示</string>
     <string name="text_plan_count">所有</string>
     <string name="text_today_uc_plan_count">今天</string>
@@ -214,4 +203,21 @@
     <string name="text_type_search">找到%s：</string>
     <string name="text_type_search_empty">未找到类型</string>
     <string name="title_activity_type_search">搜索类型</string>
+    <string name="title_developer">开发者</string>
+    <string name="text_developer">EnderPlan由Zack创造。如果你在使用过程中发现问题或者有对于此app的建议，请联系我。</string>
+    <string name="text_thanks">特别感谢以下这些库的开发者：</string>
+    <string name="title_ender_series">Ender系列</string>
+    <string name="title_fragment_about">关于</string>
+    <string name="title_fragment_problems">问题</string>
+    <string name="title_fragment_thanks">致谢</string>
+    <string name="title_intro">介绍</string>
+    <string name="title_rate">评分</string>
+    <string name="text_ender_series">由我的世界(Minecraft)中的末影人(Enderman)启发。</string>
+    <string name="text_rate">如果你喜欢，请为这个app评分。</string>
+    <string name="text_problems">以下列出了一些常见问题：</string>
+    <string name="text_span_seg_minecraft">我的世界</string>
+    <string name="text_span_seg_enderman">末影人</string>
+    <string name="text_span_seg_contact">联系</string>
+    <string name="text_span_seg_rate">评分</string>
+    <string name="text_span_seg_enderman_url">http://minecraft-zh.gamepedia.com/末影人</string>
 </resources>

@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string-array name="common_problems">
+    <string-array name="problem_descriptions">
         <item>提醒不能正常工作？</item>
+    </string-array>
+
+    <string-array name="problem_solutions">
+        <item>
+            EnderPlan使用系统级的服务来实现提醒功能，但由于部分设备预装了优化版的Android系统，提醒功能有时不能正常工作。
+            如果您发现提醒时间不准确或无法收到提醒，请尝试开启EnderPlan的自启动及后台运行权限。
+        </item>
     </string-array>
 
     <string-array name="pref_entries_drawer_header_display">

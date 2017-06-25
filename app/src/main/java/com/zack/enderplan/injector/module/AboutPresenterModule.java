@@ -1,5 +1,6 @@
 package com.zack.enderplan.injector.module;
 
+import android.hardware.SensorManager;
 import android.support.v4.app.FragmentManager;
 
 import com.zack.enderplan.view.contract.AboutViewContract;
@@ -12,10 +13,12 @@ public class AboutPresenterModule {
 
     private final AboutViewContract mAboutViewContract;
     private final FragmentManager mFragmentManager;
+    private final SensorManager mSensorManager;
 
-    public AboutPresenterModule(AboutViewContract aboutViewContract, FragmentManager fragmentManager) {
+    public AboutPresenterModule(AboutViewContract aboutViewContract, FragmentManager fragmentManager, SensorManager sensorManager) {
         mAboutViewContract = aboutViewContract;
         mFragmentManager = fragmentManager;
+        mSensorManager = sensorManager;
     }
 
     @Provides
@@ -26,5 +29,10 @@ public class AboutPresenterModule {
     @Provides
     FragmentManager provideFragmentManager() {
         return mFragmentManager;
+    }
+
+    @Provides
+    SensorManager provideSensorManager() {
+        return mSensorManager;
     }
 }

@@ -16,8 +16,16 @@
         <item>@color/brown</item>
     </array>
 
-    <string-array name="common_problems">
+    <string-array name="problem_descriptions">
         <item>Reminder can\'t work?</item>
+    </string-array>
+
+    <string-array name="problem_solutions">
+        <item>
+            EnderPlan uses a system-level service to implement reminder, but some devices were pre-installed an optimized version of
+            Android system, which makes reminder sometimes can\'t work as expected. If you find that the reminder time is inaccurate
+            or you can\'t receive the reminder, please try to turn on auto-start and background running permissions for EnderPlan.
+        </item>
     </string-array>
 
     <string-array name="pref_entries_drawer_header_display">

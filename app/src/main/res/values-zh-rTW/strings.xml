@@ -16,7 +16,7 @@
     <string name="save">保存</string>
     <string name="type_prompt">選擇類型</string>
     <string name="change">修改</string>
-    <string name="edited_prompt">您的修改已成功存儲</string>
+    <string name="edited_prompt">你的修改已成功存儲</string>
     <string name="delete">刪除</string>
     <string name="done">完成</string>
     <string name="undone">未完成</string>
@@ -33,7 +33,6 @@
     <string name="title_activity_plan_detail">計劃詳情</string>
     <string name="title_activity_settings">設定</string>
     <string name="pref_title_language">語言</string>
-    <string name="version">版本</string>
     <string name="text_empty_plan_list_1">這裡還沒有計劃呢</string>
     <string name="edit_content_hint">在這兒修改你計劃的內容</string>
     <string name="action_delete">刪除</string>
@@ -57,8 +56,6 @@
     <string name="toast_create_plan_success">創建成功</string>
     <string name="text_make_plan_c">完成</string>
     <string name="text_make_plan_uc">未完成</string>
-    <string name="developer">開發者</string>
-    <string name="me">\@zacjact1568</string>
     <string name="text_view_details">查看詳細</string>
     <string name="toast_reminder_delayed_5min">我將會在5分鐘之後提醒你</string>
     <string name="toast_reminder_canceled">提醒已取消</string>
@@ -133,4 +130,5 @@
     <string name="toast_reminder_delayed_format">我將會%s提醒你</string>
     <string name="def_type_2">家庭</string>
     <string name="app_name">Ender計劃</string>
+    <string name="title_developer">開發者</string>
 </resources>

@@ -1,7 +1,10 @@
 package com.zack.enderplan.view.activity;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Path;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -59,10 +62,29 @@ public class AboutActivity extends BaseActivity implements AboutViewContract {
     @Override
     protected void onInjectPresenter() {
         DaggerAboutComponent.builder()
-                .aboutPresenterModule(new AboutPresenterModule(this, getSupportFragmentManager()))
+                .aboutPresenterModule(new AboutPresenterModule(this, getSupportFragmentManager(), (SensorManager) getSystemService(SENSOR_SERVICE)))
                 .appComponent(App.getAppComponent())
                 .build()
                 .inject(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mAboutPresenter.notifyRegisteringSensorListener();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mAboutPresenter.notifyUnregisteringSensorListener();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //将位置恢复放在这，就看不到移动的过程了
+        mAboutPresenter.notifyResetingViewTranslation();
     }
 
     @Override
@@ -126,6 +148,32 @@ public class AboutActivity extends BaseActivity implements AboutViewContract {
     @Override
     public void onAppBarScrolledToCriticalPoint(String toolbarTitle) {
         mToolbar.setTitle(toolbarTitle);
+    }
+
+    @Override
+    public void translateViewWhenIncline(boolean shouldTranslateX, float translationX, boolean shouldTranslateY, float translationY) {
+        if (!shouldTranslateX && !shouldTranslateY) return;
+        Path path = new Path();
+        //start point
+        path.moveTo(mHeaderLayout.getTranslationX(), mHeaderLayout.getTranslationY());
+        //end point
+        if (shouldTranslateX && shouldTranslateY) {
+            //x和y均合适
+            path.lineTo(translationX, translationY);
+        } else if (shouldTranslateX) {
+            //x合适，y不合适
+            path.lineTo(translationX, mHeaderLayout.getTranslationY());
+        } else {
+            //x不合适，y合适
+            path.lineTo(mHeaderLayout.getTranslationX(), translationY);
+        }
+        ObjectAnimator.ofFloat(mHeaderLayout, "translationX", "translationY", path).setDuration(80).start();
+    }
+
+    @Override
+    public void resetViewTranslation() {
+        mHeaderLayout.setTranslationX(0f);
+        mHeaderLayout.setTranslationY(0f);
     }
 
     @Override

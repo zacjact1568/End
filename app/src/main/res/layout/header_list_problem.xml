@@ -12,7 +12,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/title_fragment_thanks"
+        android:text="@string/title_fragment_problems"
         android:textSize="28sp"
         android:textColor="@color/colorPrimary"
         android:textStyle="bold"
@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/text_thanks"
+        android:text="@string/text_problems"
         android:textSize="16sp"/>
 
 </LinearLayout>

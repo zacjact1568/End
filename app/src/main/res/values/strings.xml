@@ -3,6 +3,7 @@
     <!--通用-->
 
     <string name="app_name">EnderPlan</string>
+    <string name="app_name_en" translatable="false">EnderPlan</string>
 
     <string name="action_search">Search</string>
     <string name="action_edit">Edit</string>
@@ -203,31 +204,39 @@
 
     <!--AboutActivity-->
     <string name="title_activity_about">About</string>
-    <string name="version">Version</string>
-    <string name="developer">Developer</string>
-    <string name="me">\@zacjact1568</string>
-    <string name="text_app_name_pt1">Ender</string>
-    <string name="text_app_name_pt2">Plan</string>
-    <string name="text_slogan">MAKE PLANS UNTIL THE WORLD ENDS !</string>
+    <string name="text_slogan">Make plans until the world ends!</string>
+
+    <!--AboutFragment-->
+    <string name="title_fragment_about">About</string>
+    <string name="title_intro">Intro</string>
+    <string name="text_intro">EnderPlan is an simple app that helps you manage your plans.</string>
+    <string name="title_ender_series">Ender Series</string>
+    <string name="text_ender_series">Inspired by Enderman in Minecraft.</string>
+    <string name="text_span_seg_enderman">Enderman</string>
+    <string name="text_span_seg_minecraft">Minecraft</string>
+    <string name="text_span_seg_enderman_url">http://minecraft.gamepedia.com/Enderman</string>
+    <string name="title_developer">Developer</string>
+    <string name="text_developer">EnderPlan is written by Zack. Contact me if you find bugs or have recommendations for this app.</string>
+    <string name="text_span_seg_contact">Contact</string>
     <string name="subject_email">Email from an EnderPlan User</string>
     <string name="title_dialog_no_email_app_found">No email app found</string>
-    <string name="msg_dialog_no_email_app_found">
-        It seems that you doesn\'t install an email app. You can copy my email address \"zacjact1568@hotmail.com\" to clipboard and send me an email later.
-    </string>
+    <string name="msg_dialog_no_email_app_found">It seems that you doesn\'t install an email app. You can copy my email address \"zacjact1568@hotmail.com\" to clipboard and send me an email later.</string>
     <string name="btn_dialog_copy_to_clipboard">Copy to Clipboard</string>
     <string name="toast_copy_to_clipboard_successfully">Text has been copied to clipboard</string>
     <string name="label_developer_email">Email of EnderPlan\'s developer</string>
-    <string name="text_intro">As the name implied, EnderPlan is an simple app that helps you manage your plans. You can create plans and group them with types, set reminder for your plans and EnderPlan will tell the system to send you a notification when time is up.</string>
-    <string name="text_developer">EnderPlan is written by Zack Zhang</string>
-    <string name="text_email">Email</string>
-    <string name="text_store">Store</string>
+    <string name="title_rate">Rate</string>
+    <string name="text_rate">Rate this app if you like.</string>
+    <string name="text_span_seg_rate">Rate</string>
     <string name="toast_no_store_found">It seems that you doesn\'t install an application store</string>
     <string name="toast_no_link_app_found">No app can open a link</string>
-    <string name="btn_common_problems">Common problems</string>
-    <string name="title_dialog_common_problems">Common problems</string>
-    <string name="title_dialog_reminder_problem">About Reminder</string>
-    <string name="msg_dialog_reminder_problem">EnderPlan uses a system-level service to implement reminder, but some devices were pre-installed an optimized version of Android system, which makes reminder sometimes can\'t work as expected. If you find that the reminder time is inaccurate or you can\'t receive the reminder, please try to turn on auto-start and background running permissions for EnderPlan.</string>
-    <string name="text_library">Special thanks to the developers of the following libraries:</string>
+
+    <!--ThanksFragment-->
+    <string name="title_fragment_thanks">Thanks</string>
+    <string name="text_thanks">Special thanks to the developers of the following libraries:</string>
+
+    <!--ProblemsFragment-->
+    <string name="title_fragment_problems">Problems</string>
+    <string name="text_problems">Listed below are some common problems:</string>
 
     <!--GuideActivity-->
     <string name="title_activity_guide">Guide</string>
