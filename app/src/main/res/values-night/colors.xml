@@ -8,6 +8,6 @@
 
     <color name="colorWhiteBackground">#FF333333</color>
     <color name="colorBlackBackground">@android:color/white</color>
-    <color name="colorGreyBackground">#FF333333</color>
+    <color name="colorGreyBackground">#FF404040</color>
 
 </resources>

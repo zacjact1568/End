@@ -1,22 +1,29 @@
 package com.zack.enderplan.view.widget;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.util.StringUtil;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class ItemView extends FrameLayout {
 
-    private Drawable mIconDrawable;
-    private String mTitleStr;
-    private CharSequence mDscptStr;
+    @BindView(R.id.image_icon)
+    ImageView mImageIcon;
+    @BindView(R.id.text_title)
+    TextView mTitleText;
+    @BindView(R.id.text_dscpt)
+    TextView mDscptText;
 
-    private TextView mDscptText;
+    private int mDscptTextColor;
 
     public ItemView(Context context) {
         super(context);
@@ -34,29 +41,38 @@ public class ItemView extends FrameLayout {
     }
 
     private void init(AttributeSet attrs, int defStyle) {
-        loadAttrs(attrs, defStyle);
-        initViews();
-    }
+        inflate(getContext(), R.layout.widget_item_view, this);
+        ButterKnife.bind(this);
 
-    private void loadAttrs(AttributeSet attrs, int defStyle) {
+        mDscptTextColor = mDscptText.getCurrentTextColor();
+
         TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.ItemView, defStyle, 0);
-        mIconDrawable = ta.getDrawable(R.styleable.ItemView_iconImageSrc);
-        mTitleStr = ta.getString(R.styleable.ItemView_titleText);
-        mDscptStr = ta.getString(R.styleable.ItemView_descriptionText);
+        mImageIcon.setImageDrawable(ta.getDrawable(R.styleable.ItemView_iconImageSrc));
+        mTitleText.setText(ta.getString(R.styleable.ItemView_titleText));
+        setDescriptionText(ta.getString(R.styleable.ItemView_descriptionText));
         ta.recycle();
     }
 
-    private void initViews() {
-        inflate(getContext(), R.layout.widget_item_view, this);
-
-        ((ImageView) findViewById(R.id.image_icon)).setImageDrawable(mIconDrawable);
-        ((TextView) findViewById(R.id.text_title)).setText(mTitleStr);
-
-        mDscptText = (TextView) findViewById(R.id.text_dscpt);
-        setDescriptionText(mDscptStr);
+    public void setDescriptionText(CharSequence text) {
+        mDscptText.setText(colorDscptText(text));
     }
 
-    public void setDescriptionText(CharSequence text) {
-        mDscptText.setText(text);
+    public void setThemeColor(int color) {
+        setImageIconTintColor(color);
+        setDscptTextColor(color);
+    }
+
+    public void setImageIconTintColor(int color) {
+        mImageIcon.setImageTintList(ColorStateList.valueOf(color));
+    }
+
+    public void setDscptTextColor(int color) {
+        if (mDscptTextColor == color) return;
+        mDscptTextColor = color;
+        mDscptText.setText(colorDscptText(mDscptText.getText()));
+    }
+
+    private CharSequence colorDscptText(CharSequence text) {
+        return text == null ? null : StringUtil.addSpan(text, StringUtil.SPAN_COLOR, mDscptTextColor);
     }
 }

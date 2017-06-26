@@ -18,30 +18,30 @@ public class StringUtil {
     public static final int SPAN_STRIKETHROUGH = 0;
     public static final int SPAN_BOLD_STYLE = 1;
     public static final int SPAN_UNDERLINE = 2;
-    public static final int SPAN_BLACK_COLOR = 3;
+    public static final int SPAN_COLOR = 3;
     public static final int SPAN_URL = 4;
     public static final int SPAN_CLICKABLE = 5;
 
-    public static SpannableString addSpan(String str, int span) {
-        return addSpan(str, span, null);
+    public static SpannableString addSpan(CharSequence cs, int span) {
+        return addSpan(cs, span, null);
     }
 
     /** 整个字符串都添加span */
-    public static SpannableString addSpan(String str, int span, Object extra) {
-        SpannableString ss = new SpannableString(str);
-        addSpan(ss, span, extra, 0, str.length());
+    public static SpannableString addSpan(CharSequence cs, int span, Object extra) {
+        SpannableString ss = new SpannableString(cs);
+        addSpan(ss, span, extra, 0, cs.length());
         return ss;
     }
 
-    public static SpannableString addSpan(String str, String[] segs, int span) {
-        return addSpan(str, segs, span, null);
+    public static SpannableString addSpan(CharSequence cs, String[] segs, int span) {
+        return addSpan(cs, segs, span, null);
     }
 
     /** 一个字符串不同段上添加span，参数segs只表示段的类型（每一种段可以在字符串中重复），无视大小写，允许重叠 */
-    public static SpannableString addSpan(String str, String[] segs, int span, Object extra) {
-        SpannableString ss = new SpannableString(str);
+    public static SpannableString addSpan(CharSequence cs, String[] segs, int span, Object extra) {
+        SpannableString ss = new SpannableString(cs);
         for (String seg : segs) {
-            List<Integer> segLocationList = getSubstringLocationList(str, seg);
+            List<Integer> segLocationList = getSubstringLocationList(cs.toString(), seg);
             for (int segLocation : segLocationList) {
                 addSpan(ss, span, extra, segLocation, seg.length());
             }
@@ -50,17 +50,17 @@ public class StringUtil {
     }
 
     /** 一个字符串不同段上添加不同的span，段必须和span一一对应，即不允许重复 */
-    public static SpannableString addSpan(String str, String[] segs, int[] spans, Object[] extras) {
+    public static SpannableString addSpan(CharSequence cs, String[] segs, int[] spans, Object[] extras) {
         if (segs.length != spans.length) {
             throw new RuntimeException("The length of string segment array and span type array should be equal");
         }
         if (spans.length != extras.length) {
             throw new RuntimeException("The length of span type array and extra array should be equal");
         }
-        SpannableString ss = new SpannableString(str);
+        SpannableString ss = new SpannableString(cs);
         for (int i = 0; i < segs.length; i++) {
             String seg = segs[i];
-            addSpan(ss, spans[i], extras[i], str.indexOf(seg), seg.length());
+            addSpan(ss, spans[i], extras[i], cs.toString().indexOf(seg), seg.length());
         }
         return ss;
     }
@@ -78,8 +78,8 @@ public class StringUtil {
             case SPAN_UNDERLINE:
                 what = new UnderlineSpan();
                 break;
-            case SPAN_BLACK_COLOR:
-                what = new ForegroundColorSpan(Color.BLACK);
+            case SPAN_COLOR:
+                what = new ForegroundColorSpan((int) extra);
                 break;
             case SPAN_URL:
                 what = new URLSpan((String) extra);

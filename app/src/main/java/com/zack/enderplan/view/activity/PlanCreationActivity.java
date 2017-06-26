@@ -2,6 +2,7 @@ package com.zack.enderplan.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zack.enderplan.App;
@@ -41,6 +43,8 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.ic_plan)
+    ImageView mPlanIcon;
     @BindView(R.id.editor_content)
     EditText mContentEditor;
     @BindView(R.id.ic_type_mark)
@@ -147,7 +151,6 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
         setSupportActionBar(mToolbar);
         setupActionBar();
 
-        SystemUtil.showSoftInput(mContentEditor, 100);
         mContentEditor.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -195,10 +198,13 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
         getWindow().setNavigationBarColor(typeMarkColorInt);
         getWindow().setStatusBarColor(typeMarkColorInt);
         mToolbar.setBackgroundColor(ColorUtil.reduceSaturation(typeMarkColorInt, 0.85f));
+        mPlanIcon.setImageTintList(ColorStateList.valueOf(typeMarkColorInt));
         mTypeMarkIcon.setFillColor(typeMarkColorInt);
         mTypeMarkIcon.setInnerIcon(formattedType.isHasTypeMarkPattern() ? getDrawable(formattedType.getTypeMarkPatternResId()) : null);
         mTypeMarkIcon.setInnerText(formattedType.getFirstChar());
         mTypeNameText.setText(formattedType.getTypeName());
+        mDeadlineItem.setThemeColor(typeMarkColorInt);
+        mReminderItem.setThemeColor(typeMarkColorInt);
     }
 
     @Override
