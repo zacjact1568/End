@@ -1,37 +1,40 @@
 package com.zack.enderplan.view.dialog;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 
 import com.zack.enderplan.R;
+import com.zack.enderplan.util.ResourceUtil;
 import com.zack.enderplan.util.SystemUtil;
 
-public class EditorDialogFragment extends DialogFragment {
+import butterknife.BindView;
 
-    private static final String ARG_TITLE_TEXT = "title_text";
-    private static final String ARG_CONTENT_EDITOR = "content_editor";
+public class EditorDialogFragment extends BaseDialogFragment {
 
-    private EditText mEditor;
-    private String mTitleTextStr, mContentEditorStr;
-    private OnPositiveButtonClickListener mOnPositiveButtonClickListener;
+    @BindView(R.id.editor)
+    EditText mEditor;
+
+    private static final String ARG_EDITOR_TEXT = "editor_text";
+    private static final String ARG_EDITOR_HINT = "editor_hint";
+
+    private String mEditorTextStr, mEditorHintStr;
+    private OnOkButtonClickListener mOnOkButtonClickListener;
 
     public EditorDialogFragment() {
-        // Required empty public constructor
+
     }
 
-    public static EditorDialogFragment newInstance(String titleText, String editorText) {
+    public static EditorDialogFragment newInstance(String title, String editorText, String editorHint) {
         EditorDialogFragment fragment = new EditorDialogFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_TITLE_TEXT, titleText);
-        args.putString(ARG_CONTENT_EDITOR, editorText);
+        args.putString(ARG_TITLE, title);
+        args.putString(ARG_NEG_BTN, ResourceUtil.getString(R.string.button_cancel));
+        args.putString(ARG_POS_BTN, ResourceUtil.getString(R.string.button_ok));
+        args.putString(ARG_EDITOR_TEXT, editorText);
+        args.putString(ARG_EDITOR_HINT, editorHint);
         fragment.setArguments(args);
         return fragment;
     }
@@ -42,52 +45,51 @@ public class EditorDialogFragment extends DialogFragment {
 
         Bundle args = getArguments();
         if (args != null) {
-            mTitleTextStr = args.getString(ARG_TITLE_TEXT);
-            mContentEditorStr = args.getString(ARG_CONTENT_EDITOR);
+            mEditorTextStr = args.getString(ARG_EDITOR_TEXT);
+            mEditorHintStr = args.getString(ARG_EDITOR_HINT);
         }
     }
 
-    @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        mEditor = new EditText(getContext());
+    public View onCreateContentView(LayoutInflater inflater, ViewGroup root) {
+        return inflater.inflate(R.layout.dialog_fragment_editor, root, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mEditor.setText(mEditorTextStr);
+        mEditor.setHint(mEditorHintStr);
+        mEditor.setSelection(mEditor.length());
         SystemUtil.showSoftInput(mEditor, 100);
-        if (!TextUtils.isEmpty(mContentEditorStr)) {
-            mEditor.setText(mContentEditorStr);
-            mEditor.setSelection(mEditor.length());
+    }
+
+    @Override
+    public boolean onButtonClicked(int which) {
+        switch (which) {
+            case BTN_NEG:
+                break;
+            case BTN_POS:
+                if (mOnOkButtonClickListener != null) {
+                    mOnOkButtonClickListener.onOkButtonClick(mEditor.getText().toString());
+                }
+                break;
         }
-
-        FrameLayout root = new FrameLayout(getContext());
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(60, 40, 60, 0);
-        root.addView(mEditor, params);
-
-        return new AlertDialog.Builder(getContext())
-                .setTitle(mTitleTextStr)
-                .setView(root)
-                .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (mOnPositiveButtonClickListener != null) {
-                            mOnPositiveButtonClickListener.onPositiveButtonClick(mEditor.getText().toString());
-                        }
-                    }
-                })
-                .setNegativeButton(R.string.button_cancel, null)
-                .create();
+        return true;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mOnPositiveButtonClickListener = null;
+        mOnOkButtonClickListener = null;
     }
 
-    public interface OnPositiveButtonClickListener {
-        void onPositiveButtonClick(String editorText);
+    public interface OnOkButtonClickListener {
+        void onOkButtonClick(String editorText);
     }
 
-    public void setOnPositiveButtonClickListener(OnPositiveButtonClickListener listener) {
-        mOnPositiveButtonClickListener = listener;
+    public void setOnOkButtonClickListener(OnOkButtonClickListener listener) {
+        mOnOkButtonClickListener = listener;
     }
 }

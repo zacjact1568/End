@@ -157,10 +157,10 @@ public class TypeCreationActivity extends BaseActivity implements TypeCreationVi
 
     @Override
     public void showTypeNameEditorDialog(String defaultName) {
-        EditorDialogFragment fragment = EditorDialogFragment.newInstance(getString(R.string.title_dialog_type_name_editor), defaultName);
-        fragment.setOnPositiveButtonClickListener(new EditorDialogFragment.OnPositiveButtonClickListener() {
+        EditorDialogFragment fragment = EditorDialogFragment.newInstance(getString(R.string.title_dialog_type_name_editor), defaultName, getString(R.string.hint_type_name_editor_creation));
+        fragment.setOnOkButtonClickListener(new EditorDialogFragment.OnOkButtonClickListener() {
             @Override
-            public void onPositiveButtonClick(String editorText) {
+            public void onOkButtonClick(String editorText) {
                 mTypeCreationPresenter.notifyTypeNameEdited(editorText);
             }
         });

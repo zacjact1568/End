@@ -78,7 +78,7 @@
     <string name="button_remove">移除</string>
     <string name="nav_sub_header">其他</string>
     <string name="dscpt_unsettled">未設置</string>
-    <string name="hint_editor_type_name">你新類型的名稱</string>
+    <string name="hint_type_name_editor_creation">新類型的名稱</string>
     <string name="title_deadline">截止時間</string>
     <string name="title_reminder">提醒</string>
     <string name="title_dialog_content_editor">編輯內容</string>

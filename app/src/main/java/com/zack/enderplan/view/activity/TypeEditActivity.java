@@ -133,10 +133,10 @@ public class TypeEditActivity extends BaseActivity implements TypeEditViewContra
 
     @Override
     public void showTypeNameEditorDialog(String originalEditorText) {
-        EditorDialogFragment fragment = EditorDialogFragment.newInstance(App.getContext().getString(R.string.title_dialog_type_name_editor), originalEditorText);
-        fragment.setOnPositiveButtonClickListener(new EditorDialogFragment.OnPositiveButtonClickListener() {
+        EditorDialogFragment fragment = EditorDialogFragment.newInstance(App.getContext().getString(R.string.title_dialog_type_name_editor), originalEditorText, getString(R.string.hint_type_name_editor_edit));
+        fragment.setOnOkButtonClickListener(new EditorDialogFragment.OnOkButtonClickListener() {
             @Override
-            public void onPositiveButtonClick(String editorText) {
+            public void onOkButtonClick(String editorText) {
                 mTypeEditPresenter.notifyUpdatingTypeName(editorText);
             }
         });

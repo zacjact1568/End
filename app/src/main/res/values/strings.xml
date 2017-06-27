@@ -89,7 +89,7 @@
     <string name="create_plan">Create a new plan</string>
     <string name="content">Content</string>
     <!--TODO 修改其他的hint_editor_*为hint_&editor-->
-    <string name="hint_content_editor">I want to …</string>
+    <string name="hint_content_editor_creation">I want to …</string>
     <string name="content_error_empty">Forget this?</string>
     <string name="more_settings">More Settings</string>
     <string name="type">Type</string>
@@ -149,6 +149,7 @@
     <string name="toast_create_plan_failed">Content can\'t be empty</string>
     <string name="toast_create_plan_success">Create successfully</string>
     <string name="title_dialog_content_editor">Content Editor</string>
+    <string name="hint_content_editor_edit">New content of this plan</string>
     <string name="title_dialog_type_not_empty">Type Is Not Empty</string>
     <string name="msg_dialog_type_not_empty">There are %s belong to this type, you can move them to another type, delete them all, or cancel.</string>
     <string name="title_dialog_type_picker_for_plan_migration">Move %s To</string>
@@ -162,8 +163,9 @@
     <string name="title_activity_type_creation">New Type</string>
     <string name="text_new_type_name">New Type</string>
     <string name="text_empty_type_name">(Empty)</string>
-    <string name="hint_editor_type_name">The name of your new type</string>
     <string name="title_dialog_type_name_editor">Type Name Editor</string>
+    <string name="hint_type_name_editor_creation">The name of new type</string>
+    <string name="hint_type_name_editor_edit">New name of this type</string>
 
     <!--TypeEditActivity-->
     <string name="title_activity_type_edit">Type Edit</string>

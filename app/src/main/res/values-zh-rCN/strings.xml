@@ -6,7 +6,7 @@
     <string name="create">创建</string>
     <string name="create_plan">创建新计划</string>
     <string name="content">内容</string>
-    <string name="hint_content_editor">我想做……</string>
+    <string name="hint_content_editor_creation">我想做……</string>
     <string name="deadline">截止时间</string>
     <string name="type">类型</string>
     <string name="action_search">搜索</string>
@@ -83,7 +83,7 @@
     <string name="button_remove">移除</string>
     <string name="nav_sub_header">其他</string>
     <string name="dscpt_unsettled">未设置</string>
-    <string name="hint_editor_type_name">你新类型的名称</string>
+    <string name="hint_type_name_editor_creation">新类型的名称</string>
     <string name="title_deadline">截止时间</string>
     <string name="title_reminder">提醒</string>
     <string name="title_dialog_content_editor">编辑内容</string>
@@ -220,4 +220,6 @@
     <string name="text_span_seg_contact">联系</string>
     <string name="text_span_seg_rate">评分</string>
     <string name="text_span_seg_enderman_url">http://minecraft-zh.gamepedia.com/末影人</string>
+    <string name="hint_content_editor_edit">此计划的新内容</string>
+    <string name="hint_type_name_editor_edit">此类型的新名称</string>
 </resources>
