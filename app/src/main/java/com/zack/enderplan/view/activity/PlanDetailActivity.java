@@ -245,6 +245,9 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
         mTypeMarkIcon.setInnerText(formattedType.getFirstChar());
         mTypeNameText.setText(formattedType.getTypeName());
         mTypeItem.setDescriptionText(formattedType.getTypeName());
+        mTypeItem.setThemeColor(typeMarkColorInt);
+        mDeadlineItem.setThemeColor(typeMarkColorInt);
+        mReminderItem.setThemeColor(typeMarkColorInt);
     }
 
     @Override

@@ -143,7 +143,10 @@ public class TypeCreationActivity extends BaseActivity implements TypeCreationVi
         getWindow().setStatusBarColor(colorInt);
         mToolbar.setBackgroundColor(ColorUtil.reduceSaturation(colorInt, 0.85f));
         mTypeMarkIcon.setFillColor(colorInt);
+        mTypeNameItem.setThemeColor(colorInt);
         mTypeMarkColorItem.setDescriptionText(colorName);
+        mTypeMarkColorItem.setThemeColor(colorInt);
+        mTypeMarkPatternItem.setThemeColor(colorInt);
     }
 
     @Override
