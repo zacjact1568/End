@@ -29,6 +29,8 @@ public interface TypeDetailViewContract extends BaseViewContract {
 
     void onAppBarScrolledToCriticalPoint(String toolbarTitle, float editorLayoutTransY);
 
+    void changeContentEditorClearTextIconVisibility(boolean isVisible);
+
     void backToTop();
 
     void pressBack();

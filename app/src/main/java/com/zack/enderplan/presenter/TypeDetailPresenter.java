@@ -179,6 +179,10 @@ public class TypeDetailPresenter extends BasePresenter {
         mSingleTypePlanListAdapter.notifyListScrolled(scrollEdge);
     }
 
+    public void notifyContentEditorTextChanged(String text) {
+        mTypeDetailViewContract.changeContentEditorClearTextIconVisibility(!TextUtils.isEmpty(text));
+    }
+
     public void notifyBackPressed() {
         if (mAppBarState == APP_BAR_STATE_EXPANDED) {
             mTypeDetailViewContract.pressBack();
