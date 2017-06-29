@@ -10,8 +10,8 @@ android {
         applicationId "com.zack.enderplan"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 577
-        versionName '20170627'
+        versionCode 579
+        versionName '20170629'
     }
 
     buildTypes {
@@ -32,6 +32,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.8'
     compile "com.android.support:appcompat-v7:$android_support_version"
+    compile "com.android.support:preference-v7:$android_support_version"
     compile "com.android.support:design:$android_support_version"
     compile "com.android.support:support-v4:$android_support_version"
     compile 'com.jakewharton:butterknife:8.4.0'

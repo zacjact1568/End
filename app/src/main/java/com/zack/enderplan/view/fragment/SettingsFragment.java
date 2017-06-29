@@ -4,11 +4,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.SwitchPreference;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.preference.ListPreference;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.SwitchPreferenceCompat;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.common.Constant;
@@ -16,21 +16,19 @@ import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.preference.PreferenceHelper;
 import com.zack.enderplan.view.activity.HomeActivity;
 
-public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private DataManager mDataManager;
-    private SwitchPreference mNightModePreference;
+    private DataManager mDataManager = DataManager.getInstance();
+
+    private SwitchPreferenceCompat mNightModePreference;
     private ListPreference mDrawerHeaderDisplayPreference;
     private ListPreference mTypeListItemEndDisplayPreference;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.preferences);
 
-        mDataManager = DataManager.getInstance();
-
-        mNightModePreference = (SwitchPreference) findPreference(Constant.PREF_KEY_NIGHT_MODE);
+        mNightModePreference = (SwitchPreferenceCompat) findPreference(Constant.PREF_KEY_NIGHT_MODE);
         mDrawerHeaderDisplayPreference = (ListPreference) findPreference(Constant.PREF_KEY_DRAWER_HEADER_DISPLAY);
         mTypeListItemEndDisplayPreference = (ListPreference) findPreference(Constant.PREF_KEY_TYPE_LIST_ITEM_END_DISPLAY);
 
