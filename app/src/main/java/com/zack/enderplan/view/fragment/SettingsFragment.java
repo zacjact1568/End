@@ -2,11 +2,12 @@ package com.zack.enderplan.view.fragment;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.ListPreference;
+import android.preference.Preference;
+import android.preference.PreferenceFragment;
+import android.preference.SwitchPreference;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.preference.ListPreference;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceFragmentCompat;
-import android.support.v7.preference.SwitchPreferenceCompat;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.common.Constant;
@@ -15,19 +16,21 @@ import com.zack.enderplan.model.preference.PreferenceHelper;
 import com.zack.enderplan.view.activity.HomeActivity;
 import com.zack.enderplan.view.dialog.MessageDialogFragment;
 
-public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private DataManager mDataManager = DataManager.getInstance();
-
-    private SwitchPreferenceCompat mNightModePreference;
+    private DataManager mDataManager;
+    private SwitchPreference mNightModePreference;
     private ListPreference mDrawerHeaderDisplayPreference;
     private ListPreference mTypeListItemEndDisplayPreference;
 
     @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
 
-        mNightModePreference = (SwitchPreferenceCompat) findPreference(Constant.PREF_KEY_NIGHT_MODE);
+        mDataManager = DataManager.getInstance();
+
+        mNightModePreference = (SwitchPreference) findPreference(Constant.PREF_KEY_NIGHT_MODE);
         mDrawerHeaderDisplayPreference = (ListPreference) findPreference(Constant.PREF_KEY_DRAWER_HEADER_DISPLAY);
         mTypeListItemEndDisplayPreference = (ListPreference) findPreference(Constant.PREF_KEY_TYPE_LIST_ITEM_END_DISPLAY);
 
@@ -41,7 +44,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                         mNightModePreference.setChecked(!mNightModePreference.isChecked());
                     }
                 });
-                fragment.show(getFragmentManager());
+                //这里需要使用宿主activity的support包中的FragmentManager
+                fragment.show(((FragmentActivity) getActivity()).getSupportFragmentManager());
                 //返回false表示不改变preference的值
                 return false;
             }
