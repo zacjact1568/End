@@ -1,7 +1,5 @@
 package com.zack.enderplan.view.fragment;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
@@ -15,6 +13,7 @@ import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.preference.PreferenceHelper;
 import com.zack.enderplan.view.activity.HomeActivity;
+import com.zack.enderplan.view.dialog.MessageDialogFragment;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -35,17 +34,14 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         mNightModePreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                new AlertDialog.Builder(getActivity())
-                        .setTitle(R.string.title_dialog_switch_night_mode)
-                        .setMessage(R.string.msg_dialog_switch_night_mode)
-                        .setPositiveButton(R.string.button_restart, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                mNightModePreference.setChecked(!mNightModePreference.isChecked());
-                            }
-                        })
-                        .setNegativeButton(R.string.button_cancel, null)
-                        .show();
+                MessageDialogFragment fragment = MessageDialogFragment.newInstance(getString(R.string.title_dialog_switch_night_mode), getString(R.string.msg_dialog_switch_night_mode), null, getString(R.string.button_cancel), getString(R.string.button_restart));
+                fragment.setOnPositiveButtonClickListener(new MessageDialogFragment.OnPositiveButtonClickListener() {
+                    @Override
+                    public void onPositiveButtonClick() {
+                        mNightModePreference.setChecked(!mNightModePreference.isChecked());
+                    }
+                });
+                fragment.show(getFragmentManager());
                 //返回false表示不改变preference的值
                 return false;
             }

@@ -32,6 +32,7 @@ import com.zack.enderplan.presenter.PlanDetailPresenter;
 import com.zack.enderplan.view.contract.PlanDetailViewContract;
 import com.zack.enderplan.model.bean.FormattedPlan;
 import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.view.dialog.MessageDialogFragment;
 import com.zack.enderplan.view.dialog.TypePickerDialogFragment;
 import com.zack.enderplan.view.widget.CircleColorView;
 import com.zack.enderplan.view.widget.ItemView;
@@ -189,17 +190,14 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
 
     @Override
     public void showPlanDeletionDialog(String content) {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.title_dialog_delete_plan)
-                .setMessage(getString(R.string.msg_dialog_delete_plan_pt1) + "\n" + content)
-                .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        planDetailPresenter.notifyPlanDeleted();
-                    }
-                })
-                .setNegativeButton(R.string.button_cancel, null)
-                .show();
+        MessageDialogFragment fragment = MessageDialogFragment.newInstance(getString(R.string.title_dialog_delete_plan), getString(R.string.msg_dialog_delete_plan_pt1) + "\n" + content, null, getString(R.string.button_cancel), getString(R.string.delete));
+        fragment.setOnPositiveButtonClickListener(new MessageDialogFragment.OnPositiveButtonClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+                planDetailPresenter.notifyPlanDeleted();
+            }
+        });
+        fragment.show(getSupportFragmentManager());
     }
 
     @Override

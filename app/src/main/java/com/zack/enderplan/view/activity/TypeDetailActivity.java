@@ -43,6 +43,7 @@ import com.zack.enderplan.presenter.TypeDetailPresenter;
 import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.model.bean.Plan;
 import com.zack.enderplan.common.Constant;
+import com.zack.enderplan.view.dialog.MessageDialogFragment;
 import com.zack.enderplan.view.dialog.TypePickerForPlanMigrationDialogFragment;
 import com.zack.enderplan.view.widget.CircleColorView;
 
@@ -351,37 +352,36 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
 
     @Override
     public void onDetectedDeletingLastType() {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.title_dialog_last_type)
-                .setMessage(R.string.msg_dialog_last_type)
-                .setPositiveButton(R.string.button_ok, null)
-                .show();
+        MessageDialogFragment.newInstance(getString(R.string.title_dialog_last_type), getString(R.string.msg_dialog_last_type), null, getString(R.string.button_cancel), getString(R.string.button_ok)).show(getSupportFragmentManager());
     }
 
     @Override
     public void onDetectedTypeNotEmpty(int planCount) {
         String[] buttons = {getString(R.string.button_move), getString(R.string.button_delete), getString(R.string.button_cancel)};
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.title_dialog_type_not_empty)
-                .setMessage(StringUtil.addSpan(
+        MessageDialogFragment fragment = MessageDialogFragment.newInstance(
+                getString(R.string.title_dialog_type_not_empty),
+                StringUtil.addSpan(
                         StringUtil.toUpperCase(ResourceUtil.getQuantityString(R.string.msg_dialog_type_not_empty, R.plurals.text_plan_count, planCount), buttons),
                         buttons,
                         StringUtil.SPAN_BOLD_STYLE
-                ))
-                .setPositiveButton(buttons[0], new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mTypeDetailPresenter.notifyMovePlanButtonClicked();
-                    }
-                })
-                .setNeutralButton(buttons[1], new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mTypeDetailPresenter.notifyTypeDeletionButtonClicked(true);
-                    }
-                })
-                .setNegativeButton(buttons[2], null)
-                .show();
+                ),
+                buttons[1],
+                buttons[2],
+                buttons[0]
+        );
+        fragment.setOnNeutralButtonClickListener(new MessageDialogFragment.OnNeutralButtonClickListener() {
+            @Override
+            public void onNeutralButtonClick() {
+                mTypeDetailPresenter.notifyTypeDeletionButtonClicked(true);
+            }
+        });
+        fragment.setOnPositiveButtonClickListener(new MessageDialogFragment.OnPositiveButtonClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+                mTypeDetailPresenter.notifyMovePlanButtonClicked();
+            }
+        });
+        fragment.show(getSupportFragmentManager());
     }
 
     @Override
@@ -398,36 +398,36 @@ public class TypeDetailActivity extends BaseActivity implements TypeDetailViewCo
 
     @Override
     public void showTypeDeletionConfirmationDialog(String typeName) {
-        new AlertDialog.Builder(this)
-                .setTitle(typeName)
-                .setMessage(R.string.msg_dialog_delete_type)
-                .setPositiveButton(R.string.button_delete, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mTypeDetailPresenter.notifyDeletingType(false, null);
-                    }
-                })
-                .setNegativeButton(R.string.button_cancel, null)
-                .show();
+        MessageDialogFragment fragment = MessageDialogFragment.newInstance(typeName, getString(R.string.msg_dialog_delete_type), null, getString(R.string.button_cancel), getString(R.string.button_delete));
+        fragment.setOnPositiveButtonClickListener(new MessageDialogFragment.OnPositiveButtonClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+                mTypeDetailPresenter.notifyDeletingType(false, null);
+            }
+        });
+        fragment.show(getSupportFragmentManager());
     }
 
     @Override
     public void showPlanMigrationConfirmationDialog(String fromTypeName, int planCount, String toTypeName, final String toTypeCode) {
-        new AlertDialog.Builder(this)
-                .setTitle(fromTypeName)
-                .setMessage(StringUtil.addSpan(
+        MessageDialogFragment fragment = MessageDialogFragment.newInstance(
+                fromTypeName,
+                StringUtil.addSpan(
                         String.format(ResourceUtil.getString(R.string.msg_dialog_migrate_plan), ResourceUtil.getQuantityString(R.plurals.text_plan_count, planCount), toTypeName, fromTypeName),
                         new String[]{toTypeName, fromTypeName},
                         StringUtil.SPAN_BOLD_STYLE
-                ))
-                .setPositiveButton(R.string.btn_dialog_move_and_delete, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mTypeDetailPresenter.notifyDeletingType(true, toTypeCode);
-                    }
-                })
-                .setNegativeButton(R.string.button_cancel, null)
-                .show();
+                ),
+                null,
+                getString(R.string.button_cancel),
+                getString(R.string.btn_dialog_move_and_delete)
+        );
+        fragment.setOnPositiveButtonClickListener(new MessageDialogFragment.OnPositiveButtonClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+                mTypeDetailPresenter.notifyDeletingType(true, toTypeCode);
+            }
+        });
+        fragment.show(getSupportFragmentManager());
     }
 
     @OnClick({R.id.ic_clear_text})

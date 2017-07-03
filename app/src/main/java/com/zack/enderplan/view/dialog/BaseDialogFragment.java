@@ -2,6 +2,7 @@ package com.zack.enderplan.view.dialog;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -119,5 +120,9 @@ public abstract class BaseDialogFragment extends DialogFragment {
         mPositiveButtonString = positiveButtonString;
         mPositiveButton.setVisibility(mPositiveButtonString == null ? View.GONE : View.VISIBLE);
         mPositiveButton.setText(mPositiveButtonString);
+    }
+
+    public void show(FragmentManager manager) {
+        super.show(manager, null);
     }
 }

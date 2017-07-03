@@ -1,8 +1,6 @@
 package com.zack.enderplan.view.activity;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +9,7 @@ import android.view.MenuItem;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.model.DataManager;
+import com.zack.enderplan.view.dialog.MessageDialogFragment;
 import com.zack.enderplan.view.fragment.SettingsFragment;
 
 public class SettingsActivity extends BaseActivity {
@@ -45,17 +44,14 @@ public class SettingsActivity extends BaseActivity {
                 exit();
                 break;
             case R.id.action_reset:
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.title_dialog_reset_settings)
-                        .setMessage(R.string.msg_dialog_reset_settings)
-                        .setPositiveButton(R.string.btn_dialog_reset_settings, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                DataManager.getInstance().getPreferenceHelper().resetAllValues();
-                            }
-                        })
-                        .setNegativeButton(R.string.button_cancel, null)
-                        .show();
+                MessageDialogFragment fragment = MessageDialogFragment.newInstance(getString(R.string.title_dialog_reset_settings), getString(R.string.msg_dialog_reset_settings), null, getString(R.string.button_cancel), getString(R.string.btn_dialog_reset_settings));
+                fragment.setOnPositiveButtonClickListener(new MessageDialogFragment.OnPositiveButtonClickListener() {
+                    @Override
+                    public void onPositiveButtonClick() {
+                        DataManager.getInstance().getPreferenceHelper().resetAllValues();
+                    }
+                });
+                fragment.show(getSupportFragmentManager());
                 break;
             default:
                 break;
