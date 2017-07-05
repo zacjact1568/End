@@ -42,7 +42,6 @@ public class TypeDetailPresenter extends BasePresenter {
     private DataManager mDataManager;
     private SingleTypePlanListAdapter mSingleTypePlanListAdapter;
     private List<Plan> mSingleTypePlanList;
-    private List<Type> mOtherTypeList;
     private int mTypeListPosition;
     private Type mType;
     private EventBus mEventBus;
@@ -81,7 +80,6 @@ public class TypeDetailPresenter extends BasePresenter {
                 ));
             }
         });
-        mOtherTypeList = mDataManager.getExcludedTypeList(mType.getTypeCode());
     }
 
     @Override

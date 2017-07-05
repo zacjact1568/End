@@ -138,7 +138,8 @@ public class AllTypesPresenter extends BasePresenter implements SharedPreference
         if (event.getChangedField() == PlanDetailChangedEvent.FIELD_PLAN_STATUS || event.getChangedField() == PlanDetailChangedEvent.FIELD_TYPE_OF_PLAN) {
             //类型或完成情况改变后的刷新（其他改变未在此界面上呈现）
             //因为可能有多个item需要刷新，比较麻烦，所以直接全部刷新了
-            mTypeListAdapter.notifyDataSetChanged();
+            //这里不能用notifyDataSetChanged，会造成shared element transition返回动画错位
+            mTypeListAdapter.notifyAllItemsChanged(TypeListAdapter.PAYLOAD_PLAN_COUNT);
         }
     }
 

@@ -135,6 +135,10 @@ public class TypeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return position == mDataManager.getTypeCount() ? TYPE_FOOTER : TYPE_ITEM;
     }
 
+    public void notifyAllItemsChanged(Object payload) {
+        notifyItemRangeChanged(0, mDataManager.getTypeCount(), payload);
+    }
+
     public void notifyItemInsertedAndChangingFooter(int position) {
         notifyItemInserted(position);
         notifyFooterChanged();
