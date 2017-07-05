@@ -11,6 +11,8 @@ import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.util.ResourceUtil;
 import com.zack.enderplan.view.adapter.TypePickerForPlanMigrationGridAdapter;
 
+import java.io.Serializable;
+
 import butterknife.BindView;
 
 public class TypePickerForPlanMigrationDialogFragment extends BaseDialogFragment {
@@ -19,6 +21,7 @@ public class TypePickerForPlanMigrationDialogFragment extends BaseDialogFragment
     RecyclerView mTypePickerForPlanMigrationGrid;
 
     private static final String ARG_EXCLUDED_TYPE_CODE = "excluded_type_code";
+    private static final String ARG_TYPE_PICKED_LSNR = "type_picked_lsnr";
 
     private OnTypePickedListener mOnTypePickedListener;
     private String mExcludedTypeCode;
@@ -27,12 +30,13 @@ public class TypePickerForPlanMigrationDialogFragment extends BaseDialogFragment
 
     }
 
-    public static TypePickerForPlanMigrationDialogFragment newInstance(String excludedTypeCode) {
+    public static TypePickerForPlanMigrationDialogFragment newInstance(String excludedTypeCode, OnTypePickedListener listener) {
         TypePickerForPlanMigrationDialogFragment fragment = new TypePickerForPlanMigrationDialogFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_TITLE, ResourceUtil.getQuantityString(R.string.title_dialog_type_picker_for_plan_migration, R.plurals.text_plan_count_upper_case, DataManager.getInstance().getUcPlanCountOfOneType(excludedTypeCode)));
-        args.putString(ARG_NEG_BTN, ResourceUtil.getString(R.string.button_cancel));
+        args.putString(ARG_TITLE_STR, ResourceUtil.getQuantityString(R.string.title_dialog_type_picker_for_plan_migration, R.plurals.text_plan_count_upper_case, DataManager.getInstance().getUcPlanCountOfOneType(excludedTypeCode)));
+        args.putString(ARG_NEG_BTN_STR, ResourceUtil.getString(R.string.button_cancel));
         args.putString(ARG_EXCLUDED_TYPE_CODE, excludedTypeCode);
+        args.putSerializable(ARG_TYPE_PICKED_LSNR, listener);
         fragment.setArguments(args);
         return fragment;
     }
@@ -44,6 +48,7 @@ public class TypePickerForPlanMigrationDialogFragment extends BaseDialogFragment
         Bundle args = getArguments();
         if (args != null) {
             mExcludedTypeCode = args.getString(ARG_EXCLUDED_TYPE_CODE);
+            mOnTypePickedListener = (OnTypePickedListener) args.getSerializable(ARG_TYPE_PICKED_LSNR);
         }
     }
 
@@ -72,25 +77,12 @@ public class TypePickerForPlanMigrationDialogFragment extends BaseDialogFragment
     }
 
     @Override
-    public boolean onButtonClicked(int which) {
-        switch (which) {
-            case BTN_NEG:
-                break;
-        }
-        return true;
-    }
-
-    @Override
     public void onDetach() {
         super.onDetach();
         mOnTypePickedListener = null;
     }
 
-    public interface OnTypePickedListener {
+    public interface OnTypePickedListener extends Serializable {
         void onTypePicked(String typeCode, String typeName);
-    }
-
-    public void setOnTypePickedListener(OnTypePickedListener listener) {
-        mOnTypePickedListener = listener;
     }
 }

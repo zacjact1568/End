@@ -157,38 +157,44 @@ public class TypeCreationActivity extends BaseActivity implements TypeCreationVi
 
     @Override
     public void showTypeNameEditorDialog(String defaultName) {
-        EditorDialogFragment fragment = EditorDialogFragment.newInstance(getString(R.string.title_dialog_type_name_editor), defaultName, getString(R.string.hint_type_name_editor_creation));
-        fragment.setOnOkButtonClickListener(new EditorDialogFragment.OnOkButtonClickListener() {
-            @Override
-            public void onOkButtonClick(String editorText) {
-                mTypeCreationPresenter.notifyTypeNameEdited(editorText);
-            }
-        });
-        fragment.show(getSupportFragmentManager(), Constant.TYPE_NAME);
+        new EditorDialogFragment.Builder()
+                .setEditorText(defaultName)
+                .setEditorHint(R.string.hint_type_name_editor_creation)
+                .setPositiveButton(R.string.button_ok, new EditorDialogFragment.OnTextEditedListener() {
+                    @Override
+                    public void onTextEdited(String text) {
+                        mTypeCreationPresenter.notifyTypeNameEdited(text);
+                    }
+                })
+                .setTitle(R.string.title_dialog_type_name_editor)
+                .setNegativeButton(R.string.button_cancel, null)
+                .show(getSupportFragmentManager());
     }
 
     @Override
     public void showTypeMarkColorPickerDialog(String defaultColor) {
-        TypeMarkColorPickerDialogFragment fragment = TypeMarkColorPickerDialogFragment.newInstance(defaultColor);
-        fragment.setOnTypeMarkColorPickedListener(new TypeMarkColorPickerDialogFragment.OnTypeMarkColorPickedListener() {
-            @Override
-            public void onTypeMarkColorPicked(TypeMarkColor typeMarkColor) {
-                mTypeCreationPresenter.notifyTypeMarkColorSelected(typeMarkColor);
-            }
-        });
-        fragment.show(getSupportFragmentManager(), Constant.TYPE_MARK_COLOR);
+        TypeMarkColorPickerDialogFragment.newInstance(
+                defaultColor,
+                new TypeMarkColorPickerDialogFragment.OnTypeMarkColorPickedListener() {
+                    @Override
+                    public void onTypeMarkColorPicked(TypeMarkColor typeMarkColor) {
+                        mTypeCreationPresenter.notifyTypeMarkColorSelected(typeMarkColor);
+                    }
+                }
+        ).show(getSupportFragmentManager());
     }
 
     @Override
     public void showTypeMarkPatternPickerDialog(String defaultPattern) {
-        TypeMarkPatternPickerDialogFragment fragment = TypeMarkPatternPickerDialogFragment.newInstance(defaultPattern);
-        fragment.setOnTypeMarkPatternPickedListener(new TypeMarkPatternPickerDialogFragment.OnTypeMarkPatternPickedListener() {
-            @Override
-            public void onTypeMarkPatternPicked(TypeMarkPattern typeMarkPattern) {
-                mTypeCreationPresenter.notifyTypeMarkPatternSelected(typeMarkPattern);
-            }
-        });
-        fragment.show(getSupportFragmentManager(), Constant.TYPE_MARK_PATTERN);
+        TypeMarkPatternPickerDialogFragment.newInstance(
+                defaultPattern,
+                new TypeMarkPatternPickerDialogFragment.OnTypeMarkPatternPickedListener() {
+                    @Override
+                    public void onTypeMarkPatternPicked(TypeMarkPattern typeMarkPattern) {
+                        mTypeCreationPresenter.notifyTypeMarkPatternSelected(typeMarkPattern);
+                    }
+                }
+        ).show(getSupportFragmentManager());
     }
 
     @OnClick({R.id.item_type_name, R.id.item_type_mark_color, R.id.item_type_mark_pattern})

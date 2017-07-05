@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import com.zack.enderplan.R;
 import com.zack.enderplan.model.DataManager;
+import com.zack.enderplan.view.dialog.BaseDialogFragment;
 import com.zack.enderplan.view.dialog.MessageDialogFragment;
 import com.zack.enderplan.view.fragment.SettingsFragment;
 
@@ -44,14 +45,18 @@ public class SettingsActivity extends BaseActivity {
                 exit();
                 break;
             case R.id.action_reset:
-                MessageDialogFragment fragment = MessageDialogFragment.newInstance(getString(R.string.title_dialog_reset_settings), getString(R.string.msg_dialog_reset_settings), null, getString(R.string.button_cancel), getString(R.string.btn_dialog_reset_settings));
-                fragment.setOnPositiveButtonClickListener(new MessageDialogFragment.OnPositiveButtonClickListener() {
-                    @Override
-                    public void onPositiveButtonClick() {
-                        DataManager.getInstance().getPreferenceHelper().resetAllValues();
-                    }
-                });
-                fragment.show(getSupportFragmentManager());
+                new MessageDialogFragment.Builder()
+                        .setMessage(R.string.msg_dialog_reset_settings)
+                        .setTitle(R.string.title_dialog_reset_settings)
+                        .setNegativeButton(R.string.button_cancel, null)
+                        .setPositiveButton(R.string.btn_dialog_reset_settings, new BaseDialogFragment.OnButtonClickListener() {
+                            @Override
+                            public boolean onClick() {
+                                DataManager.getInstance().getPreferenceHelper().resetAllValues();
+                                return true;
+                            }
+                        })
+                        .show(getSupportFragmentManager());
                 break;
             default:
                 break;

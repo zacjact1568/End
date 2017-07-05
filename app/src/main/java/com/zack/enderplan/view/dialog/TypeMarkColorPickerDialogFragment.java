@@ -20,6 +20,7 @@ import com.zack.enderplan.view.adapter.TypeMarkColorGridAdapter;
 import com.zack.enderplan.view.widget.CircleColorView;
 import com.zack.enderplan.view.widget.ColorPicker;
 
+import java.io.Serializable;
 import java.util.List;
 
 import butterknife.BindView;
@@ -38,6 +39,7 @@ public class TypeMarkColorPickerDialogFragment extends BaseDialogFragment {
     CircleColorView mTypeMarkColorIcon;
 
     private static final String ARG_DEFAULT_COLOR = "default_color";
+    private static final String ARG_TYPE_MARK_COLOR_PICKED_LSNR = "type_mark_color_picked_lsnr";
 
     private String mDefaultColor;
     private TypeMarkColor mTypeMarkColor;
@@ -49,14 +51,15 @@ public class TypeMarkColorPickerDialogFragment extends BaseDialogFragment {
 
     }
 
-    public static TypeMarkColorPickerDialogFragment newInstance(String defaultColor) {
+    public static TypeMarkColorPickerDialogFragment newInstance(String defaultColor, OnTypeMarkColorPickedListener listener) {
         TypeMarkColorPickerDialogFragment fragment = new TypeMarkColorPickerDialogFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_TITLE, ResourceUtil.getString(R.string.title_dialog_fragment_type_mark_color_picker));
-        args.putString(ARG_NEU_BTN, ResourceUtil.getString(R.string.btn_custom));
-        args.putString(ARG_NEG_BTN, ResourceUtil.getString(R.string.button_cancel));
-        args.putString(ARG_POS_BTN, ResourceUtil.getString(R.string.button_select));
+        args.putString(ARG_TITLE_STR, ResourceUtil.getString(R.string.title_dialog_fragment_type_mark_color_picker));
+        args.putString(ARG_NEU_BTN_STR, ResourceUtil.getString(R.string.btn_custom));
+        args.putString(ARG_NEG_BTN_STR, ResourceUtil.getString(R.string.button_cancel));
+        args.putString(ARG_POS_BTN_STR, ResourceUtil.getString(R.string.button_select));
         args.putString(ARG_DEFAULT_COLOR, defaultColor);
+        args.putSerializable(ARG_TYPE_MARK_COLOR_PICKED_LSNR, listener);
         fragment.setArguments(args);
         return fragment;
     }
@@ -68,6 +71,7 @@ public class TypeMarkColorPickerDialogFragment extends BaseDialogFragment {
         Bundle args = getArguments();
         if (args != null) {
             mDefaultColor = args.getString(ARG_DEFAULT_COLOR);
+            mOnTypeMarkColorPickedListener = (OnTypeMarkColorPickedListener) args.getSerializable(ARG_TYPE_MARK_COLOR_PICKED_LSNR);
         }
 
         mTypeMarkColorList = DataManager.getInstance().getTypeMarkColorList();
@@ -78,6 +82,47 @@ public class TypeMarkColorPickerDialogFragment extends BaseDialogFragment {
                 mDefaultColor,
                 mPosition == -1 ? mDefaultColor : mTypeMarkColorList.get(mPosition).getColorName()
         );
+
+        setNeutralButtonClickListener(new OnButtonClickListener() {
+            @Override
+            public boolean onClick() {
+                mColorPickerSwitcher.showNext();
+                if (mColorPickerSwitcher.getCurrentView().getId() == R.id.grid_type_mark_color) {
+                    //切换到了grid界面，此时mPosition一定为-1
+                    mPosition = getPositionInTypeMarkColorList(mTypeMarkColor.getColorHex());
+                    if (mPosition != -1) {
+                        //若picker界面选中的颜色在grid界面也有，选中它
+                        mTypeMarkColorGrid.setItemChecked(mPosition, true);
+                    }
+                    setNeutralButtonString(getString(R.string.btn_custom));
+                } else {
+                    //切换到了picker界面
+                    if (mPosition != -1) {
+                        //若之前在grid界面有选择，取消选择
+                        mTypeMarkColorGrid.setItemChecked(mPosition, false);
+                        mPosition = -1;
+                    }
+                    //此时mPosition一定为-1
+                    mTypeMarkColorText.setText(mTypeMarkColor.getColorHex());
+                    mTypeMarkColorIcon.setFillColor(Color.parseColor(mTypeMarkColor.getColorHex()));
+                    mTypeMarkColorPicker.setColor(Color.parseColor(mTypeMarkColor.getColorHex()));
+                    setNeutralButtonString(getString(R.string.btn_preset));
+                }
+                return false;
+            }
+        });
+        setPositiveButtonClickListener(new OnButtonClickListener() {
+            @Override
+            public boolean onClick() {
+                mPosition = getPositionInTypeMarkColorList(mTypeMarkColor.getColorHex());
+                //若position为-1，说明颜色在grid中不存在，是在picker中设置的，无名称，用hex代替；反之说明颜色在grid中存在，有名称
+                mTypeMarkColor.setColorName(mPosition == -1 ? mTypeMarkColor.getColorHex() : mTypeMarkColorList.get(mPosition).getColorName());
+                if (mOnTypeMarkColorPickedListener != null) {
+                    mOnTypeMarkColorPickedListener.onTypeMarkColorPicked(mTypeMarkColor);
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -125,47 +170,6 @@ public class TypeMarkColorPickerDialogFragment extends BaseDialogFragment {
     }
 
     @Override
-    public boolean onButtonClicked(int which) {
-        switch (which) {
-            case BTN_NEU:
-                mColorPickerSwitcher.showNext();
-                if (mColorPickerSwitcher.getCurrentView().getId() == R.id.grid_type_mark_color) {
-                    //切换到了grid界面，此时mPosition一定为-1
-                    mPosition = getPositionInTypeMarkColorList(mTypeMarkColor.getColorHex());
-                    if (mPosition != -1) {
-                        //若picker界面选中的颜色在grid界面也有，选中它
-                        mTypeMarkColorGrid.setItemChecked(mPosition, true);
-                    }
-                    setNeutralButtonString(getString(R.string.btn_custom));
-                } else {
-                    //切换到了picker界面
-                    if (mPosition != -1) {
-                        //若之前在grid界面有选择，取消选择
-                        mTypeMarkColorGrid.setItemChecked(mPosition, false);
-                        mPosition = -1;
-                    }
-                    //此时mPosition一定为-1
-                    mTypeMarkColorText.setText(mTypeMarkColor.getColorHex());
-                    mTypeMarkColorIcon.setFillColor(Color.parseColor(mTypeMarkColor.getColorHex()));
-                    mTypeMarkColorPicker.setColor(Color.parseColor(mTypeMarkColor.getColorHex()));
-                    setNeutralButtonString(getString(R.string.btn_preset));
-                }
-                return false;
-            case BTN_NEG:
-                break;
-            case BTN_POS:
-                mPosition = getPositionInTypeMarkColorList(mTypeMarkColor.getColorHex());
-                //若position为-1，说明颜色在grid中不存在，是在picker中设置的，无名称，用hex代替；反之说明颜色在grid中存在，有名称
-                mTypeMarkColor.setColorName(mPosition == -1 ? mTypeMarkColor.getColorHex() : mTypeMarkColorList.get(mPosition).getColorName());
-                if (mOnTypeMarkColorPickedListener != null) {
-                    mOnTypeMarkColorPickedListener.onTypeMarkColorPicked(mTypeMarkColor);
-                }
-                break;
-        }
-        return true;
-    }
-
-    @Override
     public void onDetach() {
         super.onDetach();
         mOnTypeMarkColorPickedListener = null;
@@ -181,11 +185,7 @@ public class TypeMarkColorPickerDialogFragment extends BaseDialogFragment {
         return -1;
     }
 
-    public interface OnTypeMarkColorPickedListener {
+    public interface OnTypeMarkColorPickedListener extends Serializable {
         void onTypeMarkColorPicked(TypeMarkColor typeMarkColor);
-    }
-
-    public void setOnTypeMarkColorPickedListener(OnTypeMarkColorPickedListener listener) {
-        mOnTypeMarkColorPickedListener = listener;
     }
 }

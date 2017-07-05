@@ -14,6 +14,7 @@ import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.util.ResourceUtil;
 import com.zack.enderplan.util.TimeUtil;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
 import butterknife.BindView;
@@ -28,6 +29,7 @@ public class DateTimePickerDialogFragment extends BaseDialogFragment {
     ViewAnimator mDateTimePickerSwitcher;
 
     private static final String ARG_DEFAULT_TIME = "default_time";
+    private static final String ARG_DATE_TIME_PICKED_LSNR = "date_time_picked_lsnr";
 
     private Calendar mCalendar;
     private OnDateTimePickedListener mOnDateTimePickedListener;
@@ -36,13 +38,14 @@ public class DateTimePickerDialogFragment extends BaseDialogFragment {
 
     }
 
-    public static DateTimePickerDialogFragment newInstance(long defaultTime) {
+    public static DateTimePickerDialogFragment newInstance(long defaultTime, OnDateTimePickedListener listener) {
         DateTimePickerDialogFragment fragment = new DateTimePickerDialogFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_NEU_BTN, ResourceUtil.getString(R.string.text_time_picker_switcher));
-        args.putString(ARG_NEG_BTN, ResourceUtil.getString(R.string.button_remove));
-        args.putString(ARG_POS_BTN, ResourceUtil.getString(R.string.button_select));
+        args.putString(ARG_NEU_BTN_STR, ResourceUtil.getString(R.string.text_time_picker_switcher));
+        args.putString(ARG_NEG_BTN_STR, ResourceUtil.getString(R.string.button_remove));
+        args.putString(ARG_POS_BTN_STR, ResourceUtil.getString(R.string.button_select));
         args.putLong(ARG_DEFAULT_TIME, defaultTime);
+        args.putSerializable(ARG_DATE_TIME_PICKED_LSNR, listener);
         fragment.setArguments(args);
         return fragment;
     }
@@ -55,7 +58,36 @@ public class DateTimePickerDialogFragment extends BaseDialogFragment {
         Bundle args = getArguments();
         if (args != null) {
             mCalendar.setTimeInMillis(args.getLong(ARG_DEFAULT_TIME));
+            mOnDateTimePickedListener = (OnDateTimePickedListener) args.getSerializable(ARG_DATE_TIME_PICKED_LSNR);
         }
+
+        //设置点击三个按钮的事件
+        setNeutralButtonClickListener(new OnButtonClickListener() {
+            @Override
+            public boolean onClick() {
+                mDateTimePickerSwitcher.showNext();
+                setNeutralButtonString(getString(mDateTimePickerSwitcher.getCurrentView().getId() == R.id.picker_time ? R.string.text_date_picker_switcher : R.string.text_time_picker_switcher));
+                return false;
+            }
+        });
+        setNegativeButtonClickListener(new OnButtonClickListener() {
+            @Override
+            public boolean onClick() {
+                if (mOnDateTimePickedListener != null) {
+                    mOnDateTimePickedListener.onDateTimePicked(Constant.UNDEFINED_TIME);
+                }
+                return true;
+            }
+        });
+        setPositiveButtonClickListener(new OnButtonClickListener() {
+            @Override
+            public boolean onClick() {
+                if (mOnDateTimePickedListener != null) {
+                    mOnDateTimePickedListener.onDateTimePicked(mCalendar.getTimeInMillis());
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -97,37 +129,12 @@ public class DateTimePickerDialogFragment extends BaseDialogFragment {
     }
 
     @Override
-    public boolean onButtonClicked(int which) {
-        switch (which) {
-            case BTN_NEU:
-                mDateTimePickerSwitcher.showNext();
-                setNeutralButtonString(getString(mDateTimePickerSwitcher.getCurrentView().getId() == R.id.picker_time ? R.string.text_date_picker_switcher : R.string.text_time_picker_switcher));
-                return false;
-            case BTN_NEG:
-                if (mOnDateTimePickedListener != null) {
-                    mOnDateTimePickedListener.onDateTimePicked(Constant.UNDEFINED_TIME);
-                }
-                break;
-            case BTN_POS:
-                if (mOnDateTimePickedListener != null) {
-                    mOnDateTimePickedListener.onDateTimePicked(mCalendar.getTimeInMillis());
-                }
-                break;
-        }
-        return true;
-    }
-
-    @Override
     public void onDetach() {
         super.onDetach();
         mOnDateTimePickedListener = null;
     }
 
-    public interface OnDateTimePickedListener {
+    public interface OnDateTimePickedListener extends Serializable {
         void onDateTimePicked(long timeInMillis);
-    }
-
-    public void setOnDateTimePickedListener(OnDateTimePickedListener listener) {
-        mOnDateTimePickedListener = listener;
     }
 }

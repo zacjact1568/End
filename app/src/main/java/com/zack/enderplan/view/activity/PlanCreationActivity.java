@@ -214,14 +214,15 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
 
     @Override
     public void showDeadlinePickerDialog(long defaultDeadline) {
-        DateTimePickerDialogFragment fragment = DateTimePickerDialogFragment.newInstance(defaultDeadline);
-        fragment.setOnDateTimePickedListener(new DateTimePickerDialogFragment.OnDateTimePickedListener() {
-            @Override
-            public void onDateTimePicked(long timeInMillis) {
-                mPlanCreationPresenter.notifyDeadlineChanged(timeInMillis);
-            }
-        });
-        fragment.show(getSupportFragmentManager(), Constant.DEADLINE);
+        DateTimePickerDialogFragment.newInstance(
+                defaultDeadline,
+                new DateTimePickerDialogFragment.OnDateTimePickedListener() {
+                    @Override
+                    public void onDateTimePicked(long timeInMillis) {
+                        mPlanCreationPresenter.notifyDeadlineChanged(timeInMillis);
+                    }
+                }
+        ).show(getSupportFragmentManager());
     }
 
     @Override
@@ -231,14 +232,15 @@ public class PlanCreationActivity extends BaseActivity implements PlanCreationVi
 
     @Override
     public void showReminderTimePickerDialog(long defaultReminderTime) {
-        DateTimePickerDialogFragment fragment = DateTimePickerDialogFragment.newInstance(defaultReminderTime);
-        fragment.setOnDateTimePickedListener(new DateTimePickerDialogFragment.OnDateTimePickedListener() {
-            @Override
-            public void onDateTimePicked(long timeInMillis) {
-                mPlanCreationPresenter.notifyReminderTimeChanged(timeInMillis);
-            }
-        });
-        fragment.show(getSupportFragmentManager(), Constant.REMINDER_TIME);
+        DateTimePickerDialogFragment.newInstance(
+                defaultReminderTime,
+                new DateTimePickerDialogFragment.OnDateTimePickedListener() {
+                    @Override
+                    public void onDateTimePicked(long timeInMillis) {
+                        mPlanCreationPresenter.notifyReminderTimeChanged(timeInMillis);
+                    }
+                }
+        ).show(getSupportFragmentManager());
     }
 
     @Override

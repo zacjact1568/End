@@ -12,6 +12,8 @@ import com.zack.enderplan.util.ResourceUtil;
 import com.zack.enderplan.view.activity.TypeCreationActivity;
 import com.zack.enderplan.view.adapter.TypePickerGridAdapter;
 
+import java.io.Serializable;
+
 import butterknife.BindView;
 
 public class TypePickerDialogFragment extends BaseDialogFragment {
@@ -20,6 +22,7 @@ public class TypePickerDialogFragment extends BaseDialogFragment {
     RecyclerView mTypePickerGrid;
 
     private static final String ARG_DEFAULT_POSITION = "default_position";
+    private static final String ARG_TYPE_PICKED_LSNR = "type_picked_lsnr";
 
     private OnTypePickedListener mOnTypePickedListener;
     private int mPosition;
@@ -28,14 +31,15 @@ public class TypePickerDialogFragment extends BaseDialogFragment {
 
     }
 
-    public static TypePickerDialogFragment newInstance(int defaultPosition) {
+    public static TypePickerDialogFragment newInstance(int defaultPosition, OnTypePickedListener listener) {
         TypePickerDialogFragment fragment = new TypePickerDialogFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_TITLE, ResourceUtil.getString(R.string.title_dialog_fragment_type_picker));
-        args.putString(ARG_NEU_BTN, ResourceUtil.getString(R.string.btn_new_type));
-        args.putString(ARG_NEG_BTN, ResourceUtil.getString(R.string.button_cancel));
-        args.putString(ARG_POS_BTN, ResourceUtil.getString(R.string.button_select));
+        args.putString(ARG_TITLE_STR, ResourceUtil.getString(R.string.title_dialog_fragment_type_picker));
+        args.putString(ARG_NEU_BTN_STR, ResourceUtil.getString(R.string.btn_new_type));
+        args.putString(ARG_NEG_BTN_STR, ResourceUtil.getString(R.string.button_cancel));
+        args.putString(ARG_POS_BTN_STR, ResourceUtil.getString(R.string.button_select));
         args.putInt(ARG_DEFAULT_POSITION, defaultPosition);
+        args.putSerializable(ARG_TYPE_PICKED_LSNR, listener);
         fragment.setArguments(args);
         return fragment;
     }
@@ -47,7 +51,25 @@ public class TypePickerDialogFragment extends BaseDialogFragment {
         Bundle args = getArguments();
         if (args != null) {
             mPosition = args.getInt(ARG_DEFAULT_POSITION, -1);
+            mOnTypePickedListener = (OnTypePickedListener) args.getSerializable(ARG_TYPE_PICKED_LSNR);
         }
+
+        setNeutralButtonClickListener(new OnButtonClickListener() {
+            @Override
+            public boolean onClick() {
+                TypeCreationActivity.start(getContext());
+                return true;
+            }
+        });
+        setPositiveButtonClickListener(new OnButtonClickListener() {
+            @Override
+            public boolean onClick() {
+                if (mOnTypePickedListener != null) {
+                    mOnTypePickedListener.onTypePicked(mPosition);
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -72,33 +94,12 @@ public class TypePickerDialogFragment extends BaseDialogFragment {
     }
 
     @Override
-    public boolean onButtonClicked(int which) {
-        switch (which) {
-            case BTN_NEU:
-                TypeCreationActivity.start(getContext());
-                break;
-            case BTN_NEG:
-                break;
-            case BTN_POS:
-                if (mOnTypePickedListener != null) {
-                    mOnTypePickedListener.onTypePicked(mPosition);
-                }
-                break;
-        }
-        return true;
-    }
-
-    @Override
     public void onDetach() {
         super.onDetach();
         mOnTypePickedListener = null;
     }
 
-    public interface OnTypePickedListener {
+    public interface OnTypePickedListener extends Serializable {
         void onTypePicked(int position);
-    }
-
-    public void setOnTypePickedListener(OnTypePickedListener listener) {
-        mOnTypePickedListener = listener;
     }
 }

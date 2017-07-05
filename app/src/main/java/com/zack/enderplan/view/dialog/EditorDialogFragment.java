@@ -1,6 +1,7 @@
 package com.zack.enderplan.view.dialog;
 
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,8 @@ import android.widget.EditText;
 import com.zack.enderplan.R;
 import com.zack.enderplan.util.ResourceUtil;
 import com.zack.enderplan.util.SystemUtil;
+
+import java.io.Serializable;
 
 import butterknife.BindView;
 
@@ -19,24 +22,13 @@ public class EditorDialogFragment extends BaseDialogFragment {
 
     private static final String ARG_EDITOR_TEXT = "editor_text";
     private static final String ARG_EDITOR_HINT = "editor_hint";
+    private static final String ARG_TEXT_EDITED_LSNR = "text_edited_lsnr";
 
     private String mEditorTextStr, mEditorHintStr;
-    private OnOkButtonClickListener mOnOkButtonClickListener;
+    private OnTextEditedListener mOnTextEditedListener;
 
     public EditorDialogFragment() {
 
-    }
-
-    public static EditorDialogFragment newInstance(String title, String editorText, String editorHint) {
-        EditorDialogFragment fragment = new EditorDialogFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_TITLE, title);
-        args.putString(ARG_NEG_BTN, ResourceUtil.getString(R.string.button_cancel));
-        args.putString(ARG_POS_BTN, ResourceUtil.getString(R.string.button_ok));
-        args.putString(ARG_EDITOR_TEXT, editorText);
-        args.putString(ARG_EDITOR_HINT, editorHint);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -47,7 +39,18 @@ public class EditorDialogFragment extends BaseDialogFragment {
         if (args != null) {
             mEditorTextStr = args.getString(ARG_EDITOR_TEXT);
             mEditorHintStr = args.getString(ARG_EDITOR_HINT);
+            mOnTextEditedListener = (OnTextEditedListener) args.getSerializable(ARG_TEXT_EDITED_LSNR);
         }
+
+        setPositiveButtonClickListener(new OnButtonClickListener() {
+            @Override
+            public boolean onClick() {
+                if (mOnTextEditedListener != null) {
+                    mOnTextEditedListener.onTextEdited(mEditor.getText().toString());
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -66,30 +69,53 @@ public class EditorDialogFragment extends BaseDialogFragment {
     }
 
     @Override
-    public boolean onButtonClicked(int which) {
-        switch (which) {
-            case BTN_NEG:
-                break;
-            case BTN_POS:
-                if (mOnOkButtonClickListener != null) {
-                    mOnOkButtonClickListener.onOkButtonClick(mEditor.getText().toString());
-                }
-                break;
-        }
-        return true;
-    }
-
-    @Override
     public void onDetach() {
         super.onDetach();
-        mOnOkButtonClickListener = null;
+        mOnTextEditedListener = null;
     }
 
-    public interface OnOkButtonClickListener {
-        void onOkButtonClick(String editorText);
+    public static class Builder extends BaseDialogFragment.Builder<EditorDialogFragment> {
+
+        private String mEditorText, mEditorHint;
+        private OnTextEditedListener mOnTextEditedListener;
+
+        public Builder setEditorText(String editorText) {
+            mEditorText = editorText;
+            return this;
+        }
+
+        public Builder setEditorHint(String editorHint) {
+            mEditorHint = editorHint;
+            return this;
+        }
+
+        public Builder setEditorHint(@StringRes int resId) {
+            return setEditorHint(ResourceUtil.getString(resId));
+        }
+
+        public Builder setPositiveButton(String text, OnTextEditedListener listener) {
+            setPositiveButton(text, (OnButtonClickListener) null);
+            mOnTextEditedListener = listener;
+            return this;
+        }
+
+        public Builder setPositiveButton(@StringRes int resId, OnTextEditedListener listener) {
+            return setPositiveButton(ResourceUtil.getString(resId), listener);
+        }
+
+        @Override
+        protected EditorDialogFragment onBuildContent() {
+            EditorDialogFragment fragment = new EditorDialogFragment();
+            Bundle args = new Bundle();
+            args.putString(ARG_EDITOR_TEXT, mEditorText);
+            args.putString(ARG_EDITOR_HINT, mEditorHint);
+            args.putSerializable(ARG_TEXT_EDITED_LSNR, mOnTextEditedListener);
+            fragment.setArguments(args);
+            return fragment;
+        }
     }
 
-    public void setOnOkButtonClickListener(OnOkButtonClickListener listener) {
-        mOnOkButtonClickListener = listener;
+    public interface OnTextEditedListener extends Serializable {
+        void onTextEdited(String text);
     }
 }

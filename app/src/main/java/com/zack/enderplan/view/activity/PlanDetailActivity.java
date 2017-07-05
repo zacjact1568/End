@@ -1,8 +1,6 @@
 package com.zack.enderplan.view.activity;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -26,6 +24,7 @@ import com.zack.enderplan.injector.component.DaggerPlanDetailComponent;
 import com.zack.enderplan.injector.module.PlanDetailPresenterModule;
 import com.zack.enderplan.model.bean.FormattedType;
 import com.zack.enderplan.util.ColorUtil;
+import com.zack.enderplan.view.dialog.BaseDialogFragment;
 import com.zack.enderplan.view.dialog.DateTimePickerDialogFragment;
 import com.zack.enderplan.view.dialog.EditorDialogFragment;
 import com.zack.enderplan.presenter.PlanDetailPresenter;
@@ -190,14 +189,18 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
 
     @Override
     public void showPlanDeletionDialog(String content) {
-        MessageDialogFragment fragment = MessageDialogFragment.newInstance(getString(R.string.title_dialog_delete_plan), getString(R.string.msg_dialog_delete_plan_pt1) + "\n" + content, null, getString(R.string.button_cancel), getString(R.string.delete));
-        fragment.setOnPositiveButtonClickListener(new MessageDialogFragment.OnPositiveButtonClickListener() {
-            @Override
-            public void onPositiveButtonClick() {
-                planDetailPresenter.notifyPlanDeleted();
-            }
-        });
-        fragment.show(getSupportFragmentManager());
+        new MessageDialogFragment.Builder()
+                .setMessage(getString(R.string.msg_dialog_delete_plan_pt1) + "\n" + content)
+                .setTitle(R.string.title_dialog_delete_plan)
+                .setNegativeButton(R.string.button_cancel, null)
+                .setPositiveButton(R.string.delete, new BaseDialogFragment.OnButtonClickListener() {
+                    @Override
+                    public boolean onClick() {
+                        planDetailPresenter.notifyPlanDeleted();
+                        return true;
+                    }
+                })
+                .show(getSupportFragmentManager());
     }
 
     @Override
@@ -209,14 +212,18 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
 
     @Override
     public void showContentEditorDialog(String content) {
-        EditorDialogFragment fragment = EditorDialogFragment.newInstance(getString(R.string.title_dialog_content_editor), content, getString(R.string.hint_content_editor_edit));
-        fragment.setOnOkButtonClickListener(new EditorDialogFragment.OnOkButtonClickListener() {
-            @Override
-            public void onOkButtonClick(String editorText) {
-                planDetailPresenter.notifyContentChanged(editorText);
-            }
-        });
-        fragment.show(getSupportFragmentManager(), Constant.CONTENT);
+        new EditorDialogFragment.Builder()
+                .setEditorText(content)
+                .setEditorHint(R.string.hint_content_editor_edit)
+                .setPositiveButton(R.string.button_ok, new EditorDialogFragment.OnTextEditedListener() {
+                    @Override
+                    public void onTextEdited(String text) {
+                        planDetailPresenter.notifyContentChanged(text);
+                    }
+                })
+                .setTitle(R.string.title_dialog_content_editor)
+                .setNegativeButton(R.string.button_cancel, null)
+                .show(getSupportFragmentManager());
     }
 
     @Override
@@ -250,38 +257,41 @@ public class PlanDetailActivity extends BaseActivity implements PlanDetailViewCo
 
     @Override
     public void showTypePickerDialog(int defaultTypeListPos) {
-        TypePickerDialogFragment fragment = TypePickerDialogFragment.newInstance(defaultTypeListPos);
-        fragment.setOnTypePickedListener(new TypePickerDialogFragment.OnTypePickedListener() {
-            @Override
-            public void onTypePicked(int position) {
-                planDetailPresenter.notifyTypeOfPlanChanged(position);
-            }
-        });
-        fragment.show(getSupportFragmentManager(), Constant.TYPE);
+        TypePickerDialogFragment.newInstance(
+                defaultTypeListPos,
+                new TypePickerDialogFragment.OnTypePickedListener() {
+                    @Override
+                    public void onTypePicked(int position) {
+                        planDetailPresenter.notifyTypeOfPlanChanged(position);
+                    }
+                }
+        ).show(getSupportFragmentManager());
     }
 
     @Override
     public void showDeadlinePickerDialog(long defaultDeadline) {
-        DateTimePickerDialogFragment fragment = DateTimePickerDialogFragment.newInstance(defaultDeadline);
-        fragment.setOnDateTimePickedListener(new DateTimePickerDialogFragment.OnDateTimePickedListener() {
-            @Override
-            public void onDateTimePicked(long timeInMillis) {
-                planDetailPresenter.notifyDeadlineChanged(timeInMillis);
-            }
-        });
-        fragment.show(getSupportFragmentManager(), Constant.DEADLINE);
+        DateTimePickerDialogFragment.newInstance(
+                defaultDeadline,
+                new DateTimePickerDialogFragment.OnDateTimePickedListener() {
+                    @Override
+                    public void onDateTimePicked(long timeInMillis) {
+                        planDetailPresenter.notifyDeadlineChanged(timeInMillis);
+                    }
+                }
+        ).show(getSupportFragmentManager());
     }
 
     @Override
     public void showReminderTimePickerDialog(long defaultReminderTime) {
-        DateTimePickerDialogFragment fragment = DateTimePickerDialogFragment.newInstance(defaultReminderTime);
-        fragment.setOnDateTimePickedListener(new DateTimePickerDialogFragment.OnDateTimePickedListener() {
-            @Override
-            public void onDateTimePicked(long timeInMillis) {
-                planDetailPresenter.notifyReminderTimeChanged(timeInMillis);
-            }
-        });
-        fragment.show(getSupportFragmentManager(), Constant.REMINDER_TIME);
+        DateTimePickerDialogFragment.newInstance(
+                defaultReminderTime,
+                new DateTimePickerDialogFragment.OnDateTimePickedListener() {
+                    @Override
+                    public void onDateTimePicked(long timeInMillis) {
+                        planDetailPresenter.notifyReminderTimeChanged(timeInMillis);
+                    }
+                }
+        ).show(getSupportFragmentManager());
     }
 
     @Override

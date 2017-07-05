@@ -13,6 +13,7 @@ import com.zack.enderplan.model.bean.TypeMarkPattern;
 import com.zack.enderplan.util.ResourceUtil;
 import com.zack.enderplan.view.adapter.TypeMarkPatternGridAdapter;
 
+import java.io.Serializable;
 import java.util.List;
 
 import butterknife.BindView;
@@ -23,6 +24,7 @@ public class TypeMarkPatternPickerDialogFragment extends BaseDialogFragment {
     GridView mTypeMarkPatternGrid;
 
     private static final String ARG_DEFAULT_PATTERN = "default_pattern";
+    private static final String ARG_TYPE_MARK_PATTERN_PICKED_LSNR = "type_mark_pattern_picked_lsnr";
 
     private TypeMarkPattern mTypeMarkPattern;
     private int mPosition = -1;
@@ -33,13 +35,14 @@ public class TypeMarkPatternPickerDialogFragment extends BaseDialogFragment {
 
     }
 
-    public static TypeMarkPatternPickerDialogFragment newInstance(String defaultPattern) {
+    public static TypeMarkPatternPickerDialogFragment newInstance(String defaultPattern, OnTypeMarkPatternPickedListener listener) {
         TypeMarkPatternPickerDialogFragment fragment = new TypeMarkPatternPickerDialogFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_TITLE, ResourceUtil.getString(R.string.title_dialog_fragment_type_mark_pattern_picker));
-        args.putString(ARG_NEG_BTN, ResourceUtil.getString(R.string.button_remove));
-        args.putString(ARG_POS_BTN, ResourceUtil.getString(R.string.button_select));
+        args.putString(ARG_TITLE_STR, ResourceUtil.getString(R.string.title_dialog_fragment_type_mark_pattern_picker));
+        args.putString(ARG_NEG_BTN_STR, ResourceUtil.getString(R.string.button_remove));
+        args.putString(ARG_POS_BTN_STR, ResourceUtil.getString(R.string.button_select));
         args.putString(ARG_DEFAULT_PATTERN, defaultPattern);
+        args.putSerializable(ARG_TYPE_MARK_PATTERN_PICKED_LSNR, listener);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,6 +55,7 @@ public class TypeMarkPatternPickerDialogFragment extends BaseDialogFragment {
         Bundle args = getArguments();
         if (args != null) {
             defaultPattern = args.getString(ARG_DEFAULT_PATTERN);
+            mOnTypeMarkPatternPickedListener = (OnTypeMarkPatternPickedListener) args.getSerializable(ARG_TYPE_MARK_PATTERN_PICKED_LSNR);
         }
 
         mTypeMarkPatternList = DataManager.getInstance().getTypeMarkPatternList();
@@ -68,6 +72,25 @@ public class TypeMarkPatternPickerDialogFragment extends BaseDialogFragment {
                 }
             }
         }
+
+        setNegativeButtonClickListener(new OnButtonClickListener() {
+            @Override
+            public boolean onClick() {
+                if (mOnTypeMarkPatternPickedListener != null) {
+                    mOnTypeMarkPatternPickedListener.onTypeMarkPatternPicked(null);
+                }
+                return true;
+            }
+        });
+        setPositiveButtonClickListener(new OnButtonClickListener() {
+            @Override
+            public boolean onClick() {
+                if (mOnTypeMarkPatternPickedListener != null) {
+                    mOnTypeMarkPatternPickedListener.onTypeMarkPatternPicked(mTypeMarkPattern.getPatternFn() == null ? null : mTypeMarkPattern);
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -96,33 +119,12 @@ public class TypeMarkPatternPickerDialogFragment extends BaseDialogFragment {
     }
 
     @Override
-    public boolean onButtonClicked(int which) {
-        switch (which) {
-            case BTN_NEG:
-                if (mOnTypeMarkPatternPickedListener != null) {
-                    mOnTypeMarkPatternPickedListener.onTypeMarkPatternPicked(null);
-                }
-                break;
-            case BTN_POS:
-                if (mOnTypeMarkPatternPickedListener != null) {
-                    mOnTypeMarkPatternPickedListener.onTypeMarkPatternPicked(mTypeMarkPattern.getPatternFn() == null ? null : mTypeMarkPattern);
-                }
-                break;
-        }
-        return true;
-    }
-
-    @Override
     public void onDetach() {
         super.onDetach();
         mOnTypeMarkPatternPickedListener = null;
     }
 
-    public interface OnTypeMarkPatternPickedListener {
+    public interface OnTypeMarkPatternPickedListener extends Serializable {
         void onTypeMarkPatternPicked(TypeMarkPattern typeMarkPattern);
-    }
-
-    public void setOnTypeMarkPatternPickedListener(OnTypeMarkPatternPickedListener listener) {
-        mOnTypeMarkPatternPickedListener = listener;
     }
 }

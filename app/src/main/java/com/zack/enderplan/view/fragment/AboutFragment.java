@@ -17,6 +17,7 @@ import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.util.ResourceUtil;
 import com.zack.enderplan.util.StringUtil;
 import com.zack.enderplan.util.SystemUtil;
+import com.zack.enderplan.view.dialog.BaseDialogFragment;
 import com.zack.enderplan.view.dialog.MessageDialogFragment;
 
 import butterknife.BindView;
@@ -68,15 +69,19 @@ public class AboutFragment extends BaseFragment {
                         if (intent.resolveActivity(getContext().getPackageManager()) != null) {
                             startActivity(intent);
                         } else {
-                            MessageDialogFragment fragment = MessageDialogFragment.newInstance(getString(R.string.title_dialog_no_email_app_found), getString(R.string.msg_dialog_no_email_app_found), getString(R.string.btn_dialog_copy_to_clipboard), null, getString(R.string.button_ok));
-                            fragment.setOnNeutralButtonClickListener(new MessageDialogFragment.OnNeutralButtonClickListener() {
-                                @Override
-                                public void onNeutralButtonClick() {
-                                    SystemUtil.putTextToClipboard(ResourceUtil.getString(R.string.label_developer_email), Constant.DEVELOPER_EMAIL);
-                                    showToast(R.string.toast_copy_to_clipboard_successfully);
-                                }
-                            });
-                            fragment.show(getFragmentManager());
+                            new MessageDialogFragment.Builder()
+                                    .setMessage(R.string.msg_dialog_no_email_app_found)
+                                    .setTitle(R.string.title_dialog_no_email_app_found)
+                                    .setNeutralButton(R.string.btn_dialog_copy_to_clipboard, new BaseDialogFragment.OnButtonClickListener() {
+                                        @Override
+                                        public boolean onClick() {
+                                            SystemUtil.putTextToClipboard(ResourceUtil.getString(R.string.label_developer_email), Constant.DEVELOPER_EMAIL);
+                                            showToast(R.string.toast_copy_to_clipboard_successfully);
+                                            return true;
+                                        }
+                                    })
+                                    .setPositiveButton(R.string.button_ok, null)
+                                    .show(getFragmentManager());
                         }
                     }
                 }}

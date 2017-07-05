@@ -141,14 +141,15 @@ public class ReminderActivity extends BaseActivity implements ReminderViewContra
                 mReminderPresenter.notifyDelayingReminder(Constant.TOMORROW);
                 break;
             case R.id.btn_more:
-                DateTimePickerDialogFragment fragment = DateTimePickerDialogFragment.newInstance(TimeUtil.getDateTimePickerDefaultTime(Constant.UNDEFINED_TIME));
-                fragment.setOnDateTimePickedListener(new DateTimePickerDialogFragment.OnDateTimePickedListener() {
-                    @Override
-                    public void onDateTimePicked(long timeInMillis) {
-                        mReminderPresenter.notifyUpdatingReminderTime(timeInMillis);
-                    }
-                });
-                fragment.show(getSupportFragmentManager(), Constant.REMINDER_TIME);
+                DateTimePickerDialogFragment.newInstance(
+                        TimeUtil.getDateTimePickerDefaultTime(Constant.UNDEFINED_TIME),
+                        new DateTimePickerDialogFragment.OnDateTimePickedListener() {
+                            @Override
+                            public void onDateTimePicked(long timeInMillis) {
+                                mReminderPresenter.notifyUpdatingReminderTime(timeInMillis);
+                            }
+                        }
+                ).show(getSupportFragmentManager());
                 break;
         }
     }

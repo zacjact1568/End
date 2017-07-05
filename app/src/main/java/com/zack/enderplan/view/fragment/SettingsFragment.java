@@ -14,6 +14,7 @@ import com.zack.enderplan.common.Constant;
 import com.zack.enderplan.model.DataManager;
 import com.zack.enderplan.model.preference.PreferenceHelper;
 import com.zack.enderplan.view.activity.HomeActivity;
+import com.zack.enderplan.view.dialog.BaseDialogFragment;
 import com.zack.enderplan.view.dialog.MessageDialogFragment;
 
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -37,15 +38,19 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         mNightModePreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                MessageDialogFragment fragment = MessageDialogFragment.newInstance(getString(R.string.title_dialog_switch_night_mode), getString(R.string.msg_dialog_switch_night_mode), null, getString(R.string.button_cancel), getString(R.string.button_restart));
-                fragment.setOnPositiveButtonClickListener(new MessageDialogFragment.OnPositiveButtonClickListener() {
-                    @Override
-                    public void onPositiveButtonClick() {
-                        mNightModePreference.setChecked(!mNightModePreference.isChecked());
-                    }
-                });
-                //这里需要使用宿主activity的support包中的FragmentManager
-                fragment.show(((FragmentActivity) getActivity()).getSupportFragmentManager());
+                new MessageDialogFragment.Builder()
+                        .setMessage(R.string.msg_dialog_switch_night_mode)
+                        .setTitle(R.string.title_dialog_switch_night_mode)
+                        .setNegativeButton(R.string.button_cancel, null)
+                        .setPositiveButton(R.string.button_restart, new BaseDialogFragment.OnButtonClickListener() {
+                            @Override
+                            public boolean onClick() {
+                                mNightModePreference.setChecked(!mNightModePreference.isChecked());
+                                return true;
+                            }
+                        })
+                        //这里需要使用宿主activity的support包中的FragmentManager
+                        .show(((FragmentActivity) getActivity()).getSupportFragmentManager());
                 //返回false表示不改变preference的值
                 return false;
             }
