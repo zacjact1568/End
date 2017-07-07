@@ -39,7 +39,8 @@ public class TypeMarkPatternPickerDialogFragment extends BaseDialogFragment {
         TypeMarkPatternPickerDialogFragment fragment = new TypeMarkPatternPickerDialogFragment();
         Bundle args = new Bundle();
         args.putString(ARG_TITLE_STR, ResourceUtil.getString(R.string.title_dialog_fragment_type_mark_pattern_picker));
-        args.putString(ARG_NEG_BTN_STR, ResourceUtil.getString(R.string.button_remove));
+        args.putString(ARG_NEU_BTN_STR, ResourceUtil.getString(R.string.button_remove));
+        args.putString(ARG_NEG_BTN_STR, ResourceUtil.getString(R.string.button_cancel));
         args.putString(ARG_POS_BTN_STR, ResourceUtil.getString(R.string.button_select));
         args.putString(ARG_DEFAULT_PATTERN, defaultPattern);
         args.putSerializable(ARG_TYPE_MARK_PATTERN_PICKED_LSNR, listener);
@@ -73,7 +74,7 @@ public class TypeMarkPatternPickerDialogFragment extends BaseDialogFragment {
             }
         }
 
-        setNegativeButtonClickListener(new OnButtonClickListener() {
+        setNeutralButtonClickListener(new OnButtonClickListener() {
             @Override
             public boolean onClick() {
                 if (mOnTypeMarkPatternPickedListener != null) {
