@@ -1,26 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ViewAnimator
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/switcher_date_time_picker"
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_weight="1"
-    android:inAnimation="@android:anim/fade_in"
-    android:outAnimation="@android:anim/fade_out"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical"
     tools:layout_height="wrap_content"
     tools:context=".view.dialog.DateTimePickerDialogFragment">
 
-    <DatePicker
-        android:id="@+id/picker_date"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:headerBackground="@color/colorPrimary"/>
+        android:padding="4dp"
+        android:baselineAligned="false">
 
-    <TimePicker
-        android:id="@+id/picker_time"
+        <LinearLayout
+            android:id="@+id/layout_switcher_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_rounded_rectangle_ripple"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="4dp"
+            tools:backgroundTint="@color/colorPrimary">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_date"
+                android:textSize="16sp"
+                android:textColor="@color/colorWhiteBackground"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/text_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/colorWhiteBackground"
+                android:alpha="0.6"
+                tools:text="Jul. 7, 2017"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_switcher_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/bg_rounded_rectangle_ripple"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="4dp"
+            tools:backgroundTint="@color/colorPrimaryDark"
+            tools:alpha="0.8">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_time"
+                android:textSize="16sp"
+                android:textColor="@color/colorWhiteBackground"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/text_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/colorWhiteBackground"
+                android:alpha="0.6"
+                tools:text="11:30"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ViewAnimator
+        android:id="@+id/switcher_date_time_picker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:headerBackground="@color/colorPrimary"/>
+        android:inAnimation="@anim/anim_move_up_fade_in"
+        android:outAnimation="@anim/anim_move_down_fade_out">
 
-</ViewAnimator>
+        <DatePicker
+            android:id="@+id/picker_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/colorBackground"
+            android:headerBackground="@color/colorPrimary"/>
+
+        <TimePicker
+            android:id="@+id/picker_time"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?android:attr/colorBackground"
+            android:headerBackground="@color/colorPrimary"/>
+
+    </ViewAnimator>
+
+</LinearLayout>

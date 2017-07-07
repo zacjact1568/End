@@ -1,11 +1,15 @@
 package com.zack.enderplan.view.dialog;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.ViewAnimator;
 
@@ -17,7 +21,9 @@ import com.zack.enderplan.util.TimeUtil;
 import java.io.Serializable;
 import java.util.Calendar;
 
+import butterknife.BindColor;
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class DateTimePickerDialogFragment extends BaseDialogFragment {
 
@@ -27,6 +33,17 @@ public class DateTimePickerDialogFragment extends BaseDialogFragment {
     TimePicker mTimePicker;
     @BindView(R.id.switcher_date_time_picker)
     ViewAnimator mDateTimePickerSwitcher;
+    @BindView(R.id.layout_switcher_date)
+    LinearLayout mDateSwitcherLayout;
+    @BindView(R.id.layout_switcher_time)
+    LinearLayout mTimeSwitcherLayout;
+    @BindView(R.id.text_date)
+    TextView mDateText;
+    @BindView(R.id.text_time)
+    TextView mTimeText;
+
+    @BindColor(R.color.colorPrimaryDark)
+    int mDarkPrimaryColor;
 
     private static final String ARG_DEFAULT_TIME = "default_time";
     private static final String ARG_DATE_TIME_PICKED_LSNR = "date_time_picked_lsnr";
@@ -41,8 +58,8 @@ public class DateTimePickerDialogFragment extends BaseDialogFragment {
     public static DateTimePickerDialogFragment newInstance(long defaultTime, OnDateTimePickedListener listener) {
         DateTimePickerDialogFragment fragment = new DateTimePickerDialogFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_NEU_BTN_STR, ResourceUtil.getString(R.string.text_time_picker_switcher));
-        args.putString(ARG_NEG_BTN_STR, ResourceUtil.getString(R.string.button_remove));
+        args.putString(ARG_NEU_BTN_STR, ResourceUtil.getString(R.string.button_remove));
+        args.putString(ARG_NEG_BTN_STR, ResourceUtil.getString(R.string.button_cancel));
         args.putString(ARG_POS_BTN_STR, ResourceUtil.getString(R.string.button_select));
         args.putLong(ARG_DEFAULT_TIME, defaultTime);
         args.putSerializable(ARG_DATE_TIME_PICKED_LSNR, listener);
@@ -61,16 +78,7 @@ public class DateTimePickerDialogFragment extends BaseDialogFragment {
             mOnDateTimePickedListener = (OnDateTimePickedListener) args.getSerializable(ARG_DATE_TIME_PICKED_LSNR);
         }
 
-        //设置点击三个按钮的事件
         setNeutralButtonClickListener(new OnButtonClickListener() {
-            @Override
-            public boolean onClick() {
-                mDateTimePickerSwitcher.showNext();
-                setNeutralButtonString(getString(mDateTimePickerSwitcher.getCurrentView().getId() == R.id.picker_time ? R.string.text_date_picker_switcher : R.string.text_time_picker_switcher));
-                return false;
-            }
-        });
-        setNegativeButtonClickListener(new OnButtonClickListener() {
             @Override
             public boolean onClick() {
                 if (mOnDateTimePickedListener != null) {
@@ -107,6 +115,7 @@ public class DateTimePickerDialogFragment extends BaseDialogFragment {
                     @Override
                     public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         mCalendar.set(year, monthOfYear, dayOfMonth);
+                        updateDateText();
                     }
                 }
         );
@@ -124,14 +133,43 @@ public class DateTimePickerDialogFragment extends BaseDialogFragment {
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
                 mCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 mCalendar.set(Calendar.MINUTE, minute);
+                updateTimeText();
             }
         });
+
+        updateSwitcherLayout();
+        updateDateText();
+        updateTimeText();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mOnDateTimePickedListener = null;
+    }
+
+    @OnClick({R.id.layout_switcher_date, R.id.layout_switcher_time})
+    public void onClickSwitcher() {
+        mDateTimePickerSwitcher.showNext();
+        updateSwitcherLayout();
+    }
+
+    private void updateSwitcherLayout() {
+        boolean isDatePicker = mDateTimePickerSwitcher.getCurrentView().getId() == R.id.picker_date;
+        mDateSwitcherLayout.setClickable(!isDatePicker);
+        mDateSwitcherLayout.setAlpha(isDatePicker ? 1f : 0.8f);
+        mDateSwitcherLayout.setBackgroundTintList(ColorStateList.valueOf(isDatePicker ? Color.TRANSPARENT : mDarkPrimaryColor));
+        mTimeSwitcherLayout.setClickable(isDatePicker);
+        mTimeSwitcherLayout.setAlpha(isDatePicker ? 0.8f : 1f);
+        mTimeSwitcherLayout.setBackgroundTintList(ColorStateList.valueOf(isDatePicker ? mDarkPrimaryColor : Color.TRANSPARENT));
+    }
+
+    private void updateDateText() {
+        mDateText.setText(TimeUtil.formatDate(mCalendar.getTimeInMillis()));
+    }
+
+    private void updateTimeText() {
+        mTimeText.setText(TimeUtil.formatTime(mCalendar.getTimeInMillis()));
     }
 
     public interface OnDateTimePickedListener extends Serializable {

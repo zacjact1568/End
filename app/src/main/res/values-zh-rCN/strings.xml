@@ -40,8 +40,8 @@
     <string name="title_activity_plan_creation">新计划</string>
     <string name="date_format">yyyy年MM月dd日 E</string>
     <string name="date_time_format">yyyy年MM月dd日 E kk:mm</string>
-    <string name="text_date_picker_switcher">设置日期</string>
-    <string name="text_time_picker_switcher">设置时间</string>
+    <string name="text_date">日期</string>
+    <string name="text_time">时间</string>
     <string name="date_time_format_short">yyyy/MM/dd E kk:mm</string>
     <string name="other_info">类型、截止时间和提醒</string>
     <string name="prompt_empty_content">看起来你想保存空内容？</string>
@@ -222,4 +222,6 @@
     <string name="text_span_seg_enderman_url">http://minecraft-zh.gamepedia.com/末影人</string>
     <string name="hint_content_editor_edit">此计划的新内容</string>
     <string name="hint_type_name_editor_edit">此类型的新名称</string>
+    <string name="text_yesterday">昨天</string>
+    <string name="text_today">今天</string>
 </resources>

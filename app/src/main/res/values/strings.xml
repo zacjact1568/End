@@ -69,6 +69,12 @@
     <string name="dscpt_time_yesterday">%s yesterday</string>
     <string name="dscpt_time_general">%1$s, %2$s</string>
 
+    <string name="text_yesterday">Yesterday</string>
+    <string name="text_today">Today</string>
+
+    <string name="text_time">Time</string>
+    <string name="text_date">Date</string>
+
     <!--HomeActivity-->
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -277,10 +283,6 @@
     <!--Reminder-->
     <string name="title_notification_reminder">Reminder</string>
     <string name="toast_data_loading_unfinished">Data loading hasn\'t finished yet, please wait…</string>
-
-    <!--DateTimePickerDialogFragment-->
-    <string name="text_time_picker_switcher">Set Time</string>
-    <string name="text_date_picker_switcher">Set Date</string>
 
     <!--TypeMarkColorPickerDialogFragment-->
     <string name="title_dialog_fragment_type_mark_color_picker">Color Picker</string>

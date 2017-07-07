@@ -94,7 +94,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
     }
 
     @OnClick({R.id.btn_neutral, R.id.btn_negative, R.id.btn_positive})
-    public void onClick(View view) {
+    public final void onClickBase(View view) {
         boolean dismiss = true;
         switch (view.getId()) {
             case R.id.btn_neutral:

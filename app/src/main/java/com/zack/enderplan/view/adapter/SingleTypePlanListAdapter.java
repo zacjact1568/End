@@ -165,7 +165,7 @@ public class SingleTypePlanListAdapter extends RecyclerView.Adapter<RecyclerView
 
     private void setTimeLayout(ImageTextView timeLayout, boolean isCompleted, boolean hasTime, long time) {
         timeLayout.setVisibility(!isCompleted && hasTime ? View.VISIBLE : View.GONE);
-        timeLayout.setText(hasTime ? TimeUtil.formatTime(time) : null);
+        timeLayout.setText(hasTime ? TimeUtil.formatDateTime(time) : null);
     }
 
     private void setStarButton(final ImageView starButton, boolean isStarred, boolean isCompleted, final ItemViewHolder itemViewHolder) {

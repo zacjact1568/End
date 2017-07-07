@@ -33,7 +33,76 @@ public class TimeUtil {
         return DateFormat.is24HourFormat(App.getContext());
     }
 
+    public static String formatDate(long timeInMillis) {
+        if (timeInMillis == Constant.UNDEFINED_TIME) {
+            return null;
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timeInMillis);
+        Calendar standardCal = Calendar.getInstance();
+        //标准时间设为昨天零点
+        standardCal.add(Calendar.DAY_OF_MONTH, -1);
+        standardCal.set(Calendar.HOUR_OF_DAY, 0);
+        standardCal.set(Calendar.MINUTE, 0);
+        standardCal.set(Calendar.SECOND, 0);
+        standardCal.set(Calendar.MILLISECOND, 0);
+        //比较
+        if (calendar.after(standardCal)) {
+            //标准时间设为今天零点
+            standardCal.add(Calendar.DAY_OF_MONTH, 1);
+            //比较
+            if (calendar.before(standardCal)) {
+                //在昨天
+                return ResourceUtil.getString(R.string.text_yesterday);
+            }
+            //标准时间设为明天零点
+            standardCal.add(Calendar.DAY_OF_MONTH, 1);
+            //比较
+            if (calendar.before(standardCal)) {
+                //在今天
+                return ResourceUtil.getString(R.string.text_today);
+            }
+            //标准时间设为后天零点
+            standardCal.add(Calendar.DAY_OF_MONTH, 1);
+            //比较
+            if (calendar.before(standardCal)) {
+                //在明天
+                return ResourceUtil.getString(R.string.text_tomorrow);
+            }
+            //在后天以及以后，不需要时间描述
+        }
+        //在前天以及以前，不需要时间描述
+        return DateFormat.getMediumDateFormat(App.getContext()).format(new Date(timeInMillis));
+    }
+
     public static String formatTime(long timeInMillis) {
+        if (timeInMillis == Constant.UNDEFINED_TIME) {
+            return null;
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timeInMillis);
+        Calendar standardCal = Calendar.getInstance();
+        if (calendar.after(standardCal)) {
+            //标准时间设为1小时后
+            standardCal.add(Calendar.HOUR_OF_DAY, 1);
+            if (calendar.before(standardCal)) {
+                //1小时以内
+                int minuteCount = (int) (calendar.getTimeInMillis() - System.currentTimeMillis()) / (1000 * 60);
+                if (minuteCount == 0) {
+                    return ResourceUtil.getString(R.string.dscpt_time_within_1_minute);
+                } else if (minuteCount == 1) {
+                    return ResourceUtil.getString(R.string.dscpt_time_1_minute);
+                } else {
+                    return String.format(ResourceUtil.getString(R.string.dscpt_time_multi_minutes), minuteCount);
+                }
+            }
+            //在1小时以后，不需要时间描述
+        }
+        //在当前时间之前，不需要时间描述
+        return DateFormat.getTimeFormat(App.getContext()).format(new Date(timeInMillis));
+    }
+
+    public static String formatDateTime(long timeInMillis) {
         if (timeInMillis == Constant.UNDEFINED_TIME) {
             return null;
         }

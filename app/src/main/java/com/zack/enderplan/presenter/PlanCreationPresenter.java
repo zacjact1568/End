@@ -145,7 +145,7 @@ public class PlanCreationPresenter extends BasePresenter {
     }
 
     private CharSequence formatDateTime(long timeInMillis) {
-        String time = TimeUtil.formatTime(timeInMillis);
+        String time = TimeUtil.formatDateTime(timeInMillis);
         CharSequence formatted;
         if (time == null) {
             formatted = ResourceUtil.getString(R.string.dscpt_touch_to_set);

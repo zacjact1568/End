@@ -37,7 +37,7 @@ public class ReminderPresenter extends BasePresenter {
         mReminderViewContract.showInitialView(
                 mPlan.getContent(),
                 mPlan.hasDeadline(),
-                mPlan.hasDeadline() ? TimeUtil.formatTime(mPlan.getDeadline()) : null
+                mPlan.hasDeadline() ? TimeUtil.formatDateTime(mPlan.getDeadline()) : null
         );
     }
 
@@ -80,7 +80,7 @@ public class ReminderPresenter extends BasePresenter {
         if (TimeUtil.isValidTime(reminderTime)) {
             updateReminderTime(
                     reminderTime,
-                    String.format(ResourceUtil.getString(R.string.toast_reminder_delayed_format), String.format(ResourceUtil.getString(R.string.toast_delay_more), TimeUtil.formatTime(reminderTime)))
+                    String.format(ResourceUtil.getString(R.string.toast_reminder_delayed_format), String.format(ResourceUtil.getString(R.string.toast_delay_more), TimeUtil.formatDateTime(reminderTime)))
             );
         } else {
             mReminderViewContract.showToast(R.string.toast_past_reminder_time);
