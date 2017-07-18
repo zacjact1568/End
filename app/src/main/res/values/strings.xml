@@ -2,8 +2,7 @@
 
     <!--通用-->
 
-    <string name="app_name">EnderPlan</string>
-    <string name="app_name_en" translatable="false">EnderPlan</string>
+    <string name="app_name" translatable="false">Ender</string>
 
     <string name="action_search">Search</string>
     <string name="action_edit">Edit</string>
@@ -113,7 +112,7 @@
     <string name="text_view_details">View Details</string>
     <string name="text_empty_plan_list_1">No plans here</string>
     <string name="text_empty_plan_list_2">Touch \"+\" button to create one</string>
-    <string name="toast_double_press_exit">Press once again to exit EnderPlan</string>
+    <string name="toast_double_press_exit">Press once again to exit Ender</string>
 
     <!--MyPlansFragment-->
     <string name="title_fragment_my_plans">My Plans</string>
@@ -178,7 +177,7 @@
 
     <!--ReminderActivity-->
     <string name="title_activity_reminder">Reminder</string>
-    <string name="dscpt_reminder">EnderPlan Reminder</string>
+    <string name="dscpt_reminder">Ender Reminder</string>
     <string name="text_delay">Delay</string>
     <string name="text_detail">Detail</string>
     <string name="text_complete">Complete</string>
@@ -199,15 +198,15 @@
     <string name="title_activity_settings">Settings</string>
     <string name="pref_title_theme">Theme</string>
     <string name="pref_title_night_mode">Night Mode</string>
-    <string name="title_dialog_switch_night_mode">Restart EnderPlan?</string>
-    <string name="msg_dialog_switch_night_mode">EnderPlan needs a restart to switch between day and night mode.</string>
+    <string name="title_dialog_switch_night_mode">Restart Ender?</string>
+    <string name="msg_dialog_switch_night_mode">Ender needs a restart to switch between day and night mode.</string>
     <string name="pref_summary_on">On</string>
     <string name="pref_summary_off">Off</string>
     <string name="pref_title_language">Language</string>
     <string name="pref_title_drawer_header_display">Top of the Drawer Displays</string>
     <string name="pref_title_type_list_item_end_display">End of the Type List Item Displays</string>
     <string name="title_dialog_reset_settings">Reset Settings?</string>
-    <string name="msg_dialog_reset_settings">Settings will be reset to default, EnderPlan will restart.</string>
+    <string name="msg_dialog_reset_settings">Settings will be reset to default, Ender will restart.</string>
     <string name="btn_dialog_reset_settings">Reset And Restart</string>
 
     <!--AboutActivity-->
@@ -217,21 +216,21 @@
     <!--AboutFragment-->
     <string name="title_fragment_about">About</string>
     <string name="title_intro">Intro</string>
-    <string name="text_intro">EnderPlan is an simple app that helps you manage your plans.</string>
-    <string name="title_ender_series">Ender Series</string>
-    <string name="text_ender_series">Inspired by Enderman in Minecraft.</string>
+    <string name="text_intro">Ender is an simple app that helps you manage your plans.</string>
+    <string name="title_ender">Ender</string>
+    <string name="text_ender">Inspired by Enderman in Minecraft.</string>
     <string name="text_span_seg_enderman">Enderman</string>
     <string name="text_span_seg_minecraft">Minecraft</string>
     <string name="text_span_seg_enderman_url">http://minecraft.gamepedia.com/Enderman</string>
     <string name="title_developer">Developer</string>
-    <string name="text_developer">EnderPlan is written by Zack. Contact me if you find bugs or have recommendations for this app.</string>
+    <string name="text_developer">Ender is written by Zack. Contact me if you find bugs or have recommendations for this app.</string>
     <string name="text_span_seg_contact">Contact</string>
-    <string name="subject_email">Email from an EnderPlan User</string>
+    <string name="subject_email">Email from an Ender User</string>
     <string name="title_dialog_no_email_app_found">No email app found</string>
     <string name="msg_dialog_no_email_app_found">It seems that you doesn\'t install an email app. You can copy my email address \"zacjact1568@hotmail.com\" to clipboard and send me an email later.</string>
     <string name="btn_dialog_copy_to_clipboard">Copy to Clipboard</string>
     <string name="toast_copy_to_clipboard_successfully">Text has been copied to clipboard</string>
-    <string name="label_developer_email">Email of EnderPlan\'s developer</string>
+    <string name="label_developer_email">Email of Ender\'s developer</string>
     <string name="title_rate">Rate</string>
     <string name="text_rate">Rate this app if you like.</string>
     <string name="text_span_seg_rate">Rate</string>
@@ -251,7 +250,7 @@
     <string name="title_guide_page_welcome">Welcome</string>
     <string name="dscpt_guide_page_welcome">Touch the right arrow to continue</string>
     <string name="title_guide_page_ready">Guide Ends</string>
-    <string name="dscpt_guide_page_ready">Enjoy EnderPlan</string>
+    <string name="dscpt_guide_page_ready">Enjoy Ender</string>
 
     <!--PlanSearchActivity-->
     <string name="title_activity_plan_search">Search Plans</string>

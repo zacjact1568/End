@@ -14,8 +14,8 @@
 
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetPackage="com.zack.enderplan"
-            android:targetClass="com.zack.enderplan.view.activity.PlanCreationActivity" />
+            android:targetPackage="me.imzack.app.ender"
+            android:targetClass="me.imzack.app.ender.view.activity.PlanCreationActivity" />
 
         <categories android:name="android.shortcut.conversation" />
 

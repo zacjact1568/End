@@ -116,7 +116,7 @@
     <string name="action_create">創建</string>
     <string name="btn_custom">自定義</string>
     <string name="btn_preset">預置</string>
-    <string name="dscpt_reminder">EnderPlan的提醒</string>
+    <string name="dscpt_reminder">Ender的提醒</string>
     <string name="text_1_hour">1小時</string>
     <string name="text_back">返回</string>
     <string name="text_complete">完成</string>
@@ -129,6 +129,5 @@
     <string name="toast_delay_tomorrow">在明天</string>
     <string name="toast_reminder_delayed_format">我將會%s提醒你</string>
     <string name="def_type_2">家庭</string>
-    <string name="app_name">Ender計劃</string>
     <string name="title_developer">開發者</string>
 </resources>

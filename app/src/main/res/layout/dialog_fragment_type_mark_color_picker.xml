@@ -29,7 +29,7 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <com.zack.enderplan.view.widget.CircleColorView
+        <me.imzack.app.ender.view.widget.CircleColorView
             android:id="@+id/ic_type_mark_color"
             android:layout_width="40dp"
             android:layout_height="40dp"/>
@@ -45,7 +45,7 @@
             android:typeface="monospace"
             tools:text="#FF543B4A"/>
 
-        <com.zack.enderplan.view.widget.ColorPicker
+        <me.imzack.app.ender.view.widget.ColorPicker
             android:id="@+id/picker_type_mark_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

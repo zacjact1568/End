@@ -15,7 +15,7 @@
     android:elevation="0.5dp"
     tools:context=".view.adapter.TypeListAdapter">
 
-    <com.zack.enderplan.view.widget.CircleColorView
+    <me.imzack.app.ender.view.widget.CircleColorView
         android:id="@+id/ic_type_mark"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -38,7 +38,7 @@
         android:ellipsize="end"
         tools:text="Work"/>
 
-    <com.zack.enderplan.view.widget.CircleColorView
+    <me.imzack.app.ender.view.widget.CircleColorView
         android:id="@+id/ic_plan_count"
         android:layout_width="20dp"
         android:layout_height="20dp"

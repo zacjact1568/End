@@ -7,11 +7,11 @@ android {
     buildToolsVersion "25.0.2"
 
     defaultConfig {
-        applicationId "com.zack.enderplan"
+        applicationId "me.imzack.app.ender"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 587
-        versionName '20170707'
+        versionCode 598
+        versionName '20170718'
     }
 
     buildTypes {
