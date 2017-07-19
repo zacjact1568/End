@@ -46,24 +46,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@string/title_ender"
-            android:textSize="18sp"
-            android:textColor="@color/colorPrimary"
-            android:textStyle="bold"
-            android:textAllCaps="true"/>
-
-        <TextView
-            android:id="@+id/text_dscpt_ender_series"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:textSize="16sp"
-            tools:text="@string/text_ender"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:text="@string/title_developer"
             android:textSize="18sp"
             android:textColor="@color/colorPrimary"

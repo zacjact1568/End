@@ -116,7 +116,7 @@
     <string name="action_create">創建</string>
     <string name="btn_custom">自定義</string>
     <string name="btn_preset">預置</string>
-    <string name="dscpt_reminder">Ender的提醒</string>
+    <string name="dscpt_reminder">End的提醒</string>
     <string name="text_1_hour">1小時</string>
     <string name="text_back">返回</string>
     <string name="text_complete">完成</string>
