@@ -23,8 +23,6 @@ import butterknife.ButterKnife;
 
 public class AboutFragment extends BaseFragment {
 
-    @BindView(R.id.text_dscpt_ender_series)
-    TextView mEnderSeriesDscptText;
     @BindView(R.id.text_dscpt_developer)
     TextView mDeveloperDscptText;
     @BindView(R.id.text_dscpt_rate)
@@ -44,14 +42,6 @@ public class AboutFragment extends BaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-
-        mEnderSeriesDscptText.setText(StringUtil.addSpan(
-                getString(R.string.text_ender),
-                new String[]{getString(R.string.text_span_seg_enderman), getString(R.string.text_span_seg_minecraft)},
-                new int[]{StringUtil.SPAN_URL, StringUtil.SPAN_URL},
-                new Object[]{getString(R.string.text_span_seg_enderman_url), "https://minecraft.net/"}
-        ));
-        mEnderSeriesDscptText.setMovementMethod(LinkMovementMethod.getInstance());
 
         mDeveloperDscptText.setText(StringUtil.addSpan(
                 getString(R.string.text_developer),
