@@ -46,7 +46,7 @@
             android:layout_marginEnd="16dp"
             android:gravity="center_vertical">
 
-            <me.imzack.app.ender.view.widget.CircleColorView
+            <me.imzack.app.end.view.widget.CircleColorView
                 android:id="@+id/ic_type_mark"
                 android:layout_width="20dp"
                 android:layout_height="20dp"/>
@@ -72,7 +72,7 @@
 
         <include layout="@layout/divider"/>
 
-        <me.imzack.app.ender.view.widget.ItemView
+        <me.imzack.app.end.view.widget.ItemView
             android:id="@+id/item_deadline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
 
         <include layout="@layout/divider"/>
 
-        <me.imzack.app.ender.view.widget.ItemView
+        <me.imzack.app.end.view.widget.ItemView
             android:id="@+id/item_reminder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -37,7 +37,7 @@
         android:layout_below="@id/text_content"
         android:layout_alignStart="@id/text_content"/>
 
-    <me.imzack.app.ender.view.widget.ImageTextView
+    <me.imzack.app.end.view.widget.ImageTextView
         android:id="@+id/layout_deadline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
         app:size="12dp"
         app:color="@color/grey_600"/>
 
-    <me.imzack.app.ender.view.widget.ImageTextView
+    <me.imzack.app.end.view.widget.ImageTextView
         android:id="@+id/layout_reminder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

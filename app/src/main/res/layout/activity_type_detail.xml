@@ -50,7 +50,7 @@
                 android:orientation="vertical"
                 app:layout_collapseMode="parallax">
 
-                <me.imzack.app.ender.view.widget.CircleColorView
+                <me.imzack.app.end.view.widget.CircleColorView
                     android:id="@+id/ic_type_mark"
                     android:layout_width="56dp"
                     android:layout_height="56dp"

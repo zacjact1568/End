@@ -8,12 +8,12 @@
     android:background="@color/colorPrimary"
     tools:context=".view.activity.GuideActivity">
 
-    <me.imzack.app.ender.view.widget.EnhancedViewPager
+    <me.imzack.app.end.view.widget.EnhancedViewPager
         android:id="@+id/pager_guide"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <me.imzack.app.ender.view.widget.CircleColorView
+    <me.imzack.app.end.view.widget.CircleColorView
         android:id="@+id/btn_start"
         android:layout_width="56dp"
         android:layout_height="56dp"
@@ -25,7 +25,7 @@
         app:fillColor="@color/colorPrimaryDark"
         app:innerIcon="@drawable/ic_arrow_back_black_24dp"/>
 
-    <me.imzack.app.ender.view.widget.CircleColorView
+    <me.imzack.app.end.view.widget.CircleColorView
         android:id="@+id/btn_end"
         android:layout_width="56dp"
         android:layout_height="56dp"
