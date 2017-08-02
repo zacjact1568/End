@@ -10,8 +10,8 @@ android {
         applicationId "me.imzack.app.end"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 599
-        versionName '20170719'
+        versionCode Math.ceil((new Date().time - 1448726400000) / 86400000) as int
+        versionName new Date().format('yyyyMMdd')
     }
 
     buildTypes {
