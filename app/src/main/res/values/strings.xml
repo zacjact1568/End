@@ -259,9 +259,6 @@
     <string name="text_type_search">%s found:</string>
     <string name="text_type_search_empty">No types found</string>
 
-    <!--FirstPlanFragment-->
-    <string name="hint_first_plan_content">Enter your first plan</string>
-
     <!--Default types-->
     <string name="def_type_1">To-Do</string>
     <string name="def_type_2">Family</string>
