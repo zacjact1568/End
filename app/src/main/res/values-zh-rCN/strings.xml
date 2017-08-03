@@ -144,10 +144,10 @@
     <string name="transition_type_name_text">类型名称文本转换</string>
     <string name="toast_data_loading_unfinished">数据还未载入完成，请稍等……</string>
     <string name="toast_shortcut_disabled">快捷方式已禁用</string>
-    <string name="title_dialog_no_email_app_found">没有找到email应用程序</string>
+    <string name="title_dialog_no_email_app_found">没有找到电子邮件应用程序</string>
     <string name="subject_email">来自End用户的电子邮件</string>
     <string name="btn_dialog_copy_to_clipboard">复制到剪贴板</string>
-    <string name="msg_dialog_no_email_app_found">你好像没有安装email应用程序。你可以将我的邮箱\"zacjact1568@hotmail.com\"复制到剪贴板，稍后再给我发送邮件。</string>
+    <string name="msg_dialog_no_email_app_found">你好像没有安装电子邮件应用程序。你可以将我的邮箱\"zacjact1568@hotmail.com\"复制到剪贴板，稍后再给我发送邮件。</string>
     <string name="label_developer_email">End开发者的电子邮件</string>
     <string name="toast_copy_to_clipboard_successfully">文本已复制到剪贴板</string>
     <string name="text_empty_plan_list_2">触摸\"+\"按钮创建一个</string>

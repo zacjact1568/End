@@ -22,11 +22,13 @@ public class LibraryListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private static final Library[] LIBRARIES = {
             new Library("Android Support Libraries", "Android", "https://developer.android.com/topic/libraries/support-library/"),
             new Library("Material Design Icons", "Google", "https://material.io/icons/"),
-            new Library("Butter Knife", "JakeWharton", "http://jakewharton.github.io/butterknife/"),
+            new Library("ButterKnife", "JakeWharton", "http://jakewharton.github.io/butterknife/"),
             new Library("EventBus", "greenrobot", "http://greenrobot.org/eventbus/"),
-            new Library("Dagger 2", "Google", "https://google.github.io/dagger/"),
+            new Library("Dagger2", "Google", "https://google.github.io/dagger/"),
             new Library("RxJava", "ReactiveX", "https://github.com/ReactiveX/RxJava"),
             new Library("Plaid", "nickbutcher", "https://github.com/nickbutcher/plaid"),
+            new Library("Kotlin", "JetBrains", "https://kotlinlang.org"),
+            new Library("Realm Mobile Database", "Realm", "https://realm.io/products/realm-mobile-database/"),
     };
 
     private Activity mActivity;
