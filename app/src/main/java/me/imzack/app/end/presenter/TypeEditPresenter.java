@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import me.imzack.app.end.R;
 import me.imzack.app.end.util.ResourceUtil;
 import me.imzack.app.end.util.StringUtil;
-import me.imzack.app.end.event.TypeDetailChangedEvent;
+import me.imzack.app.end.eventbus.event.TypeDetailChangedEvent;
 import me.imzack.app.end.model.bean.FormattedType;
 import me.imzack.app.end.model.bean.Type;
 import me.imzack.app.end.model.DataManager;

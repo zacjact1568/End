@@ -1,4 +1,4 @@
-package me.imzack.app.end.event;
+package me.imzack.app.end.eventbus.event;
 
 import me.imzack.app.end.model.bean.Type;
 

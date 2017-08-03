@@ -1,4 +1,4 @@
-package me.imzack.app.end.event;
+package me.imzack.app.end.eventbus.event;
 
 /** 有新建类型的事件 */
 public class TypeCreatedEvent extends BaseTypeEvent {

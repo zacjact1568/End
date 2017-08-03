@@ -4,11 +4,12 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
+import me.imzack.app.end.App;
 import me.imzack.app.end.R;
 import me.imzack.app.end.common.Constant;
 import me.imzack.app.end.util.ResourceUtil;
 import me.imzack.app.end.util.SystemUtil;
-import me.imzack.app.end.event.PlanDetailChangedEvent;
+import me.imzack.app.end.eventbus.event.PlanDetailChangedEvent;
 import me.imzack.app.end.model.DataManager;
 import me.imzack.app.end.model.bean.Plan;
 import me.imzack.app.end.view.activity.ReminderActivity;
@@ -28,11 +29,6 @@ public class ReminderNotificationActionReceiver extends BaseReceiver {
     private int mPlanListPosition;
     private Plan mPlan;
 
-    public ReminderNotificationActionReceiver() {
-        mDataManager = DataManager.getInstance();
-        mEventBus = EventBus.getDefault();
-    }
-
     public static PendingIntent getPendingIntentForSend(Context context, String planCode, int planListPosition, String notificationAction) {
         return PendingIntent.getBroadcast(
                 context,
@@ -50,6 +46,10 @@ public class ReminderNotificationActionReceiver extends BaseReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+
+        mDataManager = App.getDataManager();
+        mEventBus = App.getEventBus();
+
         if (!mDataManager.isDataLoaded()) {
             //说明DataManager中的数据到点击通知为止还未加载完
             SystemUtil.showToast(R.string.toast_data_loading_unfinished);

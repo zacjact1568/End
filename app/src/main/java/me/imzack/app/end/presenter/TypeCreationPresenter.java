@@ -9,7 +9,7 @@ import me.imzack.app.end.util.StringUtil;
 import me.imzack.app.end.model.bean.FormattedType;
 import me.imzack.app.end.model.bean.Type;
 import me.imzack.app.end.model.bean.TypeMarkColor;
-import me.imzack.app.end.event.TypeCreatedEvent;
+import me.imzack.app.end.eventbus.event.TypeCreatedEvent;
 import me.imzack.app.end.model.DataManager;
 import me.imzack.app.end.model.bean.TypeMarkPattern;
 import me.imzack.app.end.view.contract.TypeCreationViewContract;
@@ -22,13 +22,15 @@ public class TypeCreationPresenter extends BasePresenter {
 
     private TypeCreationViewContract mTypeCreationViewContract;
     private DataManager mDataManager;
+    private EventBus mEventBus;
     private Type mType;
 
     @Inject
-    TypeCreationPresenter(TypeCreationViewContract typeCreationViewContract, Type type, DataManager dataManager) {
+    TypeCreationPresenter(TypeCreationViewContract typeCreationViewContract, Type type, DataManager dataManager, EventBus eventBus) {
         mTypeCreationViewContract = typeCreationViewContract;
         mType = type;
         mDataManager = dataManager;
+        mEventBus = eventBus;
     }
 
     @Override
@@ -96,7 +98,7 @@ public class TypeCreationPresenter extends BasePresenter {
     public void notifyCreateButtonClicked() {
         mDataManager.notifyTypeCreated(mType);
         int position = mDataManager.getRecentlyCreatedTypeLocation();
-        EventBus.getDefault().post(new TypeCreatedEvent(
+        mEventBus.post(new TypeCreatedEvent(
                 getPresenterName(),
                 mDataManager.getType(position).getTypeCode(),
                 position

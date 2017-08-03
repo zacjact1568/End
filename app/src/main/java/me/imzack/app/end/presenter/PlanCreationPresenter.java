@@ -5,13 +5,13 @@ import android.text.TextUtils;
 
 import me.imzack.app.end.R;
 import me.imzack.app.end.common.Constant;
-import me.imzack.app.end.event.TypeCreatedEvent;
+import me.imzack.app.end.eventbus.event.TypeCreatedEvent;
 import me.imzack.app.end.model.bean.FormattedType;
 import me.imzack.app.end.model.bean.Type;
 import me.imzack.app.end.util.ResourceUtil;
 import me.imzack.app.end.util.StringUtil;
 import me.imzack.app.end.util.TimeUtil;
-import me.imzack.app.end.event.PlanCreatedEvent;
+import me.imzack.app.end.eventbus.event.PlanCreatedEvent;
 import me.imzack.app.end.model.bean.Plan;
 import me.imzack.app.end.model.DataManager;
 import me.imzack.app.end.view.adapter.TypeGalleryAdapter;
@@ -122,7 +122,7 @@ public class PlanCreationPresenter extends BasePresenter {
         } else {
             mPlan.setCreationTime(System.currentTimeMillis());
             mDataManager.notifyPlanCreated(mPlan);
-            EventBus.getDefault().post(new PlanCreatedEvent(
+            mEventBus.post(new PlanCreatedEvent(
                     getPresenterName(),
                     mPlan.getPlanCode(),
                     mDataManager.getRecentlyCreatedPlanLocation()

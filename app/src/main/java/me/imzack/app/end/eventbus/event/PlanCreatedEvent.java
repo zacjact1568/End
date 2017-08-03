@@ -1,4 +1,4 @@
-package me.imzack.app.end.event;
+package me.imzack.app.end.eventbus.event;
 
 /** 有新建计划的事件 */
 public class PlanCreatedEvent extends BasePlanEvent {

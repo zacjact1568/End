@@ -28,10 +28,17 @@ android {
     }
 }
 
+kapt {
+    arguments {
+        arg('eventBusIndex', 'me.imzack.app.end.eventbus.EventBusIndex')
+    }
+}
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     kapt "com.jakewharton:butterknife-compiler:$butterknife_version"
+    kapt 'org.greenrobot:eventbus-annotation-processor:3.0.1'
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
     compile "com.android.support:appcompat-v7:$android_support_version"

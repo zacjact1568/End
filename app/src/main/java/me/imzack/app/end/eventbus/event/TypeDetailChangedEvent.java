@@ -1,4 +1,4 @@
-package me.imzack.app.end.event;
+package me.imzack.app.end.eventbus.event;
 
 /** 有类型详细信息更改的事件 */
 public class TypeDetailChangedEvent extends BaseTypeEvent {

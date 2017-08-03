@@ -5,20 +5,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 
+import me.imzack.app.end.App;
 import me.imzack.app.end.R;
 import me.imzack.app.end.util.ResourceUtil;
 import me.imzack.app.end.util.StringUtil;
 import me.imzack.app.end.util.SystemUtil;
 import me.imzack.app.end.util.ViewUtil;
 import me.imzack.app.end.model.bean.Type;
-import me.imzack.app.end.event.PlanDetailChangedEvent;
+import me.imzack.app.end.eventbus.event.PlanDetailChangedEvent;
 import me.imzack.app.end.model.bean.Plan;
 import me.imzack.app.end.model.database.DatabaseHelper;
 import me.imzack.app.end.model.DataManager;
 import me.imzack.app.end.common.Constant;
 import me.imzack.app.end.view.widget.CircleColorView;
-
-import org.greenrobot.eventbus.EventBus;
 
 public class ReminderReceiver extends BaseReceiver {
 
@@ -46,6 +45,7 @@ public class ReminderReceiver extends BaseReceiver {
         Type type = databaseHelper.queryType(plan.getTypeCode());
         databaseHelper.updateReminderTime(plan.getPlanCode(), Constant.UNDEFINED_TIME);
 
+        //TODO replace with inject
         DataManager dataManager = DataManager.getInstance();
         int position = -1;
         if (dataManager.isDataLoaded()) {
@@ -53,7 +53,7 @@ public class ReminderReceiver extends BaseReceiver {
             position = dataManager.getPlanLocationInPlanList(plan.getPlanCode());
             dataManager.getPlan(position).setReminderTime(Constant.UNDEFINED_TIME);
             //发出事件（NOTE：如果app已退出，但进程还没被杀，仍然会发出）
-            EventBus.getDefault().post(new PlanDetailChangedEvent(
+            App.getEventBus().post(new PlanDetailChangedEvent(
                     getReceiverName(),
                     plan.getPlanCode(),
                     position,

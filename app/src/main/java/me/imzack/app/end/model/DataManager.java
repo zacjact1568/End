@@ -2,6 +2,7 @@ package me.imzack.app.end.model;
 
 import android.text.TextUtils;
 
+import me.imzack.app.end.App;
 import me.imzack.app.end.model.bean.PlanCount;
 import me.imzack.app.end.model.preference.PreferenceHelper;
 import me.imzack.app.end.util.SystemUtil;
@@ -10,11 +11,9 @@ import me.imzack.app.end.model.bean.TypeMarkPattern;
 import me.imzack.app.end.model.bean.Plan;
 import me.imzack.app.end.model.bean.Type;
 import me.imzack.app.end.model.database.DatabaseHelper;
-import me.imzack.app.end.event.DataLoadedEvent;
+import me.imzack.app.end.eventbus.event.DataLoadedEvent;
 import me.imzack.app.end.common.Constant;
 import me.imzack.app.end.util.TimeUtil;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -71,7 +70,7 @@ public class DataManager {
                 //已加载数据
                 isDataLoaded = true;
                 //发送事件
-                EventBus.getDefault().post(new DataLoadedEvent());
+                App.getEventBus().post(new DataLoadedEvent());
             }
         });
     }

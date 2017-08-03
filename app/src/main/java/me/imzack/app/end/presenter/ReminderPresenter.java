@@ -4,7 +4,7 @@ import me.imzack.app.end.R;
 import me.imzack.app.end.util.ResourceUtil;
 import me.imzack.app.end.util.TimeUtil;
 import me.imzack.app.end.model.bean.Plan;
-import me.imzack.app.end.event.PlanDetailChangedEvent;
+import me.imzack.app.end.eventbus.event.PlanDetailChangedEvent;
 import me.imzack.app.end.model.DataManager;
 import me.imzack.app.end.view.contract.ReminderViewContract;
 import me.imzack.app.end.common.Constant;
@@ -21,13 +21,15 @@ public class ReminderPresenter extends BasePresenter {
     private int mPlanListPosition;
     private Plan mPlan;
     private DataManager mDataManager;
+    private EventBus mEventBus;
     private int mReminderCoordinateY;
 
     @Inject
-    public ReminderPresenter(ReminderViewContract reminderViewContract, int planListPosition, DataManager dataManager) {
+    public ReminderPresenter(ReminderViewContract reminderViewContract, int planListPosition, DataManager dataManager, EventBus eventBus) {
         mReminderViewContract = reminderViewContract;
         mPlanListPosition = planListPosition;
         mDataManager = dataManager;
+        mEventBus = eventBus;
 
         mPlan = mDataManager.getPlan(mPlanListPosition);
     }
@@ -89,7 +91,7 @@ public class ReminderPresenter extends BasePresenter {
 
     private void updateReminderTime(long reminderTime, String toastMsg) {
         mDataManager.notifyReminderTimeChanged(mPlanListPosition, reminderTime);
-        EventBus.getDefault().post(new PlanDetailChangedEvent(
+        mEventBus.post(new PlanDetailChangedEvent(
                 getPresenterName(),
                 mPlan.getPlanCode(),
                 mPlanListPosition,
@@ -103,7 +105,7 @@ public class ReminderPresenter extends BasePresenter {
         //不需要检测是否有reminder，因为这里一定是没有reminder的
         mDataManager.notifyPlanStatusChanged(mPlanListPosition);
         mPlanListPosition = mPlan.isCompleted() ? mDataManager.getUcPlanCount() : 0;
-        EventBus.getDefault().post(new PlanDetailChangedEvent(
+        mEventBus.post(new PlanDetailChangedEvent(
                 getPresenterName(),
                 mPlan.getPlanCode(),
                 mPlanListPosition,

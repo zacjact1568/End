@@ -1,4 +1,4 @@
-package me.imzack.app.end.event;
+package me.imzack.app.end.eventbus.event;
 
 /** 有计划详细信息的更改事件<br>注意：此类中的position是指事件被发送时的位置 */
 public class PlanDetailChangedEvent extends BasePlanEvent {

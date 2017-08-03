@@ -2,6 +2,7 @@ package me.imzack.app.end.injector.module;
 
 import android.content.Context;
 
+import me.imzack.app.end.eventbus.EventBusManager;
 import me.imzack.app.end.model.DataManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -35,6 +36,6 @@ public class AppModule {
     @Provides
     @Singleton
     EventBus provideEventBus() {
-        return EventBus.getDefault();
+        return EventBusManager.getInstance().getEventBus();
     }
 }
