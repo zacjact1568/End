@@ -11,7 +11,7 @@ import me.imzack.app.end.model.bean.TypeMarkPattern;
 import me.imzack.app.end.model.bean.Plan;
 import me.imzack.app.end.model.bean.Type;
 import me.imzack.app.end.model.database.DatabaseHelper;
-import me.imzack.app.end.eventbus.event.DataLoadedEvent;
+import me.imzack.app.end.event.DataLoadedEvent;
 import me.imzack.app.end.common.Constant;
 import me.imzack.app.end.util.TimeUtil;
 
@@ -38,16 +38,15 @@ public class DataManager {
         mPlanList = new ArrayList<>();
         mTypeList = new ArrayList<>();
         mTypeCodePlanCountMap = new HashMap<>();
-
-        loadFromDatabase();
     }
 
     public static DataManager getInstance() {
         return ourInstance;
     }
 
-    /** 从数据库中加载 */
-    private void loadFromDatabase() {
+    /** 从数据库中加载数据 */
+    public void loadData() {
+        if (isDataLoaded) return;
         mDatabaseHelper.loadDataAsync(new DatabaseHelper.DataLoadedCallback() {
             @Override
             public void onDataLoaded(List<Plan> planList, List<Type> typeList) {
@@ -75,7 +74,20 @@ public class DataManager {
         });
     }
 
-    /** 获取当前数据加载状态 */
+    /** 卸载数据（暂时不用）*/
+    public void unloadData() {
+        if (!isDataLoaded) return;
+        isDataLoaded = false;
+        mPlanList.clear();
+        mTypeList.clear();
+        mTypeCodePlanCountMap.clear();
+    }
+
+    /**
+     * 获取当前数据加载状态<br>
+     * (1) -> 调用getInstance获取单例 -> (2) -> 调用loadData加载数据 -> (3) -> 调用unloadData卸载数据 -> (4) -> 进程被杀 -> (5)
+     * @return (1)null, (2)false, (3)true, (4)false, (5)null
+     */
     public boolean isDataLoaded() {
         return isDataLoaded;
     }
@@ -85,6 +97,11 @@ public class DataManager {
     /** 获取某个计划 */
     public Plan getPlan(int location) {
         return mPlanList.get(location);
+    }
+
+    /** 从数据库获取某个计划 */
+    public Plan getPlanFromDatabase(String planCode) {
+        return mDatabaseHelper.queryPlan(planCode);
     }
 
     /** 交换计划列表中的两个元素（只能在两个相同完成状态的计划之间交换）*/
@@ -231,6 +248,18 @@ public class DataManager {
         mDatabaseHelper.updateReminderTime(plan.getPlanCode(), newReminderTime);
     }
 
+    /** 清空计划提醒时间 */
+    public void clearPastReminderTime(int location) {
+        Plan plan = getPlan(location);
+        plan.setReminderTime(Constant.UNDEFINED_TIME);
+        clearPastReminderTimeInDatabase(plan.getPlanCode());
+    }
+
+    /** 清空数据库中的计划提醒时间 */
+    public void clearPastReminderTimeInDatabase(String planCode) {
+        mDatabaseHelper.updateReminderTime(planCode, Constant.UNDEFINED_TIME);
+    }
+
     /** 编辑计划完成状态 */
     public void notifyPlanStatusChanged(int location) {
         Plan plan = getPlan(location);
@@ -283,6 +312,11 @@ public class DataManager {
     /** 获取某个类型 */
     public Type getType(int location) {
         return mTypeList.get(location);
+    }
+
+    /** 从数据库获取某个类型 */
+    public Type getTypeFromDatabase(String typeCode) {
+        return mDatabaseHelper.queryType(typeCode);
     }
 
     /** 交换类型列表中的两个元素 */
@@ -473,6 +507,12 @@ public class DataManager {
     /** 判断某类型是否为空 */
     public boolean isTypeEmpty(String typeCode) {
         return mTypeCodePlanCountMap.get(typeCode).getAll() == 0;
+    }
+
+    //**************** DatabaseHelper ****************
+
+    public DatabaseHelper getDatabaseHelper() {
+        return mDatabaseHelper;
     }
 
     //**************** PreferenceHelper ****************

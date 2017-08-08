@@ -5,13 +5,14 @@ import android.text.TextUtils;
 
 import me.imzack.app.end.R;
 import me.imzack.app.end.common.Constant;
-import me.imzack.app.end.eventbus.event.TypeCreatedEvent;
+import me.imzack.app.end.event.TypeCreatedEvent;
 import me.imzack.app.end.model.bean.FormattedType;
 import me.imzack.app.end.model.bean.Type;
+import me.imzack.app.end.util.CommonUtil;
 import me.imzack.app.end.util.ResourceUtil;
 import me.imzack.app.end.util.StringUtil;
 import me.imzack.app.end.util.TimeUtil;
-import me.imzack.app.end.eventbus.event.PlanCreatedEvent;
+import me.imzack.app.end.event.PlanCreatedEvent;
 import me.imzack.app.end.model.bean.Plan;
 import me.imzack.app.end.model.DataManager;
 import me.imzack.app.end.view.adapter.TypeGalleryAdapter;
@@ -26,17 +27,18 @@ public class PlanCreationPresenter extends BasePresenter {
 
     private PlanCreationViewContract mPlanCreationViewContract;
     private DataManager mDataManager;
-    private Plan mPlan;
     private EventBus mEventBus;
+    private Plan mPlan;
     private TypeGalleryAdapter mTypeGalleryAdapter;
     private FormattedType mFormattedType;
 
     @Inject
-    PlanCreationPresenter(PlanCreationViewContract planCreationViewContract, Plan plan, DataManager dataManager, EventBus eventBus) {
+    PlanCreationPresenter(PlanCreationViewContract planCreationViewContract, DataManager dataManager, EventBus eventBus) {
         mPlanCreationViewContract = planCreationViewContract;
-        mPlan = plan;
         mDataManager = dataManager;
         mEventBus = eventBus;
+
+        mPlan = new Plan(CommonUtil.makeCode());
 
         //默认选中第一个
         int typeListPos = 0;

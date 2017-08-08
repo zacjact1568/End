@@ -1,4 +1,4 @@
-package me.imzack.app.end.eventbus.event;
+package me.imzack.app.end.event;
 
 /** 基本计划事件 */
 public abstract class BasePlanEvent extends BaseEvent {

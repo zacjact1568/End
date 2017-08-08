@@ -6,8 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import me.imzack.app.end.App;
 import me.imzack.app.end.R;
-import me.imzack.app.end.model.DataManager;
 import me.imzack.app.end.util.ResourceUtil;
 import me.imzack.app.end.view.adapter.TypePickerForPlanMigrationGridAdapter;
 
@@ -33,7 +33,7 @@ public class TypePickerForPlanMigrationDialogFragment extends BaseDialogFragment
     public static TypePickerForPlanMigrationDialogFragment newInstance(String excludedTypeCode, OnTypePickedListener listener) {
         TypePickerForPlanMigrationDialogFragment fragment = new TypePickerForPlanMigrationDialogFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_TITLE_STR, ResourceUtil.getQuantityString(R.string.title_dialog_type_picker_for_plan_migration, R.plurals.text_plan_count_upper_case, DataManager.getInstance().getUcPlanCountOfOneType(excludedTypeCode)));
+        args.putString(ARG_TITLE_STR, ResourceUtil.getQuantityString(R.string.title_dialog_type_picker_for_plan_migration, R.plurals.text_plan_count_upper_case, App.getDataManager().getUcPlanCountOfOneType(excludedTypeCode)));
         args.putString(ARG_NEG_BTN_STR, ResourceUtil.getString(R.string.button_cancel));
         args.putString(ARG_EXCLUDED_TYPE_CODE, excludedTypeCode);
         args.putSerializable(ARG_TYPE_PICKED_LSNR, listener);
@@ -61,7 +61,7 @@ public class TypePickerForPlanMigrationDialogFragment extends BaseDialogFragment
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        TypePickerForPlanMigrationGridAdapter adapter = new TypePickerForPlanMigrationGridAdapter(DataManager.getInstance(), mExcludedTypeCode);
+        TypePickerForPlanMigrationGridAdapter adapter = new TypePickerForPlanMigrationGridAdapter(App.getDataManager(), mExcludedTypeCode);
         adapter.setOnItemClickListener(new TypePickerForPlanMigrationGridAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(String typeCode, String typeName) {

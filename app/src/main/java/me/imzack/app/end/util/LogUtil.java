@@ -2,7 +2,7 @@ package me.imzack.app.end.util;
 
 import android.util.Log;
 
-import me.imzack.app.end.model.DataManager;
+import me.imzack.app.end.App;
 
 import java.util.Map;
 
@@ -70,7 +70,7 @@ public class LogUtil {
     }
 
     public static void logAllSharedPreferences(String tag) {
-        Map<String, ?> pm = DataManager.getInstance().getPreferenceHelper().getAllValues();
+        Map<String, ?> pm = App.getDataManager().getPreferenceHelper().getAllValues();
         if (pm.isEmpty()) {
             d("No shared preferences");
         } else {

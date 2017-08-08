@@ -4,12 +4,14 @@ import android.graphics.Color;
 import android.text.TextUtils;
 
 import me.imzack.app.end.R;
+import me.imzack.app.end.util.ColorUtil;
+import me.imzack.app.end.util.CommonUtil;
 import me.imzack.app.end.util.ResourceUtil;
 import me.imzack.app.end.util.StringUtil;
 import me.imzack.app.end.model.bean.FormattedType;
 import me.imzack.app.end.model.bean.Type;
 import me.imzack.app.end.model.bean.TypeMarkColor;
-import me.imzack.app.end.eventbus.event.TypeCreatedEvent;
+import me.imzack.app.end.event.TypeCreatedEvent;
 import me.imzack.app.end.model.DataManager;
 import me.imzack.app.end.model.bean.TypeMarkPattern;
 import me.imzack.app.end.view.contract.TypeCreationViewContract;
@@ -26,11 +28,35 @@ public class TypeCreationPresenter extends BasePresenter {
     private Type mType;
 
     @Inject
-    TypeCreationPresenter(TypeCreationViewContract typeCreationViewContract, Type type, DataManager dataManager, EventBus eventBus) {
+    TypeCreationPresenter(TypeCreationViewContract typeCreationViewContract, DataManager dataManager, EventBus eventBus) {
         mTypeCreationViewContract = typeCreationViewContract;
-        mType = type;
         mDataManager = dataManager;
         mEventBus = eventBus;
+
+        //按顺序产生未使用过的新类型名称
+        String base = ResourceUtil.getString(R.string.text_new_type_name);
+        StringBuilder typeName = new StringBuilder(base);
+        int i = 1;
+        while (mDataManager.isTypeNameUsed(typeName.toString())) {
+            if (base.length() == typeName.length()) {
+                //还没加空格
+                typeName.append(" ");
+            }
+            typeName.replace(base.length() + 1, typeName.length(), String.valueOf(i));
+            i++;
+        }
+        //随机产生未使用过的颜色
+        String color;
+        while (true) {
+            color = ColorUtil.makeColor();
+            if (!mDataManager.isTypeMarkColorUsed(color)) break;
+        }
+        mType = new Type(
+                CommonUtil.makeCode(),
+                typeName.toString(),
+                color,
+                mDataManager.getTypeCount()
+        );
     }
 
     @Override

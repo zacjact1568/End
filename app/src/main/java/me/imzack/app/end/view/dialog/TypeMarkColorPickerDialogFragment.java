@@ -11,8 +11,8 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.ViewAnimator;
 
+import me.imzack.app.end.App;
 import me.imzack.app.end.R;
-import me.imzack.app.end.model.DataManager;
 import me.imzack.app.end.model.bean.TypeMarkColor;
 import me.imzack.app.end.util.ColorUtil;
 import me.imzack.app.end.util.ResourceUtil;
@@ -74,7 +74,7 @@ public class TypeMarkColorPickerDialogFragment extends BaseDialogFragment {
             mOnTypeMarkColorPickedListener = (OnTypeMarkColorPickedListener) args.getSerializable(ARG_TYPE_MARK_COLOR_PICKED_LSNR);
         }
 
-        mTypeMarkColorList = DataManager.getInstance().getTypeMarkColorList();
+        mTypeMarkColorList = App.getDataManager().getTypeMarkColorList();
 
         mPosition = getPositionInTypeMarkColorList(mDefaultColor);
 

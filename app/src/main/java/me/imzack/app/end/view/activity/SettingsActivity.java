@@ -7,8 +7,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import me.imzack.app.end.App;
 import me.imzack.app.end.R;
-import me.imzack.app.end.model.DataManager;
 import me.imzack.app.end.view.dialog.BaseDialogFragment;
 import me.imzack.app.end.view.dialog.MessageDialogFragment;
 import me.imzack.app.end.view.fragment.SettingsFragment;
@@ -52,7 +52,7 @@ public class SettingsActivity extends BaseActivity {
                         .setPositiveButton(R.string.btn_dialog_reset_settings, new BaseDialogFragment.OnButtonClickListener() {
                             @Override
                             public boolean onClick() {
-                                DataManager.getInstance().getPreferenceHelper().resetAllValues();
+                                App.getDataManager().getPreferenceHelper().resetAllValues();
                                 return true;
                             }
                         })

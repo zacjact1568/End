@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatDelegate;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.EventBusIndex;
 
 import me.imzack.app.end.injector.component.AppComponent;
 import me.imzack.app.end.injector.component.DaggerAppComponent;
@@ -28,9 +29,13 @@ public class App extends Application {
 
         initAppComponent();
 
-        initFromPreferences();
+        initEventBus();
 
-        initTypeMarkDB();
+        initPreferences();
+
+        initDatabase();
+
+        initData();
     }
 
     public static AppComponent getAppComponent() {
@@ -62,8 +67,12 @@ public class App extends Application {
                 .build();
     }
 
+    private void initEventBus() {
+        EventBus.builder().addIndex(new EventBusIndex()).installDefaultEventBus();
+    }
+
     /** 通过Preference中的数据初始化某些设置 */
-    private void initFromPreferences() {
+    private void initPreferences() {
         //设定preferences默认值（仅执行一次）
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         //设定白天夜间模式
@@ -71,7 +80,7 @@ public class App extends Application {
     }
 
     /** 初始化类型标记数据库 */
-    private void initTypeMarkDB() {
+    private void initDatabase() {
         File typeMarkDBFile = getDatabasePath(Constant.DB_TYPE_MARK);
         if (typeMarkDBFile.exists()) {
             return;
@@ -93,5 +102,9 @@ public class App extends Application {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void initData() {
+        getDataManager().loadData();
     }
 }

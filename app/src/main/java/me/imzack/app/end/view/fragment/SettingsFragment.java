@@ -9,6 +9,7 @@ import android.preference.SwitchPreference;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatDelegate;
 
+import me.imzack.app.end.App;
 import me.imzack.app.end.R;
 import me.imzack.app.end.common.Constant;
 import me.imzack.app.end.model.DataManager;
@@ -29,7 +30,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
 
-        mDataManager = DataManager.getInstance();
+        mDataManager = App.getDataManager();
 
         mNightModePreference = (SwitchPreference) findPreference(Constant.PREF_KEY_NIGHT_MODE);
         mDrawerHeaderDisplayPreference = (ListPreference) findPreference(Constant.PREF_KEY_DRAWER_HEADER_DISPLAY);

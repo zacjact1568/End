@@ -12,9 +12,8 @@ import me.imzack.app.end.util.StringUtil;
 import me.imzack.app.end.util.SystemUtil;
 import me.imzack.app.end.util.ViewUtil;
 import me.imzack.app.end.model.bean.Type;
-import me.imzack.app.end.eventbus.event.PlanDetailChangedEvent;
+import me.imzack.app.end.event.PlanDetailChangedEvent;
 import me.imzack.app.end.model.bean.Plan;
-import me.imzack.app.end.model.database.DatabaseHelper;
 import me.imzack.app.end.model.DataManager;
 import me.imzack.app.end.common.Constant;
 import me.imzack.app.end.view.widget.CircleColorView;
@@ -39,27 +38,38 @@ public class ReminderReceiver extends BaseReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        //直接从数据库获取plan（若通过DataManager获取，可能需要异步加载，而在receiver中不要做异步操作）
-        DatabaseHelper databaseHelper = DatabaseHelper.getInstance();
-        Plan plan = databaseHelper.queryPlan(intent.getStringExtra(Constant.PLAN_CODE));
-        Type type = databaseHelper.queryType(plan.getTypeCode());
-        databaseHelper.updateReminderTime(plan.getPlanCode(), Constant.UNDEFINED_TIME);
+        DataManager dataManager = App.getDataManager();
 
-        //TODO replace with inject
-        DataManager dataManager = DataManager.getInstance();
-        int position = -1;
+        String planCode = intent.getStringExtra(Constant.PLAN_CODE);
+
+        int position;
+        Plan plan;
+        Type type;
+
         if (dataManager.isDataLoaded()) {
-            //若DataManager中的数据已加载完成
-            position = dataManager.getPlanLocationInPlanList(plan.getPlanCode());
-            dataManager.getPlan(position).setReminderTime(Constant.UNDEFINED_TIME);
-            //发出事件（NOTE：如果app已退出，但进程还没被杀，仍然会发出）
+            //若已加载数据，从DataManager获取plan和type
+            position = dataManager.getPlanLocationInPlanList(planCode);
+            plan = dataManager.getPlan(position);
+            type = dataManager.getType(dataManager.getTypeLocationInTypeList(plan.getTypeCode()));
+            //通知清空提醒时间
+            dataManager.clearPastReminderTime(position);
+            //发出事件（NOTE：若在退出app时调用unloadData，则仅app在前台才发出，因为app退出前台后isDataLoaded为false）
             App.getEventBus().post(new PlanDetailChangedEvent(
                     getReceiverName(),
                     plan.getPlanCode(),
                     position,
                     PlanDetailChangedEvent.FIELD_REMINDER_TIME
             ));
+        } else {
+            //若还未加载数据，直接从数据库获取plan和type（DataManager加载数据为异步加载，在receiver中不要做异步操作）
+            position = -1;
+            plan = dataManager.getPlanFromDatabase(planCode);
+            type = dataManager.getTypeFromDatabase(plan.getTypeCode());
+            //通知清空提醒时间
+            dataManager.clearPastReminderTimeInDatabase(planCode);
         }
+
+        //以下为构建通知的操作
 
         CircleColorView typeMarkIcon = new CircleColorView(context);
         typeMarkIcon.setFillColor(Color.parseColor(type.getTypeMarkColor()));

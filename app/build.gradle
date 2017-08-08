@@ -30,7 +30,7 @@ android {
 
 kapt {
     arguments {
-        arg('eventBusIndex', 'me.imzack.app.end.eventbus.EventBusIndex')
+        arg('eventBusIndex', 'org.greenrobot.eventbus.EventBusIndex')
     }
 }
 

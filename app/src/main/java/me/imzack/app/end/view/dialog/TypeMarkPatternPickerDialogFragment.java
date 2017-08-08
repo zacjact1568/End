@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import me.imzack.app.end.App;
 import me.imzack.app.end.R;
-import me.imzack.app.end.model.DataManager;
 import me.imzack.app.end.model.bean.TypeMarkPattern;
 import me.imzack.app.end.util.ResourceUtil;
 import me.imzack.app.end.view.adapter.TypeMarkPatternGridAdapter;
@@ -59,7 +59,7 @@ public class TypeMarkPatternPickerDialogFragment extends BaseDialogFragment {
             mOnTypeMarkPatternPickedListener = (OnTypeMarkPatternPickedListener) args.getSerializable(ARG_TYPE_MARK_PATTERN_PICKED_LSNR);
         }
 
-        mTypeMarkPatternList = DataManager.getInstance().getTypeMarkPatternList();
+        mTypeMarkPatternList = App.getDataManager().getTypeMarkPatternList();
 
         mTypeMarkPattern = new TypeMarkPattern();
 

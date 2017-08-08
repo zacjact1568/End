@@ -6,8 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import me.imzack.app.end.App;
 import me.imzack.app.end.R;
-import me.imzack.app.end.model.DataManager;
 import me.imzack.app.end.util.ResourceUtil;
 import me.imzack.app.end.view.activity.TypeCreationActivity;
 import me.imzack.app.end.view.adapter.TypePickerGridAdapter;
@@ -81,7 +81,7 @@ public class TypePickerDialogFragment extends BaseDialogFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        TypePickerGridAdapter typePickerGridAdapter = new TypePickerGridAdapter(DataManager.getInstance(), mPosition);
+        TypePickerGridAdapter typePickerGridAdapter = new TypePickerGridAdapter(App.getDataManager(), mPosition);
         typePickerGridAdapter.setOnItemClickListener(new TypePickerGridAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {

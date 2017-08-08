@@ -5,8 +5,8 @@ import android.support.v4.app.FragmentManager;
 import android.view.View;
 
 import me.imzack.app.end.R;
-import me.imzack.app.end.eventbus.event.PlanCreatedEvent;
-import me.imzack.app.end.eventbus.event.TypeCreatedEvent;
+import me.imzack.app.end.event.PlanCreatedEvent;
+import me.imzack.app.end.event.TypeCreatedEvent;
 import me.imzack.app.end.model.DataManager;
 import me.imzack.app.end.model.bean.Plan;
 import me.imzack.app.end.model.bean.Type;

@@ -4,7 +4,7 @@ import me.imzack.app.end.R;
 import me.imzack.app.end.util.ResourceUtil;
 import me.imzack.app.end.util.TimeUtil;
 import me.imzack.app.end.model.bean.Plan;
-import me.imzack.app.end.eventbus.event.PlanDetailChangedEvent;
+import me.imzack.app.end.event.PlanDetailChangedEvent;
 import me.imzack.app.end.model.DataManager;
 import me.imzack.app.end.view.contract.ReminderViewContract;
 import me.imzack.app.end.common.Constant;

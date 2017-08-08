@@ -1,4 +1,4 @@
-package me.imzack.app.end.eventbus.event;
+package me.imzack.app.end.event;
 
 /** 向导结束事件 */
 public class GuideEndedEvent extends BaseEvent {
