@@ -10,13 +10,13 @@
     tools:showIn="@layout/activity_about">
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/pager_about"
+        android:id="@+id/xAboutPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:overScrollMode="never"/>
 
     <com.pixelcan.inkpageindicator.InkPageIndicator
-        android:id="@+id/indicator_about"
+        android:id="@+id/xAboutIndicator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center|top"

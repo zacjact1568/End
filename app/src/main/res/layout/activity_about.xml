@@ -9,14 +9,14 @@
     tools:context=".view.activity.AboutActivity">
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/layout_app_bar"
+        android:id="@+id/xAppBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/layout_collapsing_toolbar"
+            android:id="@+id/xCollapsingToolbarLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
@@ -25,7 +25,7 @@
             app:titleEnabled="false">
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+                android:id="@+id/xToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
@@ -33,7 +33,7 @@
                 app:title=" "/>
 
             <LinearLayout
-                android:id="@+id/layout_header"
+                android:id="@+id/xHeaderLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="68dp"
@@ -64,7 +64,7 @@
                         android:typeface="monospace"/>
 
                     <TextView
-                        android:id="@+id/text_version"
+                        android:id="@+id/xVersionText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="16sp"

@@ -1,0 +1,114 @@
+package me.imzack.app.end.view.fragment
+
+import android.os.Bundle
+import android.support.design.widget.Snackbar
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.helper.ItemTouchHelper
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
+import butterknife.BindString
+import butterknife.BindView
+import butterknife.ButterKnife
+import me.imzack.app.end.App
+import me.imzack.app.end.R
+import me.imzack.app.end.injector.component.DaggerMyPlansComponent
+import me.imzack.app.end.injector.module.MyPlansPresenterModule
+import me.imzack.app.end.model.bean.Plan
+import me.imzack.app.end.presenter.MyPlansPresenter
+import me.imzack.app.end.view.activity.PlanDetailActivity
+import me.imzack.app.end.view.adapter.PlanListAdapter
+import me.imzack.app.end.view.contract.MyPlansViewContract
+import javax.inject.Inject
+
+class MyPlansFragment : BaseListFragment(), MyPlansViewContract {
+
+    @BindView(R.id.list_plan)
+    lateinit var mPlanList: RecyclerView
+    @BindView(R.id.layout_empty)
+    lateinit var mEmptyLayout: LinearLayout
+
+    @BindString(R.string.snackbar_delete_format)
+    lateinit var mSnackbarDeleteFormat: String
+
+    @Inject
+    lateinit var mMyPlansPresenter: MyPlansPresenter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onInjectPresenter() {
+        DaggerMyPlansComponent.builder()
+                .myPlansPresenterModule(MyPlansPresenterModule(this))
+                .appComponent(App.appComponent)
+                .build()
+                .inject(this)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
+            inflater.inflate(R.layout.fragment_my_plans, container, false)!!
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        ButterKnife.bind(this, view)
+        mMyPlansPresenter.attach()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mMyPlansPresenter.notifySwitchingViewVisibility(true)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mMyPlansPresenter.notifySwitchingViewVisibility(false)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        mMyPlansPresenter.detach()
+    }
+
+    override fun showInitialView(planListAdapter: PlanListAdapter, itemTouchHelper: ItemTouchHelper, isPlanItemEmpty: Boolean) {
+        mPlanList.adapter = planListAdapter
+        mPlanList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                onListScrolled(dy)
+                mMyPlansPresenter.notifyPlanListScrolled(
+                        !mPlanList.canScrollVertically(-1),
+                        !mPlanList.canScrollVertically(1)
+                )
+            }
+        })
+        itemTouchHelper.attachToRecyclerView(mPlanList)
+
+        onPlanItemEmptyStateChanged(isPlanItemEmpty)
+    }
+
+    override fun onPlanItemClicked(position: Int) {
+        PlanDetailActivity.start(context, position)
+    }
+
+    override fun onPlanCreated() {
+        mPlanList.scrollToPosition(0)
+    }
+
+    override fun onPlanDeleted(deletedPlan: Plan, position: Int, shouldShowSnackbar: Boolean) {
+        if (shouldShowSnackbar) {
+            Snackbar.make(mPlanList, String.format(mSnackbarDeleteFormat, deletedPlan.content), Snackbar.LENGTH_LONG)
+                    .setAction(R.string.button_undo) { mMyPlansPresenter.notifyCreatingPlan(deletedPlan, position) }
+                    .show()
+        }
+    }
+
+    override fun onPlanItemEmptyStateChanged(isEmpty: Boolean) {
+        mPlanList.visibility = if (isEmpty) View.GONE else View.VISIBLE
+        mEmptyLayout.visibility = if (isEmpty) View.VISIBLE else View.GONE
+    }
+
+    override fun exit() {
+        remove()
+    }
+}
