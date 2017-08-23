@@ -21,6 +21,7 @@ data class Plan(
         private val STAR_STATUS_NOT_STARRED = 0
         private val STAR_STATUS_STARRED = 1
 
+        @Suppress("unused")
         @JvmField
         val CREATOR = object : Parcelable.Creator<Plan> {
 

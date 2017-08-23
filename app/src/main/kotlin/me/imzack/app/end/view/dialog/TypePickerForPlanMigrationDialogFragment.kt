@@ -1,11 +1,10 @@
 package me.imzack.app.end.view.dialog
 
 import android.os.Bundle
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import butterknife.BindView
+import kotlinx.android.synthetic.main.dialog_fragment_type_picker_for_plan_migration.*
 import me.imzack.app.end.R
 import me.imzack.app.end.model.DataManager
 import me.imzack.app.end.util.ResourceUtil
@@ -30,9 +29,6 @@ class TypePickerForPlanMigrationDialogFragment : BaseDialogFragment() {
             return fragment
         }
     }
-    
-    @BindView(R.id.grid_type_picker_for_plan_migration)
-    lateinit var mTypePickerForPlanMigrationGrid: RecyclerView
 
     private lateinit var mExcludedTypeCode: String
     private var mOnTypePickedListener: OnTypePickedListener? = null
@@ -59,8 +55,8 @@ class TypePickerForPlanMigrationDialogFragment : BaseDialogFragment() {
             dialog.dismiss()
         }
 
-        mTypePickerForPlanMigrationGrid.adapter = adapter
-        mTypePickerForPlanMigrationGrid.setHasFixedSize(true)
+        grid_type_picker_for_plan_migration.adapter = adapter
+        grid_type_picker_for_plan_migration.setHasFixedSize(true)
     }
 
     override fun onDetach() {

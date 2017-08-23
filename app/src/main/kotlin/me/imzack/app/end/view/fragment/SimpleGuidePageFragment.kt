@@ -6,11 +6,7 @@ import android.support.annotation.StringRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
+import kotlinx.android.synthetic.main.fragment_simple_guide_page.*
 import me.imzack.app.end.R
 import java.io.Serializable
 
@@ -39,15 +35,6 @@ class SimpleGuidePageFragment : BaseFragment() {
         }
     }
 
-    @BindView(R.id.image_subject)
-    lateinit var mSubjectImage: ImageView
-    @BindView(R.id.text_title)
-    lateinit var mTitleText: TextView
-    @BindView(R.id.text_dscpt)
-    lateinit var mDscptText: TextView
-    @BindView(R.id.btn_action)
-    lateinit var mActionButton: Button
-
     private var mImageResId = 0
     private var mTitleResId = 0
     private var mDscptResId = 0
@@ -72,29 +59,28 @@ class SimpleGuidePageFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ButterKnife.bind(this, view)
 
         if (mImageResId == 0) {
-            mSubjectImage.visibility = View.INVISIBLE
+            image_subject.visibility = View.INVISIBLE
         } else {
-            mSubjectImage.setImageResource(mImageResId)
+            image_subject.setImageResource(mImageResId)
         }
         if (mTitleResId == 0) {
-            mTitleText.visibility = View.INVISIBLE
+            text_title.visibility = View.INVISIBLE
         } else {
-            mTitleText.setText(mTitleResId)
+            text_title.setText(mTitleResId)
         }
         if (mDscptResId == 0) {
-            mDscptText.visibility = View.INVISIBLE
+            text_dscpt.visibility = View.INVISIBLE
         } else {
-            mDscptText.setText(mDscptResId)
+            text_dscpt.setText(mDscptResId)
         }
         if (mBtnTextResId == 0) {
-            mActionButton.visibility = View.INVISIBLE
+            btn_action.visibility = View.INVISIBLE
         } else {
-            mActionButton.setText(mBtnTextResId)
+            btn_action.setText(mBtnTextResId)
         }
-        mActionButton.setOnClickListener(mBtnClkLsnr)
+        btn_action.setOnClickListener(mBtnClkLsnr)
     }
 
     override fun onDetach() {

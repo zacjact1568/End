@@ -7,21 +7,17 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.support.design.widget.AppBarLayout
-import android.support.design.widget.CollapsingToolbarLayout
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.*
-import butterknife.BindString
-import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
+import kotlinx.android.synthetic.main.activity_type_detail.*
+import kotlinx.android.synthetic.main.content_type_detail.*
 import me.imzack.app.end.App
 import me.imzack.app.end.R
 import me.imzack.app.end.common.Constant
@@ -38,7 +34,6 @@ import me.imzack.app.end.view.contract.TypeDetailViewContract
 import me.imzack.app.end.view.dialog.BaseDialogFragment
 import me.imzack.app.end.view.dialog.MessageDialogFragment
 import me.imzack.app.end.view.dialog.TypePickerForPlanMigrationDialogFragment
-import me.imzack.app.end.view.widget.CircleColorView
 import javax.inject.Inject
 
 class TypeDetailActivity : BaseActivity(), TypeDetailViewContract {
@@ -60,38 +55,6 @@ class TypeDetailActivity : BaseActivity(), TypeDetailViewContract {
             }
         }
     }
-
-    @BindView(R.id.layout_app_bar)
-    lateinit var mAppBarLayout: AppBarLayout
-    @BindView(R.id.layout_collapsing_toolbar)
-    lateinit var mCollapsingToolbarLayout: CollapsingToolbarLayout
-    @BindView(R.id.bg_header)
-    lateinit var mHeaderBackground: ImageView
-    @BindView(R.id.toolbar)
-    lateinit var mToolbar: Toolbar
-    @BindView(R.id.layout_header)
-    lateinit var mHeaderLayout: LinearLayout
-    @BindView(R.id.ic_type_mark)
-    lateinit var mTypeMarkIcon: CircleColorView
-    @BindView(R.id.text_type_name)
-    lateinit var mTypeNameText: TextView
-    @BindView(R.id.text_uc_plan_count)
-    lateinit var mUcPlanCountText: TextView
-    @BindView(R.id.editor_content)
-    lateinit var mContentEditor: EditText
-    @BindView(R.id.ic_clear_text)
-    lateinit var mClearTextIcon: ImageView
-    @BindView(R.id.list_single_type_plan)
-    lateinit var mSingleTypePlanList: RecyclerView
-    @BindView(R.id.layout_editor)
-    lateinit var mEditorLayout: FrameLayout
-
-    @BindString(R.string.hint_editor_content_format)
-    lateinit var mContentEditorHintFormat: String
-    @BindString(R.string.snackbar_delete_format)
-    lateinit var mSnackbarDeleteFormat: String
-    @BindString(R.string.transition_type_mark_icon)
-    lateinit var mTypeMarkIconSetName: String
 
     @Inject
     lateinit var mTypeDetailPresenter: TypeDetailPresenter
@@ -156,43 +119,43 @@ class TypeDetailActivity : BaseActivity(), TypeDetailViewContract {
         setContentView(R.layout.activity_type_detail)
         ButterKnife.bind(this)
 
-        setSupportActionBar(mToolbar)
+        setSupportActionBar(toolbar)
         setupActionBar()
 
-        mAppBarLayout.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+        layout_app_bar.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
             override fun onPreDraw(): Boolean {
-                mAppBarLayout.viewTreeObserver.removeOnPreDrawListener(this)
-                mTypeDetailPresenter.notifyPreDrawingAppBar(mAppBarLayout.totalScrollRange)
+                layout_app_bar.viewTreeObserver.removeOnPreDrawListener(this)
+                mTypeDetailPresenter.notifyPreDrawingAppBar(layout_app_bar.totalScrollRange)
                 return false
             }
         })
 
-        mAppBarLayout.addOnOffsetChangedListener { _, verticalOffset -> mTypeDetailPresenter.notifyAppBarScrolled(verticalOffset) }
+        layout_app_bar.addOnOffsetChangedListener { _, verticalOffset -> mTypeDetailPresenter.notifyAppBarScrolled(verticalOffset) }
 
         if (enableTransition) {
-            mTypeMarkIcon.transitionName = intent.getStringExtra(Constant.TRANSITION_NAME)
+            ic_type_mark.transitionName = intent.getStringExtra(Constant.TRANSITION_NAME)
         }
 
-        mEditorLayout.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+        layout_editor.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
             override fun onPreDraw(): Boolean {
-                mEditorLayout.viewTreeObserver.removeOnPreDrawListener(this)
-                mTypeDetailPresenter.notifyPreDrawingEditorLayout(mEditorLayout.height)
+                layout_editor.viewTreeObserver.removeOnPreDrawListener(this)
+                mTypeDetailPresenter.notifyPreDrawingEditorLayout(layout_editor.height)
                 return false
             }
         })
 
-        mSingleTypePlanList.adapter = singleTypePlanListAdapter
-        mSingleTypePlanList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        list_single_type_plan.adapter = singleTypePlanListAdapter
+        list_single_type_plan.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 mTypeDetailPresenter.notifyPlanListScrolled(
-                        !mSingleTypePlanList.canScrollVertically(-1),
-                        !mSingleTypePlanList.canScrollVertically(1)
+                        !list_single_type_plan.canScrollVertically(-1),
+                        !list_single_type_plan.canScrollVertically(1)
                 )
             }
         })
-        itemTouchHelper.attachToRecyclerView(mSingleTypePlanList)
+        itemTouchHelper.attachToRecyclerView(list_single_type_plan)
 
-        mContentEditor.addTextChangedListener(object : TextWatcher {
+        editor_content.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
 
             }
@@ -205,7 +168,7 @@ class TypeDetailActivity : BaseActivity(), TypeDetailViewContract {
                 mTypeDetailPresenter.notifyContentEditorTextChanged(s.toString())
             }
         })
-        mContentEditor.setOnEditorActionListener { v, actionId, _ ->
+        editor_content.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 mTypeDetailPresenter.notifyCreatingPlan(v.text.toString())
             }
@@ -219,36 +182,36 @@ class TypeDetailActivity : BaseActivity(), TypeDetailViewContract {
     }
 
     override fun onTypeNameChanged(typeName: String, firstChar: String) {
-        mTypeMarkIcon.setInnerText(firstChar)
-        mTypeNameText.text = typeName
-        mContentEditor.hint = String.format(mContentEditorHintFormat, typeName)
+        ic_type_mark.setInnerText(firstChar)
+        text_type_name.text = typeName
+        editor_content.hint = String.format(getString(R.string.hint_editor_content_format), typeName)
     }
 
     override fun onTypeMarkColorChanged(colorInt: Int) {
         window.navigationBarColor = colorInt
         val headerColorInt = ColorUtil.reduceSaturation(colorInt, 0.85f)
-        mCollapsingToolbarLayout.setContentScrimColor(headerColorInt)
-        mCollapsingToolbarLayout.setStatusBarScrimColor(colorInt)
-        mHeaderBackground.setImageDrawable(ColorDrawable(headerColorInt))
-        mTypeMarkIcon.setFillColor(colorInt)
+        layout_collapsing_toolbar.setContentScrimColor(headerColorInt)
+        layout_collapsing_toolbar.setStatusBarScrimColor(colorInt)
+        bg_header.setImageDrawable(ColorDrawable(headerColorInt))
+        ic_type_mark.setFillColor(colorInt)
     }
 
     override fun onTypeMarkPatternChanged(hasPattern: Boolean, patternResId: Int) {
-        mTypeMarkIcon.setInnerIcon(if (hasPattern) getDrawable(patternResId) else null)
+        ic_type_mark.setInnerIcon(if (hasPattern) getDrawable(patternResId) else null)
     }
 
     override fun onPlanCreated() {
-        mSingleTypePlanList.scrollToPosition(0)
-        mContentEditor.setText(null)
+        list_single_type_plan.scrollToPosition(0)
+        editor_content.setText(null)
     }
 
     override fun onUcPlanCountChanged(ucPlanCountStr: String) {
-        mUcPlanCountText.text = ucPlanCountStr
+        text_uc_plan_count.text = ucPlanCountStr
     }
 
     override fun onPlanDeleted(deletedPlan: Plan, position: Int, planListPos: Int, shouldShowSnackbar: Boolean) {
         if (shouldShowSnackbar) {
-            Snackbar.make(mSingleTypePlanList, String.format(mSnackbarDeleteFormat, deletedPlan.content), Snackbar.LENGTH_LONG)
+            Snackbar.make(list_single_type_plan, String.format(getString(R.string.snackbar_delete_format), deletedPlan.content), Snackbar.LENGTH_LONG)
                     .setAction(R.string.button_undo) { mTypeDetailPresenter.notifyCreatingPlan(deletedPlan, position, planListPos) }
                     .show()
         }
@@ -259,24 +222,24 @@ class TypeDetailActivity : BaseActivity(), TypeDetailViewContract {
     }
 
     override fun onAppBarScrolled(headerLayoutAlpha: Float) {
-        mHeaderLayout.alpha = headerLayoutAlpha
+        layout_header.alpha = headerLayoutAlpha
     }
 
     override fun onAppBarScrolledToCriticalPoint(toolbarTitle: String, editorLayoutTransY: Float) {
-        mToolbar.title = toolbarTitle
-        ObjectAnimator.ofFloat(mEditorLayout, "translationY", mEditorLayout.translationY, editorLayoutTransY)
+        toolbar.title = toolbarTitle
+        ObjectAnimator.ofFloat(layout_editor, "translationY", layout_editor.translationY, editorLayoutTransY)
                 .setDuration(200)
                 .start()
     }
 
     override fun changeContentEditorClearTextIconVisibility(isVisible: Boolean) {
-        mClearTextIcon.visibility = if (isVisible) View.VISIBLE else View.GONE
+        ic_clear_text.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
     override fun backToTop() {
-        mAppBarLayout.setExpanded(true)
+        layout_app_bar.setExpanded(true)
         //TODO 滑动到顶部
-        //mSingleTypePlanList.scrollToPosition(0);
+        //list_single_type_plan.scrollToPosition(0);
     }
 
     override fun pressBack() {
@@ -288,8 +251,8 @@ class TypeDetailActivity : BaseActivity(), TypeDetailViewContract {
                 this,
                 position,
                 enableTransition,
-                mTypeMarkIcon,
-                mTypeMarkIconSetName
+                ic_type_mark,
+                getString(R.string.transition_type_mark_icon)
         )
     }
 
@@ -373,7 +336,7 @@ class TypeDetailActivity : BaseActivity(), TypeDetailViewContract {
     @OnClick(R.id.ic_clear_text)
     fun onClick(view: View) {
         when (view.id) {
-            R.id.ic_clear_text -> mContentEditor.setText("")
+            R.id.ic_clear_text -> editor_content.setText("")
         }
     }
 }

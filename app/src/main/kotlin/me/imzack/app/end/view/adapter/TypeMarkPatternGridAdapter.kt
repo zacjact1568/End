@@ -4,12 +4,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import butterknife.BindView
-import butterknife.ButterKnife
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.item_grid_type_mark_pattern.*
 import me.imzack.app.end.R
 import me.imzack.app.end.model.bean.TypeMarkPattern
 import me.imzack.app.end.util.ResourceUtil
-import me.imzack.app.end.view.widget.CheckView
 
 class TypeMarkPatternGridAdapter(private val mTypeMarkPatternList: List<TypeMarkPattern>) : BaseAdapter() {
 
@@ -32,17 +31,10 @@ class TypeMarkPatternGridAdapter(private val mTypeMarkPatternList: List<TypeMark
             viewHolder = view.tag as ViewHolder
         }
 
-        viewHolder.mPatternIcon.setImageResource(ResourceUtil.getDrawableResourceId(patternFn!!))
+        viewHolder.ic_pattern.setImageResource(ResourceUtil.getDrawableResourceId(patternFn!!))
 
         return view
     }
 
-    class ViewHolder(view: View) {
-        @BindView(R.id.ic_pattern)
-        lateinit var mPatternIcon: CheckView
-
-        init {
-            ButterKnife.bind(this, view)
-        }
-    }
+    class ViewHolder(override val containerView: View) : LayoutContainer
 }

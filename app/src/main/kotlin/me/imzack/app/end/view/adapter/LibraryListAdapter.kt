@@ -5,9 +5,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.item_list_library.*
 import me.imzack.app.end.R
 import me.imzack.app.end.common.Constant
 import me.imzack.app.end.model.bean.Library
@@ -40,8 +39,8 @@ class LibraryListAdapter(private val mActivity: Activity) : RecyclerView.Adapter
             Constant.VIEW_TYPE_ITEM -> {
                 val itemViewHolder = holder as ItemViewHolder
                 val (name, developer, link) = LIBRARIES[position - 1]
-                itemViewHolder.mNameText.text = name
-                itemViewHolder.mDeveloperText.text = developer
+                itemViewHolder.text_name.text = name
+                itemViewHolder.text_developer.text = developer
                 itemViewHolder.itemView.setOnClickListener { SystemUtil.openLink(link, mActivity) }
             }
         }
@@ -53,14 +52,5 @@ class LibraryListAdapter(private val mActivity: Activity) : RecyclerView.Adapter
 
     class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-    class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        @BindView(R.id.text_name)
-        lateinit var mNameText: TextView
-        @BindView(R.id.text_developer)
-        lateinit var mDeveloperText: TextView
-
-        init {
-            ButterKnife.bind(this, itemView)
-        }
-    }
+    class ItemViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
 }

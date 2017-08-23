@@ -8,8 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.footer_list_single_type_plan.*
+import kotlinx.android.synthetic.main.item_list_single_type_plan.*
 import me.imzack.app.end.R
 import me.imzack.app.end.common.Constant
 import me.imzack.app.end.model.bean.Plan
@@ -29,7 +30,7 @@ class SingleTypePlanListAdapter(private val mSingleTypePlanList: List<Plan>) : R
 
     private var mScrollEdge = Constant.SCROLL_EDGE_TOP
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
             when (viewType) {
                 Constant.VIEW_TYPE_ITEM -> ItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_list_single_type_plan, parent, false))
                 Constant.VIEW_TYPE_FOOTER -> FooterViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.footer_list_single_type_plan, parent, false))
@@ -43,16 +44,16 @@ class SingleTypePlanListAdapter(private val mSingleTypePlanList: List<Plan>) : R
 
                 val plan = mSingleTypePlanList[position]
 
-                setContentText(itemViewHolder.mContentText, plan.content, plan.isCompleted)
-                setSpaceView(itemViewHolder.mSpaceView, plan.isCompleted, plan.hasDeadline, plan.hasReminder)
-                setTimeLayout(itemViewHolder.mDeadlineLayout, plan.isCompleted, plan.hasDeadline, plan.deadline)
-                setTimeLayout(itemViewHolder.mReminderLayout, plan.isCompleted, plan.hasReminder, plan.reminderTime)
-                setStarButton(itemViewHolder.mStarButton, plan.isStarred, plan.isCompleted, itemViewHolder)
+                setContentText(itemViewHolder.text_content, plan.content, plan.isCompleted)
+                setSpaceView(itemViewHolder.view_space, plan.isCompleted, plan.hasDeadline, plan.hasReminder)
+                setTimeLayout(itemViewHolder.layout_deadline, plan.isCompleted, plan.hasDeadline, plan.deadline)
+                setTimeLayout(itemViewHolder.layout_reminder, plan.isCompleted, plan.hasReminder, plan.reminderTime)
+                setStarButton(itemViewHolder.btn_star, plan.isStarred, plan.isCompleted, itemViewHolder)
                 setItemView(itemViewHolder)
             }
             Constant.VIEW_TYPE_FOOTER -> {
                 val footerViewHolder = holder as FooterViewHolder
-                setSingleTypePlanCountText(footerViewHolder.mSingleTypePlanCountText)
+                setSingleTypePlanCountText(footerViewHolder.text_single_type_plan_count)
             }
         }
     }
@@ -65,16 +66,16 @@ class SingleTypePlanListAdapter(private val mSingleTypePlanList: List<Plan>) : R
             val plan = mSingleTypePlanList[position]
             for (payload in payloads) {
                 when (payload as Int) {
-                    Constant.PLAN_PAYLOAD_CONTENT -> setContentText(itemViewHolder.mContentText, plan.content, plan.isCompleted)
+                    Constant.PLAN_PAYLOAD_CONTENT -> setContentText(itemViewHolder.text_content, plan.content, plan.isCompleted)
                     Constant.PLAN_PAYLOAD_DEADLINE -> {
-                        setSpaceView(itemViewHolder.mSpaceView, plan.isCompleted, plan.hasDeadline, plan.hasReminder)
-                        setTimeLayout(itemViewHolder.mDeadlineLayout, plan.isCompleted, plan.hasDeadline, plan.deadline)
+                        setSpaceView(itemViewHolder.view_space, plan.isCompleted, plan.hasDeadline, plan.hasReminder)
+                        setTimeLayout(itemViewHolder.layout_deadline, plan.isCompleted, plan.hasDeadline, plan.deadline)
                     }
                     Constant.PLAN_PAYLOAD_REMINDER_TIME -> {
-                        setSpaceView(itemViewHolder.mSpaceView, plan.isCompleted, plan.hasDeadline, plan.hasReminder)
-                        setTimeLayout(itemViewHolder.mReminderLayout, plan.isCompleted, plan.hasReminder, plan.reminderTime)
+                        setSpaceView(itemViewHolder.view_space, plan.isCompleted, plan.hasDeadline, plan.hasReminder)
+                        setTimeLayout(itemViewHolder.layout_reminder, plan.isCompleted, plan.hasReminder, plan.reminderTime)
                     }
-                    Constant.PLAN_PAYLOAD_STAR_STATUS -> setStarButton(itemViewHolder.mStarButton, plan.isStarred, plan.isCompleted, itemViewHolder)
+                    Constant.PLAN_PAYLOAD_STAR_STATUS -> setStarButton(itemViewHolder.btn_star, plan.isStarred, plan.isCompleted, itemViewHolder)
                 }
             }
         }
@@ -145,29 +146,7 @@ class SingleTypePlanListAdapter(private val mSingleTypePlanList: List<Plan>) : R
         notifyItemChanged(mSingleTypePlanList.size)
     }
 
-    class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        @BindView(R.id.text_content)
-        lateinit var mContentText: TextView
-        @BindView(R.id.view_space)
-        lateinit var mSpaceView: View
-        @BindView(R.id.layout_deadline)
-        lateinit var mDeadlineLayout: ImageTextView
-        @BindView(R.id.layout_reminder)
-        lateinit var mReminderLayout: ImageTextView
-        @BindView(R.id.btn_star)
-        lateinit var mStarButton: ImageView
+    class ItemViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
 
-        init {
-            ButterKnife.bind(this, itemView)
-        }
-    }
-
-    class FooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        @BindView(R.id.text_single_type_plan_count)
-        lateinit var mSingleTypePlanCountText: TextView
-
-        init {
-            ButterKnife.bind(this, itemView)
-        }
-    }
+    class FooterViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
 }

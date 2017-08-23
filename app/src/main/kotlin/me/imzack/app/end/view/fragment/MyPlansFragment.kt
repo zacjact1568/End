@@ -7,10 +7,7 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import butterknife.BindString
-import butterknife.BindView
-import butterknife.ButterKnife
+import kotlinx.android.synthetic.main.fragment_my_plans.*
 import me.imzack.app.end.App
 import me.imzack.app.end.R
 import me.imzack.app.end.injector.component.DaggerMyPlansComponent
@@ -23,14 +20,6 @@ import me.imzack.app.end.view.contract.MyPlansViewContract
 import javax.inject.Inject
 
 class MyPlansFragment : BaseListFragment(), MyPlansViewContract {
-
-    @BindView(R.id.list_plan)
-    lateinit var mPlanList: RecyclerView
-    @BindView(R.id.layout_empty)
-    lateinit var mEmptyLayout: LinearLayout
-
-    @BindString(R.string.snackbar_delete_format)
-    lateinit var mSnackbarDeleteFormat: String
 
     @Inject
     lateinit var mMyPlansPresenter: MyPlansPresenter
@@ -52,7 +41,6 @@ class MyPlansFragment : BaseListFragment(), MyPlansViewContract {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ButterKnife.bind(this, view)
         mMyPlansPresenter.attach()
     }
 
@@ -72,17 +60,17 @@ class MyPlansFragment : BaseListFragment(), MyPlansViewContract {
     }
 
     override fun showInitialView(planListAdapter: PlanListAdapter, itemTouchHelper: ItemTouchHelper, isPlanItemEmpty: Boolean) {
-        mPlanList.adapter = planListAdapter
-        mPlanList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        list_plan.adapter = planListAdapter
+        list_plan.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 onListScrolled(dy)
                 mMyPlansPresenter.notifyPlanListScrolled(
-                        !mPlanList.canScrollVertically(-1),
-                        !mPlanList.canScrollVertically(1)
+                        !list_plan.canScrollVertically(-1),
+                        !list_plan.canScrollVertically(1)
                 )
             }
         })
-        itemTouchHelper.attachToRecyclerView(mPlanList)
+        itemTouchHelper.attachToRecyclerView(list_plan)
 
         onPlanItemEmptyStateChanged(isPlanItemEmpty)
     }
@@ -92,20 +80,20 @@ class MyPlansFragment : BaseListFragment(), MyPlansViewContract {
     }
 
     override fun onPlanCreated() {
-        mPlanList.scrollToPosition(0)
+        list_plan.scrollToPosition(0)
     }
 
     override fun onPlanDeleted(deletedPlan: Plan, position: Int, shouldShowSnackbar: Boolean) {
         if (shouldShowSnackbar) {
-            Snackbar.make(mPlanList, String.format(mSnackbarDeleteFormat, deletedPlan.content), Snackbar.LENGTH_LONG)
+            Snackbar.make(list_plan, String.format(getString(R.string.snackbar_delete_format), deletedPlan.content), Snackbar.LENGTH_LONG)
                     .setAction(R.string.button_undo) { mMyPlansPresenter.notifyCreatingPlan(deletedPlan, position) }
                     .show()
         }
     }
 
     override fun onPlanItemEmptyStateChanged(isEmpty: Boolean) {
-        mPlanList.visibility = if (isEmpty) View.GONE else View.VISIBLE
-        mEmptyLayout.visibility = if (isEmpty) View.VISIBLE else View.GONE
+        list_plan.visibility = if (isEmpty) View.GONE else View.VISIBLE
+        layout_empty.visibility = if (isEmpty) View.VISIBLE else View.GONE
     }
 
     override fun exit() {

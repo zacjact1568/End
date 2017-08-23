@@ -4,10 +4,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.item_list_problem.*
 import me.imzack.app.end.R
 import me.imzack.app.end.common.Constant
 import me.imzack.app.end.model.bean.Problem
@@ -36,12 +34,12 @@ class ProblemListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             Constant.VIEW_TYPE_ITEM -> {
                 val itemViewHolder = holder as ItemViewHolder
                 val (description, solution) = mProblems[position - 1]
-                itemViewHolder.mDescriptionText.text = description
-                itemViewHolder.mSolutionText.text = solution
+                itemViewHolder.text_description.text = description
+                itemViewHolder.text_solution.text = solution
                 itemViewHolder.itemView.setOnClickListener {
-                    val isExpanded = itemViewHolder.mSolutionText.visibility == View.VISIBLE
-                    itemViewHolder.mExpandIcon.startAnimation(ResourceUtil.getAnimation(if (isExpanded) R.anim.anim_rotate_down else R.anim.anim_rotate_up))
-                    itemViewHolder.mSolutionText.visibility = if (isExpanded) View.GONE else View.VISIBLE
+                    val isExpanded = itemViewHolder.text_solution.visibility == View.VISIBLE
+                    itemViewHolder.ic_expand.startAnimation(ResourceUtil.getAnimation(if (isExpanded) R.anim.anim_rotate_down else R.anim.anim_rotate_up))
+                    itemViewHolder.text_solution.visibility = if (isExpanded) View.GONE else View.VISIBLE
                 }
             }
         }
@@ -53,16 +51,5 @@ class ProblemListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-    class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        @BindView(R.id.text_description)
-        lateinit var mDescriptionText: TextView
-        @BindView(R.id.ic_expand)
-        lateinit var mExpandIcon: ImageView
-        @BindView(R.id.text_solution)
-        lateinit var mSolutionText: TextView
-
-        init {
-            ButterKnife.bind(this, itemView)
-        }
-    }
+    class ItemViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
 }

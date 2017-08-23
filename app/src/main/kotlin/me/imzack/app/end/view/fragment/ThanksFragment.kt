@@ -1,19 +1,14 @@
 package me.imzack.app.end.view.fragment
 
 import android.os.Bundle
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import butterknife.BindView
-import butterknife.ButterKnife
+import kotlinx.android.synthetic.main.fragment_thanks.*
 import me.imzack.app.end.R
 import me.imzack.app.end.view.adapter.LibraryListAdapter
 
 class ThanksFragment : BaseFragment() {
-
-    @BindView(R.id.list_library)
-    lateinit var mLibraryList: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,10 +19,9 @@ class ThanksFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ButterKnife.bind(this, view)
 
-        mLibraryList.adapter = LibraryListAdapter(activity)
-        mLibraryList.setHasFixedSize(true)
+        list_library.adapter = LibraryListAdapter(activity)
+        list_library.setHasFixedSize(true)
     }
 
     override fun onDetach() {

@@ -9,12 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.footer_list_plan.*
+import kotlinx.android.synthetic.main.item_list_plan.*
 import me.imzack.app.end.R
 import me.imzack.app.end.common.Constant
 import me.imzack.app.end.model.DataManager
-import me.imzack.app.end.util.*
+import me.imzack.app.end.util.CommonUtil
+import me.imzack.app.end.util.ResourceUtil
+import me.imzack.app.end.util.StringUtil
+import me.imzack.app.end.util.TimeUtil
 import me.imzack.app.end.view.widget.ImageTextView
 
 class PlanListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -29,7 +33,7 @@ class PlanListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     //其实list创建的的时候notifyListScrolled会被调用一次并更新此变量为TOP，在这里事先初始化一次，以防万一
     private var mScrollEdge = Constant.SCROLL_EDGE_TOP
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
             when (viewType) {
                 Constant.VIEW_TYPE_HEADER -> ItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_list_plan, parent, false))
                 Constant.VIEW_TYPE_FOOTER -> FooterViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.footer_list_plan, parent, false))
@@ -44,17 +48,17 @@ class PlanListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
                 val plan = DataManager.getPlan(position)
 
-                setTypeMarkView(itemViewHolder.mTypeMarkView, plan.typeCode, plan.isCompleted, plan.hasDeadline, plan.hasReminder)
-                setContentText(itemViewHolder.mContentText, plan.content, plan.isCompleted)
-                setSpaceView(itemViewHolder.mSpaceView, plan.isCompleted, plan.hasDeadline, plan.hasReminder)
-                setTimeLayout(itemViewHolder.mDeadlineLayout, plan.isCompleted, plan.hasDeadline, plan.deadline)
-                setTimeLayout(itemViewHolder.mReminderLayout, plan.isCompleted, plan.hasReminder, plan.reminderTime)
-                setStarButton(itemViewHolder.mStarButton, plan.isStarred, plan.isCompleted, itemViewHolder)
+                setTypeMarkView(itemViewHolder.view_type_mark, plan.typeCode, plan.isCompleted, plan.hasDeadline, plan.hasReminder)
+                setContentText(itemViewHolder.text_content, plan.content, plan.isCompleted)
+                setSpaceView(itemViewHolder.view_space, plan.isCompleted, plan.hasDeadline, plan.hasReminder)
+                setTimeLayout(itemViewHolder.layout_deadline, plan.isCompleted, plan.hasDeadline, plan.deadline)
+                setTimeLayout(itemViewHolder.layout_reminder, plan.isCompleted, plan.hasReminder, plan.reminderTime)
+                setStarButton(itemViewHolder.btn_star, plan.isStarred, plan.isCompleted, itemViewHolder)
                 setItemView(itemViewHolder)
             }
             Constant.VIEW_TYPE_FOOTER -> {
                 val footerViewHolder = holder as FooterViewHolder
-                setPlanCountText(footerViewHolder.mPlanCountText)
+                setPlanCountText(footerViewHolder.text_plan_count)
             }
         }
     }
@@ -67,17 +71,17 @@ class PlanListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             val plan = DataManager.getPlan(position)
             for (payload in payloads) {
                 when (payload as Int) {
-                    Constant.PLAN_PAYLOAD_TYPE_CODE -> setTypeMarkView(itemViewHolder.mTypeMarkView, plan.typeCode, plan.isCompleted, plan.hasDeadline, plan.hasReminder)
-                    Constant.PLAN_PAYLOAD_CONTENT -> setContentText(itemViewHolder.mContentText, plan.content, plan.isCompleted)
+                    Constant.PLAN_PAYLOAD_TYPE_CODE -> setTypeMarkView(itemViewHolder.view_type_mark, plan.typeCode, plan.isCompleted, plan.hasDeadline, plan.hasReminder)
+                    Constant.PLAN_PAYLOAD_CONTENT -> setContentText(itemViewHolder.text_content, plan.content, plan.isCompleted)
                     Constant.PLAN_PAYLOAD_DEADLINE -> {
-                        setSpaceView(itemViewHolder.mSpaceView, plan.isCompleted, plan.hasDeadline, plan.hasReminder)
-                        setTimeLayout(itemViewHolder.mDeadlineLayout, plan.isCompleted, plan.hasDeadline, plan.deadline)
+                        setSpaceView(itemViewHolder.view_space, plan.isCompleted, plan.hasDeadline, plan.hasReminder)
+                        setTimeLayout(itemViewHolder.layout_deadline, plan.isCompleted, plan.hasDeadline, plan.deadline)
                     }
                     Constant.PLAN_PAYLOAD_REMINDER_TIME -> {
-                        setSpaceView(itemViewHolder.mSpaceView, plan.isCompleted, plan.hasDeadline, plan.hasReminder)
-                        setTimeLayout(itemViewHolder.mReminderLayout, plan.isCompleted, plan.hasReminder, plan.reminderTime)
+                        setSpaceView(itemViewHolder.view_space, plan.isCompleted, plan.hasDeadline, plan.hasReminder)
+                        setTimeLayout(itemViewHolder.layout_reminder, plan.isCompleted, plan.hasReminder, plan.reminderTime)
                     }
-                    Constant.PLAN_PAYLOAD_STAR_STATUS -> setStarButton(itemViewHolder.mStarButton, plan.isStarred, plan.isCompleted, itemViewHolder)
+                    Constant.PLAN_PAYLOAD_STAR_STATUS -> setStarButton(itemViewHolder.btn_star, plan.isStarred, plan.isCompleted, itemViewHolder)
                 }
             }
         }
@@ -164,31 +168,7 @@ class PlanListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyItemChanged(DataManager.planCount)
     }
 
-    class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        @BindView(R.id.view_type_mark)
-        lateinit var mTypeMarkView: View
-        @BindView(R.id.text_content)
-        lateinit var mContentText: TextView
-        @BindView(R.id.view_space)
-        lateinit var mSpaceView: View
-        @BindView(R.id.layout_deadline)
-        lateinit var mDeadlineLayout: ImageTextView
-        @BindView(R.id.layout_reminder)
-        lateinit var mReminderLayout: ImageTextView
-        @BindView(R.id.btn_star)
-        lateinit var mStarButton: ImageView
+    class ItemViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
 
-        init {
-            ButterKnife.bind(this, itemView)
-        }
-    }
-
-    class FooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        @BindView(R.id.text_plan_count)
-        lateinit var mPlanCountText: TextView
-
-        init {
-            ButterKnife.bind(this, itemView)
-        }
-    }
+    class FooterViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
 }

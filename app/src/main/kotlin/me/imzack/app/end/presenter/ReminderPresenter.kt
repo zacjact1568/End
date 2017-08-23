@@ -45,20 +45,19 @@ class ReminderPresenter @Inject constructor(
 
     fun notifyDelayingReminder(delay: String) {
         val calendar = Calendar.getInstance()
-        updateReminderTime(calendar.timeInMillis, String.format(
-                ResourceUtil.getString(R.string.toast_reminder_delayed_format),
-                when (delay) {
-                    Constant.ONE_HOUR -> {
-                        calendar.add(Calendar.HOUR, 1)
-                        ResourceUtil.getString(R.string.toast_delay_1_hour)
-                    }
-                    Constant.TOMORROW -> {
-                        calendar.add(Calendar.DATE, 1)
-                        ResourceUtil.getString(R.string.toast_delay_tomorrow)
-                    }
-                    else -> throw IllegalArgumentException("The argument delayTime cannot be " + delay)
-                }
-        ))
+        val delayDscpt = when (delay) {
+            Constant.ONE_HOUR -> {
+                calendar.add(Calendar.HOUR, 1)
+                ResourceUtil.getString(R.string.toast_delay_1_hour)
+            }
+            Constant.TOMORROW -> {
+                calendar.add(Calendar.DATE, 1)
+                ResourceUtil.getString(R.string.toast_delay_tomorrow)
+            }
+            else -> throw IllegalArgumentException("The argument delayTime cannot be " + delay)
+        }
+        // 不能合并，否则timeInMillis取的是更改之前的值
+        updateReminderTime(calendar.timeInMillis, String.format(ResourceUtil.getString(R.string.toast_reminder_delayed_format), delayDscpt))
     }
 
     fun notifyUpdatingReminderTime(reminderTime: Long) {

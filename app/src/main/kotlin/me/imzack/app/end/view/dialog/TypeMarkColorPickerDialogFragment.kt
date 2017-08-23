@@ -7,18 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.AdapterView
-import android.widget.GridView
-import android.widget.TextView
-import android.widget.ViewAnimator
-import butterknife.BindView
+import kotlinx.android.synthetic.main.dialog_fragment_type_mark_color_picker.*
 import me.imzack.app.end.R
 import me.imzack.app.end.model.DataManager
 import me.imzack.app.end.model.bean.TypeMarkColor
 import me.imzack.app.end.util.ColorUtil
 import me.imzack.app.end.util.ResourceUtil
 import me.imzack.app.end.view.adapter.TypeMarkColorGridAdapter
-import me.imzack.app.end.view.widget.CircleColorView
-import me.imzack.app.end.view.widget.ColorPicker
 import java.io.Serializable
 
 class TypeMarkColorPickerDialogFragment : BaseDialogFragment() {
@@ -41,17 +36,6 @@ class TypeMarkColorPickerDialogFragment : BaseDialogFragment() {
             return fragment
         }
     }
-
-    @BindView(R.id.switcher_color_picker)
-    lateinit var mColorPickerSwitcher: ViewAnimator
-    @BindView(R.id.grid_type_mark_color)
-    lateinit var mTypeMarkColorGrid: GridView
-    @BindView(R.id.picker_type_mark_color)
-    lateinit var mTypeMarkColorPicker: ColorPicker
-    @BindView(R.id.text_type_mark_color)
-    lateinit var mTypeMarkColorText: TextView
-    @BindView(R.id.ic_type_mark_color)
-    lateinit var mTypeMarkColorIcon: CircleColorView
 
     private lateinit var mDefaultColor: String
     private lateinit var mTypeMarkColor: TypeMarkColor
@@ -77,13 +61,13 @@ class TypeMarkColorPickerDialogFragment : BaseDialogFragment() {
 
         mNeutralButtonClickListener = object : BaseDialogFragment.OnButtonClickListener {
             override fun onClick(): Boolean {
-                mColorPickerSwitcher.showNext()
-                if (mColorPickerSwitcher.currentView.id == R.id.grid_type_mark_color) {
+                switcher_color_picker.showNext()
+                if (switcher_color_picker.currentView.id == R.id.grid_type_mark_color) {
                     //切换到了grid界面，此时mPosition一定为-1
                     mPosition = getPositionInTypeMarkColorList(mTypeMarkColor.colorHex)
                     if (mPosition != -1) {
                         //若picker界面选中的颜色在grid界面也有，选中它
-                        mTypeMarkColorGrid.setItemChecked(mPosition, true)
+                        grid_type_mark_color.setItemChecked(mPosition, true)
                     }
                     mNeutralButtonString = getString(R.string.btn_custom)
                     updateNeutralButtonString()
@@ -91,13 +75,13 @@ class TypeMarkColorPickerDialogFragment : BaseDialogFragment() {
                     //切换到了picker界面
                     if (mPosition != -1) {
                         //若之前在grid界面有选择，取消选择
-                        mTypeMarkColorGrid.setItemChecked(mPosition, false)
+                        grid_type_mark_color.setItemChecked(mPosition, false)
                         mPosition = -1
                     }
                     //此时mPosition一定为-1
-                    mTypeMarkColorText.text = mTypeMarkColor.colorHex
-                    mTypeMarkColorIcon.setFillColor(Color.parseColor(mTypeMarkColor.colorHex))
-                    mTypeMarkColorPicker.setColor(Color.parseColor(mTypeMarkColor.colorHex))
+                    text_type_mark_color.text = mTypeMarkColor.colorHex
+                    ic_type_mark_color.setFillColor(Color.parseColor(mTypeMarkColor.colorHex))
+                    picker_type_mark_color.setColor(Color.parseColor(mTypeMarkColor.colorHex))
                     mNeutralButtonString = getString(R.string.btn_preset)
                     updateNeutralButtonString()
                 }
@@ -121,30 +105,30 @@ class TypeMarkColorPickerDialogFragment : BaseDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mTypeMarkColorGrid.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+        grid_type_mark_color.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
             override fun onPreDraw(): Boolean {
-                mTypeMarkColorGrid.viewTreeObserver.removeOnPreDrawListener(this)
+                grid_type_mark_color.viewTreeObserver.removeOnPreDrawListener(this)
                 //运行时设置宽度（在xml文件中宽度设置成match_parent不行）
-                mTypeMarkColorPicker.layoutParams.width = mTypeMarkColorGrid.width
+                picker_type_mark_color.layoutParams.width = grid_type_mark_color.width
                 return false
             }
         })
 
-        mTypeMarkColorGrid.adapter = TypeMarkColorGridAdapter(mTypeMarkColorList)
+        grid_type_mark_color.adapter = TypeMarkColorGridAdapter(mTypeMarkColorList)
 
         if (mPosition != -1) {
-            mTypeMarkColorGrid.setItemChecked(mPosition, true)
+            grid_type_mark_color.setItemChecked(mPosition, true)
         }
 
-        mTypeMarkColorGrid.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+        grid_type_mark_color.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             mPosition = position
             mTypeMarkColor.colorHex = mTypeMarkColorList[mPosition].colorHex
         }
 
-        mTypeMarkColorPicker.mOnColorChangedListener = {
+        picker_type_mark_color.mOnColorChangedListener = {
             val colorHex = ColorUtil.parseColor(it)
-            mTypeMarkColorIcon.setFillColor(it)
-            mTypeMarkColorText.text = colorHex
+            ic_type_mark_color.setFillColor(it)
+            text_type_mark_color.text = colorHex
             mTypeMarkColor.colorHex = colorHex
         }
     }

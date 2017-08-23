@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.view.MenuItem
 import android.view.ViewTreeObserver
-import butterknife.ButterKnife
 import kotlinx.android.synthetic.main.activity_about.*
 import kotlinx.android.synthetic.main.content_about.*
 import me.imzack.app.end.App
@@ -80,63 +79,62 @@ class AboutActivity : BaseActivity(), AboutViewContract {
 
     override fun showInitialView(versionName: String, aboutPagerAdapter: AboutPagerAdapter) {
         setContentView(R.layout.activity_about)
-        ButterKnife.bind(this)
 
-        setSupportActionBar(xToolbar)
+        setSupportActionBar(toolbar)
         setupActionBar()
 
         //注释掉这一句使AppBar可折叠
-        (xCollapsingToolbarLayout.layoutParams as AppBarLayout.LayoutParams).scrollFlags = 0
+        (layout_collapsing_toolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags = 0
 
-        xAppBarLayout.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+        layout_app_bar.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
             override fun onPreDraw(): Boolean {
-                xAppBarLayout.viewTreeObserver.removeOnPreDrawListener(this)
-                mAboutPresenter.notifyPreDrawingAppBar(xAppBarLayout.totalScrollRange)
+                layout_app_bar.viewTreeObserver.removeOnPreDrawListener(this)
+                mAboutPresenter.notifyPreDrawingAppBar(layout_app_bar.totalScrollRange)
                 return false
             }
         })
 
-        xAppBarLayout.addOnOffsetChangedListener { _, verticalOffset -> mAboutPresenter.notifyAppBarScrolled(verticalOffset) }
+        layout_app_bar.addOnOffsetChangedListener { _, verticalOffset -> mAboutPresenter.notifyAppBarScrolled(verticalOffset) }
 
-        xVersionText.text = versionName
-        xAboutPager.adapter = aboutPagerAdapter
-        xAboutIndicator.setViewPager(xAboutPager)
+        text_version.text = versionName
+        pager_about.adapter = aboutPagerAdapter
+        indicator_about.setViewPager(pager_about)
     }
 
     override fun onAppBarScrolled(headerLayoutAlpha: Float) {
-        xHeaderLayout.alpha = headerLayoutAlpha
+        layout_header.alpha = headerLayoutAlpha
     }
 
     override fun onAppBarScrolledToCriticalPoint(toolbarTitle: String) {
-        xToolbar.title = toolbarTitle
+        toolbar.title = toolbarTitle
     }
 
     override fun translateViewWhenIncline(shouldTranslateX: Boolean, translationX: Float, shouldTranslateY: Boolean, translationY: Float) {
         if (!shouldTranslateX && !shouldTranslateY) return
         val path = Path()
         //start point
-        path.moveTo(xHeaderLayout.translationX, xHeaderLayout.translationY)
+        path.moveTo(layout_header.translationX, layout_header.translationY)
         //end point
         if (shouldTranslateX && shouldTranslateY) {
             //x和y均合适
             path.lineTo(translationX, translationY)
         } else if (shouldTranslateX) {
             //x合适，y不合适
-            path.lineTo(translationX, xHeaderLayout.translationY)
+            path.lineTo(translationX, layout_header.translationY)
         } else {
             //x不合适，y合适
-            path.lineTo(xHeaderLayout.translationX, translationY)
+            path.lineTo(layout_header.translationX, translationY)
         }
-        ObjectAnimator.ofFloat(xHeaderLayout, "translationX", "translationY", path).setDuration(80).start()
+        ObjectAnimator.ofFloat(layout_header, "translationX", "translationY", path).setDuration(80).start()
     }
 
     override fun resetViewTranslation() {
-        xHeaderLayout.translationX = 0f
-        xHeaderLayout.translationY = 0f
+        layout_header.translationX = 0f
+        layout_header.translationY = 0f
     }
 
     override fun backToTop() {
-        xAppBarLayout.setExpanded(true)
+        layout_app_bar.setExpanded(true)
     }
 
     override fun pressBack() {

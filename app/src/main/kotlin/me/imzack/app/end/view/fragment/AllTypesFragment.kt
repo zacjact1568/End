@@ -6,8 +6,7 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import butterknife.BindView
-import butterknife.ButterKnife
+import kotlinx.android.synthetic.main.fragment_all_types.*
 import me.imzack.app.end.App
 import me.imzack.app.end.R
 import me.imzack.app.end.injector.component.DaggerAllTypesComponent
@@ -19,9 +18,6 @@ import me.imzack.app.end.view.contract.AllTypesViewContract
 import javax.inject.Inject
 
 class AllTypesFragment : BaseListFragment(), AllTypesViewContract {
-
-    @BindView(R.id.list_type)
-    lateinit var mTypeList: RecyclerView
 
     @Inject
     lateinit var mAllTypesPresenter: AllTypesPresenter
@@ -43,7 +39,6 @@ class AllTypesFragment : BaseListFragment(), AllTypesViewContract {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ButterKnife.bind(this, view)
         mAllTypesPresenter.attach()
     }
 
@@ -53,18 +48,18 @@ class AllTypesFragment : BaseListFragment(), AllTypesViewContract {
     }
 
     override fun showInitialView(typeListAdapter: TypeListAdapter, itemTouchHelper: ItemTouchHelper) {
-        mTypeList.setHasFixedSize(true)
-        mTypeList.adapter = typeListAdapter
-        mTypeList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        list_type.setHasFixedSize(true)
+        list_type.adapter = typeListAdapter
+        list_type.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 onListScrolled(dy)
                 mAllTypesPresenter.notifyPlanListScrolled(
-                        !mTypeList.canScrollVertically(-1),
-                        !mTypeList.canScrollVertically(1)
+                        !list_type.canScrollVertically(-1),
+                        !list_type.canScrollVertically(1)
                 )
             }
         })
-        itemTouchHelper.attachToRecyclerView(mTypeList)
+        itemTouchHelper.attachToRecyclerView(list_type)
     }
 
     override fun onTypeItemClicked(position: Int, typeItem: View) {
@@ -79,7 +74,7 @@ class AllTypesFragment : BaseListFragment(), AllTypesViewContract {
     }
 
     override fun onTypeCreated(scrollTo: Int) {
-        mTypeList.scrollToPosition(scrollTo)
+        list_type.scrollToPosition(scrollTo)
     }
 
     override fun exit() {

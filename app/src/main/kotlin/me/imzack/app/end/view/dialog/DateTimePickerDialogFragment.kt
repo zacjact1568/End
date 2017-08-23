@@ -7,9 +7,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
-import butterknife.BindView
 import butterknife.OnClick
+import kotlinx.android.synthetic.main.dialog_fragment_date_time_picker.*
 import me.imzack.app.end.R
 import me.imzack.app.end.util.ResourceUtil
 import me.imzack.app.end.util.TimeUtil
@@ -35,21 +34,6 @@ class DateTimePickerDialogFragment : BaseDialogFragment() {
             return fragment
         }
     }
-
-    @BindView(R.id.picker_date)
-    lateinit var mDatePicker: DatePicker
-    @BindView(R.id.picker_time)
-    lateinit var mTimePicker: TimePicker
-    @BindView(R.id.switcher_date_time_picker)
-    lateinit var mDateTimePickerSwitcher: ViewAnimator
-    @BindView(R.id.layout_switcher_date)
-    lateinit var mDateSwitcherLayout: LinearLayout
-    @BindView(R.id.layout_switcher_time)
-    lateinit var mTimeSwitcherLayout: LinearLayout
-    @BindView(R.id.text_date)
-    lateinit var mDateText: TextView
-    @BindView(R.id.text_time)
-    lateinit var mTimeText: TextView
 
     var mOnDateTimePickedListener: OnDateTimePickedListener? = null
 
@@ -85,7 +69,7 @@ class DateTimePickerDialogFragment : BaseDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mDatePicker.init(
+        picker_date.init(
                 mCalendar.get(Calendar.YEAR),
                 mCalendar.get(Calendar.MONTH),
                 mCalendar.get(Calendar.DAY_OF_MONTH)
@@ -95,14 +79,14 @@ class DateTimePickerDialogFragment : BaseDialogFragment() {
         }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            mTimePicker.currentHour = mCalendar.get(Calendar.HOUR_OF_DAY)
-            mTimePicker.currentMinute = mCalendar.get(Calendar.MINUTE)
+            picker_time.currentHour = mCalendar.get(Calendar.HOUR_OF_DAY)
+            picker_time.currentMinute = mCalendar.get(Calendar.MINUTE)
         } else {
-            mTimePicker.hour = mCalendar.get(Calendar.HOUR_OF_DAY)
-            mTimePicker.minute = mCalendar.get(Calendar.MINUTE)
+            picker_time.hour = mCalendar.get(Calendar.HOUR_OF_DAY)
+            picker_time.minute = mCalendar.get(Calendar.MINUTE)
         }
-        mTimePicker.setIs24HourView(TimeUtil.is24HourFormat)
-        mTimePicker.setOnTimeChangedListener { _, hourOfDay, minute ->
+        picker_time.setIs24HourView(TimeUtil.is24HourFormat)
+        picker_time.setOnTimeChangedListener { _, hourOfDay, minute ->
             mCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
             mCalendar.set(Calendar.MINUTE, minute)
             updateTimeText()
@@ -120,26 +104,26 @@ class DateTimePickerDialogFragment : BaseDialogFragment() {
 
     @OnClick(R.id.layout_switcher_date, R.id.layout_switcher_time)
     fun onClickSwitcher() {
-        mDateTimePickerSwitcher.showNext()
+        switcher_date_time_picker.showNext()
         updateSwitcherLayout()
     }
 
     private fun updateSwitcherLayout() {
-        val isDatePicker = mDateTimePickerSwitcher.currentView.id == R.id.picker_date
-        mDateSwitcherLayout.isClickable = !isDatePicker
-        mDateSwitcherLayout.alpha = if (isDatePicker) 1f else 0.8f
-        mDateSwitcherLayout.backgroundTintList = ColorStateList.valueOf(if (isDatePicker) Color.TRANSPARENT else mDarkPrimaryColor)
-        mTimeSwitcherLayout.isClickable = isDatePicker
-        mTimeSwitcherLayout.alpha = if (isDatePicker) 0.8f else 1f
-        mTimeSwitcherLayout.backgroundTintList = ColorStateList.valueOf(if (isDatePicker) mDarkPrimaryColor else Color.TRANSPARENT)
+        val isDatePicker = switcher_date_time_picker.currentView.id == R.id.picker_date
+        layout_switcher_date.isClickable = !isDatePicker
+        layout_switcher_date.alpha = if (isDatePicker) 1f else 0.8f
+        layout_switcher_date.backgroundTintList = ColorStateList.valueOf(if (isDatePicker) Color.TRANSPARENT else mDarkPrimaryColor)
+        layout_switcher_time.isClickable = isDatePicker
+        layout_switcher_time.alpha = if (isDatePicker) 0.8f else 1f
+        layout_switcher_time.backgroundTintList = ColorStateList.valueOf(if (isDatePicker) mDarkPrimaryColor else Color.TRANSPARENT)
     }
 
     private fun updateDateText() {
-        mDateText.text = TimeUtil.formatDate(mCalendar.timeInMillis)
+        text_date.text = TimeUtil.formatDate(mCalendar.timeInMillis)
     }
 
     private fun updateTimeText() {
-        mTimeText.text = TimeUtil.formatTime(mCalendar.timeInMillis)
+        text_time.text = TimeUtil.formatTime(mCalendar.timeInMillis)
     }
 
     interface OnDateTimePickedListener : Serializable {

@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.item_grid_type_picker_for_plan_migration.*
 import me.imzack.app.end.R
 import me.imzack.app.end.model.DataManager
 import me.imzack.app.end.util.ResourceUtil
@@ -26,8 +26,8 @@ class TypePickerForPlanMigrationGridAdapter(excludedTypeCode: String) : Recycler
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val itemViewHolder = holder as ItemViewHolder
         val (_, name, markColor, markPattern, _, hasMarkPattern) = mExcludedTypeList[position]
-        setTypeMarkIcon(itemViewHolder.mTypeMarkIcon, markColor, hasMarkPattern, markPattern, name)
-        setTypeNameText(itemViewHolder.mTypeNameText, name)
+        setTypeMarkIcon(itemViewHolder.ic_type_mark, markColor, hasMarkPattern, markPattern, name)
+        setTypeNameText(itemViewHolder.text_type_name, name)
         setItemView(itemViewHolder)
     }
 
@@ -50,14 +50,5 @@ class TypePickerForPlanMigrationGridAdapter(excludedTypeCode: String) : Recycler
         }
     }
 
-    class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        @BindView(R.id.ic_type_mark)
-        lateinit var mTypeMarkIcon: CircleColorView
-        @BindView(R.id.text_type_name)
-        lateinit var mTypeNameText: TextView
-
-        init {
-            ButterKnife.bind(this, itemView)
-        }
-    }
+    class ItemViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
 }

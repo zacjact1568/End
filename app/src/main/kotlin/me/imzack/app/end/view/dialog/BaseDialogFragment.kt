@@ -7,13 +7,10 @@ import android.support.v4.app.FragmentManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
-import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
+import kotlinx.android.synthetic.main.dialog_fragment_base.*
 import me.imzack.app.end.R
-import me.imzack.app.end.util.LogUtil
 import me.imzack.app.end.util.ResourceUtil
 import me.imzack.app.end.util.SystemUtil
 import java.io.Serializable
@@ -30,15 +27,6 @@ abstract class BaseDialogFragment : DialogFragment() {
         val ARG_POS_BTN_STR = "5"
         val ARG_POS_BTN_CLK_LSNR = "6"
     }
-
-    @BindView(R.id.text_title)
-    lateinit var mTitleText: TextView
-    @BindView(R.id.btn_neutral)
-    lateinit var mNeutralButton: Button
-    @BindView(R.id.btn_negative)
-    lateinit var mNegativeButton: Button
-    @BindView(R.id.btn_positive)
-    lateinit var mPositiveButton: Button
 
     // 传入null表示不显示标题，下同
     //TODO 这里应该将传入的字段放进Arguments，fragment重建后才能恢复新的？
@@ -108,23 +96,23 @@ abstract class BaseDialogFragment : DialogFragment() {
     }
 
     fun updateTitle() {
-        mTitleText.visibility = if (mTitleString == null) View.GONE else View.VISIBLE
-        mTitleText.text = mTitleString
+        text_title.visibility = if (mTitleString == null) View.GONE else View.VISIBLE
+        text_title.text = mTitleString
     }
 
     fun updateNeutralButtonString() {
-        mNeutralButton.visibility = if (mNeutralButtonString == null) View.GONE else View.VISIBLE
-        mNeutralButton.text = mNeutralButtonString
+        btn_neutral.visibility = if (mNeutralButtonString == null) View.GONE else View.VISIBLE
+        btn_neutral.text = mNeutralButtonString
     }
 
     fun updateNegativeButtonString() {
-        mNegativeButton.visibility = if (mNegativeButtonString == null) View.GONE else View.VISIBLE
-        mNegativeButton.text = mNegativeButtonString
+        btn_negative.visibility = if (mNegativeButtonString == null) View.GONE else View.VISIBLE
+        btn_negative.text = mNegativeButtonString
     }
 
     fun updatePositiveButtonString() {
-        mPositiveButton.visibility = if (mPositiveButtonString == null) View.GONE else View.VISIBLE
-        mPositiveButton.text = mPositiveButtonString
+        btn_positive.visibility = if (mPositiveButtonString == null) View.GONE else View.VISIBLE
+        btn_positive.text = mPositiveButtonString
     }
 
     fun show(manager: FragmentManager) {

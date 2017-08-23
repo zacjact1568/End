@@ -5,8 +5,7 @@ import android.support.annotation.StringRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import butterknife.BindView
+import kotlinx.android.synthetic.main.dialog_fragment_editor.*
 import me.imzack.app.end.R
 import me.imzack.app.end.util.ResourceUtil
 import me.imzack.app.end.util.SystemUtil
@@ -20,9 +19,6 @@ class EditorDialogFragment : BaseDialogFragment() {
         private val ARG_EDITOR_HINT = "editor_hint"
         private val ARG_TEXT_EDITED_LSNR = "text_edited_lsnr"
     }
-
-    @BindView(R.id.editor)
-    lateinit var mEditor: EditText
 
     private var mEditorTextStr: String? = null
     private var mEditorHintStr: String? = null
@@ -40,7 +36,7 @@ class EditorDialogFragment : BaseDialogFragment() {
 
         mPositiveButtonClickListener = object : BaseDialogFragment.OnButtonClickListener {
             override fun onClick(): Boolean {
-                mOnTextEditedListener?.onTextEdited(mEditor.text.toString())
+                mOnTextEditedListener?.onTextEdited(editor.text.toString())
                 return true
             }
         }
@@ -52,10 +48,10 @@ class EditorDialogFragment : BaseDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mEditor.setText(mEditorTextStr)
-        mEditor.hint = mEditorHintStr
-        mEditor.setSelection(mEditor.length())
-        SystemUtil.showSoftInput(mEditor, 100)
+        editor.setText(mEditorTextStr)
+        editor.hint = mEditorHintStr
+        editor.setSelection(editor.length())
+        SystemUtil.showSoftInput(editor, 100)
     }
 
     override fun onDetach() {

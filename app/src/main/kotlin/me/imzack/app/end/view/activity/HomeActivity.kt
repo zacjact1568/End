@@ -4,27 +4,22 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
-import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
+import kotlinx.android.synthetic.main.activity_home.*
 import me.imzack.app.end.App
 import me.imzack.app.end.R
 import me.imzack.app.end.common.Constant
 import me.imzack.app.end.injector.component.DaggerHomeComponent
 import me.imzack.app.end.injector.module.HomePresenterModule
 import me.imzack.app.end.presenter.HomePresenter
-import me.imzack.app.end.util.LogUtil
 import me.imzack.app.end.view.contract.HomeViewContract
 import me.imzack.app.end.view.fragment.AllTypesFragment
 import me.imzack.app.end.view.fragment.MyPlansFragment
@@ -39,18 +34,10 @@ class HomeActivity : BaseActivity(), HomeViewContract {
         }
     }
 
-    @BindView(R.id.toolbar)
-    lateinit var mToolbar: Toolbar
-    @BindView(R.id.fab_create)
-    lateinit var mCreateFab: FloatingActionButton
-    @BindView(R.id.navigator)
-    lateinit var mNavigator: NavigationView
-    @BindView(R.id.layout_drawer)
-    lateinit var mDrawerLayout: DrawerLayout
-
     @Inject
     lateinit var mHomePresenter: HomePresenter
 
+    // 不使用synthetic，因为不会从cache中获取子view
     private lateinit var mPlanCountText: TextView
     private lateinit var mPlanCountDscptText: TextView
 
@@ -86,7 +73,7 @@ class HomeActivity : BaseActivity(), HomeViewContract {
 
     override fun onBackPressed() {
         mHomePresenter.notifyBackPressed(
-                mDrawerLayout.isDrawerOpen(GravityCompat.START),
+                layout_drawer.isDrawerOpen(GravityCompat.START),
                 isFragmentShowing(Constant.MY_PLANS)
         )
     }
@@ -118,17 +105,17 @@ class HomeActivity : BaseActivity(), HomeViewContract {
         setContentView(R.layout.activity_home)
         ButterKnife.bind(this)
 
-        val navHeader = mNavigator.getHeaderView(0)
-        mPlanCountText = ButterKnife.findById(navHeader, R.id.text_plan_count)
-        mPlanCountDscptText = ButterKnife.findById(navHeader, R.id.text_plan_count_dscpt)
+        val navHeader = navigator.getHeaderView(0)
+        mPlanCountText = navHeader.findViewById(R.id.text_plan_count) as TextView
+        mPlanCountDscptText = navHeader.findViewById(R.id.text_plan_count_dscpt) as TextView
 
-        setSupportActionBar(mToolbar)
+        setSupportActionBar(toolbar)
 
-        val toggle = ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        mDrawerLayout.addDrawerListener(toggle)
+        val toggle = ActionBarDrawerToggle(this, layout_drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        layout_drawer.addDrawerListener(toggle)
         toggle.syncState()
 
-        mNavigator.setNavigationItemSelectedListener { item ->
+        navigator.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_my_plans -> showFragment(Constant.MY_PLANS)
                 R.id.nav_all_types -> showFragment(Constant.ALL_TYPES)
@@ -136,7 +123,7 @@ class HomeActivity : BaseActivity(), HomeViewContract {
                 R.id.nav_about -> enterActivity(Constant.ABOUT)
                 else -> { }
             }
-            mDrawerLayout.closeDrawer(GravityCompat.START)
+            layout_drawer.closeDrawer(GravityCompat.START)
             true
         }
 
@@ -154,7 +141,7 @@ class HomeActivity : BaseActivity(), HomeViewContract {
     }
 
     override fun closeDrawer() {
-        mDrawerLayout.closeDrawer(GravityCompat.START)
+        layout_drawer.closeDrawer(GravityCompat.START)
     }
 
     override fun showFragment(tag: String) {
@@ -186,9 +173,9 @@ class HomeActivity : BaseActivity(), HomeViewContract {
             }
             else -> throw IllegalArgumentException("The argument tag cannot be " + tag)
         }
-        mToolbar.setTitle(titleResId)
-        mCreateFab.translationY = 0f
-        mNavigator.setCheckedItem(navViewCheckedItemId)
+        toolbar.setTitle(titleResId)
+        fab_create.translationY = 0f
+        navigator.setCheckedItem(navViewCheckedItemId)
     }
 
     override fun onPressBackKey() {

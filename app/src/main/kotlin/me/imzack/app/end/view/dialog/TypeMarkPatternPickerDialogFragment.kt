@@ -5,8 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.GridView
-import butterknife.BindView
+import kotlinx.android.synthetic.main.dialog_fragment_type_mark_pattern_picker.*
 import me.imzack.app.end.R
 import me.imzack.app.end.model.DataManager
 import me.imzack.app.end.model.bean.Type
@@ -35,9 +34,6 @@ class TypeMarkPatternPickerDialogFragment : BaseDialogFragment() {
             return fragment
         }
     }
-
-    @BindView(R.id.grid_type_mark_pattern)
-    lateinit var mTypeMarkPatternGrid: GridView
 
     private var mDefaultPattern: String? = null
     private val mTypeMarkPattern = TypeMarkPattern()
@@ -87,13 +83,13 @@ class TypeMarkPatternPickerDialogFragment : BaseDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mTypeMarkPatternGrid.adapter = TypeMarkPatternGridAdapter(mTypeMarkPatternList)
+        grid_type_mark_pattern.adapter = TypeMarkPatternGridAdapter(mTypeMarkPatternList)
 
         if (mPosition != -1) {
-            mTypeMarkPatternGrid.setItemChecked(mPosition, true)
+            grid_type_mark_pattern.setItemChecked(mPosition, true)
         }
 
-        mTypeMarkPatternGrid.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+        grid_type_mark_pattern.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             mPosition = position
             val (patternFn, patternName) = mTypeMarkPatternList[mPosition]
             mTypeMarkPattern.patternFn = patternFn

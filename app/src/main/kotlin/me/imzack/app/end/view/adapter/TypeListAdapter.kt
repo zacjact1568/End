@@ -7,8 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.footer_list_type.*
+import kotlinx.android.synthetic.main.item_list_type.*
 import me.imzack.app.end.R
 import me.imzack.app.end.common.Constant
 import me.imzack.app.end.model.DataManager
@@ -22,7 +23,7 @@ class TypeListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var mScrollEdge = Constant.SCROLL_EDGE_TOP
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
             when (viewType) {
                 Constant.VIEW_TYPE_ITEM -> ItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_list_type, parent, false))
                 Constant.VIEW_TYPE_FOOTER -> FooterViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.footer_list_type, parent, false))
@@ -36,20 +37,20 @@ class TypeListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
                 val (code, name, markColor, markPattern, _, hasMarkPattern) = DataManager.getType(position)
 
-                onTypeMarkColorChanged(itemViewHolder.mTypeMarkIcon, markColor)
-                onTypeMarkPatternChanged(itemViewHolder.mTypeMarkIcon, hasMarkPattern, markPattern)
-                onTypeNameChanged(itemViewHolder.mTypeMarkIcon, itemViewHolder.mTypeNameText, name)
-                onPlanCountOfOneTypeChanged(itemViewHolder.mPlanCountIcon, code)
+                onTypeMarkColorChanged(itemViewHolder.ic_type_mark, markColor)
+                onTypeMarkPatternChanged(itemViewHolder.ic_type_mark, hasMarkPattern, markPattern)
+                onTypeNameChanged(itemViewHolder.ic_type_mark, itemViewHolder.text_type_name, name)
+                onPlanCountOfOneTypeChanged(itemViewHolder.ic_plan_count, code)
 
-                itemViewHolder.mTypeMarkIcon.transitionName = String.format(ResourceUtil.getString(R.string.transition_type_mark_icon_format), position)
+                itemViewHolder.ic_type_mark.transitionName = String.format(ResourceUtil.getString(R.string.transition_type_mark_icon_format), position)
 
                 itemViewHolder.itemView.setOnClickListener { mOnTypeItemClickListener?.invoke(itemViewHolder.layoutPosition, itemViewHolder.itemView) }
             }
             Constant.VIEW_TYPE_FOOTER -> {
                 val footerViewHolder = holder as FooterViewHolder
 
-                footerViewHolder.mTypeCountText.visibility = if (mScrollEdge == Constant.SCROLL_EDGE_BOTTOM) View.VISIBLE else View.INVISIBLE
-                footerViewHolder.mTypeCountText.text = ResourceUtil.getQuantityString(R.plurals.text_type_count, DataManager.typeCount)
+                footerViewHolder.text_type_count.visibility = if (mScrollEdge == Constant.SCROLL_EDGE_BOTTOM) View.VISIBLE else View.INVISIBLE
+                footerViewHolder.text_type_count.text = ResourceUtil.getQuantityString(R.plurals.text_type_count, DataManager.typeCount)
             }
         }
     }
@@ -62,10 +63,10 @@ class TypeListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             val (code, name, markColor, markPattern, _, hasMarkPattern) = DataManager.getType(position)
             for (payload in payloads) {
                 when (payload as Int) {
-                    Constant.TYPE_PAYLOAD_MARK_COLOR -> onTypeMarkColorChanged(itemViewHolder.mTypeMarkIcon, markColor)
-                    Constant.TYPE_PAYLOAD_MARK_PATTERN -> onTypeMarkPatternChanged(itemViewHolder.mTypeMarkIcon, hasMarkPattern, markPattern)
-                    Constant.TYPE_PAYLOAD_NAME -> onTypeNameChanged(itemViewHolder.mTypeMarkIcon, itemViewHolder.mTypeNameText, name)
-                    Constant.TYPE_PAYLOAD_PLAN_COUNT -> onPlanCountOfOneTypeChanged(itemViewHolder.mPlanCountIcon, code)
+                    Constant.TYPE_PAYLOAD_MARK_COLOR -> onTypeMarkColorChanged(itemViewHolder.ic_type_mark, markColor)
+                    Constant.TYPE_PAYLOAD_MARK_PATTERN -> onTypeMarkPatternChanged(itemViewHolder.ic_type_mark, hasMarkPattern, markPattern)
+                    Constant.TYPE_PAYLOAD_NAME -> onTypeNameChanged(itemViewHolder.ic_type_mark, itemViewHolder.text_type_name, name)
+                    Constant.TYPE_PAYLOAD_PLAN_COUNT -> onPlanCountOfOneTypeChanged(itemViewHolder.ic_plan_count, code)
                 }
             }
         }
@@ -134,25 +135,7 @@ class TypeListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        @BindView(R.id.ic_type_mark)
-        lateinit var mTypeMarkIcon: CircleColorView
-        @BindView(R.id.text_type_name)
-        lateinit var mTypeNameText: TextView
-        @BindView(R.id.ic_plan_count)
-        lateinit var mPlanCountIcon: CircleColorView
+    class ItemViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
 
-        init {
-            ButterKnife.bind(this, itemView)
-        }
-    }
-
-    class FooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        @BindView(R.id.text_type_count)
-        lateinit var mTypeCountText: TextView
-
-        init {
-            ButterKnife.bind(this, itemView)
-        }
-    }
+    class FooterViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
 }

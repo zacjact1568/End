@@ -5,11 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import butterknife.BindView
-import butterknife.ButterKnife
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.item_grid_type_mark_color.*
 import me.imzack.app.end.R
 import me.imzack.app.end.model.bean.TypeMarkColor
-import me.imzack.app.end.view.widget.CircleColorView
 
 class TypeMarkColorGridAdapter(private val mTypeMarkColorList: List<TypeMarkColor>) : BaseAdapter() {
 
@@ -32,17 +31,10 @@ class TypeMarkColorGridAdapter(private val mTypeMarkColorList: List<TypeMarkColo
             viewHolder = view.tag as ViewHolder
         }
 
-        viewHolder.mColorIcon.setFillColor(Color.parseColor(colorHex))
+        viewHolder.ic_color.setFillColor(Color.parseColor(colorHex))
 
         return view
     }
 
-    class ViewHolder(view: View) {
-        @BindView(R.id.ic_color)
-        lateinit var mColorIcon: CircleColorView
-
-        init {
-            ButterKnife.bind(this, view)
-        }
-    }
+    class ViewHolder(override val containerView: View) : LayoutContainer
 }

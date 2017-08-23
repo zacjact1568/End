@@ -4,21 +4,11 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
+import kotlinx.android.synthetic.main.widget_item_view.view.*
 import me.imzack.app.end.R
 import me.imzack.app.end.util.StringUtil
 
 class ItemView : FrameLayout {
-
-    @BindView(R.id.image_icon)
-    lateinit var mImageIcon: ImageView
-    @BindView(R.id.text_title)
-    lateinit var mTitleText: TextView
-    @BindView(R.id.text_dscpt)
-    lateinit var mDscptText: TextView
 
     private var mDscptTextColor = 0
 
@@ -36,19 +26,18 @@ class ItemView : FrameLayout {
 
     private fun init(attrs: AttributeSet?, defStyle: Int) {
         inflate(context, R.layout.widget_item_view, this)
-        ButterKnife.bind(this)
 
-        mDscptTextColor = mDscptText.currentTextColor
+        mDscptTextColor = text_dscpt.currentTextColor
 
         val ta = context.obtainStyledAttributes(attrs, R.styleable.ItemView, defStyle, 0)
-        mImageIcon.setImageDrawable(ta.getDrawable(R.styleable.ItemView_iconImageSrc))
-        mTitleText.text = ta.getString(R.styleable.ItemView_titleText)
+        image_icon.setImageDrawable(ta.getDrawable(R.styleable.ItemView_iconImageSrc))
+        text_title.text = ta.getString(R.styleable.ItemView_titleText)
         setDescriptionText(ta.getString(R.styleable.ItemView_descriptionText))
         ta.recycle()
     }
 
     fun setDescriptionText(text: CharSequence?) {
-        mDscptText.text = colorDscptText(text)
+        text_dscpt.text = colorDscptText(text)
     }
 
     fun setThemeColor(color: Int) {
@@ -57,13 +46,13 @@ class ItemView : FrameLayout {
     }
 
     fun setImageIconTintColor(color: Int) {
-        mImageIcon.imageTintList = ColorStateList.valueOf(color)
+        image_icon.imageTintList = ColorStateList.valueOf(color)
     }
 
     fun setDscptTextColor(color: Int) {
         if (mDscptTextColor == color) return
         mDscptTextColor = color
-        mDscptText.text = colorDscptText(mDscptText.text)
+        text_dscpt.text = colorDscptText(text_dscpt.text)
     }
 
     private fun colorDscptText(text: CharSequence?) =

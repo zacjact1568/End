@@ -1,11 +1,10 @@
 package me.imzack.app.end.view.dialog
 
 import android.os.Bundle
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import butterknife.BindView
+import kotlinx.android.synthetic.main.dialog_fragment_type_picker.*
 import me.imzack.app.end.R
 import me.imzack.app.end.util.ResourceUtil
 import me.imzack.app.end.view.activity.TypeCreationActivity
@@ -32,9 +31,6 @@ class TypePickerDialogFragment : BaseDialogFragment() {
             return fragment
         }
     }
-
-    @BindView(R.id.grid_type_picker)
-    lateinit var mTypePickerGrid: RecyclerView
 
     private var mPosition = -1
     private var mOnTypePickedListener: OnTypePickedListener? = null
@@ -71,8 +67,8 @@ class TypePickerDialogFragment : BaseDialogFragment() {
         val typePickerGridAdapter = TypePickerGridAdapter(mPosition)
         typePickerGridAdapter.mOnItemClickListener = { mPosition = it }
 
-        mTypePickerGrid.adapter = typePickerGridAdapter
-        mTypePickerGrid.setHasFixedSize(true)
+        grid_type_picker.adapter = typePickerGridAdapter
+        grid_type_picker.setHasFixedSize(true)
     }
 
     override fun onDetach() {

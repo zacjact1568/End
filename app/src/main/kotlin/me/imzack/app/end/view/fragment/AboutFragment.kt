@@ -8,9 +8,7 @@ import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
+import kotlinx.android.synthetic.main.fragment_about.*
 import me.imzack.app.end.R
 import me.imzack.app.end.common.Constant
 import me.imzack.app.end.util.ResourceUtil
@@ -21,11 +19,6 @@ import me.imzack.app.end.view.dialog.MessageDialogFragment
 
 class AboutFragment : BaseFragment() {
 
-    @BindView(R.id.text_dscpt_developer)
-    lateinit var mDeveloperDscptText: TextView
-    @BindView(R.id.text_dscpt_rate)
-    lateinit var mRateDscptText: TextView
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -35,9 +28,8 @@ class AboutFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ButterKnife.bind(this, view)
 
-        mDeveloperDscptText.text = StringUtil.addSpan(
+        text_dscpt_developer.text = StringUtil.addSpan(
                 getString(R.string.text_developer),
                 arrayOf(getString(R.string.text_span_seg_contact)),
                 intArrayOf(StringUtil.SPAN_CLICKABLE),
@@ -66,9 +58,9 @@ class AboutFragment : BaseFragment() {
                     }
                 })
         )
-        mDeveloperDscptText.movementMethod = LinkMovementMethod.getInstance()
+        text_dscpt_developer.movementMethod = LinkMovementMethod.getInstance()
 
-        mRateDscptText.text = StringUtil.addSpan(
+        text_dscpt_rate.text = StringUtil.addSpan(
                 getString(R.string.text_rate),
                 arrayOf(getString(R.string.text_span_seg_rate)),
                 intArrayOf(StringUtil.SPAN_CLICKABLE),
@@ -82,6 +74,6 @@ class AboutFragment : BaseFragment() {
                     }
                 })
         )
-        mRateDscptText.movementMethod = LinkMovementMethod.getInstance()
+        text_dscpt_rate.movementMethod = LinkMovementMethod.getInstance()
     }
 }

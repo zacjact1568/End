@@ -3,12 +3,9 @@ package me.imzack.app.end.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
-import butterknife.BindView
-import butterknife.ButterKnife
-
+import kotlinx.android.synthetic.main.activity_settings.*
 import me.imzack.app.end.R
 import me.imzack.app.end.model.DataManager
 import me.imzack.app.end.view.dialog.BaseDialogFragment
@@ -24,15 +21,11 @@ class SettingsActivity : BaseActivity() {
         }
     }
 
-    @BindView(R.id.toolbar)
-    lateinit var mToolbar: Toolbar
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-        ButterKnife.bind(this)
 
-        setSupportActionBar(mToolbar)
+        setSupportActionBar(toolbar)
         setupActionBar()
 
         fragmentManager.beginTransaction().add(R.id.frame_layout, SettingsFragment()).commit()

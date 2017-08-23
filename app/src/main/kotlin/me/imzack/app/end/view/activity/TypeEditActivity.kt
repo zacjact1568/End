@@ -4,15 +4,13 @@ import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.view.View
 import android.view.Window
-import android.widget.TextView
-import butterknife.BindString
-import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
+import kotlinx.android.synthetic.main.activity_type_edit.*
+import kotlinx.android.synthetic.main.content_type_edit.*
 import me.imzack.app.end.App
 import me.imzack.app.end.R
 import me.imzack.app.end.common.Constant
@@ -27,8 +25,6 @@ import me.imzack.app.end.view.contract.TypeEditViewContract
 import me.imzack.app.end.view.dialog.EditorDialogFragment
 import me.imzack.app.end.view.dialog.TypeMarkColorPickerDialogFragment
 import me.imzack.app.end.view.dialog.TypeMarkPatternPickerDialogFragment
-import me.imzack.app.end.view.widget.CircleColorView
-import me.imzack.app.end.view.widget.ItemView
 import javax.inject.Inject
 
 class TypeEditActivity : BaseActivity(), TypeEditViewContract {
@@ -49,22 +45,6 @@ class TypeEditActivity : BaseActivity(), TypeEditViewContract {
             }
         }
     }
-
-    @BindView(R.id.toolbar)
-    lateinit var mToolbar: Toolbar
-    @BindView(R.id.ic_type_mark)
-    lateinit var mTypeMarkIcon: CircleColorView
-    @BindView(R.id.text_type_name)
-    lateinit var mTypeNameText: TextView
-    @BindView(R.id.item_type_name)
-    lateinit var mTypeNameItem: ItemView
-    @BindView(R.id.item_type_mark_color)
-    lateinit var mTypeMarkColorItem: ItemView
-    @BindView(R.id.item_type_mark_pattern)
-    lateinit var mTypeMarkPatternItem: ItemView
-
-    @BindString(R.string.dscpt_unsettled)
-    lateinit var mUnsettledDscpt: String
 
     @Inject
     lateinit var mTypeEditPresenter: TypeEditPresenter
@@ -105,7 +85,7 @@ class TypeEditActivity : BaseActivity(), TypeEditViewContract {
         setContentView(R.layout.activity_type_edit)
         ButterKnife.bind(this)
 
-        setSupportActionBar(mToolbar)
+        setSupportActionBar(toolbar)
         setupActionBar()
 
         onTypeNameChanged(formattedType.typeName, formattedType.firstChar)
@@ -128,25 +108,25 @@ class TypeEditActivity : BaseActivity(), TypeEditViewContract {
     }
 
     override fun onTypeNameChanged(typeName: String, firstChar: String) {
-        mTypeMarkIcon.setInnerText(firstChar)
-        mTypeNameText.text = typeName
-        mTypeNameItem.setDescriptionText(typeName)
+        ic_type_mark.setInnerText(firstChar)
+        text_type_name.text = typeName
+        item_type_name.setDescriptionText(typeName)
     }
 
     override fun onTypeMarkColorChanged(colorInt: Int, colorName: String) {
         window.navigationBarColor = colorInt
         window.statusBarColor = colorInt
-        mToolbar.setBackgroundColor(ColorUtil.reduceSaturation(colorInt, 0.85f))
-        mTypeMarkIcon.setFillColor(colorInt)
-        mTypeNameItem.setThemeColor(colorInt)
-        mTypeMarkColorItem.setDescriptionText(colorName)
-        mTypeMarkColorItem.setThemeColor(colorInt)
-        mTypeMarkPatternItem.setThemeColor(colorInt)
+        toolbar.setBackgroundColor(ColorUtil.reduceSaturation(colorInt, 0.85f))
+        ic_type_mark.setFillColor(colorInt)
+        item_type_name.setThemeColor(colorInt)
+        item_type_mark_color.setDescriptionText(colorName)
+        item_type_mark_color.setThemeColor(colorInt)
+        item_type_mark_pattern.setThemeColor(colorInt)
     }
 
     override fun onTypeMarkPatternChanged(hasPattern: Boolean, patternResId: Int, patternName: String?) {
-        mTypeMarkIcon.setInnerIcon(if (hasPattern) getDrawable(patternResId) else null)
-        mTypeMarkPatternItem.setDescriptionText(if (hasPattern) patternName else mUnsettledDscpt)
+        ic_type_mark.setInnerIcon(if (hasPattern) getDrawable(patternResId) else null)
+        item_type_mark_pattern.setDescriptionText(if (hasPattern) patternName else getString(R.string.dscpt_unsettled))
     }
 
     override fun showTypeMarkColorPickerDialog(defaultColor: String) {

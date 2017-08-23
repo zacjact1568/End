@@ -8,13 +8,10 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
-import android.widget.ViewAnimator
-import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
+import kotlinx.android.synthetic.main.activity_reminder.*
 import me.imzack.app.end.App
 import me.imzack.app.end.R
 import me.imzack.app.end.common.Constant
@@ -25,7 +22,6 @@ import me.imzack.app.end.util.TimeUtil
 import me.imzack.app.end.util.ViewUtil
 import me.imzack.app.end.view.contract.ReminderViewContract
 import me.imzack.app.end.view.dialog.DateTimePickerDialogFragment
-import me.imzack.app.end.view.widget.ImageTextView
 import javax.inject.Inject
 
 class ReminderActivity : BaseActivity(), ReminderViewContract {
@@ -40,15 +36,6 @@ class ReminderActivity : BaseActivity(), ReminderViewContract {
             )
         }
     }
-
-    @BindView(R.id.layout_reminder)
-    lateinit var mReminderLayout: LinearLayout
-    @BindView(R.id.text_content)
-    lateinit var mContentText: TextView
-    @BindView(R.id.layout_deadline)
-    lateinit var mDeadlineLayout: ImageTextView
-    @BindView(R.id.switcher_delay)
-    lateinit var mDelaySwitcher: ViewAnimator
 
     @Inject
     lateinit var mReminderPresenter: ReminderPresenter
@@ -83,23 +70,23 @@ class ReminderActivity : BaseActivity(), ReminderViewContract {
         setContentView(R.layout.activity_reminder)
         ButterKnife.bind(this)
 
-        mReminderLayout.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+        layout_reminder.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
             override fun onPreDraw(): Boolean {
-                mReminderLayout.viewTreeObserver.removeOnPreDrawListener(this)
-                mReminderPresenter.notifyPreDrawingReminder(ViewUtil.getScreenCoordinateY(mReminderLayout))
+                layout_reminder.viewTreeObserver.removeOnPreDrawListener(this)
+                mReminderPresenter.notifyPreDrawingReminder(ViewUtil.getScreenCoordinateY(layout_reminder))
                 return false
             }
         })
 
-        mContentText.text = content
+        text_content.text = content
 
-        mDeadlineLayout.visibility = if (hasDeadline) View.VISIBLE else View.GONE
-        mDeadlineLayout.mText = deadline
-        mDeadlineLayout.updateText()
+        layout_deadline.visibility = if (hasDeadline) View.VISIBLE else View.GONE
+        layout_deadline.mText = deadline
+        layout_deadline.updateText()
     }
 
     override fun playEnterAnimation() {
-        mReminderLayout.startAnimation(AnimationUtils.loadAnimation(this, R.anim.anim_enter_up))
+        layout_reminder.startAnimation(AnimationUtils.loadAnimation(this, R.anim.anim_enter_up))
     }
 
     override fun showToast(msg: String) {
@@ -114,10 +101,10 @@ class ReminderActivity : BaseActivity(), ReminderViewContract {
     @OnClick(R.id.btn_delay, R.id.btn_detail, R.id.btn_complete, R.id.btn_back, R.id.btn_1_hour, R.id.btn_tomorrow, R.id.btn_more)
     fun onClick(view: View) {
         when (view.id) {
-            R.id.btn_delay -> mDelaySwitcher.showNext()
+            R.id.btn_delay -> switcher_delay.showNext()
             R.id.btn_detail -> mReminderPresenter.notifyEnteringPlanDetail()
             R.id.btn_complete -> mReminderPresenter.notifyPlanCompleted()
-            R.id.btn_back -> mDelaySwitcher.showPrevious()
+            R.id.btn_back -> switcher_delay.showPrevious()
             R.id.btn_1_hour -> mReminderPresenter.notifyDelayingReminder(Constant.ONE_HOUR)
             R.id.btn_tomorrow -> mReminderPresenter.notifyDelayingReminder(Constant.TOMORROW)
             R.id.btn_more -> {
@@ -149,6 +136,6 @@ class ReminderActivity : BaseActivity(), ReminderViewContract {
 
             }
         })
-        mReminderLayout.startAnimation(animation)
+        layout_reminder.startAnimation(animation)
     }
 }

@@ -6,19 +6,15 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
+import kotlinx.android.synthetic.main.activity_plan_creation.*
+import kotlinx.android.synthetic.main.content_plan_creation.*
 import me.imzack.app.end.App
 import me.imzack.app.end.R
 import me.imzack.app.end.injector.component.DaggerPlanCreationComponent
@@ -29,8 +25,6 @@ import me.imzack.app.end.util.ColorUtil
 import me.imzack.app.end.view.adapter.TypeGalleryAdapter
 import me.imzack.app.end.view.contract.PlanCreationViewContract
 import me.imzack.app.end.view.dialog.DateTimePickerDialogFragment
-import me.imzack.app.end.view.widget.CircleColorView
-import me.imzack.app.end.view.widget.ItemView
 import javax.inject.Inject
 
 class PlanCreationActivity : BaseActivity(), PlanCreationViewContract {
@@ -41,23 +35,6 @@ class PlanCreationActivity : BaseActivity(), PlanCreationViewContract {
             context.startActivity(Intent(context, PlanCreationActivity::class.java))
         }
     }
-
-    @BindView(R.id.toolbar)
-    lateinit var mToolbar: Toolbar
-    @BindView(R.id.ic_plan)
-    lateinit var mPlanIcon: ImageView
-    @BindView(R.id.editor_content)
-    lateinit var mContentEditor: EditText
-    @BindView(R.id.ic_type_mark)
-    lateinit var mTypeMarkIcon: CircleColorView
-    @BindView(R.id.text_type_name)
-    lateinit var mTypeNameText: TextView
-    @BindView(R.id.gallery_type)
-    lateinit var mTypeGallery: RecyclerView
-    @BindView(R.id.item_deadline)
-    lateinit var mDeadlineItem: ItemView
-    @BindView(R.id.item_reminder)
-    lateinit var mReminderItem: ItemView
 
     @Inject
     lateinit var mPlanCreationPresenter: PlanCreationPresenter
@@ -132,10 +109,10 @@ class PlanCreationActivity : BaseActivity(), PlanCreationViewContract {
         //            }
         //        });
 
-        setSupportActionBar(mToolbar)
+        setSupportActionBar(toolbar)
         setupActionBar()
 
-        mContentEditor.addTextChangedListener(object : TextWatcher {
+        editor_content.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
 
             }
@@ -149,9 +126,12 @@ class PlanCreationActivity : BaseActivity(), PlanCreationViewContract {
             }
         })
 
-        (mTypeGallery.layoutManager as LinearLayoutManager).orientation = LinearLayoutManager.HORIZONTAL
-        mTypeGallery.adapter = typeGalleryAdapter
-        mTypeGallery.setHasFixedSize(true)
+        (gallery_type.layoutManager as LinearLayoutManager).orientation = LinearLayoutManager.HORIZONTAL
+        gallery_type.adapter = typeGalleryAdapter
+        gallery_type.setHasFixedSize(true)
+
+        item_deadline.setOnClickListener { mPlanCreationPresenter.notifySettingDeadline() }
+        item_reminder.setOnClickListener { mPlanCreationPresenter.notifySettingReminder() }
 
         onContentChanged(false)
         onStarStatusChanged(false)
@@ -171,14 +151,14 @@ class PlanCreationActivity : BaseActivity(), PlanCreationViewContract {
         val typeMarkColorInt = formattedType.typeMarkColorInt
         window.navigationBarColor = typeMarkColorInt
         window.statusBarColor = typeMarkColorInt
-        mToolbar.setBackgroundColor(ColorUtil.reduceSaturation(typeMarkColorInt, 0.85f))
-        mPlanIcon.imageTintList = ColorStateList.valueOf(typeMarkColorInt)
-        mTypeMarkIcon.setFillColor(typeMarkColorInt)
-        mTypeMarkIcon.setInnerIcon(if (formattedType.hasTypeMarkPattern) getDrawable(formattedType.typeMarkPatternResId) else null)
-        mTypeMarkIcon.setInnerText(formattedType.firstChar)
-        mTypeNameText.text = formattedType.typeName
-        mDeadlineItem.setThemeColor(typeMarkColorInt)
-        mReminderItem.setThemeColor(typeMarkColorInt)
+        toolbar.setBackgroundColor(ColorUtil.reduceSaturation(typeMarkColorInt, 0.85f))
+        ic_plan.imageTintList = ColorStateList.valueOf(typeMarkColorInt)
+        ic_type_mark.setFillColor(typeMarkColorInt)
+        ic_type_mark.setInnerIcon(if (formattedType.hasTypeMarkPattern) getDrawable(formattedType.typeMarkPatternResId) else null)
+        ic_type_mark.setInnerText(formattedType.firstChar)
+        text_type_name.text = formattedType.typeName
+        item_deadline.setThemeColor(typeMarkColorInt)
+        item_reminder.setThemeColor(typeMarkColorInt)
     }
 
     override fun onTypeCreationItemClicked() {
@@ -197,7 +177,7 @@ class PlanCreationActivity : BaseActivity(), PlanCreationViewContract {
     }
 
     override fun onDeadlineChanged(deadline: CharSequence) {
-        mDeadlineItem.setDescriptionText(deadline)
+        item_deadline.setDescriptionText(deadline)
     }
 
     override fun showReminderTimePickerDialog(defaultReminderTime: Long) {
@@ -212,7 +192,7 @@ class PlanCreationActivity : BaseActivity(), PlanCreationViewContract {
     }
 
     override fun onReminderTimeChanged(reminderTime: CharSequence) {
-        mReminderItem.setDescriptionText(reminderTime)
+        item_reminder.setDescriptionText(reminderTime)
     }
 
     @OnClick(R.id.item_deadline, R.id.item_reminder)
@@ -249,7 +229,7 @@ class PlanCreationActivity : BaseActivity(), PlanCreationViewContract {
     //
     //            @Override
     //            public void onAnimationEnd(Animator animation) {
-    //                CommonUtil.showSoftInput(mContentEditor);
+    //                CommonUtil.showSoftInput(editor_content);
     //            }
     //
     //            @Override

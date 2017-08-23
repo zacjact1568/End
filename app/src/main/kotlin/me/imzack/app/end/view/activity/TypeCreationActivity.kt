@@ -4,15 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
-import butterknife.BindString
-import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
+import kotlinx.android.synthetic.main.activity_type_creation.*
+import kotlinx.android.synthetic.main.content_type_creation.*
 import me.imzack.app.end.App
 import me.imzack.app.end.R
 import me.imzack.app.end.injector.component.DaggerTypeCreationComponent
@@ -26,8 +24,6 @@ import me.imzack.app.end.view.contract.TypeCreationViewContract
 import me.imzack.app.end.view.dialog.EditorDialogFragment
 import me.imzack.app.end.view.dialog.TypeMarkColorPickerDialogFragment
 import me.imzack.app.end.view.dialog.TypeMarkPatternPickerDialogFragment
-import me.imzack.app.end.view.widget.CircleColorView
-import me.imzack.app.end.view.widget.ItemView
 import javax.inject.Inject
 
 class TypeCreationActivity : BaseActivity(), TypeCreationViewContract {
@@ -38,22 +34,6 @@ class TypeCreationActivity : BaseActivity(), TypeCreationViewContract {
             context.startActivity(Intent(context, TypeCreationActivity::class.java))
         }
     }
-
-    @BindView(R.id.toolbar)
-    lateinit var mToolbar: Toolbar
-    @BindView(R.id.ic_type_mark)
-    lateinit var mTypeMarkIcon: CircleColorView
-    @BindView(R.id.text_type_name)
-    lateinit var mTypeNameText: TextView
-    @BindView(R.id.item_type_name)
-    lateinit var mTypeNameItem: ItemView
-    @BindView(R.id.item_type_mark_color)
-    lateinit var mTypeMarkColorItem: ItemView
-    @BindView(R.id.item_type_mark_pattern)
-    lateinit var mTypeMarkPatternItem: ItemView
-
-    @BindString(R.string.dscpt_touch_to_set)
-    lateinit var mClickToSetDscpt: String
 
     @Inject
     lateinit var mTypeCreationPresenter: TypeCreationPresenter
@@ -111,7 +91,7 @@ class TypeCreationActivity : BaseActivity(), TypeCreationViewContract {
         //            }
         //        });
 
-        setSupportActionBar(mToolbar)
+        setSupportActionBar(toolbar)
         setupActionBar()
 
         onTypeNameChanged(formattedType.typeName, formattedType.firstChar)
@@ -119,25 +99,25 @@ class TypeCreationActivity : BaseActivity(), TypeCreationViewContract {
     }
 
     override fun onTypeNameChanged(typeName: String, firstChar: String) {
-        mTypeMarkIcon.setInnerText(firstChar)
-        mTypeNameText.text = typeName
-        mTypeNameItem.setDescriptionText(typeName)
+        ic_type_mark.setInnerText(firstChar)
+        text_type_name.text = typeName
+        item_type_name.setDescriptionText(typeName)
     }
 
     override fun onTypeMarkColorChanged(colorInt: Int, colorName: String) {
         window.navigationBarColor = colorInt
         window.statusBarColor = colorInt
-        mToolbar.setBackgroundColor(ColorUtil.reduceSaturation(colorInt, 0.85f))
-        mTypeMarkIcon.setFillColor(colorInt)
-        mTypeNameItem.setThemeColor(colorInt)
-        mTypeMarkColorItem.setDescriptionText(colorName)
-        mTypeMarkColorItem.setThemeColor(colorInt)
-        mTypeMarkPatternItem.setThemeColor(colorInt)
+        toolbar.setBackgroundColor(ColorUtil.reduceSaturation(colorInt, 0.85f))
+        ic_type_mark.setFillColor(colorInt)
+        item_type_name.setThemeColor(colorInt)
+        item_type_mark_color.setDescriptionText(colorName)
+        item_type_mark_color.setThemeColor(colorInt)
+        item_type_mark_pattern.setThemeColor(colorInt)
     }
 
     override fun onTypeMarkPatternChanged(hasPattern: Boolean, patternResId: Int, patternName: String?) {
-        mTypeMarkIcon.setInnerIcon(if (hasPattern) getDrawable(patternResId) else null)
-        mTypeMarkPatternItem.setDescriptionText(if (hasPattern) patternName else mClickToSetDscpt)
+        ic_type_mark.setInnerIcon(if (hasPattern) getDrawable(patternResId) else null)
+        item_type_mark_pattern.setDescriptionText(if (hasPattern) patternName else getString(R.string.dscpt_touch_to_set))
     }
 
     override fun showTypeNameEditorDialog(defaultName: String) {

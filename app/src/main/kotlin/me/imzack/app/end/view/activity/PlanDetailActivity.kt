@@ -7,19 +7,14 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
-import android.support.design.widget.CollapsingToolbarLayout
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewTreeObserver
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
+import kotlinx.android.synthetic.main.activity_plan_detail.*
+import kotlinx.android.synthetic.main.content_plan_detail.*
 import me.imzack.app.end.App
 import me.imzack.app.end.R
 import me.imzack.app.end.common.Constant
@@ -32,8 +27,6 @@ import me.imzack.app.end.util.ColorUtil
 import me.imzack.app.end.util.ResourceUtil
 import me.imzack.app.end.view.contract.PlanDetailViewContract
 import me.imzack.app.end.view.dialog.*
-import me.imzack.app.end.view.widget.CircleColorView
-import me.imzack.app.end.view.widget.ItemView
 import javax.inject.Inject
 
 class PlanDetailActivity : BaseActivity(), PlanDetailViewContract {
@@ -47,33 +40,6 @@ class PlanDetailActivity : BaseActivity(), PlanDetailViewContract {
             )
         }
     }
-
-    @BindView(R.id.layout_app_bar)
-    lateinit var mAppBarLayout: AppBarLayout
-    @BindView(R.id.layout_collapsing_toolbar)
-    lateinit var mCollapsingToolbarLayout: CollapsingToolbarLayout
-    @BindView(R.id.bg_header)
-    lateinit var mHeaderBackground: ImageView
-    @BindView(R.id.layout_header)
-    lateinit var mHeaderLayout: LinearLayout
-    @BindView(R.id.text_content)
-    lateinit var contentText: TextView
-    @BindView(R.id.toolbar)
-    lateinit var toolbar: Toolbar
-    @BindView(R.id.ic_type_mark)
-    lateinit var mTypeMarkIcon: CircleColorView
-    @BindView(R.id.text_type_name)
-    lateinit var mTypeNameText: TextView
-    @BindView(R.id.fab_star)
-    lateinit var mStarFab: FloatingActionButton
-    @BindView(R.id.item_type)
-    lateinit var mTypeItem: ItemView
-    @BindView(R.id.item_deadline)
-    lateinit var mDeadlineItem: ItemView
-    @BindView(R.id.item_reminder)
-    lateinit var mReminderItem: ItemView
-    @BindView(R.id.btn_switch_plan_status)
-    lateinit var switchPlanStatusButton: TextView
 
     @Inject
     lateinit var planDetailPresenter: PlanDetailPresenter
@@ -130,17 +96,17 @@ class PlanDetailActivity : BaseActivity(), PlanDetailViewContract {
         setupActionBar()
 
         //注释掉这一句使AppBar可折叠
-        (mCollapsingToolbarLayout.layoutParams as AppBarLayout.LayoutParams).scrollFlags = 0
+        (layout_collapsing_toolbar.layoutParams as AppBarLayout.LayoutParams).scrollFlags = 0
 
-        mAppBarLayout.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+        layout_app_bar.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
             override fun onPreDraw(): Boolean {
-                mAppBarLayout.viewTreeObserver.removeOnPreDrawListener(this)
-                planDetailPresenter.notifyPreDrawingAppBar(mAppBarLayout.totalScrollRange)
+                layout_app_bar.viewTreeObserver.removeOnPreDrawListener(this)
+                planDetailPresenter.notifyPreDrawingAppBar(layout_app_bar.totalScrollRange)
                 return false
             }
         })
 
-        mAppBarLayout.addOnOffsetChangedListener { _, verticalOffset -> planDetailPresenter.notifyAppBarScrolled(verticalOffset) }
+        layout_app_bar.addOnOffsetChangedListener { _, verticalOffset -> planDetailPresenter.notifyAppBarScrolled(verticalOffset) }
 
         onContentChanged(formattedPlan.content)
         onStarStatusChanged(formattedPlan.isStarred)
@@ -151,7 +117,7 @@ class PlanDetailActivity : BaseActivity(), PlanDetailViewContract {
     }
 
     override fun onAppBarScrolled(headerLayoutAlpha: Float) {
-        mHeaderLayout.alpha = headerLayoutAlpha
+        layout_header.alpha = headerLayoutAlpha
     }
 
     override fun onAppBarScrolledToCriticalPoint(toolbarTitle: String) {
@@ -173,9 +139,9 @@ class PlanDetailActivity : BaseActivity(), PlanDetailViewContract {
     }
 
     override fun onPlanStatusChanged(isCompleted: Boolean) {
-        mReminderItem.isClickable = !isCompleted
-        mReminderItem.alpha = if (isCompleted) 0.6f else 1f
-        switchPlanStatusButton.setText(if (isCompleted) R.string.text_make_plan_uc else R.string.text_make_plan_c)
+        item_reminder.isClickable = !isCompleted
+        item_reminder.alpha = if (isCompleted) 0.6f else 1f
+        btn_switch_plan_status.setText(if (isCompleted) R.string.text_make_plan_uc else R.string.text_make_plan_c)
     }
 
     override fun showContentEditorDialog(content: String) {
@@ -193,29 +159,29 @@ class PlanDetailActivity : BaseActivity(), PlanDetailViewContract {
     }
 
     override fun onContentChanged(newContent: String) {
-        contentText.text = newContent
+        text_content.text = newContent
     }
 
     override fun onStarStatusChanged(isStarred: Boolean) {
-        mStarFab.setImageResource(if (isStarred) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp)
-        mStarFab.imageTintList = ColorStateList.valueOf(if (isStarred) mAccentColor else mGrey600Color)
+        fab_star.setImageResource(if (isStarred) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp)
+        fab_star.imageTintList = ColorStateList.valueOf(if (isStarred) mAccentColor else mGrey600Color)
     }
 
     override fun onTypeOfPlanChanged(formattedType: FormattedType) {
         val typeMarkColorInt = formattedType.typeMarkColorInt
         val headerColorInt = ColorUtil.reduceSaturation(typeMarkColorInt, 0.85f)
         window.navigationBarColor = typeMarkColorInt
-        mCollapsingToolbarLayout.setContentScrimColor(headerColorInt)
-        mCollapsingToolbarLayout.setStatusBarScrimColor(typeMarkColorInt)
-        mHeaderBackground.setImageDrawable(ColorDrawable(headerColorInt))
-        mTypeMarkIcon.setFillColor(typeMarkColorInt)
-        mTypeMarkIcon.setInnerIcon(if (formattedType.hasTypeMarkPattern) getDrawable(formattedType.typeMarkPatternResId) else null)
-        mTypeMarkIcon.setInnerText(formattedType.firstChar)
-        mTypeNameText.text = formattedType.typeName
-        mTypeItem.setDescriptionText(formattedType.typeName)
-        mTypeItem.setThemeColor(typeMarkColorInt)
-        mDeadlineItem.setThemeColor(typeMarkColorInt)
-        mReminderItem.setThemeColor(typeMarkColorInt)
+        layout_collapsing_toolbar.setContentScrimColor(headerColorInt)
+        layout_collapsing_toolbar.setStatusBarScrimColor(typeMarkColorInt)
+        bg_header.setImageDrawable(ColorDrawable(headerColorInt))
+        ic_type_mark.setFillColor(typeMarkColorInt)
+        ic_type_mark.setInnerIcon(if (formattedType.hasTypeMarkPattern) getDrawable(formattedType.typeMarkPatternResId) else null)
+        ic_type_mark.setInnerText(formattedType.firstChar)
+        text_type_name.text = formattedType.typeName
+        item_type.setDescriptionText(formattedType.typeName)
+        item_type.setThemeColor(typeMarkColorInt)
+        item_deadline.setThemeColor(typeMarkColorInt)
+        item_reminder.setThemeColor(typeMarkColorInt)
     }
 
     override fun showTypePickerDialog(defaultTypeListPos: Int) {
@@ -252,15 +218,15 @@ class PlanDetailActivity : BaseActivity(), PlanDetailViewContract {
     }
 
     override fun onDeadlineChanged(newDeadline: CharSequence) {
-        mDeadlineItem.setDescriptionText(newDeadline)
+        item_deadline.setDescriptionText(newDeadline)
     }
 
     override fun onReminderTimeChanged(newReminderTime: CharSequence) {
-        mReminderItem.setDescriptionText(newReminderTime)
+        item_reminder.setDescriptionText(newReminderTime)
     }
 
     override fun backToTop() {
-        mAppBarLayout.setExpanded(true)
+        layout_app_bar.setExpanded(true)
     }
 
     override fun pressBack() {

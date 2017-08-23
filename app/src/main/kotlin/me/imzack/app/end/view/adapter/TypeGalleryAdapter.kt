@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import butterknife.BindView
-import butterknife.ButterKnife
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.item_gallery_type.*
 import me.imzack.app.end.R
 import me.imzack.app.end.common.Constant
 import me.imzack.app.end.model.DataManager
@@ -39,8 +39,8 @@ class TypeGalleryAdapter(private var mSelectedPosition: Int) : RecyclerView.Adap
             Constant.VIEW_TYPE_ITEM -> {
                 val itemViewHolder = holder as ItemViewHolder
                 val (_, name, markColor, markPattern, _, hasMarkPattern) = DataManager.getType(position)
-                setTypeMarkIcon(itemViewHolder.mTypeMarkIcon, markColor, hasMarkPattern, markPattern, name, position == mSelectedPosition)
-                setTypeNameText(itemViewHolder.mTypeNameText, name)
+                setTypeMarkIcon(itemViewHolder.ic_type_mark, markColor, hasMarkPattern, markPattern, name, position == mSelectedPosition)
+                setTypeNameText(itemViewHolder.text_type_name, name)
                 setItemView(itemViewHolder)
             }
             Constant.VIEW_TYPE_FOOTER -> {
@@ -58,7 +58,7 @@ class TypeGalleryAdapter(private var mSelectedPosition: Int) : RecyclerView.Adap
             val (_, name, markColor, markPattern, _, hasMarkPattern) = DataManager.getType(position)
             for (payload in payloads) {
                 when (payload as Int) {
-                    PAYLOAD_SELECTOR -> setTypeMarkIcon(itemViewHolder.mTypeMarkIcon, markColor, hasMarkPattern, markPattern, name, position == mSelectedPosition)
+                    PAYLOAD_SELECTOR -> setTypeMarkIcon(itemViewHolder.ic_type_mark, markColor, hasMarkPattern, markPattern, name, position == mSelectedPosition)
                 }
             }
         }
@@ -111,16 +111,7 @@ class TypeGalleryAdapter(private var mSelectedPosition: Int) : RecyclerView.Adap
         footerViewHolder.itemView.setOnClickListener { mOnFooterClickListener?.invoke() }
     }
 
-    class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        @BindView(R.id.ic_type_mark)
-        lateinit var mTypeMarkIcon: CircleColorView
-        @BindView(R.id.text_type_name)
-        lateinit var mTypeNameText: TextView
-
-        init {
-            ButterKnife.bind(this, itemView)
-        }
-    }
+    class ItemViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
 
     class FooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }

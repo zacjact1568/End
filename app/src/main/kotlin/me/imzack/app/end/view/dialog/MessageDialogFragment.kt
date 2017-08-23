@@ -5,8 +5,7 @@ import android.support.annotation.StringRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import butterknife.BindView
+import kotlinx.android.synthetic.main.dialog_fragment_message.*
 import me.imzack.app.end.R
 import me.imzack.app.end.util.ResourceUtil
 
@@ -16,9 +15,6 @@ class MessageDialogFragment : BaseDialogFragment() {
 
         private val ARG_MESSAGE = "message"
     }
-
-    @BindView(R.id.text_message)
-    lateinit var mMessageText: TextView
 
     private var mMessage: CharSequence? = null
 
@@ -37,7 +33,7 @@ class MessageDialogFragment : BaseDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mMessageText.text = mMessage
+        text_message.text = mMessage
     }
 
     class Builder : BaseDialogFragment.Builder<MessageDialogFragment>() {
