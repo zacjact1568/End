@@ -27,7 +27,7 @@ class PreferenceHelper {
         get() = mSharedPreferences.getString(Constant.PREF_KEY_TYPE_LIST_ITEM_END_DISPLAY, Constant.PREF_VALUE_TLIED_STUPC)!!
         set(value) = mSharedPreferences.edit().putString(Constant.PREF_KEY_TYPE_LIST_ITEM_END_DISPLAY, value).apply()
 
-    val allValues
+    val allValues: Map<String, *>
         get() = mSharedPreferences.all
 
     fun resetAllValues() {

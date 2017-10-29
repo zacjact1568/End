@@ -5,13 +5,13 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'realm-android'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.2"
 
     defaultConfig {
         applicationId "me.imzack.app.end"
         minSdkVersion 21
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode Math.ceil((new Date().time - 1448726400000) / 86400000) as int
         versionName new Date().format('yyyyMMdd')
     }

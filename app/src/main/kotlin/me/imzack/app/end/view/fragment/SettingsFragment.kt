@@ -18,17 +18,19 @@ import me.imzack.app.end.view.dialog.MessageDialogFragment
 
 class SettingsFragment : PreferenceFragment(), SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private lateinit var mNightModePreference: SwitchPreference
-    private lateinit var mDrawerHeaderDisplayPreference: ListPreference
-    private lateinit var mTypeListItemEndDisplayPreference: ListPreference
+    private val mNightModePreference by lazy {
+        findPreference(Constant.PREF_KEY_NIGHT_MODE) as SwitchPreference
+    }
+    private val mDrawerHeaderDisplayPreference by lazy {
+        findPreference(Constant.PREF_KEY_DRAWER_HEADER_DISPLAY) as ListPreference
+    }
+    private val mTypeListItemEndDisplayPreference by lazy {
+        findPreference(Constant.PREF_KEY_TYPE_LIST_ITEM_END_DISPLAY) as ListPreference
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addPreferencesFromResource(R.xml.preferences)
-
-        mNightModePreference = findPreference(Constant.PREF_KEY_NIGHT_MODE) as SwitchPreference
-        mDrawerHeaderDisplayPreference = findPreference(Constant.PREF_KEY_DRAWER_HEADER_DISPLAY) as ListPreference
-        mTypeListItemEndDisplayPreference = findPreference(Constant.PREF_KEY_TYPE_LIST_ITEM_END_DISPLAY) as ListPreference
 
         mNightModePreference.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, _ ->
             MessageDialogFragment.Builder()

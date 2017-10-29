@@ -18,7 +18,7 @@ class DatabaseHelper {
 
     private val DB_VERSION = 1
 
-    private val mDatabase: SQLiteDatabase = DatabaseOpenHelper(App.context, DB_NAME, null, DB_VERSION).writableDatabase
+    private val mDatabase = DatabaseOpenHelper(App.context, DB_NAME, null, DB_VERSION).writableDatabase
 
     //*****************Data********************
 

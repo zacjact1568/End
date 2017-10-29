@@ -83,10 +83,6 @@ class SimpleGuidePageFragment : BaseFragment() {
         btn_action.setOnClickListener(mBtnClkLsnr)
     }
 
-    override fun onDetach() {
-        super.onDetach()
-    }
-
     class Builder {
 
         private var mImageResId = 0

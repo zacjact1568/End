@@ -5,41 +5,52 @@ import me.imzack.app.end.model.DataManager
 
 object LogUtil {
 
-    private val DEF_TAG = "Default Tag"
+    private val DEF_TAG = "____"
 
-    val VERBOSE = 1
-    val DEBUG = 2
-    val INFO = 3
-    val WARN = 4
-    val ERROR = 5
-    val NOTHING = 6
+    private val VERBOSE = 0
+    private val DEBUG = 1
+    private val INFO = 2
+    private val WARN = 3
+    private val ERROR = 4
+    private val NOTHING = 5
 
-    //level的值是多少，就打印对应常量级别以上的日志（级别就是常量值）
-    //e.g.为WARN就打印WARN级别以上的日志（WARN、ERROR）
-    var level = VERBOSE
+    //level的值是多少，就打印对应常量级别以上的日志
+    private var level = VERBOSE
 
     fun v(tag: String, msg: String) {
-        if (level <= VERBOSE) Log.v(tag, msg)
+        if (level <= VERBOSE) {
+            Log.v(tag, msg)
+        }
     }
 
     fun d(tag: String, msg: String) {
-        if (level <= DEBUG) Log.d(tag, msg)
+        if (level <= DEBUG) {
+            Log.d(tag, msg)
+        }
     }
 
     fun d(tag: String, msg: Int) {
-        if (level <= DEBUG) Log.d(tag, msg.toString() + "")
+        if (level <= DEBUG) {
+            Log.d(tag, msg.toString())
+        }
     }
 
     fun i(tag: String, msg: String) {
-        if (level <= INFO) Log.i(tag, msg)
+        if (level <= INFO) {
+            Log.i(tag, msg)
+        }
     }
 
     fun w(tag: String, msg: String) {
-        if (level <= WARN) Log.w(tag, msg)
+        if (level <= WARN) {
+            Log.w(tag, msg)
+        }
     }
 
     fun e(tag: String, msg: String) {
-        if (level <= ERROR) Log.e(tag, msg)
+        if (level <= ERROR) {
+            Log.e(tag, msg)
+        }
     }
 
     fun d(msg: String) {
@@ -54,14 +65,7 @@ object LogUtil {
         d("****HERE****")
     }
 
-    fun logAllSharedPreferences(tag: String) {
-        val values = DataManager.preferenceHelper.allValues
-        if (values.isEmpty()) {
-            d("No shared preferences")
-        } else {
-            for ((key, value) in values) {
-                d(tag, key + ": " + value)
-            }
-        }
+    fun logAllSharedPreferences() {
+        d(DataManager.preferenceHelper.allValues.toString())
     }
 }
