@@ -1,6 +1,8 @@
 package me.imzack.app.end.model.preference
 
+import android.annotation.TargetApi
 import android.content.SharedPreferences
+import android.os.Build
 import android.preference.PreferenceManager
 
 import me.imzack.app.end.App
@@ -26,6 +28,12 @@ class PreferenceHelper {
     var typeListItemEndDisplayValue
         get() = mSharedPreferences.getString(Constant.PREF_KEY_TYPE_LIST_ITEM_END_DISPLAY, Constant.PREF_VALUE_TLIED_STUPC)!!
         set(value) = mSharedPreferences.edit().putString(Constant.PREF_KEY_TYPE_LIST_ITEM_END_DISPLAY, value).apply()
+
+    var needNotificationChannelsInitializationValue
+        @TargetApi(Build.VERSION_CODES.O)
+        get() = mSharedPreferences.getBoolean(Constant.PREF_KEY_NEED_NOTIFICATION_CHANNELS_INITIALIZATION, true)
+        @TargetApi(Build.VERSION_CODES.O)
+        set(value) = mSharedPreferences.edit().putBoolean(Constant.PREF_KEY_NEED_NOTIFICATION_CHANNELS_INITIALIZATION, value).apply()
 
     val allValues: Map<String, *>
         get() = mSharedPreferences.all

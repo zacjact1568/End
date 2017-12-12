@@ -78,6 +78,7 @@ object Constant {
     val PREF_KEY_NIGHT_MODE = "night_mode"
     val PREF_KEY_DRAWER_HEADER_DISPLAY = "drawer_header_display"
     val PREF_KEY_TYPE_LIST_ITEM_END_DISPLAY = "type_list_item_end_display"
+    val PREF_KEY_NEED_NOTIFICATION_CHANNELS_INITIALIZATION = "need_notification_channels_initialization"
 
     val PREF_VALUE_DHD_UPC = "uc_plan_count"
     val PREF_VALUE_DHD_PC = "plan_count"
@@ -108,4 +109,6 @@ object Constant {
     val TYPE_PAYLOAD_MARK_COLOR = 1
     val TYPE_PAYLOAD_MARK_PATTERN = 2
     val TYPE_PAYLOAD_PLAN_COUNT = 3
+
+    val NOTIFICATION_CHANNEL_ID_REMINDER = "reminder"
 }

@@ -76,6 +76,7 @@ class ReminderReceiver : BaseReceiver() {
         typeMarkIcon.setInnerIcon(if (type.hasMarkPattern) ResourceUtil.getDrawable(type.markPattern!!) else null)
 
         SystemUtil.showNotification(
+                Constant.NOTIFICATION_CHANNEL_ID_REMINDER,
                 plan.code,
                 ResourceUtil.getString(R.string.title_notification_reminder),
                 plan.content,

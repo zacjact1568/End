@@ -15,6 +15,7 @@ import me.imzack.app.end.presenter.AllTypesPresenter
 import me.imzack.app.end.view.activity.TypeDetailActivity
 import me.imzack.app.end.view.adapter.TypeListAdapter
 import me.imzack.app.end.view.contract.AllTypesViewContract
+import me.imzack.app.end.view.widget.CircleColorView
 import javax.inject.Inject
 
 class AllTypesFragment : BaseListFragment(), AllTypesViewContract {
@@ -63,7 +64,7 @@ class AllTypesFragment : BaseListFragment(), AllTypesViewContract {
     }
 
     override fun onTypeItemClicked(position: Int, typeItem: View) {
-        val typeMarkIcon = typeItem.findViewById(R.id.ic_type_mark)
+        val typeMarkIcon = typeItem.findViewById<View>(R.id.ic_type_mark)
         TypeDetailActivity.start(
                 activity,
                 position,

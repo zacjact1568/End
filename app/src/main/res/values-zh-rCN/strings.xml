@@ -217,4 +217,6 @@
     <string name="hint_type_name_editor_edit">此类型的新名称</string>
     <string name="text_yesterday">昨天</string>
     <string name="text_today">今天</string>
+    <string name="notification_channel_name_reminder">提醒</string>
+    <string name="notification_channel_description_reminder">提醒的通知设置</string>
 </resources>

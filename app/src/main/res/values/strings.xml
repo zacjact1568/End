@@ -74,6 +74,9 @@
     <string name="text_time">Time</string>
     <string name="text_date">Date</string>
 
+    <string name="notification_channel_name_reminder">Reminder</string>
+    <string name="notification_channel_description_reminder">Notification settings for reminders</string>
+
     <!--HomeActivity-->
 
     <string name="navigation_drawer_open">Open navigation drawer</string>

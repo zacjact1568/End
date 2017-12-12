@@ -1,5 +1,6 @@
 package me.imzack.app.end.util
 
+import android.annotation.TargetApi
 import android.app.*
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -11,6 +12,7 @@ import android.graphics.Point
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
+import android.os.VibrationEffect
 import android.os.Vibrator
 import android.support.annotation.DrawableRes
 import android.support.annotation.StringRes
@@ -21,6 +23,7 @@ import android.widget.EditText
 import android.widget.Toast
 import me.imzack.app.end.App
 import me.imzack.app.end.R
+import me.imzack.app.end.common.Constant
 import me.imzack.app.end.receiver.ReminderReceiver
 import java.util.*
 
@@ -28,11 +31,14 @@ object SystemUtil {
 
     fun makeShortVibrate() {
         val vibrator = App.context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        val pattern = longArrayOf(0, 100)
-        vibrator.vibrate(pattern, -1)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            vibrator.vibrate(longArrayOf(0, 100), -1)
+        } else {
+            vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))
+        }
     }
 
-    /** 为给定的editor显示软键盘  */
+    /** 为给定的editor显示软键盘 */
     fun showSoftInput(editor: EditText) {
         if (!editor.hasFocus()) {
             editor.requestFocus()
@@ -44,7 +50,7 @@ object SystemUtil {
         Handler().postDelayed({ showSoftInput(editor) }, delayTime)
     }
 
-    /** 为给定的editor隐藏软键盘  */
+    /** 为给定的editor隐藏软键盘 */
     fun hideSoftInput(editor: EditText) {
         val manager = App.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if (manager.isActive(editor)) {
@@ -55,8 +61,7 @@ object SystemUtil {
     /**
      * 设定reminder
      * @param planCode 用来区分各个reminder
-     * *
-     * @param timeInMillis Reminder触发的时间，若为Constant.TIME_UNDEFINED则取消定时器
+     * @param timeInMillis Reminder触发的时间，若为0则取消定时器
      */
     fun setReminder(planCode: String, timeInMillis: Long) {
         val context = App.context
@@ -69,18 +74,40 @@ object SystemUtil {
         }
     }
 
-    fun showNotification(tag: String, title: String, content: String, largeIcon: Bitmap, intent: PendingIntent, vararg actions: NotificationCompat.Action) {
+    @TargetApi(Build.VERSION_CODES.O)
+    fun addNotificationChannel(id: String, name: String, importance: Int, description: String) {
+        val channel = NotificationChannel(id, name, importance)
+        channel.description = description
+        // LED灯和振动默认false，图标小圆点默认true
+        // TODO 测试声音
+        channel.enableLights(true)
+        channel.enableVibration(true)
+        (App.context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(channel)
+    }
+
+    fun showNotification(channel: String, tag: String, title: String, content: String, largeIcon: Bitmap, intent: PendingIntent, vararg actions: Notification.Action) {
         val context = App.context
-        val builder = NotificationCompat.Builder(context)
+        val builder = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            // API < 26，没有channel，单独指定声音振动等设置
+            Notification.Builder(context)
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setPriority(when (channel) {
+                        // 每添加一个channel，需要在这里添加 API < 26 的情况，和channel的importance对应
+                        Constant.NOTIFICATION_CHANNEL_ID_REMINDER -> Notification.PRIORITY_MAX
+                        else -> Notification.PRIORITY_DEFAULT
+                    })
+        } else {
+            // API < 26，声音振动等设置在channel中指定
+            Notification.Builder(context, channel)
+        }
                 .setSmallIcon(R.drawable.img_logo)
                 .setLargeIcon(largeIcon)
                 .setContentTitle(title)
                 .setContentText(content)
                 .setContentIntent(intent)
                 .setColor(ResourceUtil.getColor(R.color.colorPrimary))
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setPriority(Notification.PRIORITY_MAX)
                 .setShowWhen(true)
+        // 没法直接用setActions，可能是Java和Kotlin的变长参数不兼容
         for (action in actions) {
             builder.addAction(action)
         }
@@ -92,7 +119,7 @@ object SystemUtil {
     }
 
     fun getNotificationAction(@DrawableRes iconResId: Int, @StringRes titleResId: Int, intent: PendingIntent) =
-            NotificationCompat.Action.Builder(iconResId, ResourceUtil.getString(titleResId), intent).build()!!
+            Notification.Action.Builder(iconResId, ResourceUtil.getString(titleResId), intent).build()!!
 
     fun putTextToClipboard(label: String, text: String) {
         (App.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager).primaryClip = ClipData.newPlainText(label, text)

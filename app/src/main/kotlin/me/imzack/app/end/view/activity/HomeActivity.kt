@@ -38,8 +38,8 @@ class HomeActivity : BaseActivity(), HomeViewContract {
     lateinit var mHomePresenter: HomePresenter
 
     // 不使用synthetic，因为不会从cache中获取子view
-    private lateinit var mPlanCountText: TextView
-    private lateinit var mPlanCountDscptText: TextView
+    private val mPlanCountText by lazy { navigator.getHeaderView(0).findViewById<TextView>(R.id.text_plan_count) }
+    private val mPlanCountDscptText by lazy { navigator.getHeaderView(0).findViewById<TextView>(R.id.text_plan_count_dscpt) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,10 +104,6 @@ class HomeActivity : BaseActivity(), HomeViewContract {
     override fun showInitialView(planCount: String, textSize: Int, planCountDscpt: String) {
         setContentView(R.layout.activity_home)
         ButterKnife.bind(this)
-
-        val navHeader = navigator.getHeaderView(0)
-        mPlanCountText = navHeader.findViewById(R.id.text_plan_count) as TextView
-        mPlanCountDscptText = navHeader.findViewById(R.id.text_plan_count_dscpt) as TextView
 
         setSupportActionBar(toolbar)
 

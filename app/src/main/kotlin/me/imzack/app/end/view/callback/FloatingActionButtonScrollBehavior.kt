@@ -12,14 +12,14 @@ import android.view.ViewGroup
 @Suppress("unused")
 class FloatingActionButtonScrollBehavior(context: Context, attrs: AttributeSet) : FloatingActionButton.Behavior(context, attrs) {
 
-    override fun onStartNestedScroll(coordinatorLayout: CoordinatorLayout?, child: FloatingActionButton?,
-                                     directTargetChild: View?, target: View?, nestedScrollAxes: Int) =
-            nestedScrollAxes == ViewCompat.SCROLL_AXIS_VERTICAL
+    override fun onStartNestedScroll(coordinatorLayout: CoordinatorLayout, child: FloatingActionButton,
+                                     directTargetChild: View, target: View, axes: Int, type: Int) =
+            axes == ViewCompat.SCROLL_AXIS_VERTICAL
 
-    override fun onNestedScroll(coordinatorLayout: CoordinatorLayout?, child: FloatingActionButton?, target: View?,
-                                dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int, dyUnconsumed: Int) {
+    override fun onNestedScroll(coordinatorLayout: CoordinatorLayout, child: FloatingActionButton, target: View,
+                                dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int, dyUnconsumed: Int, type: Int) {
         //consumed表示target此时可以跟随用户手势滑动，unconsumed表示target已经滑动到边界但是用户还在尝试滑动
-        val translationY = child!!.height + (child.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin
+        val translationY = child.height + (child.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin
         if (dyConsumed > 0 && child.translationY == 0f) {
             //向下滑动的手势，并且fab已移动到顶，隐藏fab
             moveFab(child, 0f, translationY.toFloat())

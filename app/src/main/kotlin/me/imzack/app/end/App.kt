@@ -1,6 +1,9 @@
 package me.imzack.app.end
 
+import android.annotation.TargetApi
 import android.app.Application
+import android.app.NotificationManager
+import android.os.Build
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatDelegate
 import me.imzack.app.end.common.Constant
@@ -8,6 +11,7 @@ import me.imzack.app.end.injector.component.AppComponent
 import me.imzack.app.end.injector.component.DaggerAppComponent
 import me.imzack.app.end.injector.module.AppModule
 import me.imzack.app.end.model.DataManager
+import me.imzack.app.end.util.SystemUtil
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.EventBusIndex
 import java.io.FileOutputStream
@@ -39,6 +43,8 @@ class App : Application() {
 
         initPreferences()
 
+        initNotificationChannels()
+
         initDatabase()
 
         initData()
@@ -54,7 +60,7 @@ class App : Application() {
         EventBus.builder().addIndex(EventBusIndex()).installDefaultEventBus()
     }
 
-    /** 通过Preference中的数据初始化某些设置  */
+    /** 通过Preference中的数据初始化某些设置 */
     private fun initPreferences() {
         //设定preferences默认值（仅执行一次）
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
@@ -62,7 +68,16 @@ class App : Application() {
         AppCompatDelegate.setDefaultNightMode(if (DataManager.preferenceHelper.nightModeValue) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
     }
 
-    /** 初始化类型标记数据库  */
+    /** 初始化 notification channels，仅当API为26或更高时有效 */
+    @TargetApi(Build.VERSION_CODES.O)
+    private fun initNotificationChannels() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || !DataManager.preferenceHelper.needNotificationChannelsInitializationValue) return
+        SystemUtil.addNotificationChannel(Constant.NOTIFICATION_CHANNEL_ID_REMINDER, getString(R.string.notification_channel_name_reminder), NotificationManager.IMPORTANCE_HIGH, getString(R.string.notification_channel_description_reminder))
+        // 其他channels在这里添加
+        DataManager.preferenceHelper.needNotificationChannelsInitializationValue = false
+    }
+
+    /** 初始化类型标记数据库 */
     private fun initDatabase() {
         val typeMarkDBFile = getDatabasePath(Constant.DB_TYPE_MARK)
         if (typeMarkDBFile.exists()) return
