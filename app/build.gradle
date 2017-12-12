@@ -13,6 +13,7 @@ android {
         targetSdkVersion 26
         versionCode Math.ceil((new Date().time - 1448726400000) / 86400000) as int
         versionName new Date().format('yyyyMMdd')
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -38,25 +39,27 @@ kapt {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "com.android.support:appcompat-v7:$android_support_version"
+    implementation "com.android.support:design:$android_support_version"
+    implementation "com.android.support:support-v4:$android_support_version"
+    implementation "com.jakewharton:butterknife:$butterknife_version"
+    implementation 'org.greenrobot:eventbus:3.0.0'
+    implementation "com.google.dagger:dagger:$dagger_version"
+    implementation "com.google.dagger:dagger-android:$dagger_version"
+    implementation "com.google.dagger:dagger-android-support:$dagger_version"
+    implementation 'io.reactivex.rxjava2:rxjava:2.0.3'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    implementation 'com.pacioianu.david:ink-page-indicator:1.2.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'com.github.zacjact1568:CircleColorView:0.1'
+    implementation 'com.github.zacjact1568:BaseGuideActivity:0.2'
+    implementation 'com.github.zacjact1568:BaseDialogFragment:0.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     kapt "com.jakewharton:butterknife-compiler:$butterknife_version"
     kapt 'org.greenrobot:eventbus-annotation-processor:3.0.1'
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
-    compile "com.android.support:appcompat-v7:$android_support_version"
-    compile "com.android.support:design:$android_support_version"
-    compile "com.android.support:support-v4:$android_support_version"
-    compile "com.jakewharton:butterknife:$butterknife_version"
-    compile 'org.greenrobot:eventbus:3.0.0'
-    compile "com.google.dagger:dagger:$dagger_version"
-    compile "com.google.dagger:dagger-android:$dagger_version"
-    compile "com.google.dagger:dagger-android-support:$dagger_version"
-    compile 'io.reactivex.rxjava2:rxjava:2.0.3'
-    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
-    compile 'com.pacioianu.david:ink-page-indicator:1.2.0'
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'com.github.zacjact1568:CircleColorView:0.1'
-    compile 'com.github.zacjact1568:BaseGuideActivity:0.2'
-    compile 'com.github.zacjact1568:BaseDialogFragment:0.2'
 }
