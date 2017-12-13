@@ -15,7 +15,7 @@ import me.imzack.app.end.util.ResourceUtil
 import me.imzack.app.end.util.StringUtil
 import me.imzack.app.end.util.SystemUtil
 import me.imzack.app.end.util.ViewUtil
-import me.imzack.app.end.view.widget.CircleColorView
+import me.imzack.lib.circlecolorview.CircleColorView
 
 class ReminderReceiver : BaseReceiver() {
 

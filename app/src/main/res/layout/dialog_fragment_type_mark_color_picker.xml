@@ -29,7 +29,7 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <me.imzack.app.end.view.widget.CircleColorView
+        <me.imzack.lib.circlecolorview.CircleColorView
             android:id="@+id/ic_type_mark_color"
             android:layout_width="40dp"
             android:layout_height="40dp"/>

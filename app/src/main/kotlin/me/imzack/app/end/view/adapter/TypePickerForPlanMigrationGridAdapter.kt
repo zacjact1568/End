@@ -12,7 +12,7 @@ import me.imzack.app.end.R
 import me.imzack.app.end.model.DataManager
 import me.imzack.app.end.util.ResourceUtil
 import me.imzack.app.end.util.StringUtil
-import me.imzack.app.end.view.widget.CircleColorView
+import me.imzack.lib.circlecolorview.CircleColorView
 
 class TypePickerForPlanMigrationGridAdapter(excludedTypeCode: String) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

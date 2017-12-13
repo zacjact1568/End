@@ -3,21 +3,20 @@ package me.imzack.app.end.view.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.view.ViewPager
 import android.view.View
-import butterknife.ButterKnife
-import butterknife.OnClick
-import kotlinx.android.synthetic.main.activity_guide.*
+import android.widget.Toast
 import me.imzack.app.end.App
 import me.imzack.app.end.R
 import me.imzack.app.end.injector.component.DaggerGuideComponent
 import me.imzack.app.end.injector.module.GuidePresenterModule
 import me.imzack.app.end.presenter.GuidePresenter
-import me.imzack.app.end.view.adapter.GuidePagerAdapter
+import me.imzack.app.end.util.ResourceUtil
 import me.imzack.app.end.view.contract.GuideViewContract
+import me.imzack.lib.baseguideactivity.BaseGuideActivity
+import me.imzack.lib.baseguideactivity.SimpleGuidePageFragment
 import javax.inject.Inject
 
-class GuideActivity : BaseActivity(), GuideViewContract {
+class GuideActivity : BaseGuideActivity(), GuideViewContract {
 
     companion object {
 
@@ -31,19 +30,48 @@ class GuideActivity : BaseActivity(), GuideViewContract {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mGuidePresenter.attach()
-    }
 
-    override fun onInjectPresenter() {
+        mGuidePresenter.attach()
+
         DaggerGuideComponent.builder()
-                .guidePresenterModule(GuidePresenterModule(this, supportFragmentManager))
+                .guidePresenterModule(GuidePresenterModule(this))
                 .appComponent(App.appComponent)
                 .build()
                 .inject(this)
     }
 
-    override fun onBackPressed() {
-        mGuidePresenter.notifyBackPressed()
+    override fun provideFragmentList() = listOf(
+            //欢迎页
+            SimpleGuidePageFragment.newInstance(
+                    R.drawable.img_logo_with_bg,
+                    getString(R.string.title_guide_page_welcome),
+                    getString(R.string.text_slogan),
+                    getString(R.string.button_start),
+                    ResourceUtil.getColor(R.color.colorAccent),
+                    object : SimpleGuidePageFragment.OnButtonClickListener {
+                        override fun onClick(v: View) {
+                            onLastPageTurned()
+                        }
+                    }
+            ),
+            //引导结束页
+            SimpleGuidePageFragment.newInstance(
+                    R.drawable.ic_check_black_24dp,
+                    getString(R.string.title_guide_page_ready),
+                    getString(R.string.dscpt_guide_page_ready)
+            )
+    )
+
+    override fun onBackPressedOnce() {
+        showToast(R.string.toast_double_press_exit)
+    }
+
+    override fun onBackPressedTwice() {
+        mGuidePresenter.notifyEndingGuide(false)
+    }
+
+    override fun onLastPageTurned() {
+        mGuidePresenter.notifyEndingGuide(true)
     }
 
     override fun onDestroy() {
@@ -51,49 +79,22 @@ class GuideActivity : BaseActivity(), GuideViewContract {
         mGuidePresenter.detach()
     }
 
-    override fun showInitialView(guidePagerAdapter: GuidePagerAdapter) {
-        setContentView(R.layout.activity_guide)
-        ButterKnife.bind(this)
-
-        pager_guide.adapter = guidePagerAdapter
-        pager_guide.scrollingEnabled = false
-        pager_guide.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-
-            }
-
-            override fun onPageSelected(position: Int) {
-                mGuidePresenter.notifyPageSelected(position)
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-
-            }
-        })
-
-        onPageSelected(true, guidePagerAdapter.count == 1)
-    }
-
-    override fun onPageSelected(isFirstPage: Boolean, isLastPage: Boolean) {
-        btn_start.visibility = if (isFirstPage) View.GONE else View.VISIBLE
-        btn_end.visibility = if (isFirstPage && isLastPage) View.GONE else View.VISIBLE
-        btn_end.setInnerIcon(getDrawable(if (isLastPage) R.drawable.ic_check_black_24dp else R.drawable.ic_arrow_forward_black_24dp))
-    }
-
-    override fun navigateToPage(page: Int) {
-        pager_guide.currentItem = page
+    override fun showInitialView() {
+        setBackgroundColor(ResourceUtil.getColor(R.color.colorPrimary))
+        setStartButtonColor(ResourceUtil.getColor(R.color.colorAccent))
+        setEndButtonColor(ResourceUtil.getColor(R.color.colorAccent))
     }
 
     override fun exitWithResult(isNormally: Boolean) {
         setResult(if (isNormally) RESULT_OK else RESULT_CANCELED)
-        super.exit()
+        exit()
     }
 
-    @OnClick(R.id.btn_start, R.id.btn_end)
-    fun onClick(view: View) {
-        when (view.id) {
-            R.id.btn_start -> mGuidePresenter.notifyNavigationButtonClicked(true, pager_guide.currentItem)
-            R.id.btn_end -> mGuidePresenter.notifyNavigationButtonClicked(false, pager_guide.currentItem)
-        }
+    override fun showToast(msgResId: Int) {
+        Toast.makeText(this, msgResId, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun exit() {
+        finish()
     }
 }

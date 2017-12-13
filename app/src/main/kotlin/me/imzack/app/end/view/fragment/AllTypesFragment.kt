@@ -15,7 +15,6 @@ import me.imzack.app.end.presenter.AllTypesPresenter
 import me.imzack.app.end.view.activity.TypeDetailActivity
 import me.imzack.app.end.view.adapter.TypeListAdapter
 import me.imzack.app.end.view.contract.AllTypesViewContract
-import me.imzack.app.end.view.widget.CircleColorView
 import javax.inject.Inject
 
 class AllTypesFragment : BaseListFragment(), AllTypesViewContract {

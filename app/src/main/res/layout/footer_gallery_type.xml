@@ -12,7 +12,7 @@
     android:paddingStart="8dp"
     android:paddingEnd="8dp">
 
-    <me.imzack.app.end.view.widget.CircleColorView
+    <me.imzack.lib.circlecolorview.CircleColorView
         android:layout_width="40dp"
         android:layout_height="40dp"
         app:fillColor="@color/colorWhiteBackground"

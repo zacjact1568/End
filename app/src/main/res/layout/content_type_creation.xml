@@ -16,7 +16,7 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <me.imzack.app.end.view.widget.CircleColorView
+        <me.imzack.lib.circlecolorview.CircleColorView
             android:id="@+id/ic_type_mark"
             android:layout_width="56dp"
             android:layout_height="56dp"/>
@@ -40,6 +40,7 @@
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
+        android:focusable="true"
         app:iconImageSrc="@drawable/ic_folder_black_24dp"
         app:titleText="@string/title_name"/>
 
@@ -51,6 +52,7 @@
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
+        android:focusable="true"
         app:iconImageSrc="@drawable/ic_palette_black_24dp"
         app:titleText="@string/title_color"/>
 
@@ -62,6 +64,7 @@
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
+        android:focusable="true"
         app:iconImageSrc="@drawable/ic_image_black_24dp"
         app:titleText="@string/title_pattern"
         app:descriptionText="@string/dscpt_touch_to_set"/>

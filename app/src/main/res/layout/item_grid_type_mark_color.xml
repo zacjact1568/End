@@ -6,7 +6,7 @@
     android:background="?android:attr/selectableItemBackgroundBorderless"
     android:padding="12dp">
 
-    <me.imzack.app.end.view.widget.CircleColorView
+    <me.imzack.lib.circlecolorview.CircleColorView
         android:id="@+id/ic_color"
         android:layout_width="40dp"
         android:layout_height="40dp"

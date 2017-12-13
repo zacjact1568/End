@@ -67,33 +67,36 @@
             android:paddingEnd="16dp"
             android:columnCount="3">
 
-            <me.imzack.app.end.view.widget.CircleColorView
+            <me.imzack.lib.circlecolorview.CircleColorView
                 android:id="@+id/btn_delay"
                 android:layout_width="0dp"
                 android:layout_height="52dp"
                 android:layout_columnWeight="1"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
+                android:focusable="true"
                 app:fillColor="@color/colorAccent"
                 app:innerIcon="@drawable/ic_snooze_black_24dp"/>
 
-            <me.imzack.app.end.view.widget.CircleColorView
+            <me.imzack.lib.circlecolorview.CircleColorView
                 android:id="@+id/btn_detail"
                 android:layout_width="0dp"
                 android:layout_height="52dp"
                 android:layout_columnWeight="1"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
+                android:focusable="true"
                 app:fillColor="@color/colorAccent"
                 app:innerIcon="@drawable/ic_info_outline_black_24dp"/>
 
-            <me.imzack.app.end.view.widget.CircleColorView
+            <me.imzack.lib.circlecolorview.CircleColorView
                 android:id="@+id/btn_complete"
                 android:layout_width="0dp"
                 android:layout_height="52dp"
                 android:layout_columnWeight="1"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
+                android:focusable="true"
                 app:fillColor="@color/colorAccent"
                 app:innerIcon="@drawable/ic_check_black_24dp"/>
 
@@ -131,43 +134,47 @@
             android:paddingEnd="16dp"
             android:columnCount="4">
 
-            <me.imzack.app.end.view.widget.CircleColorView
+            <me.imzack.lib.circlecolorview.CircleColorView
                 android:id="@+id/btn_back"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_columnWeight="1"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
+                android:focusable="true"
                 app:fillColor="@color/colorAccent"
                 app:innerIcon="@drawable/ic_arrow_back_black_24dp"/>
 
-            <me.imzack.app.end.view.widget.CircleColorView
+            <me.imzack.lib.circlecolorview.CircleColorView
                 android:id="@+id/btn_1_hour"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_columnWeight="1"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
+                android:focusable="true"
                 app:fillColor="@color/colorAccent"
                 app:innerIcon="@drawable/ic_directions_run_black_24dp"/>
 
-            <me.imzack.app.end.view.widget.CircleColorView
+            <me.imzack.lib.circlecolorview.CircleColorView
                 android:id="@+id/btn_tomorrow"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_columnWeight="1"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
+                android:focusable="true"
                 app:fillColor="@color/colorAccent"
                 app:innerIcon="@drawable/ic_directions_walk_black_24dp"/>
 
-            <me.imzack.app.end.view.widget.CircleColorView
+            <me.imzack.lib.circlecolorview.CircleColorView
                 android:id="@+id/btn_more"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_columnWeight="1"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
+                android:focusable="true"
                 app:fillColor="@color/colorAccent"
                 app:innerIcon="@drawable/ic_more_horiz_black_24dp"/>
 
