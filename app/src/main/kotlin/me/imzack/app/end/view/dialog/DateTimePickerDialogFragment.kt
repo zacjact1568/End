@@ -7,12 +7,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import butterknife.OnClick
+import android.widget.DatePicker
 import kotlinx.android.synthetic.main.dialog_fragment_date_time_picker.*
 import me.imzack.app.end.R
 import me.imzack.app.end.util.ResourceUtil
 import me.imzack.app.end.util.TimeUtil
-import java.io.Serializable
+import me.imzack.lib.basedialogfragment.BaseDialogFragment
 import java.util.*
 
 class DateTimePickerDialogFragment : BaseDialogFragment() {
@@ -20,47 +20,44 @@ class DateTimePickerDialogFragment : BaseDialogFragment() {
     companion object {
 
         private val ARG_DEFAULT_TIME = "default_time"
-        private val ARG_DATE_TIME_PICKED_LSNR = "date_time_picked_lsnr"
 
-        fun newInstance(defaultTime: Long, listener: OnDateTimePickedListener): DateTimePickerDialogFragment {
+        fun newInstance(defaultTime: Long, dateTimePickedListener: (timeInMillis: Long) -> Boolean): DateTimePickerDialogFragment {
             val fragment = DateTimePickerDialogFragment()
             val args = Bundle()
-            args.putString(ARG_NEU_BTN_STR, ResourceUtil.getString(R.string.button_remove))
-            args.putString(ARG_NEG_BTN_STR, ResourceUtil.getString(R.string.button_cancel))
-            args.putString(ARG_POS_BTN_STR, ResourceUtil.getString(R.string.button_select))
+            putBaseArguments(
+                    args,
+                    null,
+                    ResourceUtil.getString(R.string.button_remove),
+                    object : OnButtonClickListener {
+                        override fun onClick() = dateTimePickedListener(0L)
+                    },
+                    ResourceUtil.getString(android.R.string.cancel),
+                    object : OnButtonClickListener {
+                        override fun onClick() = true
+                    },
+                    ResourceUtil.getString(R.string.button_select),
+                    object : OnButtonClickListener {
+                        override fun onClick() = dateTimePickedListener(fragment.calendar.timeInMillis)
+                    },
+                    false
+            )
             args.putLong(ARG_DEFAULT_TIME, defaultTime)
-            args.putSerializable(ARG_DATE_TIME_PICKED_LSNR, listener)
             fragment.arguments = args
             return fragment
         }
     }
 
-    var mOnDateTimePickedListener: OnDateTimePickedListener? = null
+    // 不提供编程来改变时间，因为无此需求，即只有通过用户改变时间
 
-    private val mCalendar = Calendar.getInstance()
-    private val mDarkPrimaryColor = ResourceUtil.getColor(R.color.colorPrimaryDark)
+    private val darkPrimaryColor = ResourceUtil.getColor(R.color.colorPrimaryDark)
+
+    private val calendar = Calendar.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val args = arguments
-        if (args != null) {
-            mCalendar.timeInMillis = args.getLong(ARG_DEFAULT_TIME)
-            mOnDateTimePickedListener = args.getSerializable(ARG_DATE_TIME_PICKED_LSNR) as OnDateTimePickedListener
-        }
-
-        mNeutralButtonClickListener = object : BaseDialogFragment.OnButtonClickListener {
-            override fun onClick(): Boolean {
-                mOnDateTimePickedListener?.onDateTimePicked(0L)
-                return true
-            }
-        }
-        mPositiveButtonClickListener = object : BaseDialogFragment.OnButtonClickListener {
-            override fun onClick(): Boolean {
-                mOnDateTimePickedListener?.onDateTimePicked(mCalendar!!.timeInMillis)
-                return true
-            }
-        }
+        // defaultTime 被初始化，calendar 被更新为正确的初始时间
+        calendar.timeInMillis = arguments.getLong(ARG_DEFAULT_TIME)
     }
 
     override fun onCreateContentView(inflater: LayoutInflater, root: ViewGroup) =
@@ -69,41 +66,44 @@ class DateTimePickerDialogFragment : BaseDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Switcher
+        updateSwitcherLayout()
+        layout_switcher_date.setOnClickListener { onClickSwitcher() }
+        layout_switcher_time.setOnClickListener { onClickSwitcher() }
+
+        // DateText
+        updateDateText()
+
+        // TimeText
+        updateTimeText()
+
+        // DatePicker
         picker_date.init(
-                mCalendar.get(Calendar.YEAR),
-                mCalendar.get(Calendar.MONTH),
-                mCalendar.get(Calendar.DAY_OF_MONTH)
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
         ) { _, year, monthOfYear, dayOfMonth ->
-            mCalendar.set(year, monthOfYear, dayOfMonth)
+            calendar.set(year, monthOfYear, dayOfMonth)
             updateDateText()
         }
 
+        // TimePicker
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            picker_time.currentHour = mCalendar.get(Calendar.HOUR_OF_DAY)
-            picker_time.currentMinute = mCalendar.get(Calendar.MINUTE)
+            picker_time.currentHour = calendar.get(Calendar.HOUR_OF_DAY)
+            picker_time.currentMinute = calendar.get(Calendar.MINUTE)
         } else {
-            picker_time.hour = mCalendar.get(Calendar.HOUR_OF_DAY)
-            picker_time.minute = mCalendar.get(Calendar.MINUTE)
+            picker_time.hour = calendar.get(Calendar.HOUR_OF_DAY)
+            picker_time.minute = calendar.get(Calendar.MINUTE)
         }
         picker_time.setIs24HourView(TimeUtil.is24HourFormat)
         picker_time.setOnTimeChangedListener { _, hourOfDay, minute ->
-            mCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
-            mCalendar.set(Calendar.MINUTE, minute)
+            calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+            calendar.set(Calendar.MINUTE, minute)
             updateTimeText()
         }
-
-        updateSwitcherLayout()
-        updateDateText()
-        updateTimeText()
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        mOnDateTimePickedListener = null
-    }
-
-    @OnClick(R.id.layout_switcher_date, R.id.layout_switcher_time)
-    fun onClickSwitcher() {
+    private fun onClickSwitcher() {
         switcher_date_time_picker.showNext()
         updateSwitcherLayout()
     }
@@ -112,21 +112,17 @@ class DateTimePickerDialogFragment : BaseDialogFragment() {
         val isDatePicker = switcher_date_time_picker.currentView.id == R.id.picker_date
         layout_switcher_date.isClickable = !isDatePicker
         layout_switcher_date.alpha = if (isDatePicker) 1f else 0.8f
-        layout_switcher_date.backgroundTintList = ColorStateList.valueOf(if (isDatePicker) Color.TRANSPARENT else mDarkPrimaryColor)
+        layout_switcher_date.backgroundTintList = ColorStateList.valueOf(if (isDatePicker) Color.TRANSPARENT else darkPrimaryColor)
         layout_switcher_time.isClickable = isDatePicker
         layout_switcher_time.alpha = if (isDatePicker) 0.8f else 1f
-        layout_switcher_time.backgroundTintList = ColorStateList.valueOf(if (isDatePicker) mDarkPrimaryColor else Color.TRANSPARENT)
+        layout_switcher_time.backgroundTintList = ColorStateList.valueOf(if (isDatePicker) darkPrimaryColor else Color.TRANSPARENT)
     }
 
     private fun updateDateText() {
-        text_date.text = TimeUtil.formatDate(mCalendar.timeInMillis)
+        text_date.text = TimeUtil.formatDate(calendar.timeInMillis)
     }
 
     private fun updateTimeText() {
-        text_time.text = TimeUtil.formatTime(mCalendar.timeInMillis)
-    }
-
-    interface OnDateTimePickedListener : Serializable {
-        fun onDateTimePicked(timeInMillis: Long)
+        text_time.text = TimeUtil.formatTime(calendar.timeInMillis)
     }
 }

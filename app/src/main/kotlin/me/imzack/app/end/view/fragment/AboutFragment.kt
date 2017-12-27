@@ -14,7 +14,6 @@ import me.imzack.app.end.common.Constant
 import me.imzack.app.end.util.ResourceUtil
 import me.imzack.app.end.util.StringUtil
 import me.imzack.app.end.util.SystemUtil
-import me.imzack.app.end.view.dialog.BaseDialogFragment
 import me.imzack.app.end.view.dialog.MessageDialogFragment
 
 class AboutFragment : BaseFragment() {
@@ -42,18 +41,17 @@ class AboutFragment : BaseFragment() {
                         if (intent.resolveActivity(context.packageManager) != null) {
                             startActivity(intent)
                         } else {
-                            MessageDialogFragment.Builder()
-                                    .setMessage(R.string.msg_dialog_no_email_app_found)
-                                    .setTitle(R.string.title_dialog_no_email_app_found)
-                                    .setNeutralButton(R.string.btn_dialog_copy_to_clipboard, object : BaseDialogFragment.OnButtonClickListener {
-                                        override fun onClick(): Boolean {
-                                            SystemUtil.putTextToClipboard(ResourceUtil.getString(R.string.label_developer_email), Constant.DEVELOPER_EMAIL)
-                                            showToast(R.string.toast_copy_to_clipboard_successfully)
-                                            return true
-                                        }
-                                    })
-                                    .setPositiveButton(R.string.button_ok, null)
-                                    .show(fragmentManager)
+                            MessageDialogFragment.newInstance(
+                                    getString(R.string.msg_dialog_no_email_app_found),
+                                    getString(R.string.title_dialog_no_email_app_found),
+                                    getString(android.R.string.ok),
+                                    null,
+                                    getString(R.string.btn_dialog_copy_to_clipboard),
+                                    {
+                                        SystemUtil.putTextToClipboard(ResourceUtil.getString(R.string.label_developer_email), Constant.DEVELOPER_EMAIL)
+                                        showToast(R.string.toast_copy_to_clipboard_successfully)
+                                    }
+                            ).show(fragmentManager)
                         }
                     }
                 })

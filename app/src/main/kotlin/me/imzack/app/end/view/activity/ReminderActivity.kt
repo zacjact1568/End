@@ -110,10 +110,10 @@ class ReminderActivity : BaseActivity(), ReminderViewContract {
             R.id.btn_more -> {
                 DateTimePickerDialogFragment.newInstance(
                         TimeUtil.getDateTimePickerDefaultTime(0L),
-                        object : DateTimePickerDialogFragment.OnDateTimePickedListener {
-                            override fun onDateTimePicked(timeInMillis: Long) {
-                                mReminderPresenter.notifyUpdatingReminderTime(timeInMillis)
-                            }
+                        // TODO 处理返回值
+                        {
+                            mReminderPresenter.notifyUpdatingReminderTime(it)
+                            true
                         }
                 ).show(supportFragmentManager)
             }

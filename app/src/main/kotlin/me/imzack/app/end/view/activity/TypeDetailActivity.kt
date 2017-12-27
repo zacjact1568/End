@@ -31,7 +31,6 @@ import me.imzack.app.end.util.ResourceUtil
 import me.imzack.app.end.util.StringUtil
 import me.imzack.app.end.view.adapter.SingleTypePlanListAdapter
 import me.imzack.app.end.view.contract.TypeDetailViewContract
-import me.imzack.app.end.view.dialog.BaseDialogFragment
 import me.imzack.app.end.view.dialog.MessageDialogFragment
 import me.imzack.app.end.view.dialog.TypePickerForPlanMigrationDialogFragment
 import javax.inject.Inject
@@ -257,37 +256,23 @@ class TypeDetailActivity : BaseActivity(), TypeDetailViewContract {
     }
 
     override fun onDetectedDeletingLastType() {
-        MessageDialogFragment.Builder()
-                .setMessage(R.string.msg_dialog_last_type)
-                .setTitle(R.string.title_dialog_last_type)
-                .setNegativeButton(R.string.button_cancel, null)
-                .setPositiveButton(R.string.button_ok, null)
-                .show(supportFragmentManager)
+        MessageDialogFragment.newInstance(getString(R.string.msg_dialog_last_type), getString(R.string.title_dialog_last_type)).show(supportFragmentManager)
     }
 
     override fun onDetectedTypeNotEmpty(planCount: Int) {
         val buttons = arrayOf(getString(R.string.button_move), getString(R.string.button_delete), getString(R.string.button_cancel))
-        MessageDialogFragment.Builder()
-                .setMessage(StringUtil.addSpan(
+        MessageDialogFragment.newInstance(
+                StringUtil.addSpan(
                         StringUtil.toUpperCase(ResourceUtil.getQuantityString(R.string.msg_dialog_type_not_empty, R.plurals.text_plan_count, planCount), buttons),
                         buttons,
                         StringUtil.SPAN_BOLD_STYLE
-                ))
-                .setTitle(R.string.title_dialog_type_not_empty)
-                .setNegativeButton(buttons[1], object : BaseDialogFragment.OnButtonClickListener {
-                    override fun onClick(): Boolean {
-                        mTypeDetailPresenter.notifyTypeDeletionButtonClicked(true)
-                        return true
-                    }
-                })
-                .setNegativeButton(buttons[2], null)
-                .setPositiveButton(buttons[0], object : BaseDialogFragment.OnButtonClickListener {
-                    override fun onClick(): Boolean {
-                        mTypeDetailPresenter.notifyMovePlanButtonClicked()
-                        return true
-                    }
-                })
-                .show(supportFragmentManager)
+                ),
+                getString(R.string.title_dialog_type_not_empty),
+                buttons[0],
+                { mTypeDetailPresenter.notifyMovePlanButtonClicked() },
+                buttons[1],
+                { mTypeDetailPresenter.notifyTypeDeletionButtonClicked(true) }
+        ).show(supportFragmentManager)
     }
 
     override fun showMovePlanDialog(typeCode: String) {
@@ -302,35 +287,25 @@ class TypeDetailActivity : BaseActivity(), TypeDetailViewContract {
     }
 
     override fun showTypeDeletionConfirmationDialog(typeName: String) {
-        MessageDialogFragment.Builder()
-                .setMessage(R.string.msg_dialog_delete_type)
-                .setTitle(typeName)
-                .setNegativeButton(R.string.button_cancel, null)
-                .setPositiveButton(R.string.button_delete, object : BaseDialogFragment.OnButtonClickListener {
-                    override fun onClick(): Boolean {
-                        mTypeDetailPresenter.notifyDeletingType(false, null)
-                        return true
-                    }
-                })
-                .show(supportFragmentManager)
+        MessageDialogFragment.newInstance(
+                getString(R.string.msg_dialog_delete_type),
+                typeName,
+                getString(R.string.button_delete),
+                { mTypeDetailPresenter.notifyDeletingType(false, null) }
+        ).show(supportFragmentManager)
     }
 
     override fun showPlanMigrationConfirmationDialog(fromTypeName: String, planCount: Int, toTypeName: String, toTypeCode: String) {
-        MessageDialogFragment.Builder()
-                .setMessage(StringUtil.addSpan(
+        MessageDialogFragment.newInstance(
+                StringUtil.addSpan(
                         String.format(ResourceUtil.getString(R.string.msg_dialog_migrate_plan), ResourceUtil.getQuantityString(R.plurals.text_plan_count, planCount), toTypeName, fromTypeName),
                         arrayOf(toTypeName, fromTypeName),
                         StringUtil.SPAN_BOLD_STYLE
-                ))
-                .setTitle(fromTypeName)
-                .setNegativeButton(R.string.button_cancel, null)
-                .setPositiveButton(R.string.btn_dialog_move_and_delete, object : BaseDialogFragment.OnButtonClickListener {
-                    override fun onClick(): Boolean {
-                        mTypeDetailPresenter.notifyDeletingType(true, toTypeCode)
-                        return true
-                    }
-                })
-                .show(supportFragmentManager)
+                ),
+                fromTypeName,
+                getString(R.string.btn_dialog_move_and_delete),
+                { mTypeDetailPresenter.notifyDeletingType(true, toTypeCode) }
+        ).show(supportFragmentManager)
     }
 
     @OnClick(R.id.ic_clear_text)

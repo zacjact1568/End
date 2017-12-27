@@ -121,26 +121,26 @@ class TypeCreationActivity : BaseActivity(), TypeCreationViewContract {
     }
 
     override fun showTypeNameEditorDialog(defaultName: String) {
-        EditorDialogFragment.Builder()
-                .setEditorText(defaultName)
-                .setEditorHint(R.string.hint_type_name_editor_creation)
-                .setPositiveButton(R.string.button_ok, object : EditorDialogFragment.OnTextEditedListener {
-                    override fun onTextEdited(text: String) {
-                        mTypeCreationPresenter.notifyTypeNameEdited(text)
-                    }
-                })
-                .setTitle(R.string.title_dialog_type_name_editor)
-                .setNegativeButton(R.string.button_cancel, null)
-                .show(supportFragmentManager)
+        EditorDialogFragment.newInstance(
+                getString(android.R.string.ok),
+                {
+                    //TODO 处理返回值
+                    it?.let { mTypeCreationPresenter.notifyTypeNameEdited(it) }
+                    true
+                },
+                defaultName,
+                getString(R.string.hint_type_name_editor_creation),
+                getString(R.string.title_dialog_type_name_editor)
+        ).show(supportFragmentManager)
     }
 
-    override fun showTypeMarkColorPickerDialog(defaultColor: String) {
+    override fun showTypeMarkColorPickerDialog(defaultColor: Int) {
         TypeMarkColorPickerDialogFragment.newInstance(
                 defaultColor,
-                object : TypeMarkColorPickerDialogFragment.OnTypeMarkColorPickedListener {
-                    override fun onTypeMarkColorPicked(typeMarkColor: TypeMarkColor) {
-                        mTypeCreationPresenter.notifyTypeMarkColorSelected(typeMarkColor)
-                    }
+                {
+                    //TODO 处理返回值
+                    mTypeCreationPresenter.notifyTypeMarkColorSelected(it)
+                    true
                 }
         ).show(supportFragmentManager)
     }
@@ -148,10 +148,10 @@ class TypeCreationActivity : BaseActivity(), TypeCreationViewContract {
     override fun showTypeMarkPatternPickerDialog(defaultPattern: String?) {
         TypeMarkPatternPickerDialogFragment.newInstance(
                 defaultPattern,
-                object : TypeMarkPatternPickerDialogFragment.OnTypeMarkPatternPickedListener {
-                    override fun onTypeMarkPatternPicked(typeMarkPattern: TypeMarkPattern?) {
-                        mTypeCreationPresenter.notifyTypeMarkPatternSelected(typeMarkPattern)
-                    }
+                //TODO 处理返回值
+                {
+                    mTypeCreationPresenter.notifyTypeMarkPatternSelected(it)
+                    true
                 }
         ).show(supportFragmentManager)
     }

@@ -13,7 +13,6 @@ import me.imzack.app.end.R
 import me.imzack.app.end.common.Constant
 import me.imzack.app.end.model.DataManager
 import me.imzack.app.end.view.activity.HomeActivity
-import me.imzack.app.end.view.dialog.BaseDialogFragment
 import me.imzack.app.end.view.dialog.MessageDialogFragment
 
 class SettingsFragment : PreferenceFragment(), SharedPreferences.OnSharedPreferenceChangeListener {
@@ -33,18 +32,13 @@ class SettingsFragment : PreferenceFragment(), SharedPreferences.OnSharedPrefere
         addPreferencesFromResource(R.xml.preferences)
 
         mNightModePreference.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, _ ->
-            MessageDialogFragment.Builder()
-                    .setMessage(R.string.msg_dialog_switch_night_mode)
-                    .setTitle(R.string.title_dialog_switch_night_mode)
-                    .setNegativeButton(R.string.button_cancel, null)
-                    .setPositiveButton(R.string.button_restart, object : BaseDialogFragment.OnButtonClickListener {
-                        override fun onClick(): Boolean {
-                            mNightModePreference.isChecked = !mNightModePreference.isChecked
-                            return true
-                        }
-                    })
-                    //这里需要使用宿主activity的support包中的FragmentManager
-                    .show((activity as FragmentActivity).supportFragmentManager)
+            //这里需要使用宿主activity的support包中的FragmentManager
+            MessageDialogFragment.newInstance(
+                    getString(R.string.msg_dialog_switch_night_mode),
+                    getString(R.string.title_dialog_switch_night_mode),
+                    getString(R.string.button_restart),
+                    { mNightModePreference.isChecked = !mNightModePreference.isChecked }
+            ).show((activity as FragmentActivity).supportFragmentManager)
             //返回false表示不改变preference的值
             false
         }

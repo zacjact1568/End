@@ -125,17 +125,12 @@ class PlanDetailActivity : BaseActivity(), PlanDetailViewContract {
     }
 
     override fun showPlanDeletionDialog(content: String) {
-        MessageDialogFragment.Builder()
-                .setMessage("${getString(R.string.msg_dialog_delete_plan_pt1)}\n$content")
-                .setTitle(R.string.title_dialog_delete_plan)
-                .setNegativeButton(R.string.button_cancel, null)
-                .setPositiveButton(R.string.delete, object : BaseDialogFragment.OnButtonClickListener {
-                    override fun onClick(): Boolean {
-                        planDetailPresenter.notifyPlanDeleted()
-                        return true
-                    }
-                })
-                .show(supportFragmentManager)
+        MessageDialogFragment.newInstance(
+                "${getString(R.string.msg_dialog_delete_plan_pt1)}\n$content",
+                getString(R.string.title_dialog_delete_plan),
+                getString(R.string.delete),
+                { planDetailPresenter.notifyPlanDeleted() }
+        ).show(supportFragmentManager)
     }
 
     override fun onPlanStatusChanged(isCompleted: Boolean) {
@@ -145,17 +140,17 @@ class PlanDetailActivity : BaseActivity(), PlanDetailViewContract {
     }
 
     override fun showContentEditorDialog(content: String) {
-        EditorDialogFragment.Builder()
-                .setEditorText(content)
-                .setEditorHint(R.string.hint_content_editor_edit)
-                .setPositiveButton(R.string.button_ok, object : EditorDialogFragment.OnTextEditedListener {
-                    override fun onTextEdited(text: String) {
-                        planDetailPresenter.notifyContentChanged(text)
-                    }
-                })
-                .setTitle(R.string.title_dialog_content_editor)
-                .setNegativeButton(R.string.button_cancel, null)
-                .show(supportFragmentManager)
+        EditorDialogFragment.newInstance(
+                getString(android.R.string.ok),
+                {
+                    //TODO 处理返回值
+                    it?.let { planDetailPresenter.notifyContentChanged(it) }
+                    true
+                },
+                content,
+                getString(R.string.hint_content_editor_edit),
+                getString(R.string.title_dialog_content_editor)
+        ).show(supportFragmentManager)
     }
 
     override fun onContentChanged(newContent: String) {
@@ -187,21 +182,17 @@ class PlanDetailActivity : BaseActivity(), PlanDetailViewContract {
     override fun showTypePickerDialog(defaultTypeListPos: Int) {
         TypePickerDialogFragment.newInstance(
                 defaultTypeListPos,
-                object : TypePickerDialogFragment.OnTypePickedListener {
-                    override fun onTypePicked(position: Int) {
-                        planDetailPresenter.notifyTypeOfPlanChanged(position)
-                    }
-                }
+                { planDetailPresenter.notifyTypeOfPlanChanged(it) }
         ).show(supportFragmentManager)
     }
 
     override fun showDeadlinePickerDialog(defaultDeadline: Long) {
         DateTimePickerDialogFragment.newInstance(
                 defaultDeadline,
-                object : DateTimePickerDialogFragment.OnDateTimePickedListener {
-                    override fun onDateTimePicked(timeInMillis: Long) {
-                        planDetailPresenter.notifyDeadlineChanged(timeInMillis)
-                    }
+                // TODO 处理返回值
+                {
+                    planDetailPresenter.notifyDeadlineChanged(it)
+                    true
                 }
         ).show(supportFragmentManager)
     }
@@ -209,10 +200,10 @@ class PlanDetailActivity : BaseActivity(), PlanDetailViewContract {
     override fun showReminderTimePickerDialog(defaultReminderTime: Long) {
         DateTimePickerDialogFragment.newInstance(
                 defaultReminderTime,
-                object : DateTimePickerDialogFragment.OnDateTimePickedListener {
-                    override fun onDateTimePicked(timeInMillis: Long) {
-                        planDetailPresenter.notifyReminderTimeChanged(timeInMillis)
-                    }
+                // TODO 处理返回值
+                {
+                    planDetailPresenter.notifyReminderTimeChanged(it)
+                    true
                 }
         ).show(supportFragmentManager)
     }

@@ -7,13 +7,13 @@ import android.os.Build
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatDelegate
 import me.imzack.app.end.common.Constant
+import me.imzack.app.end.event.EventBusIndex
 import me.imzack.app.end.injector.component.AppComponent
 import me.imzack.app.end.injector.component.DaggerAppComponent
 import me.imzack.app.end.injector.module.AppModule
 import me.imzack.app.end.model.DataManager
 import me.imzack.app.end.util.SystemUtil
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.EventBusIndex
 import java.io.FileOutputStream
 import java.io.IOException
 

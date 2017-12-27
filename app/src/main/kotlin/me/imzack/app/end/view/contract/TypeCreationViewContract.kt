@@ -16,7 +16,7 @@ interface TypeCreationViewContract : BaseViewContract {
 
     fun showTypeNameEditorDialog(defaultName: String)
 
-    fun showTypeMarkColorPickerDialog(defaultColor: String)
+    fun showTypeMarkColorPickerDialog(defaultColor: Int)
 
     fun showTypeMarkPatternPickerDialog(defaultPattern: String?)
 }

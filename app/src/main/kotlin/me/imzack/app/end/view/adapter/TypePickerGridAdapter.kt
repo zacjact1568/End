@@ -19,6 +19,7 @@ class TypePickerGridAdapter(private var mSelectedPosition: Int) : RecyclerView.A
 
     private val PAYLOAD_SELECTOR = 0
 
+    // TODO 将此属性放进主构造函数
     var mOnItemClickListener: ((position: Int) -> Unit)? = null
 
     private val mWhiteBackgroundColor = ResourceUtil.getColor(R.color.colorWhiteBackground)

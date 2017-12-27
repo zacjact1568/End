@@ -8,7 +8,6 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_settings.*
 import me.imzack.app.end.R
 import me.imzack.app.end.model.DataManager
-import me.imzack.app.end.view.dialog.BaseDialogFragment
 import me.imzack.app.end.view.dialog.MessageDialogFragment
 import me.imzack.app.end.view.fragment.SettingsFragment
 
@@ -39,17 +38,12 @@ class SettingsActivity : BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> exit()
-            R.id.action_reset -> MessageDialogFragment.Builder()
-                    .setMessage(R.string.msg_dialog_reset_settings)
-                    .setTitle(R.string.title_dialog_reset_settings)
-                    .setNegativeButton(R.string.button_cancel, null)
-                    .setPositiveButton(R.string.btn_dialog_reset_settings, object : BaseDialogFragment.OnButtonClickListener {
-                        override fun onClick(): Boolean {
-                            DataManager.preferenceHelper.resetAllValues()
-                            return true
-                        }
-                    })
-                    .show(supportFragmentManager)
+            R.id.action_reset -> MessageDialogFragment.newInstance(
+                    getString(R.string.msg_dialog_reset_settings),
+                    getString(R.string.title_dialog_reset_settings),
+                    getString(R.string.btn_dialog_reset_settings),
+                    { DataManager.preferenceHelper.resetAllValues() }
+            ).show(supportFragmentManager)
             else -> { }
         }
         return super.onOptionsItemSelected(item)

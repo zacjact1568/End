@@ -4,11 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/switcher_color_picker"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="1"
+    android:layout_height="wrap_content"
     android:inAnimation="@android:anim/slide_in_left"
     android:outAnimation="@android:anim/slide_out_right"
-    tools:layout_height="wrap_content"
     tools:context=".view.dialog.TypeMarkColorPickerDialogFragment">
 
     <GridView

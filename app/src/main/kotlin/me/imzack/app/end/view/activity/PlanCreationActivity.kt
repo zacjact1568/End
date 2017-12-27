@@ -168,10 +168,10 @@ class PlanCreationActivity : BaseActivity(), PlanCreationViewContract {
     override fun showDeadlinePickerDialog(defaultDeadline: Long) {
         DateTimePickerDialogFragment.newInstance(
                 defaultDeadline,
-                object : DateTimePickerDialogFragment.OnDateTimePickedListener {
-                    override fun onDateTimePicked(timeInMillis: Long) {
-                        mPlanCreationPresenter.notifyDeadlineChanged(timeInMillis)
-                    }
+                {
+                    // TODO 处理返回值
+                    mPlanCreationPresenter.notifyDeadlineChanged(it)
+                    true
                 }
         ).show(supportFragmentManager)
     }
@@ -183,10 +183,9 @@ class PlanCreationActivity : BaseActivity(), PlanCreationViewContract {
     override fun showReminderTimePickerDialog(defaultReminderTime: Long) {
         DateTimePickerDialogFragment.newInstance(
                 defaultReminderTime,
-                object : DateTimePickerDialogFragment.OnDateTimePickedListener {
-                    override fun onDateTimePicked(timeInMillis: Long) {
-                        mPlanCreationPresenter.notifyReminderTimeChanged(timeInMillis)
-                    }
+                {
+                    mPlanCreationPresenter.notifyReminderTimeChanged(it)
+                    true
                 }
         ).show(supportFragmentManager)
     }

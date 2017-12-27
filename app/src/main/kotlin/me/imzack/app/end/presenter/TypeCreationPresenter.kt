@@ -25,6 +25,7 @@ class TypeCreationPresenter @Inject constructor(
 
     override fun attach() {
         mTypeCreationViewContract!!.showInitialView(FormattedType(
+                // TODO 处理 length ≥ 1 的错误
                 typeMarkColorInt = Color.parseColor(mType.markColor),
                 typeMarkColorName = DataManager.getTypeMarkColorName(mType.markColor),
                 typeName = mType.name,
@@ -53,7 +54,8 @@ class TypeCreationPresenter @Inject constructor(
     }
 
     fun notifySettingTypeMarkColor() {
-        mTypeCreationViewContract!!.showTypeMarkColorPickerDialog(mType.markColor)
+        // TODO 处理 length ≥ 1 的错误
+        mTypeCreationViewContract!!.showTypeMarkColorPickerDialog(Color.parseColor(mType.markColor))
     }
 
     fun notifyTypeMarkColorSelected(typeMarkColor: TypeMarkColor) {

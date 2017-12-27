@@ -16,7 +16,7 @@ interface TypeEditViewContract : BaseViewContract {
 
     fun onTypeMarkPatternChanged(hasPattern: Boolean, @DrawableRes patternResId: Int, patternName: String?)
 
-    fun showTypeMarkColorPickerDialog(defaultColor: String)
+    fun showTypeMarkColorPickerDialog(defaultColor: Int)
 
     fun showTypeMarkPatternPickerDialog(defaultPattern: String?)
 }

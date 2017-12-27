@@ -25,6 +25,7 @@ class TypeEditPresenter @Inject constructor(
 
     override fun attach() {
         mTypeEditViewContract!!.showInitialView(FormattedType(
+                // TODO 处理...
                 Color.parseColor(mType.markColor),
                 DataManager.getTypeMarkColorName(mType.markColor),
                 mType.hasMarkPattern,
@@ -44,7 +45,8 @@ class TypeEditPresenter @Inject constructor(
     }
 
     fun notifySettingTypeMarkColor() {
-        mTypeEditViewContract!!.showTypeMarkColorPickerDialog(mType.markColor)
+        // TODO 处理...
+        mTypeEditViewContract!!.showTypeMarkColorPickerDialog(Color.parseColor(mType.markColor))
     }
 
     fun notifySettingTypeMarkPattern() {
