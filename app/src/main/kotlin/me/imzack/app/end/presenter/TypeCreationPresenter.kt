@@ -59,13 +59,13 @@ class TypeCreationPresenter @Inject constructor(
     }
 
     fun notifyTypeMarkColorSelected(typeMarkColor: TypeMarkColor) {
-        val colorHex = typeMarkColor.colorHex
+        val colorHex = typeMarkColor.hex
         //颜色必须唯一
         if (DataManager.isTypeMarkColorUsed(colorHex)) {
             mTypeCreationViewContract!!.showToast(R.string.toast_type_mark_color_exists)
         } else {
             mType.markColor = colorHex
-            mTypeCreationViewContract!!.onTypeMarkColorChanged(Color.parseColor(colorHex), typeMarkColor.colorName)
+            mTypeCreationViewContract!!.onTypeMarkColorChanged(Color.parseColor(colorHex), typeMarkColor.name)
         }
     }
 
@@ -74,12 +74,12 @@ class TypeCreationPresenter @Inject constructor(
     }
 
     fun notifyTypeMarkPatternSelected(typeMarkPattern: TypeMarkPattern?) {
-        val patternFn = typeMarkPattern?.patternFn
+        val patternFn = typeMarkPattern?.file
         mType.markPattern = patternFn
         mTypeCreationViewContract!!.onTypeMarkPatternChanged(
                 mType.hasMarkPattern,
                 if (patternFn != null) ResourceUtil.getDrawableResourceId(patternFn) else 0,
-                typeMarkPattern?.patternName
+                typeMarkPattern?.name
         )
     }
 

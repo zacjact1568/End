@@ -29,12 +29,11 @@ object Constant {
     const val SEQUENCE = "sequence"
 
     const val COLOR = "color"
-    const val COLOR_HEX = "color_hex"
-    const val COLOR_NAME = "color_%s"
+    const val HEX = "hex"
+    const val NAME_LOCALE = "name_%s"
 
     const val PATTERN = "pattern"
-    const val PATTERN_FN = "pattern_fn"
-    const val PATTERN_NAME = "pattern_%s"
+    const val FILE = "file"
 
     const val ZH_CN = "zh_cn"
     const val ZH_TW = "zh_tw"

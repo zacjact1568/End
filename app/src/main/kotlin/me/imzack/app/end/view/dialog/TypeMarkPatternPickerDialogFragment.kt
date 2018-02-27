@@ -37,7 +37,7 @@ class TypeMarkPatternPickerDialogFragment : BaseDialogFragment() {
                     ResourceUtil.getString(R.string.button_select),
                     object : OnButtonClickListener {
                         // takeUnless 判断调用它的变量是否符合要求，如果符合，返回此变量，否则返回 null
-                        override fun onClick() = typeMarkPatternPickedListener(fragment.typeMarkPattern.takeUnless { it.patternFn == null })
+                        override fun onClick() = typeMarkPatternPickedListener(fragment.typeMarkPattern.takeUnless { it.file == null })
                     },
                     false
             )
@@ -58,7 +58,7 @@ class TypeMarkPatternPickerDialogFragment : BaseDialogFragment() {
         // 为 position 设置正确的初始值
         if (Type.hasMarkPattern(defaultPattern)) {
             // indexOfFirst 找到第一个出现符合要求的元素下标，如果没找到，返回 -1（实际上不会出现）
-            position = typeMarkPatternList.asSequence().indexOfFirst { it.patternFn == defaultPattern }
+            position = typeMarkPatternList.asSequence().indexOfFirst { it.file == defaultPattern }
         }
     }
 
@@ -77,8 +77,8 @@ class TypeMarkPatternPickerDialogFragment : BaseDialogFragment() {
         grid_type_mark_pattern.onItemClickListener = AdapterView.OnItemClickListener { _, _, pos, _ ->
             position = pos
             val (patternFn, patternName) = typeMarkPatternList[position]
-            typeMarkPattern.patternFn = patternFn
-            typeMarkPattern.patternName = patternName
+            typeMarkPattern.file = patternFn
+            typeMarkPattern.name = patternName
         }
     }
 }

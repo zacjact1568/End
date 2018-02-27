@@ -279,12 +279,12 @@ class DatabaseHelper {
     fun loadTypeMarkColor(): List<TypeMarkColor> {
         val typeMarkDB = SQLiteDatabase.openDatabase(App.context.getDatabasePath(Constant.DB_TYPE_MARK).path, null, SQLiteDatabase.OPEN_READONLY)
         val typeMarkColorList = mutableListOf<TypeMarkColor>()
-        val colorNameColumnName = String.format(Constant.COLOR_NAME, columnNameSuffixByLocale)
+        val colorNameColumnName = String.format(Constant.NAME_LOCALE, columnNameSuffixByLocale)
         val cursor = typeMarkDB.query(Constant.COLOR, null, null, null, null, null, null)
         if (cursor.moveToFirst()) {
             do {
                 typeMarkColorList.add(TypeMarkColor(
-                        cursor.getString(cursor.getColumnIndex(Constant.COLOR_HEX)),
+                        cursor.getString(cursor.getColumnIndex(Constant.HEX)),
                         cursor.getString(cursor.getColumnIndex(colorNameColumnName))
                 ))
             } while (cursor.moveToNext())
@@ -296,8 +296,8 @@ class DatabaseHelper {
 
     fun queryTypeMarkColorNameByTypeMarkColorHex(typeMarkColorHex: String): String? {
         val typeMarkDB = SQLiteDatabase.openDatabase(App.context.getDatabasePath(Constant.DB_TYPE_MARK).path, null, SQLiteDatabase.OPEN_READONLY)
-        val colorNameColumnName = String.format(Constant.COLOR_NAME, columnNameSuffixByLocale)
-        val cursor = typeMarkDB.query(Constant.COLOR, arrayOf(colorNameColumnName), "${Constant.COLOR_HEX} = ?", arrayOf(typeMarkColorHex), null, null, null)
+        val colorNameColumnName = String.format(Constant.NAME_LOCALE, columnNameSuffixByLocale)
+        val cursor = typeMarkDB.query(Constant.COLOR, arrayOf(colorNameColumnName), "${Constant.HEX} = ?", arrayOf(typeMarkColorHex), null, null, null)
         var typeMarkColorName: String? = null
         if (cursor.moveToFirst()) {
             typeMarkColorName = cursor.getString(cursor.getColumnIndex(colorNameColumnName))
@@ -312,12 +312,12 @@ class DatabaseHelper {
     fun loadTypeMarkPattern(): List<TypeMarkPattern> {
         val typeMarkDB = SQLiteDatabase.openDatabase(App.context.getDatabasePath(Constant.DB_TYPE_MARK).path, null, SQLiteDatabase.OPEN_READONLY)
         val typeMarkPatternList = mutableListOf<TypeMarkPattern>()
-        val patternNameColumnName = String.format(Constant.PATTERN_NAME, columnNameSuffixByLocale)
+        val patternNameColumnName = String.format(Constant.NAME_LOCALE, columnNameSuffixByLocale)
         val cursor = typeMarkDB.query(Constant.PATTERN, null, null, null, null, null, null)
         if (cursor.moveToFirst()) {
             do {
                 typeMarkPatternList.add(TypeMarkPattern(
-                        cursor.getString(cursor.getColumnIndex(Constant.PATTERN_FN)),
+                        cursor.getString(cursor.getColumnIndex(Constant.FILE)),
                         cursor.getString(cursor.getColumnIndex(patternNameColumnName))
                 ))
             } while (cursor.moveToNext())
@@ -330,8 +330,8 @@ class DatabaseHelper {
     // typeMarkPatternFn不能为可空类型，最后拼接的sql语句会为pattern_fn = ?，就无法查询
     fun queryTypeMarkPatternNameByTypeMarkPatternFn(typeMarkPatternFn: String): String? {
         val typeMarkDB = SQLiteDatabase.openDatabase(App.context.getDatabasePath(Constant.DB_TYPE_MARK).path, null, SQLiteDatabase.OPEN_READONLY)
-        val patternNameColumnName = String.format(Constant.PATTERN_NAME, columnNameSuffixByLocale)
-        val cursor = typeMarkDB.query(Constant.PATTERN, arrayOf(patternNameColumnName), "${Constant.PATTERN_FN} = ?", arrayOf(typeMarkPatternFn), null, null, null)
+        val patternNameColumnName = String.format(Constant.NAME_LOCALE, columnNameSuffixByLocale)
+        val cursor = typeMarkDB.query(Constant.PATTERN, arrayOf(patternNameColumnName), "${Constant.FILE} = ?", arrayOf(typeMarkPatternFn), null, null, null)
         var typeMarkPatternName: String? = null
         if (cursor.moveToFirst()) {
             typeMarkPatternName = cursor.getString(cursor.getColumnIndex(patternNameColumnName))

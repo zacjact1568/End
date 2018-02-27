@@ -68,26 +68,26 @@ class TypeEditPresenter @Inject constructor(
     }
 
     fun notifyTypeMarkColorSelected(typeMarkColor: TypeMarkColor) {
-        val colorHex = typeMarkColor.colorHex
+        val colorHex = typeMarkColor.hex
         if (mType.markColor == colorHex) return
         //上一行已经把此类型当前的颜色排除了，所以不存在选择相同的颜色还弹toast的问题
         if (DataManager.isTypeMarkColorUsed(colorHex)) {
             mTypeEditViewContract!!.showToast(R.string.toast_type_mark_color_exists)
         } else {
             DataManager.notifyUpdatingTypeMarkColor(mTypeListPosition, colorHex)
-            mTypeEditViewContract!!.onTypeMarkColorChanged(Color.parseColor(colorHex), typeMarkColor.colorName)
+            mTypeEditViewContract!!.onTypeMarkColorChanged(Color.parseColor(colorHex), typeMarkColor.name)
             postTypeDetailChangedEvent(TypeDetailChangedEvent.FIELD_TYPE_MARK_COLOR)
         }
     }
 
     fun notifyTypeMarkPatternSelected(typeMarkPattern: TypeMarkPattern?) {
-        val patternFn = typeMarkPattern?.patternFn
+        val patternFn = typeMarkPattern?.file
         if (CommonUtil.isObjectEqual(mType.markPattern, patternFn)) return
         DataManager.notifyUpdatingTypeMarkPattern(mTypeListPosition, patternFn)
         mTypeEditViewContract!!.onTypeMarkPatternChanged(
                 mType.hasMarkPattern,
                 if (patternFn != null) ResourceUtil.getDrawableResourceId(patternFn) else 0,
-                typeMarkPattern?.patternName
+                typeMarkPattern?.name
         )
         postTypeDetailChangedEvent(TypeDetailChangedEvent.FIELD_TYPE_MARK_PATTERN)
     }

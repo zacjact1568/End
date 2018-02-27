@@ -92,8 +92,8 @@ class TypeMarkColorPickerDialogFragment : BaseDialogFragment() {
             position = pos
             // 更新 typeMarkColor
             val (colorHex, colorName) = typeMarkColorList[position]
-            typeMarkColor.colorHex = colorHex
-            typeMarkColor.colorName = colorName
+            typeMarkColor.hex = colorHex
+            typeMarkColor.name = colorName
         }
 
         // 自定义颜色
@@ -106,15 +106,15 @@ class TypeMarkColorPickerDialogFragment : BaseDialogFragment() {
             // 更新 position，如果在自定义颜色中刚好调到某个预置颜色，则 position 为预置颜色中的位置，否则为 -1
             updatePosition(it)
             // 更新 typeMarkColor
-            typeMarkColor.colorHex = colorHex
+            typeMarkColor.hex = colorHex
             // 若 position 为 -1，说明颜色是在自定义颜色中设置的，无名称，用 colorHex 代替；反之说明颜色在预置颜色中存在，有名称
-            typeMarkColor.colorName = if (position == -1) colorHex else typeMarkColorList[position].colorName
+            typeMarkColor.name = if (position == -1) colorHex else typeMarkColorList[position].name
         }
     }
 
     private fun onClickSwitcher() {
         switcher_color_picker.showNext()
-        val colorHex = typeMarkColor.colorHex
+        val colorHex = typeMarkColor.hex
         val color = Color.parseColor(colorHex)
         if (switcher_color_picker.currentView.id == R.id.grid_type_mark_color) {
             //切换到了grid界面，此时position一定为-1
@@ -141,6 +141,6 @@ class TypeMarkColorPickerDialogFragment : BaseDialogFragment() {
 
     /** 更新 position，如果 color 在预置颜色中，position 设置为预置颜色中的位置，否则设置为 -1 */
     private fun updatePosition(color: Int) {
-        position = typeMarkColorList.indices.firstOrNull { typeMarkColorList[it].colorHex == ColorUtil.parseColor(color) } ?: -1
+        position = typeMarkColorList.indices.firstOrNull { typeMarkColorList[it].hex == ColorUtil.parseColor(color) } ?: -1
     }
 }
