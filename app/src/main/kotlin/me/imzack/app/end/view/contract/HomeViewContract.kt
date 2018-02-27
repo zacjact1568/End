@@ -14,7 +14,7 @@ interface HomeViewContract : BaseViewContract {
 
     fun onPressBackKey()
 
-    fun enterActivity(tag: String)
+    fun startActivity(tag: String)
 
     fun showToast(msg: String)
 }

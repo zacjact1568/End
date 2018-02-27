@@ -256,7 +256,12 @@ class TypeDetailActivity : BaseActivity(), TypeDetailViewContract {
     }
 
     override fun onDetectedDeletingLastType() {
-        MessageDialogFragment.newInstance(getString(R.string.msg_dialog_last_type), getString(R.string.title_dialog_last_type)).show(supportFragmentManager)
+        MessageDialogFragment.newInstance(
+                getString(R.string.msg_dialog_last_type),
+                getString(R.string.title_dialog_last_type),
+                getString(android.R.string.ok),
+                showCancelButton = false
+        ).show(supportFragmentManager)
     }
 
     override fun onDetectedTypeNotEmpty(planCount: Int) {

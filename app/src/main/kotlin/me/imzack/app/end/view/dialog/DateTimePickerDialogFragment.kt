@@ -57,7 +57,7 @@ class DateTimePickerDialogFragment : BaseDialogFragment() {
         super.onCreate(savedInstanceState)
 
         // defaultTime 被初始化，calendar 被更新为正确的初始时间
-        calendar.timeInMillis = arguments.getLong(ARG_DEFAULT_TIME)
+        calendar.timeInMillis = arguments!!.getLong(ARG_DEFAULT_TIME)
     }
 
     override fun onCreateContentView(inflater: LayoutInflater, root: ViewGroup) =

@@ -53,7 +53,7 @@ class TypeMarkColorPickerDialogFragment : BaseDialogFragment() {
 
     // 不提供编程来改变颜色，因为无此需求，即只有通过用户改变颜色
     // TODO 颜色0值是否有效？
-    private val defaultColor by lazy { arguments.getInt(ARG_DEFAULT_COLOR) }
+    private val defaultColor by lazy { arguments!!.getInt(ARG_DEFAULT_COLOR) }
     private val typeMarkColorList = DataManager.typeMarkColorList
     private var position = -1
     private val typeMarkColor by lazy { if (position == -1) TypeMarkColor(ColorUtil.parseColor(defaultColor)) else typeMarkColorList[position].copy() }

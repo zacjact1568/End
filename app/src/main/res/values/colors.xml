@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!--Light Blue 600-->
+    <!-- Light Blue 600 -->
     <color name="colorPrimary">#FF039BE5</color>
-    <!--Light Blue 800-->
+    <!-- Light Blue 800 -->
     <color name="colorPrimaryDark">#FF0277BD</color>
-    <!--Light Green 500-->
+    <!-- Light Green 500 -->
     <color name="colorAccent">#FF8BC34A</color>
-    <!--Light Blue 200-->
+    <!-- Light Blue 200 -->
     <color name="colorPrimaryLight">#FF81D4FA</color>
 
     <color name="colorWhiteBackground">@android:color/white</color>
     <color name="colorBlackBackground">@android:color/black</color>
     <color name="colorGreyBackground">#FFE0E0E0</color>
 
-    <!--Type mark colors-->
+    <!-- Type mark colors -->
     <color name="red">#FFE51C23</color>
     <color name="pink">#FFE91E63</color>
     <color name="purple">#FF9C27B0</color>

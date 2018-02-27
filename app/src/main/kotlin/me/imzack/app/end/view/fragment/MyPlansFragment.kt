@@ -24,10 +24,6 @@ class MyPlansFragment : BaseListFragment(), MyPlansViewContract {
     @Inject
     lateinit var mMyPlansPresenter: MyPlansPresenter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onInjectPresenter() {
         DaggerMyPlansComponent.builder()
                 .myPlansPresenterModule(MyPlansPresenterModule(this))
@@ -76,7 +72,7 @@ class MyPlansFragment : BaseListFragment(), MyPlansViewContract {
     }
 
     override fun onPlanItemClicked(position: Int) {
-        PlanDetailActivity.start(context, position)
+        PlanDetailActivity.start(context!!, position)
     }
 
     override fun onPlanCreated() {
@@ -94,9 +90,5 @@ class MyPlansFragment : BaseListFragment(), MyPlansViewContract {
     override fun onPlanItemEmptyStateChanged(isEmpty: Boolean) {
         list_plan.visibility = if (isEmpty) View.GONE else View.VISIBLE
         layout_empty.visibility = if (isEmpty) View.VISIBLE else View.GONE
-    }
-
-    override fun exit() {
-        remove()
     }
 }

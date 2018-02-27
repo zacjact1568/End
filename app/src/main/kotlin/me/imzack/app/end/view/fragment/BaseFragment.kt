@@ -24,6 +24,10 @@ abstract class BaseFragment : Fragment() {
     }
 
     protected fun remove() {
-        fragmentManager.beginTransaction().remove(this).commit()
+        fragmentManager!!.beginTransaction().remove(this).commit()
+    }
+
+    open fun exit() {
+        remove()
     }
 }

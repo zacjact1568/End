@@ -18,10 +18,6 @@ import me.imzack.app.end.view.dialog.MessageDialogFragment
 
 class AboutFragment : BaseFragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
             inflater.inflate(R.layout.fragment_about, container, false)!!
 
@@ -38,7 +34,7 @@ class AboutFragment : BaseFragment() {
                         intent.data = Uri.parse("mailto:")
                         intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(Constant.DEVELOPER_EMAIL))
                         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.subject_email))
-                        if (intent.resolveActivity(context.packageManager) != null) {
+                        if (intent.resolveActivity(context!!.packageManager) != null) {
                             startActivity(intent)
                         } else {
                             MessageDialogFragment.newInstance(
@@ -51,7 +47,7 @@ class AboutFragment : BaseFragment() {
                                         SystemUtil.putTextToClipboard(ResourceUtil.getString(R.string.label_developer_email), Constant.DEVELOPER_EMAIL)
                                         showToast(R.string.toast_copy_to_clipboard_successfully)
                                     }
-                            ).show(fragmentManager)
+                            ).show(fragmentManager!!)
                         }
                     }
                 })
@@ -65,8 +61,8 @@ class AboutFragment : BaseFragment() {
                 arrayOf<Any>(object : ClickableSpan() {
                     override fun onClick(widget: View) {
                         SystemUtil.openLink(
-                                "market://details?id=" + context.packageName,
-                                activity,
+                                "market://details?id=" + context!!.packageName,
+                                activity!!,
                                 getString(R.string.toast_no_store_found)
                         )
                     }

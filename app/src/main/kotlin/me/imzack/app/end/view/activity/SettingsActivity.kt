@@ -44,7 +44,6 @@ class SettingsActivity : BaseActivity() {
                     getString(R.string.btn_dialog_reset_settings),
                     { DataManager.preferenceHelper.resetAllValues() }
             ).show(supportFragmentManager)
-            else -> { }
         }
         return super.onOptionsItemSelected(item)
     }

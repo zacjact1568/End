@@ -13,15 +13,16 @@ class MessageDialogFragment : BaseDialogFragment() {
 
     companion object {
 
-        private val ARG_DEFAULT_MESSAGE = "default_message"
+        private val ARG_MESSAGE = "message"
 
         fun newInstance(
-                defaultMessageText: CharSequence,
+                messageText: CharSequence,
                 titleText: String? = null,
                 okButtonText: String? = null,
                 okButtonClickListener: (() -> Unit)? = null,
                 thirdButtonText: String? = null,
-                thirdButtonClickListener: (() -> Unit)? = null
+                thirdButtonClickListener: (() -> Unit)? = null,
+                showCancelButton: Boolean = true
         ): MessageDialogFragment {
             val fragment = MessageDialogFragment()
             val args = Bundle()
@@ -35,7 +36,7 @@ class MessageDialogFragment : BaseDialogFragment() {
                             return true
                         }
                     },
-                    ResourceUtil.getString(android.R.string.cancel),
+                    if (showCancelButton) ResourceUtil.getString(android.R.string.cancel) else null,
                     object : OnButtonClickListener {
                         override fun onClick() = true
                     },
@@ -47,7 +48,7 @@ class MessageDialogFragment : BaseDialogFragment() {
                         }
                     }
             )
-            args.putCharSequence(ARG_DEFAULT_MESSAGE, defaultMessageText)
+            args.putCharSequence(ARG_MESSAGE, messageText)
             fragment.arguments = args
             return fragment
         }
@@ -59,6 +60,6 @@ class MessageDialogFragment : BaseDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        text_message.text = arguments.getCharSequence(ARG_DEFAULT_MESSAGE)
+        text_message.text = arguments!!.getCharSequence(ARG_MESSAGE)
     }
 }

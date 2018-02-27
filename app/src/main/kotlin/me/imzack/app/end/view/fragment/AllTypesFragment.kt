@@ -22,10 +22,6 @@ class AllTypesFragment : BaseListFragment(), AllTypesViewContract {
     @Inject
     lateinit var mAllTypesPresenter: AllTypesPresenter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onInjectPresenter() {
         DaggerAllTypesComponent.builder()
                 .allTypesPresenterModule(AllTypesPresenterModule(this))
@@ -65,7 +61,7 @@ class AllTypesFragment : BaseListFragment(), AllTypesViewContract {
     override fun onTypeItemClicked(position: Int, typeItem: View) {
         val typeMarkIcon = typeItem.findViewById<View>(R.id.ic_type_mark)
         TypeDetailActivity.start(
-                activity,
+                activity!!,
                 position,
                 true,
                 typeMarkIcon,
@@ -75,9 +71,5 @@ class AllTypesFragment : BaseListFragment(), AllTypesViewContract {
 
     override fun onTypeCreated(scrollTo: Int) {
         list_type.scrollToPosition(scrollTo)
-    }
-
-    override fun exit() {
-        remove()
     }
 }

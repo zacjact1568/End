@@ -20,7 +20,7 @@ class ThanksFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        list_library.adapter = LibraryListAdapter(activity)
+        list_library.adapter = LibraryListAdapter(activity!!)
         list_library.setHasFixedSize(true)
     }
 

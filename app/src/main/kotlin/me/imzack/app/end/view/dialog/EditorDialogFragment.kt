@@ -60,8 +60,8 @@ class EditorDialogFragment : BaseDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        editor.setText(arguments.getString(ARG_DEFAULT_EDITOR_TEXT))
-        editor.hint = arguments.getString(ARG_EDITOR_HINT)
+        editor.setText(arguments!!.getString(ARG_DEFAULT_EDITOR_TEXT))
+        editor.hint = arguments!!.getString(ARG_EDITOR_HINT)
         editor.setSelection(editor.length())
         SystemUtil.showSoftInput(editor, 100)
     }

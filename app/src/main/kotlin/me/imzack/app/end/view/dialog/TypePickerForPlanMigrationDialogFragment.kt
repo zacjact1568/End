@@ -40,7 +40,7 @@ class TypePickerForPlanMigrationDialogFragment : BaseDialogFragment() {
         }
     }
 
-    private val typePickedListener by lazy { arguments.getSerializable(ARG_TYPE_PICKED_LISTENER) as OnTypePickedListener }
+    private val typePickedListener by lazy { arguments!!.getSerializable(ARG_TYPE_PICKED_LISTENER) as OnTypePickedListener }
 
     override fun onCreateContentView(inflater: LayoutInflater, root: ViewGroup) =
             inflater.inflate(R.layout.dialog_fragment_type_picker_for_plan_migration, root, false)!!
@@ -48,7 +48,7 @@ class TypePickerForPlanMigrationDialogFragment : BaseDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = TypePickerForPlanMigrationGridAdapter(arguments.getString(ARG_EXCLUDED_TYPE_CODE))
+        val adapter = TypePickerForPlanMigrationGridAdapter(arguments!!.getString(ARG_EXCLUDED_TYPE_CODE))
         adapter.mOnItemClickListener = { typeCode, typeName ->
             typePickedListener.onTypePicked(typeCode, typeName)
             dialog.dismiss()

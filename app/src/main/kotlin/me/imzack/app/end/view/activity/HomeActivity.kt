@@ -86,7 +86,7 @@ class HomeActivity : BaseActivity(), HomeViewContract {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_search -> enterActivity(if (isFragmentShowing(Constant.MY_PLANS)) Constant.PLAN_SEARCH else Constant.TYPE_SEARCH)
+            R.id.action_search -> startActivity(if (isFragmentShowing(Constant.MY_PLANS)) Constant.PLAN_SEARCH else Constant.TYPE_SEARCH)
         }
         return super.onOptionsItemSelected(item)
     }
@@ -103,7 +103,6 @@ class HomeActivity : BaseActivity(), HomeViewContract {
 
     override fun showInitialView(planCount: String, textSize: Int, planCountDscpt: String) {
         setContentView(R.layout.activity_home)
-        ButterKnife.bind(this)
 
         setSupportActionBar(toolbar)
 
@@ -111,17 +110,18 @@ class HomeActivity : BaseActivity(), HomeViewContract {
         layout_drawer.addDrawerListener(toggle)
         toggle.syncState()
 
-        navigator.setNavigationItemSelectedListener { item ->
-            when (item.itemId) {
+        navigator.setNavigationItemSelectedListener {
+            when (it.itemId) {
                 R.id.nav_my_plans -> showFragment(Constant.MY_PLANS)
                 R.id.nav_all_types -> showFragment(Constant.ALL_TYPES)
-                R.id.nav_settings -> enterActivity(Constant.SETTINGS)
-                R.id.nav_about -> enterActivity(Constant.ABOUT)
-                else -> { }
+                R.id.nav_settings -> startActivity(Constant.SETTINGS)
+                R.id.nav_about -> startActivity(Constant.ABOUT)
             }
             layout_drawer.closeDrawer(GravityCompat.START)
             true
         }
+
+        fab_create.setOnClickListener { startActivity(if (isFragmentShowing(Constant.MY_PLANS)) Constant.PLAN_CREATION else Constant.TYPE_CREATION) }
 
         changeDrawerHeaderDisplay(planCount, textSize, planCountDscpt)
     }
@@ -157,46 +157,41 @@ class HomeActivity : BaseActivity(), HomeViewContract {
         }
         //在切换相同fragment时，下面的语句是不必要的
         val titleResId: Int
-        val navViewCheckedItemId: Int
+        val checkedItemId: Int
         when (tag) {
             Constant.MY_PLANS -> {
                 titleResId = R.string.title_fragment_my_plans
-                navViewCheckedItemId = R.id.nav_my_plans
+                checkedItemId = R.id.nav_my_plans
             }
             Constant.ALL_TYPES -> {
                 titleResId = R.string.title_fragment_all_types
-                navViewCheckedItemId = R.id.nav_all_types
+                checkedItemId = R.id.nav_all_types
             }
             else -> throw IllegalArgumentException("The argument tag cannot be " + tag)
         }
         toolbar.setTitle(titleResId)
         fab_create.translationY = 0f
-        navigator.setCheckedItem(navViewCheckedItemId)
+        navigator.setCheckedItem(checkedItemId)
     }
 
     override fun onPressBackKey() {
         super.onBackPressed()
     }
 
-    override fun enterActivity(tag: String) {
+    override fun startActivity(tag: String) {
         when (tag) {
             Constant.GUIDE -> GuideActivity.start(this)
             Constant.PLAN_SEARCH -> PlanSearchActivity.start(this)
             Constant.TYPE_SEARCH -> TypeSearchActivity.start(this)
             Constant.SETTINGS -> SettingsActivity.start(this)
             Constant.ABOUT -> AboutActivity.start(this)
+            Constant.PLAN_CREATION -> PlanCreationActivity.start(this)
+            Constant.TYPE_CREATION -> TypeCreationActivity.start(this)
         }
     }
 
     override fun showToast(msg: String) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-    }
-
-    @OnClick(R.id.fab_create)
-    fun onClick(view: View) {
-        when (view.id) {
-            R.id.fab_create -> if (isFragmentShowing(Constant.MY_PLANS)) PlanCreationActivity.start(this) else TypeCreationActivity.start(this)
-        }
     }
 
     private fun isFragmentShowing(tag: String) = supportFragmentManager.findFragmentByTag(tag) != null

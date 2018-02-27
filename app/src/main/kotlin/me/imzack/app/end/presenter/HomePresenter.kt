@@ -45,7 +45,7 @@ class HomePresenter @Inject constructor(
 
     fun notifyStartingUpCompleted() {
         if (DataManager.preferenceHelper.needGuideValue) {
-            mHomeViewContract!!.enterActivity(Constant.GUIDE)
+            mHomeViewContract!!.startActivity(Constant.GUIDE)
         }
     }
 

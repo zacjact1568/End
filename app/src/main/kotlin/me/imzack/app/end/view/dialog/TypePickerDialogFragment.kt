@@ -26,7 +26,7 @@ class TypePickerDialogFragment : BaseDialogFragment() {
                     ResourceUtil.getString(R.string.btn_new_type),
                     object : OnButtonClickListener {
                         override fun onClick(): Boolean {
-                            TypeCreationActivity.start(fragment.context)
+                            TypeCreationActivity.start(fragment.context!!)
                             return true
                         }
                     },
@@ -55,7 +55,7 @@ class TypePickerDialogFragment : BaseDialogFragment() {
         super.onCreate(savedInstanceState)
 
         // 为 position 设置正确的初始值
-        position = arguments.getInt(ARG_DEFAULT_POSITION)
+        position = arguments!!.getInt(ARG_DEFAULT_POSITION)
     }
 
     override fun onCreateContentView(inflater: LayoutInflater, root: ViewGroup) =

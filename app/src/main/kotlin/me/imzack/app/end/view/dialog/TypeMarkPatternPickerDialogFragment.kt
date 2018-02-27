@@ -47,7 +47,7 @@ class TypeMarkPatternPickerDialogFragment : BaseDialogFragment() {
         }
     }
 
-    private val defaultPattern by lazy { arguments.getString(ARG_DEFAULT_PATTERN) }
+    private val defaultPattern by lazy { arguments!!.getString(ARG_DEFAULT_PATTERN) }
     private val typeMarkPatternList = DataManager.typeMarkPatternList
     private var position = -1
     private val typeMarkPattern by lazy { if (position == -1) TypeMarkPattern() else typeMarkPatternList[position].copy() }

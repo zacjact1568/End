@@ -59,10 +59,6 @@ class PlanCreationActivity : BaseActivity(), PlanCreationViewContract {
                 .inject(this)
     }
 
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         mPlanCreationPresenter.detach()
