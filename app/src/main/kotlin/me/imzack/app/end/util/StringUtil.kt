@@ -1,5 +1,6 @@
 package me.imzack.app.end.util
 
+import android.graphics.Color
 import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.Spanned
@@ -7,12 +8,12 @@ import android.text.style.*
 
 object StringUtil {
 
-    val SPAN_STRIKETHROUGH = 0
-    val SPAN_BOLD_STYLE = 1
-    val SPAN_UNDERLINE = 2
-    val SPAN_COLOR = 3
-    val SPAN_URL = 4
-    val SPAN_CLICKABLE = 5
+    const val SPAN_STRIKETHROUGH = 0
+    const val SPAN_BOLD_STYLE = 1
+    const val SPAN_UNDERLINE = 2
+    const val SPAN_COLOR = 3
+    const val SPAN_URL = 4
+    const val SPAN_CLICKABLE = 5
 
     /** 整个字符串都添加span */
     fun addSpan(cs: CharSequence, span: Int, extra: Any? = null): SpannableString {
@@ -52,15 +53,18 @@ object StringUtil {
     private fun addSpan(ss: SpannableString, span: Int, extra: Any?, start: Int, length: Int) {
         ss.setSpan(when (span) {
             SPAN_STRIKETHROUGH -> StrikethroughSpan()
-            //TODO 将int extra提取出来
+            // TODO bold style -> int extra
             SPAN_BOLD_STYLE -> StyleSpan(Typeface.BOLD)
             SPAN_UNDERLINE -> UnderlineSpan()
             SPAN_COLOR -> ForegroundColorSpan(extra as Int)
             SPAN_URL -> URLSpan(extra as String)
             SPAN_CLICKABLE -> extra
-            else -> throw IllegalArgumentException("The argument span cannot be " + span)
+            else -> throw IllegalArgumentException("The argument span cannot be $span")
         }, start, start + length, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
     }
+
+    /** 添加白色字体 span */
+    fun addWhiteColorSpan(cs: CharSequence) = addSpan(cs, SPAN_COLOR, Color.WHITE)
 
     fun getFirstChar(str: String) = str.substring(0, 1)
 
