@@ -5,7 +5,7 @@ object Constant {
 
     const val DEVELOPER_EMAIL = "zxjue@outlook.com"
 
-    const val DB_TYPE_MARK = "type_mark.db"
+    const val TYPE_MARK_DB_FN = "db_type_mark.db"
 
     const val PLAN_LIST_POSITION = "plan_list_position"
     const val TYPE_LIST_POSITION = "type_list_position"

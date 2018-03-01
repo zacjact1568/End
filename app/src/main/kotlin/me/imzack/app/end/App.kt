@@ -79,12 +79,12 @@ class App : Application() {
 
     /** 初始化类型标记数据库 */
     private fun initDatabase() {
-        val typeMarkDBFile = getDatabasePath(Constant.DB_TYPE_MARK)
+        val typeMarkDBFile = getDatabasePath(Constant.TYPE_MARK_DB_FN)
         if (typeMarkDBFile.exists()) return
         val typeMarkDBDir = typeMarkDBFile.parentFile
         if (typeMarkDBDir.exists() || typeMarkDBDir.mkdir()) {
             try {
-                val iStream = resources.openRawResource(R.raw.type_mark)
+                val iStream = resources.openRawResource(R.raw.db_type_mark)
                 val foStream = FileOutputStream(typeMarkDBFile)
                 // 400000 is BUFFER_SIZE
                 val buffer = ByteArray(400000)
