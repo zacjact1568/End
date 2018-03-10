@@ -1,6 +1,7 @@
 package me.imzack.app.end.presenter
 
 import android.content.SharedPreferences
+import android.os.Bundle
 import me.imzack.app.end.R
 import me.imzack.app.end.common.Constant
 import me.imzack.app.end.event.DataLoadedEvent
@@ -15,54 +16,96 @@ import org.greenrobot.eventbus.Subscribe
 import javax.inject.Inject
 
 class HomePresenter @Inject constructor(
-        private var mHomeViewContract: HomeViewContract?,
-        private val mEventBus: EventBus
+        private var homeViewContract: HomeViewContract?,
+        private val eventBus: EventBus
 ) : BasePresenter(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     //setTextSize传入的就是sp
-    private val mPlanCountTextSizes = intArrayOf(52, 44, 32)
-    private var mLastBackKeyPressedTime = 0L
+    private val planCountTextSizes = intArrayOf(52, 44, 32)
+    private var lastBackKeyPressedTime = 0L
+    private var isRestored = false
+    private var currentFragmentTag = Constant.MY_PLANS
 
     override fun attach() {
-        mEventBus.register(this)
+        eventBus.register(this)
         DataManager.preferenceHelper.registerOnChangeListener(this)
         val count = planCount
-        mHomeViewContract!!.showInitialView(count, getPlanCountTextSize(count), planCountDscpt)
+        homeViewContract!!.showInitialView(count, getPlanCountTextSize(count), planCountDscpt)
     }
 
     override fun detach() {
-        mHomeViewContract = null
+        homeViewContract = null
         DataManager.preferenceHelper.unregisterOnChangeListener(this)
-        mEventBus.unregister(this)
+        eventBus.unregister(this)
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         if (key == Constant.PREF_KEY_DRAWER_HEADER_DISPLAY) {
             val count = planCount
-            mHomeViewContract!!.changeDrawerHeaderDisplay(count, getPlanCountTextSize(count), planCountDscpt)
+            homeViewContract!!.changeDrawerHeaderDisplay(count, getPlanCountTextSize(count), planCountDscpt)
         }
+    }
+
+    fun notifyInstanceStateRestored(restoredFragmentTag: String) {
+        isRestored = true
+        currentFragmentTag = restoredFragmentTag
     }
 
     fun notifyStartingUpCompleted() {
         if (DataManager.preferenceHelper.needGuideValue) {
-            mHomeViewContract!!.startActivity(Constant.GUIDE)
+            homeViewContract!!.startActivity(Constant.GUIDE)
         }
+        homeViewContract!!.showInitialFragment(isRestored, currentFragmentTag)
+    }
+
+    fun notifySavingInstanceState(outState: Bundle) {
+        outState.putString(Constant.CURRENT_FRAGMENT, currentFragmentTag)
+    }
+
+    fun notifySwitchingFragment(toTag: String) {
+        switchFragment(toTag)
+    }
+
+    fun notifySearchButtonTouched() {
+        homeViewContract!!.startActivity(
+                when (currentFragmentTag) {
+                    Constant.MY_PLANS -> Constant.PLAN_SEARCH
+                    Constant.ALL_TYPES -> Constant.TYPE_SEARCH
+                    else -> throw IllegalArgumentException("No corresponding fragment found for the tag \"$currentFragmentTag\"")
+                }
+        )
+    }
+
+    fun notifyCreationButtonTouched() {
+        homeViewContract!!.startActivity(
+                when (currentFragmentTag) {
+                    Constant.MY_PLANS -> Constant.PLAN_CREATION
+                    Constant.ALL_TYPES -> Constant.TYPE_CREATION
+                    else -> throw IllegalArgumentException("No corresponding fragment found for the tag \"$currentFragmentTag\"")
+                }
+        )
     }
 
     fun notifyBackPressed(isDrawerOpen: Boolean, isOnRootFragment: Boolean) {
         val currentTime = System.currentTimeMillis()
         when {
-            isDrawerOpen -> mHomeViewContract!!.closeDrawer()
+            isDrawerOpen -> homeViewContract!!.closeDrawer()
             //不是在根Fragment（可以直接退出的Fragment）上，回到根Fragment
-            !isOnRootFragment -> mHomeViewContract!!.showFragment(Constant.MY_PLANS)
+            !isOnRootFragment -> switchFragment(Constant.MY_PLANS)
             //连续点击间隔在1.5s以内，执行back键操作
-            currentTime - mLastBackKeyPressedTime < 1500 -> mHomeViewContract!!.onPressBackKey()
+            currentTime - lastBackKeyPressedTime < 1500 -> homeViewContract!!.onPressBackKey()
             //否则更新上次点击back键的时间，并显示一个toast
             else -> {
-                mLastBackKeyPressedTime = currentTime
-                mHomeViewContract!!.showToast(R.string.toast_double_press_exit)
+                lastBackKeyPressedTime = currentTime
+                homeViewContract!!.showToast(R.string.toast_double_press_exit)
             }
         }
+    }
+
+    private fun switchFragment(toTag: String) {
+        if (currentFragmentTag == toTag) return
+        homeViewContract!!.switchFragment(currentFragmentTag, toTag)
+        currentFragmentTag = toTag
     }
 
     private val planCount: String
@@ -90,14 +133,14 @@ class HomePresenter @Inject constructor(
         }
 
     private fun getPlanCountTextSize(planCount: String) = when (planCount.length) {
-        1 -> mPlanCountTextSizes[0]
-        2 -> mPlanCountTextSizes[1]
-        else -> mPlanCountTextSizes[2]
+        1 -> planCountTextSizes[0]
+        2 -> planCountTextSizes[1]
+        else -> planCountTextSizes[2]
     }
 
     private fun changePlanCount() {
         val count = planCount
-        mHomeViewContract!!.changePlanCount(count, getPlanCountTextSize(count))
+        homeViewContract!!.changePlanCount(count, getPlanCountTextSize(count))
     }
 
     @Subscribe

@@ -170,5 +170,6 @@ class MyPlansPresenter @Inject constructor(
     fun onPlanDeleted(event: PlanDeletedEvent) {
         if (event.eventSource == presenterName) return
         mPlanListAdapter.notifyItemRemovedAndChangingFooter(event.position)
+        updatePlanItemEmptyState()
     }
 }

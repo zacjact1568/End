@@ -4,15 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentTransaction
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import butterknife.ButterKnife
-import butterknife.OnClick
 import kotlinx.android.synthetic.main.activity_home.*
 import me.imzack.app.end.App
 import me.imzack.app.end.R
@@ -35,15 +34,15 @@ class HomeActivity : BaseActivity(), HomeViewContract {
     }
 
     @Inject
-    lateinit var mHomePresenter: HomePresenter
+    lateinit var homePresenter: HomePresenter
 
     // 不使用synthetic，因为不会从cache中获取子view
-    private val mPlanCountText by lazy { navigator.getHeaderView(0).findViewById<TextView>(R.id.text_plan_count) }
-    private val mPlanCountDscptText by lazy { navigator.getHeaderView(0).findViewById<TextView>(R.id.text_plan_count_dscpt) }
+    private val planCountText by lazy { navigator.getHeaderView(0).findViewById<TextView>(R.id.text_plan_count) }
+    private val planCountDscptText by lazy { navigator.getHeaderView(0).findViewById<TextView>(R.id.text_plan_count_dscpt) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mHomePresenter.attach()
+        homePresenter.attach()
     }
 
     override fun onInjectPresenter() {
@@ -54,25 +53,28 @@ class HomeActivity : BaseActivity(), HomeViewContract {
                 .inject(this)
     }
 
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        homePresenter.notifyInstanceStateRestored(savedInstanceState.getString(Constant.CURRENT_FRAGMENT, Constant.MY_PLANS))
+    }
+
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
-        mHomePresenter.notifyStartingUpCompleted()
-        //如果放到setInitialView中，toolbar的title不会改变
-        showFragment(if (savedInstanceState == null) Constant.MY_PLANS else savedInstanceState.getString(Constant.CURRENT_FRAGMENT, Constant.MY_PLANS))
+        homePresenter.notifyStartingUpCompleted()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(Constant.CURRENT_FRAGMENT, if (isFragmentShowing(Constant.MY_PLANS)) Constant.MY_PLANS else Constant.ALL_TYPES)
+        homePresenter.notifySavingInstanceState(outState)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mHomePresenter.detach()
+        homePresenter.detach()
     }
 
     override fun onBackPressed() {
-        mHomePresenter.notifyBackPressed(
+        homePresenter.notifyBackPressed(
                 layout_drawer.isDrawerOpen(GravityCompat.START),
                 isFragmentShowing(Constant.MY_PLANS)
         )
@@ -86,7 +88,7 @@ class HomeActivity : BaseActivity(), HomeViewContract {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_search -> startActivity(if (isFragmentShowing(Constant.MY_PLANS)) Constant.PLAN_SEARCH else Constant.TYPE_SEARCH)
+            R.id.action_search -> homePresenter.notifySearchButtonTouched()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -112,8 +114,8 @@ class HomeActivity : BaseActivity(), HomeViewContract {
 
         navigator.setNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.nav_my_plans -> showFragment(Constant.MY_PLANS)
-                R.id.nav_all_types -> showFragment(Constant.ALL_TYPES)
+                R.id.nav_my_plans -> homePresenter.notifySwitchingFragment(Constant.MY_PLANS)
+                R.id.nav_all_types -> homePresenter.notifySwitchingFragment(Constant.ALL_TYPES)
                 R.id.nav_settings -> startActivity(Constant.SETTINGS)
                 R.id.nav_about -> startActivity(Constant.ABOUT)
             }
@@ -121,57 +123,53 @@ class HomeActivity : BaseActivity(), HomeViewContract {
             true
         }
 
-        fab_create.setOnClickListener { startActivity(if (isFragmentShowing(Constant.MY_PLANS)) Constant.PLAN_CREATION else Constant.TYPE_CREATION) }
+        fab_create.setOnClickListener { homePresenter.notifyCreationButtonTouched() }
 
         changeDrawerHeaderDisplay(planCount, textSize, planCountDscpt)
     }
 
+    override fun showInitialFragment(restored: Boolean, shownTag: String) {
+        val transaction = supportFragmentManager.beginTransaction()
+        if (restored) {
+            supportFragmentManager.fragments
+                    .map { it.tag }
+                    // 不隐藏 tag 为 null 的 fragment，因为这是 WeatherFragment 的子页（每个城市）
+                    .filter { it != null && it != shownTag }
+                    .forEach { it?.let { transaction.hide(it) } }
+        } else {
+            // 如果 activity 正常启动，仅添加 shownTag 对应的 fragment
+            transaction.add(shownTag)
+        }
+        transaction.commit()
+
+        updateAfterUpdatingFragment(shownTag)
+    }
+
+    override fun switchFragment(fromTag: String, toTag: String) {
+        if (!isFragmentExist(toTag)) {
+            // 如果要显示的 fragment 还未创建，创建
+            supportFragmentManager.beginTransaction().hide(fromTag).add(toTag).commit()
+        } else if (!isFragmentShowing(toTag)) {
+            // 如果要显示的 fragment 已创建但未显示，显示
+            supportFragmentManager.beginTransaction().hide(fromTag).show(toTag).commit()
+        }
+        // 如果要显示的 fragment 已创建且已显示，不做任何操作
+
+        updateAfterUpdatingFragment(toTag)
+    }
+
     override fun changePlanCount(planCount: String, textSize: Int) {
-        mPlanCountText.text = planCount
-        mPlanCountText.textSize = textSize.toFloat()
+        planCountText.text = planCount
+        planCountText.textSize = textSize.toFloat()
     }
 
     override fun changeDrawerHeaderDisplay(planCount: String, textSize: Int, planCountDscpt: String) {
         changePlanCount(planCount, textSize)
-        mPlanCountDscptText.text = planCountDscpt
+        planCountDscptText.text = planCountDscpt
     }
 
     override fun closeDrawer() {
         layout_drawer.closeDrawer(GravityCompat.START)
-    }
-
-    override fun showFragment(tag: String) {
-        if (!isFragmentShowing(tag)) {
-            supportFragmentManager
-                    .beginTransaction()
-                    .replace(
-                            R.id.layout_fragment,
-                            when (tag) {
-                                Constant.MY_PLANS -> MyPlansFragment()
-                                Constant.ALL_TYPES -> AllTypesFragment()
-                                else -> throw IllegalArgumentException("The argument tag cannot be " + tag)
-                            },
-                            tag
-                    )
-                    .commit()
-        }
-        //在切换相同fragment时，下面的语句是不必要的
-        val titleResId: Int
-        val checkedItemId: Int
-        when (tag) {
-            Constant.MY_PLANS -> {
-                titleResId = R.string.title_fragment_my_plans
-                checkedItemId = R.id.nav_my_plans
-            }
-            Constant.ALL_TYPES -> {
-                titleResId = R.string.title_fragment_all_types
-                checkedItemId = R.id.nav_all_types
-            }
-            else -> throw IllegalArgumentException("The argument tag cannot be " + tag)
-        }
-        toolbar.setTitle(titleResId)
-        fab_create.translationY = 0f
-        navigator.setCheckedItem(checkedItemId)
     }
 
     override fun onPressBackKey() {
@@ -194,5 +192,55 @@ class HomeActivity : BaseActivity(), HomeViewContract {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 
-    private fun isFragmentShowing(tag: String) = supportFragmentManager.findFragmentByTag(tag) != null
+    private fun updateAfterUpdatingFragment(tag: String) {
+        val titleResId: Int
+        val checkedItemId: Int
+        when (tag) {
+            Constant.MY_PLANS -> {
+                titleResId = R.string.title_fragment_my_plans
+                checkedItemId = R.id.nav_my_plans
+            }
+            Constant.ALL_TYPES -> {
+                titleResId = R.string.title_fragment_all_types
+                checkedItemId = R.id.nav_all_types
+            }
+            else -> throw IllegalArgumentException("The argument tag cannot be \"$tag\"")
+        }
+        toolbar.setTitle(titleResId)
+        fab_create.translationY = 0f
+        navigator.setCheckedItem(checkedItemId)
+    }
+
+    private fun findFragmentByTag(tag: String): Fragment? = supportFragmentManager.findFragmentByTag(tag)
+
+    private fun isFragmentExist(tag: String) = findFragmentByTag(tag) != null
+
+    private fun isFragmentShowing(tag: String): Boolean {
+        val fragment = findFragmentByTag(tag)
+        return fragment != null && !fragment.isHidden
+    }
+
+    private fun FragmentTransaction.add(tag: String): FragmentTransaction {
+        add(
+                R.id.layout_fragment,
+                when (tag) {
+                    Constant.MY_PLANS -> MyPlansFragment()
+                    Constant.ALL_TYPES -> AllTypesFragment()
+                    // 在这里添加新 fragment
+                    else -> throw IllegalArgumentException("The argument tag cannot be \"$tag\"")
+                },
+                tag
+        )
+        return this
+    }
+
+    private fun FragmentTransaction.hide(tag: String): FragmentTransaction {
+        hide(findFragmentByTag(tag))
+        return this
+    }
+
+    private fun FragmentTransaction.show(tag: String): FragmentTransaction {
+        show(findFragmentByTag(tag))
+        return this
+    }
 }
