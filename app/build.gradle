@@ -5,13 +5,13 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'realm-android'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    compileSdkVersion 28
+    buildToolsVersion '28.0.0'
 
     defaultConfig {
         applicationId "me.imzack.app.end"
         minSdkVersion 21
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode Math.ceil((new Date().time - 1448726400000) / 86400000) as int
         versionName new Date().format('yyyyMMdd')
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -57,8 +57,8 @@ dependencies {
     implementation 'com.github.zacjact1568:BaseGuideActivity:0.2'
     implementation 'com.github.zacjact1568:BaseDialogFragment:0.6'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     kapt "com.jakewharton:butterknife-compiler:$butterknife_version"
     kapt 'org.greenrobot:eventbus-annotation-processor:3.0.1'
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
