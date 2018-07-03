@@ -72,7 +72,7 @@
 
         <include layout="@layout/divider"/>
 
-        <me.imzack.app.end.view.widget.ItemView
+        <net.zackzhang.app.end.view.widget.ItemView
             android:id="@+id/item_deadline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
 
         <include layout="@layout/divider"/>
 
-        <me.imzack.app.end.view.widget.ItemView
+        <net.zackzhang.app.end.view.widget.ItemView
             android:id="@+id/item_reminder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

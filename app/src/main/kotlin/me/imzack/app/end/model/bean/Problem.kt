@@ -1,3 +1,0 @@
-package me.imzack.app.end.model.bean
-
-data class Problem(val description: String, val solution: String)

@@ -29,7 +29,7 @@
             android:ellipsize="end"
             tools:text="Buy Joanne on iTunes"/>
 
-        <me.imzack.app.end.view.widget.ImageTextView
+        <net.zackzhang.app.end.view.widget.ImageTextView
             android:id="@+id/layout_deadline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

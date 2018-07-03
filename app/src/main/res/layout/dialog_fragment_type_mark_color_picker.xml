@@ -43,7 +43,7 @@
             android:typeface="monospace"
             tools:text="#FF543B4A"/>
 
-        <me.imzack.app.end.view.widget.ColorPicker
+        <net.zackzhang.app.end.view.widget.ColorPicker
             android:id="@+id/picker_type_mark_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
